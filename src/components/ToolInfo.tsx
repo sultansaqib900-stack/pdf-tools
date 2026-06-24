@@ -1,8 +1,9 @@
 interface ToolInfoProps {
+  name: string;
   description: string;
 }
 
-export default function ToolInfo({ description }: ToolInfoProps) {
+export default function ToolInfo({ name, description }: ToolInfoProps) {
   return (
     <div className="mb-6 p-5 bg-indigo-50/50 dark:bg-indigo-950/20 border border-indigo-100 dark:border-indigo-900/50 rounded-xl">
       <div className="flex items-center gap-2 mb-2">
