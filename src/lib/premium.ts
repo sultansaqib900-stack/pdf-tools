@@ -122,3 +122,10 @@ export function checkFileSize(size: number): { ok: boolean; message: string } {
   }
   return { ok: true, message: "" };
 }
+
+export function checkBatchCount(count: number): { ok: boolean; message: string } {
+  if (count > 1 && !isPremium()) {
+    return { ok: false, message: "Batch processing requires Premium." };
+  }
+  return { ok: true, message: "" };
+}
