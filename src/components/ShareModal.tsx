@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useState, useEffect } from "react";
 
 interface ShareModalProps {
@@ -165,9 +166,11 @@ export default function ShareModal({ open, onClose }: ShareModalProps) {
 
         {image && (
           <div className="px-5 pb-3">
-            <img
+            <Image
               src={image}
               alt=""
+              width={1200}
+              height={630}
               className="w-full aspect-[1200/630] rounded-xl object-cover border border-[var(--card-border)]"
             />
           </div>
