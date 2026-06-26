@@ -29,8 +29,8 @@ export default function Header() {
     const handler = () => {
       const stored = localStorage.getItem("theme");
       if (!stored) {
-        setDark(mq.matches);
-        document.documentElement.classList.toggle("dark", mq.matches);
+        setDark(true);
+        document.documentElement.classList.add("dark");
       }
     };
     mq.addEventListener("change", handler);
