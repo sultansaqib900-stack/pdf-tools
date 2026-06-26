@@ -14,6 +14,9 @@ import { useUsage } from "@/hooks/useUsage";
 import { useToolHistory } from "@/hooks/useToolHistory";
 import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
 
+import HowToJsonLd from "@/components/HowToJsonLd";
+import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
+
 interface FieldEntry {
   name: string;
   type: "text" | "checkbox" | "dropdown" | "list" | "radio" | "signature" | "button" | "unknown";
@@ -149,6 +152,8 @@ export default function FillFormPage() {
         description="Fill PDF forms online for free. Complete text fields checkboxes and dropdowns in your browser."
         url="https://allaboutpdfediting.xyz/fill-form"
       />
+      <HowToJsonLd name="Fill PDF Form Online" description="Complete interactive PDF form fields text checkboxes dropdowns" steps={[{name:"Upload PDF form",text:"Select a PDF with interactive form fields"},{name:"Fill in fields",text:"Complete text fields checkboxes and dropdowns"},{name:"Download filled form",text:"Download the completed PDF form"}]} />
+      <AiSummaryJsonLd name="Fill PDF Form" summary="Fill interactive PDF form fields including text checkboxes radio buttons and dropdowns" category="BusinessApplications" inputType="PDF" outputType="PDF" processing="client-side" price="free" features={["Form filling","Checkboxes","Dropdowns","Radio buttons","Free tool"]} limits="Files up to 10MB" />
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">Fill PDF Form</h1>
         <p className="text-[var(--muted)]">Detect and fill PDF form fields, then download the completed form.</p>

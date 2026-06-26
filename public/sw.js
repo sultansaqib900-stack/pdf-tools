@@ -1,5 +1,15 @@
-const CACHE = "pdftools-v1";
-const STATIC = ["/", "/compress", "/merge", "/split", "/offline"];
+const CACHE = "pdftools-v2";
+const STATIC = [
+  "/", "/compress", "/merge", "/split", "/unlock",
+  "/rotate", "/resize", "/crop", "/delete-pages",
+  "/organize", "/reverse-pdf", "/protect", "/image-to-pdf",
+  "/pdf-to-images", "/text-to-pdf", "/html-to-pdf",
+  "/extract-text", "/metadata", "/word-counter",
+  "/insert-blank", "/add-page-numbers", "/watermark",
+  "/fill-form", "/flatten-pdf", "/batch", "/annotate",
+  "/sign", "/redact", "/pdf-to-excel",
+  "/offline",
+];
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
@@ -10,7 +20,9 @@ self.addEventListener("install", (event) => {
 
 self.addEventListener("activate", (event) => {
   event.waitUntil(
-    caches.keys().then((keys) => Promise.all(keys.filter((k) => k !== CACHE).map((k) => caches.delete(k))))
+    caches.keys().then((keys) =>
+      Promise.all(keys.filter((k) => k !== CACHE).map((k) => caches.delete(k)))
+    )
   );
   self.clients.claim();
 });
@@ -18,6 +30,8 @@ self.addEventListener("activate", (event) => {
 self.addEventListener("fetch", (event) => {
   if (event.request.method !== "GET") return;
   event.respondWith(
-    fetch(event.request).catch(() => caches.match(event.request).then((r) => r || caches.match("/offline")))
+    fetch(event.request).catch(() =>
+      caches.match(event.request).then((r) => r || caches.match("/offline"))
+    )
   );
 });

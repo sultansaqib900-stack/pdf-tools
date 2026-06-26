@@ -14,6 +14,9 @@ import { useUsage } from "@/hooks/useUsage";
 import { useToolHistory } from "@/hooks/useToolHistory";
 import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
 
+import HowToJsonLd from "@/components/HowToJsonLd";
+import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
+
 export default function CompressPage() {
   const usage = useUsage();
   const upsell = usePremiumUpsell();
@@ -113,6 +116,8 @@ export default function CompressPage() {
         description="Compress PDF files online for free. Reduce PDF file size without losing quality. No uploads, 100% private, all in your browser."
         url="https://allaboutpdfediting.xyz/compress"
       />
+      <HowToJsonLd name="Compress PDF Online Free" description="Reduce PDF file size without losing quality" steps={[{name:"Upload PDF",text:"Select the PDF file you want to compress"},{name:"Choose compression level",text:"Select compression level low medium or high"},{name:"Download compressed PDF",text:"Download your smaller PDF file"}]} />
+      <AiSummaryJsonLd name="Compress PDF" summary="Reduce PDF file size instantly without losing quality" category="Utilities" inputType="PDF" outputType="PDF" processing="client-side" price="free" features={["Lossless compression","Size reduction","Quality preservation","Instant processing","No uploads"]} limits="Files up to 10MB" />
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">Compress PDF</h1>
         <p className="text-[var(--muted)]">Reduce PDF file size while maintaining quality.</p>

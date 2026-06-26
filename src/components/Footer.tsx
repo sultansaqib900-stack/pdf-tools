@@ -6,49 +6,42 @@ export default function Footer() {
           <div>
             <h4 className="font-semibold text-sm mb-3 text-[var(--foreground)]">Tools</h4>
             <div className="space-y-2 text-sm text-[var(--muted)]">
-              <a href="/compress" className="block hover:text-[var(--foreground)]">Compress PDF</a>
-              <a href="/merge" className="block hover:text-[var(--foreground)]">Merge PDF</a>
-              <a href="/split" className="block hover:text-[var(--foreground)]">Split PDF</a>
-              <a href="/image-to-pdf" className="block hover:text-[var(--foreground)]">Image to PDF</a>
-              <a href="/extract-text" className="block hover:text-[var(--foreground)]">Extract Text</a>
-              <a href="/add-page-numbers" className="block hover:text-[var(--foreground)]">Page Numbers</a>
-              <a href="/rotate" className="block hover:text-[var(--foreground)]">Rotate PDF</a>
-              <a href="/protect" className="block hover:text-[var(--foreground)]">Protect PDF</a>
-              <a href="/unlock" className="block hover:text-[var(--foreground)]">Unlock PDF</a>
-              <a href="/delete-pages" className="block hover:text-[var(--foreground)]">Delete Pages</a>
-              <a href="/organize" className="block hover:text-[var(--foreground)]">Organize Pages</a>
-              <a href="/resize" className="block hover:text-[var(--foreground)]">Resize PDF</a>
-              <a href="/crop" className="block hover:text-[var(--foreground)]">Crop PDF</a>
-              <a href="/watermark" className="block hover:text-[var(--foreground)]">Watermark PDF</a>
-              <a href="/sign" className="block hover:text-[var(--foreground)]">Sign PDF</a>
-              <a href="/chat-pdf" className="block hover:text-[var(--foreground)]">Chat with PDF</a>
-              <a href="/html-to-pdf" className="block hover:text-[var(--foreground)]">HTML to PDF</a>
-              <a href="/fill-form" className="block hover:text-[var(--foreground)]">Fill PDF Form</a>
-              <a href="/flatten-pdf" className="block hover:text-[var(--foreground)]">Flatten PDF</a>
-              <a href="/reverse-pdf" className="block hover:text-[var(--foreground)]">Reverse PDF Order</a>
-              <a href="/batch" className="block hover:text-[var(--foreground)]">Batch Process</a>
+              {[
+                ["Compress PDF", "/compress"], ["Merge PDF", "/merge"], ["Split PDF", "/split"],
+                ["Image to PDF", "/image-to-pdf"], ["Extract Text", "/extract-text"],
+                ["Page Numbers", "/add-page-numbers"], ["Rotate PDF", "/rotate"],
+                ["Protect PDF", "/protect"], ["Unlock PDF", "/unlock"],
+                ["Delete Pages", "/delete-pages"], ["Organize Pages", "/organize"],
+                ["Resize PDF", "/resize"], ["Crop PDF", "/crop"],
+                ["Watermark PDF", "/watermark"], ["Sign PDF", "/sign"],
+                ["Chat with PDF", "/chat-pdf"], ["HTML to PDF", "/html-to-pdf"],
+                ["Fill PDF Form", "/fill-form"], ["Flatten PDF", "/flatten-pdf"],
+                ["Reverse PDF Order", "/reverse-pdf"], ["Batch Process", "/batch"],
+              ].map(([label, href]) => (
+                <a key={href} href={href} className="block hover:text-[var(--foreground)] hover:translate-x-0.5 transition-all">{label}</a>
+              ))}
             </div>
           </div>
           <div>
             <h4 className="font-semibold text-sm mb-3 text-[var(--foreground)]">Company</h4>
             <div className="space-y-2 text-sm text-[var(--muted)]">
-              <a href="/about" className="block hover:text-[var(--foreground)]">About</a>
-              <a href="/blog" className="block hover:text-[var(--foreground)]">Blog</a>
-              <a href="mailto:saqibbostan83@gmail.com" className="block hover:text-[var(--foreground)]">Contact</a>
+              <a href="/about" className="block hover:text-[var(--foreground)] hover:translate-x-0.5 transition-all">About</a>
+              <a href="/blog" className="block hover:text-[var(--foreground)] hover:translate-x-0.5 transition-all">Blog</a>
+              <a href="mailto:saqibbostan83@gmail.com" className="block hover:text-[var(--foreground)] hover:translate-x-0.5 transition-all">Contact</a>
             </div>
           </div>
           <div>
             <h4 className="font-semibold text-sm mb-3 text-[var(--foreground)]">Legal</h4>
             <div className="space-y-2 text-sm text-[var(--muted)]">
-              <a href="/privacy" className="block hover:text-[var(--foreground)]">Privacy</a>
-              <a href="/terms" className="block hover:text-[var(--foreground)]">Terms</a>
+              <a href="/privacy" className="block hover:text-[var(--foreground)] hover:translate-x-0.5 transition-all">Privacy</a>
+              <a href="/terms" className="block hover:text-[var(--foreground)] hover:translate-x-0.5 transition-all">Terms</a>
             </div>
           </div>
           <div>
             <h4 className="font-semibold text-sm mb-3 text-[var(--foreground)]">Monetize</h4>
             <div className="space-y-2 text-sm text-[var(--muted)]">
-              <a href="/premium" className="block hover:text-[var(--foreground)]">Go Premium</a>
-              <a href="mailto:saqibbostan83@gmail.com?subject=Advertising" className="block hover:text-[var(--foreground)]">Advertise</a>
+              <a href="/premium" className="block hover:text-[var(--foreground)] hover:translate-x-0.5 transition-all">Go Premium</a>
+              <a href="mailto:saqibbostan83@gmail.com?subject=Advertising" className="block hover:text-[var(--foreground)] hover:translate-x-0.5 transition-all">Advertise</a>
             </div>
           </div>
         </div>

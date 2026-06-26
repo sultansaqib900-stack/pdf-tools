@@ -3,7 +3,8 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "How to Remove Password from PDF – Unlock PDF Files Online Free",
   description: "Learn how to remove password from PDF files online free. Unlock protected PDFs instantly in your browser with no uploads required.",
-  openGraph: {
+  alternates: { canonical: "https://allaboutpdfediting.xyz/blog/remove-password-from-pdf" },
+    openGraph: {
     title: "How to Remove Password from PDF – Free Unlock Tool",
     description: "Unlock password-protected PDFs instantly in your browser. 100% free, no upload, no signup.",
   },

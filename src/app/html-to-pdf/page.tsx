@@ -14,6 +14,9 @@ import SuccessAnimation from "@/components/SuccessAnimation";
 import ErrorBanner from "@/components/ErrorBanner";
 import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
 
+import HowToJsonLd from "@/components/HowToJsonLd";
+import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
+
 export default function HtmlToPdfPage() {
   const usage = useUsage();
   const upsell = usePremiumUpsell();
@@ -75,6 +78,8 @@ export default function HtmlToPdfPage() {
         description="Convert HTML to PDF online for free. Turn HTML markup into professional PDF documents instantly."
         url="https://allaboutpdfediting.xyz/html-to-pdf"
       />
+      <HowToJsonLd name="Convert HTML to PDF" description="Convert HTML markup and web pages to PDF documents" steps={[{name:"Enter HTML",text:"Paste HTML code or enter a URL"},{name:"Preview",text:"Preview how the PDF will look"},{name:"Download PDF",text:"Download the HTML content as a PDF document"}]} />
+      <AiSummaryJsonLd name="HTML to PDF" summary="Convert HTML markup and web page URLs into PDF documents" category="Utilities" inputType="HTML" outputType="PDF" processing="client-side" price="free" features={["HTML conversion","URL to PDF","Preview","Free tool","Client-side processing"]} limits="Files up to 10MB" />
       <iframe ref={iframeRef} className="hidden" title="preview" />
 
       <div className="mb-8">

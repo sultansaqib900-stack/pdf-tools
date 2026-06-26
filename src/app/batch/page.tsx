@@ -13,6 +13,9 @@ import { useUsage } from "@/hooks/useUsage";
 import { useToolHistory } from "@/hooks/useToolHistory";
 import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
 
+import HowToJsonLd from "@/components/HowToJsonLd";
+import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
+
 type Operation = {
   id: string;
   type: "compress" | "protect" | "rotate" | "watermark";
@@ -133,6 +136,8 @@ export default function BatchPage() {
         description="Process multiple PDF files at once. Batch compress merge convert PDFs. Premium feature."
         url="https://allaboutpdfediting.xyz/batch"
       />
+      <HowToJsonLd name="Batch Process PDF Files" description="Process multiple PDF files at once with the same operation" steps={[{name:"Upload PDFs",text:"Select multiple PDF files to process"},{name:"Choose operation",text:"Select compress merge split or other batch operation"},{name:"Download results",text:"Download all processed files individually or as ZIP"}]} />
+      <AiSummaryJsonLd name="Batch Process" summary="Process multiple PDF files simultaneously applying the same operation to all" category="Utilities" inputType="PDF" outputType="PDF" processing="client-side" price="free" features={["Multi-file batch","Same operation","Compress merge split","ZIP download","Free tool"]} limits="Files up to 10MB" />
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">Batch Process PDF</h1>
         <p className="text-[var(--muted)]">Process multiple PDFs at once — compress, protect, rotate, or watermark. <span className="text-indigo-500 font-semibold">Premium feature</span>.</p>

@@ -3,7 +3,8 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "How to Compress PDF Without Losing Quality – Free Online Tool",
   description: "Compress PDF files without losing quality using our free online tool. Reduce PDF size while keeping text sharp and images clear — all in your browser.",
-  openGraph: {
+  alternates: { canonical: "https://allaboutpdfediting.xyz/blog/compress-pdf-without-losing-quality" },
+    openGraph: {
     title: "How to Compress PDF Without Losing Quality",
     description: "Reduce PDF file size while keeping text sharp and images clear. 100% free, no uploads, no signup.",
   },

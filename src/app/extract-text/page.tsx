@@ -14,6 +14,9 @@ import { useUsage } from "@/hooks/useUsage";
 import { useToolHistory } from "@/hooks/useToolHistory";
 import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
 
+import HowToJsonLd from "@/components/HowToJsonLd";
+import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
+
 export default function ExtractTextPage() {
   const usage = useUsage();
   const upsell = usePremiumUpsell();
@@ -113,6 +116,8 @@ export default function ExtractTextPage() {
         description="Extract text content from PDF files online for free. Copy text from PDF documents instantly in your browser."
         url="https://allaboutpdfediting.xyz/extract-text"
       />
+      <HowToJsonLd name="Extract Text from PDF" description="Copy text content from scanned or digital PDF files" steps={[{name:"Upload PDF",text:"Select the PDF to extract text from"},{name:"Extract text",text:"The tool reads all text content from the document"},{name:"Copy or download",text:"Copy text to clipboard or download as TXT file"}]} />
+      <AiSummaryJsonLd name="Extract Text" summary="Extract and copy text content from scanned or digital PDF documents" category="Utilities" inputType="PDF" outputType="Text" processing="client-side" price="free" features={["Text extraction","OCR support","TXT export","Clipboard copy","Free tool"]} limits="Files up to 10MB" />
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">Extract Text from PDF</h1>
         <p className="text-[var(--muted)]">Extract all text content from any PDF file.</p>

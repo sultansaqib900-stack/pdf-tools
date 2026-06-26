@@ -14,6 +14,9 @@ import { useUsage } from "@/hooks/useUsage";
 import { useToolHistory } from "@/hooks/useToolHistory";
 import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
 
+import HowToJsonLd from "@/components/HowToJsonLd";
+import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
+
 export default function PdfToImagesPage() {
   const usage = useUsage();
   const upsell = usePremiumUpsell();
@@ -114,6 +117,8 @@ export default function PdfToImagesPage() {
         description="Convert PDF pages to images online for free. Extract JPG PNG images from PDF documents in your browser."
         url="https://allaboutpdfediting.xyz/pdf-to-images"
       />
+      <HowToJsonLd name="Convert PDF to Images" description="Extract PDF pages as high-quality JPG or PNG images" steps={[{name:"Upload PDF",text:"Select the PDF to convert to images"},{name:"Choose format",text:"Select JPG or PNG output format"},{name:"Download images",text:"Download individual page images or a ZIP archive"}]} />
+      <AiSummaryJsonLd name="PDF to Images" summary="Convert PDF pages to high-quality JPG or PNG images" category="Graphics" inputType="PDF" outputType="Image" processing="client-side" price="free" features={["Page extraction","JPG PNG output","High quality","ZIP download","Free browser tool"]} limits="Files up to 10MB" />
       <canvas ref={canvasRef} className="hidden" />
 
       <div className="mb-8">

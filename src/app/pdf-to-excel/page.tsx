@@ -14,6 +14,9 @@ import { useUsage } from "@/hooks/useUsage";
 import { useToolHistory } from "@/hooks/useToolHistory";
 import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
 
+import HowToJsonLd from "@/components/HowToJsonLd";
+import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
+
 export default function PdfToExcelPage() {
   const usage = useUsage();
   const upsell = usePremiumUpsell();
@@ -128,6 +131,8 @@ export default function PdfToExcelPage() {
         description="Extract tables from PDF files and convert to CSV online for free. Uses AI to detect and extract tabular data from your documents."
         url="https://allaboutpdfediting.xyz/pdf-to-excel"
       />
+      <HowToJsonLd name="Convert PDF to Excel" description="Extract tables from PDF files to Excel CSV spreadsheets" steps={[{name:"Upload PDF",text:"Select the PDF with tables to extract"},{name:"Review extracted data",text:"Preview the extracted table data"},{name:"Download CSV",text:"Download the extracted data as a spreadsheet file"}]} />
+      <AiSummaryJsonLd name="PDF to Excel" summary="Extract table data from PDF files to Excel CSV format" category="BusinessApplications" inputType="PDF" outputType="CSV" processing="client-side" price="free" features={["Table extraction","CSV export","Data preview","Free tool","Client-side"]} limits="Files up to 10MB" />
       <canvas ref={canvasRef} className="hidden" />
 
       <div className="mb-8">

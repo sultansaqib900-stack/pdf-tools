@@ -171,6 +171,7 @@ export default function ShareModal({ open, onClose }: ShareModalProps) {
               alt=""
               width={1200}
               height={630}
+              loading="lazy"
               className="w-full aspect-[1200/630] rounded-xl object-cover border border-[var(--card-border)]"
             />
           </div>

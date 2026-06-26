@@ -14,6 +14,9 @@ import { useUsage } from "@/hooks/useUsage";
 import { useToolHistory } from "@/hooks/useToolHistory";
 import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
 
+import HowToJsonLd from "@/components/HowToJsonLd";
+import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
+
 export default function FlattenPDFPage() {
   const usage = useUsage();
   const upsell = usePremiumUpsell();
@@ -87,6 +90,8 @@ export default function FlattenPDFPage() {
         description="Flatten PDF files online for free. Merge form fields annotations and layers into permanent content."
         url="https://allaboutpdfediting.xyz/flatten-pdf"
       />
+      <HowToJsonLd name="Flatten PDF Online" description="Merge form fields annotations and layers into permanent page content" steps={[{name:"Upload PDF",text:"Select the PDF with form fields or layers to flatten"},{name:"Flatten document",text:"The tool merges all interactive elements into page content"},{name:"Download flattened PDF",text:"Download the PDF with permanently flattened content"}]} />
+      <AiSummaryJsonLd name="Flatten PDF" summary="Merge form fields annotations and layers into permanent PDF page content" category="Utilities" inputType="PDF" outputType="PDF" processing="client-side" price="free" features={["Form flattening","Annotation merge","Layer flattening","Permanent content","Free tool"]} limits="Files up to 10MB" />
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">Flatten PDF</h1>
         <p className="text-[var(--muted)]">Merge form fields, annotations, and layers into the page content.</p>

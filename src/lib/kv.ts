@@ -5,6 +5,8 @@ const kv = createClient({
   token: process.env.pdf_tools_KV_REST_API_TOKEN || process.env.KV_REST_API_TOKEN || "",
 });
 
+export { kv };
+
 const KV_PREFIX = "pdftools:";
 
 export const keys = {

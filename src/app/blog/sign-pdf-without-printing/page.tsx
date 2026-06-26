@@ -3,7 +3,8 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "How to Sign a PDF Without Printing – Free Online e-Sign Tool",
   description: "Learn how to sign a PDF online free without printing or scanning. Use our browser-based e-sign tool to draw and add your signature in seconds.",
-  openGraph: {
+  alternates: { canonical: "https://allaboutpdfediting.xyz/blog/sign-pdf-without-printing" },
+    openGraph: {
     title: "How to Sign a PDF Without Printing",
     description: "Draw and add your signature to PDFs instantly in your browser. No print, no scan, no upload.",
   },

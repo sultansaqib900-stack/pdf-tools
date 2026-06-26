@@ -15,7 +15,7 @@ export default function LiveStats() {
   return (
     <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
       <div>
-        <div className="text-3xl font-bold text-[var(--foreground)]">21+</div>
+        <div className="text-3xl font-bold text-[var(--foreground)]">29</div>
         <div className="text-sm text-[var(--muted)] mt-1">PDF Tools</div>
       </div>
       <div>

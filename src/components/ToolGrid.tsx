@@ -3,7 +3,7 @@
 import { useState, useMemo } from "react";
 import ToolCard from "@/components/ToolCard";
 
-type Category = "All" | "Edit" | "Convert" | "Security" | "Organize" | "Extract";
+type Category = "All" | "Edit" | "Convert" | "Security" | "Organize" | "Extract" | "Premium";
 
 interface ToolDef {
   title: string;
@@ -43,7 +43,20 @@ const allTools: ToolDef[] = [
   { title: "Add Page Numbers", description: "Insert page numbers at any position.", icon: "🔢", href: "/add-page-numbers", gradient: "bg-gradient-to-br from-cyan-400 to-cyan-600", category: "Extract" },
   { title: "Metadata Editor", description: "View and edit PDF title, author, subject.", icon: "📋", href: "/metadata", gradient: "bg-gradient-to-br from-indigo-400 to-indigo-600", category: "Extract" },
   { title: "Rotate PDF", description: "Rotate pages by 90, 180, or 270 degrees.", icon: "🔄", href: "/rotate", gradient: "bg-gradient-to-br from-red-400 to-red-600", category: "Edit" },
-  { title: "Batch Process", description: "Process multiple PDFs at once.", icon: "⚙️", href: "/batch", gradient: "bg-gradient-to-br from-slate-400 to-slate-600", category: "Edit" },
+  { title: "Batch Process", description: "Process multiple PDFs at once (Premium).", icon: "⚙️", href: "/batch", gradient: "bg-gradient-to-br from-slate-400 to-slate-600", category: "Premium" },
+  { title: "PDF Diff", description: "Compare two PDFs side by side — see changes.", icon: "🔍", href: "/pdf-diff", gradient: "bg-gradient-to-br from-teal-400 to-cyan-600", category: "Premium" },
+  { title: "Certificate Generator", description: "Bulk-generate personalized PDF certificates.", icon: "🏆", href: "/certificate-generator", gradient: "bg-gradient-to-br from-purple-500 to-indigo-700", category: "Premium" },
+  { title: "PDF to Audio", description: "Listen to PDFs with text-to-speech.", icon: "🎧", href: "/pdf-to-audio", gradient: "bg-gradient-to-br from-rose-400 to-pink-600", category: "Premium" },
+  { title: "Form Data Extract", description: "Extract PDF form data to CSV.", icon: "📊", href: "/form-data-extract", gradient: "bg-gradient-to-br from-emerald-500 to-teal-700", category: "Premium" },
+  { title: "Bulk Rename", description: "Rename PDFs by title, author, or metadata.", icon: "🏷️", href: "/bulk-rename", gradient: "bg-gradient-to-br from-blue-400 to-indigo-600", category: "Premium" },
+  { title: "Booklet Creator", description: "Create N-up booklets for printing.", icon: "📖", href: "/booklet", gradient: "bg-gradient-to-br from-orange-400 to-red-600", category: "Premium" },
+  { title: "Search & Redact", description: "Auto-redact words across entire document.", icon: "⬛", href: "/search-redact", gradient: "bg-gradient-to-br from-slate-600 to-gray-900", category: "Premium" },
+  { title: "Color Inverter", description: "Invert, grayscale, or boost contrast.", icon: "🎨", href: "/pdf-inverter", gradient: "bg-gradient-to-br from-violet-400 to-purple-600", category: "Premium" },
+  { title: "PDF Vault", description: "Encrypted browser document storage.", icon: "🔐", href: "/vault", gradient: "bg-gradient-to-br from-cyan-400 to-blue-600", category: "Premium" },
+  { title: "QR Code Stamp", description: "Add QR codes to every PDF page.", icon: "📱", href: "/qr-stamp", gradient: "bg-gradient-to-br from-green-500 to-emerald-700", category: "Premium" },
+  { title: "Metadata Sanitizer", description: "Strip all hidden metadata from PDFs.", icon: "🧹", href: "/metadata-sanitizer", gradient: "bg-gradient-to-br from-yellow-500 to-orange-700", category: "Premium" },
+  { title: "Split by Bookmarks", description: "Extract chapters from PDF outline/bookmarks.", icon: "📑", href: "/split-by-bookmarks", gradient: "bg-gradient-to-br from-fuchsia-400 to-pink-600", category: "Premium" },
+  { title: "Bates Numbering", description: "Add sequential page numbers to every page.", icon: "🔢", href: "/bates-numbering", gradient: "bg-gradient-to-br from-amber-400 to-yellow-600", category: "Premium" },
 ];
 
 const categories: { key: Category; label: string; color: string }[] = [
@@ -53,7 +66,10 @@ const categories: { key: Category; label: string; color: string }[] = [
   { key: "Security", label: "Security", color: "bg-violet-500" },
   { key: "Organize", label: "Organize", color: "bg-fuchsia-500" },
   { key: "Extract", label: "Extract", color: "bg-teal-500" },
-];export default function ToolGrid() {
+  { key: "Premium", label: "Premium ⭐", color: "bg-gradient-to-r from-amber-500 to-orange-600" },
+];
+
+export default function ToolGrid() {
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState<Category>("All");
 

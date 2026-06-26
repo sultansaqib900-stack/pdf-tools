@@ -3,7 +3,8 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Chat with PDF – Free AI PDF Assistant Online | PDFTools",
   description: "Chat with any PDF document using AI. Upload a PDF and ask questions about its content. Free daily limit, no signup, all in your browser.",
-  openGraph: {
+  alternates: { canonical: "https://allaboutpdfediting.xyz/blog/chat-with-pdf-ai" },
+    openGraph: {
     title: "Chat with PDF – Free AI PDF Assistant",
     description: "Upload any PDF and ask AI questions about its content. Free daily limit, no signup needed.",
   },

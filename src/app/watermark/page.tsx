@@ -14,6 +14,9 @@ import SuccessAnimation from "@/components/SuccessAnimation";
 import ErrorBanner from "@/components/ErrorBanner";
 import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
 
+import HowToJsonLd from "@/components/HowToJsonLd";
+import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
+
 export default function WatermarkPage() {
   const usage = useUsage();
   const upsell = usePremiumUpsell();
@@ -108,6 +111,8 @@ export default function WatermarkPage() {
         description="Add watermark to PDF files online for free. Add text watermarks to protect your documents."
         url="https://allaboutpdfediting.xyz/watermark"
       />
+      <HowToJsonLd name="Add Watermark to PDF" description="Add text or image watermarks to every page of a PDF" steps={[{name:"Upload PDF",text:"Select the PDF to watermark"},{name:"Customize watermark",text:"Enter text adjust opacity size and position"},{name:"Download watermarked PDF",text:"Download the PDF with watermarks applied"}]} />
+      <AiSummaryJsonLd name="Watermark PDF" summary="Add custom text watermarks to every page of PDF documents" category="Graphics" inputType="PDF" outputType="PDF" processing="client-side" price="free" features={["Text watermark","Opacity control","Position selection","Batch watermarking","Free tool"]} limits="Files up to 10MB" />
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">Add Watermark to PDF</h1>
         <p className="text-[var(--muted)]">Add text watermarks to every page of your PDF.</p>

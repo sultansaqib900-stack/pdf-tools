@@ -9,6 +9,9 @@ import { isPremium, getClientId } from "@/lib/premium";
 import { useUsage } from "@/hooks/useUsage";
 import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
 
+import HowToJsonLd from "@/components/HowToJsonLd";
+import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
+
 interface Message {
   role: "user" | "assistant";
   text: string;
@@ -214,6 +217,8 @@ export default function ChatPDFPage() {
         description="Upload a PDF and ask AI questions about its content. Free daily limit, no signup required."
         url="https://allaboutpdfediting.xyz/chat-pdf"
       />
+      <HowToJsonLd name="Chat with PDF AI" description="Upload a PDF and ask AI questions about its content" steps={[{name:"Upload PDF",text:"Select a PDF document to analyze"},{name:"Ask questions",text:"Type questions about the content in natural language"},{name:"Get answers",text:"Receive AI-generated answers based on the document content"}]} />
+      <AiSummaryJsonLd name="Chat with PDF" summary="Upload a PDF document and ask AI-powered questions about its content" category="AIApplications" inputType="PDF" outputType="Answers" processing="server-side" price="free" features={["AI-powered QandA","Natural language","Document analysis","Free daily limit","No signup"]} limits="Free daily limit" />
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">Chat with PDF</h1>
         <p className="text-[var(--muted)]">Upload a PDF and ask questions about its content using AI.</p>

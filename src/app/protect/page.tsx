@@ -14,6 +14,9 @@ import SuccessAnimation from "@/components/SuccessAnimation";
 import ErrorBanner from "@/components/ErrorBanner";
 import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
 
+import HowToJsonLd from "@/components/HowToJsonLd";
+import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
+
 export default function ProtectPage() {
   const usage = useUsage();
   const upsell = usePremiumUpsell();
@@ -89,6 +92,8 @@ export default function ProtectPage() {
         description="Password protect PDF files online for free. Encrypt your PDF documents with a secure password."
         url="https://allaboutpdfediting.xyz/protect"
       />
+      <HowToJsonLd name="Password Protect PDF" description="Add password protection to encrypt PDF files" steps={[{name:"Upload PDF",text:"Select the PDF file to protect"},{name:"Set password",text:"Enter a strong password for encryption"},{name:"Download protected PDF",text:"Download your password-encrypted PDF document"}]} />
+      <AiSummaryJsonLd name="Password Protect PDF" summary="Encrypt PDF files with password protection to prevent unauthorized access" category="SecurityApplications" inputType="PDF" outputType="PDF" processing="client-side" price="free" features={["Password encryption","AES security","User password","Owner password","Client-side only"]} limits="Files up to 10MB" />
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">Password Protect PDF</h1>
         <p className="text-[var(--muted)]">Encrypt your PDF with a password to prevent unauthorized access.</p>

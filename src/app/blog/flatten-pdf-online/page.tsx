@@ -3,7 +3,8 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "How to Flatten a PDF Online Free – Merge Layers & Forms | PDFTools",
   description: "Flatten PDF files online for free. Merge form fields, annotations, and layers into permanent page content. No uploads, 100% private, all in your browser.",
-  openGraph: {
+  alternates: { canonical: "https://allaboutpdfediting.xyz/blog/flatten-pdf-online" },
+    openGraph: {
     title: "How to Flatten a PDF Online Free – No Software Needed",
     description: "Merge form fields, annotations, and layers into permanent page content. 100% free, no uploads, no signup.",
   },

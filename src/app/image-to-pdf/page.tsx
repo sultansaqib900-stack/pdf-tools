@@ -14,6 +14,9 @@ import { useUsage } from "@/hooks/useUsage";
 import { useToolHistory } from "@/hooks/useToolHistory";
 import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
 
+import HowToJsonLd from "@/components/HowToJsonLd";
+import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
+
 export default function ImageToPdfPage() {
   const usage = useUsage();
   const upsell = usePremiumUpsell();
@@ -113,6 +116,8 @@ export default function ImageToPdfPage() {
         description="Convert images to PDF online for free. Turn JPG, PNG, and other image formats into PDF documents instantly."
         url="https://allaboutpdfediting.xyz/image-to-pdf"
       />
+      <HowToJsonLd name="Convert Image to PDF" description="Convert JPG PNG and other images to PDF documents" steps={[{name:"Upload images",text:"Select one or more images JPG PNG BMP WebP"},{name:"Arrange order",text:"Drag to reorder images as needed"},{name:"Download PDF",text:"Download your images combined into a PDF"}]} />
+      <AiSummaryJsonLd name="Image to PDF" summary="Convert images JPG PNG BMP to PDF documents with customizable page layout" category="Graphics" inputType="Image" outputType="PDF" processing="client-side" price="free" features={["Image to PDF conversion","Multi-image support","Page orientation","Free online tool","Client-side only"]} limits="Files up to 10MB" />
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">Image to PDF</h1>
         <p className="text-[var(--muted)]">Convert JPG, PNG, and other images into a single PDF.</p>

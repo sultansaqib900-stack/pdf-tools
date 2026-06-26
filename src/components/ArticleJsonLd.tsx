@@ -15,11 +15,16 @@ export default function ArticleJsonLd({ title, description, url, image, datePubl
     headline: title,
     description,
     url,
-    ...(image ? { image } : {}),
+    image: image || "https://allaboutpdfediting.xyz/opengraph-image.png",
     datePublished,
     dateModified: dateModified || datePublished,
     author: { "@type": "Person", name: authorName || "Saqib" },
-    publisher: { "@type": "Organization", name: "PDFTools", url: "https://allaboutpdfediting.xyz" },
+    publisher: {
+      "@type": "Organization",
+      name: "PDFTools",
+      url: "https://allaboutpdfediting.xyz",
+      logo: { "@type": "ImageObject", url: "https://allaboutpdfediting.xyz/opengraph-image.png" },
+    },
     mainEntityOfPage: { "@type": "WebPage", "@id": url },
   };
 

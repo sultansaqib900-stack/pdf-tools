@@ -13,6 +13,9 @@ import { isPremium, checkFileSize } from "@/lib/premium";
 import { useUsage } from "@/hooks/useUsage";
 import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
 
+import HowToJsonLd from "@/components/HowToJsonLd";
+import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
+
 interface Rect {
   id: string;
   x: number;
@@ -257,6 +260,8 @@ export default function RedactPage() {
         description="Permanently black out sensitive text and areas in your PDF documents. 100% private, no uploads."
         url="https://allaboutpdfediting.xyz/redact"
       />
+      <HowToJsonLd name="Redact PDF Online" description="Permanently black out sensitive content in PDF files" steps={[{name:"Upload PDF",text:"Select the PDF with content to redact"},{name:"Select areas to redact",text:"Draw black boxes over sensitive text and images"},{name:"Download redacted PDF",text:"Download the PDF with permanently removed content"}]} />
+      <AiSummaryJsonLd name="Redact PDF" summary="Permanently black out sensitive text images and areas in PDF documents" category="SecurityApplications" inputType="PDF" outputType="PDF" processing="client-side" price="free" features={["Area redaction","Text blackout","Permanent removal","Client-side","No server uploads"]} limits="Files up to 10MB" />
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">Redact PDF</h1>
         <p className="text-[var(--muted)]">Permanently black out sensitive information — text, numbers, or images.</p>

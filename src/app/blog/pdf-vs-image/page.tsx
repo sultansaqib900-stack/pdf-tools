@@ -3,7 +3,8 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "PDF vs Image – When to Use Each Format for Your Documents",
   description: "Understanding when to use PDF vs image formats like JPG and PNG. Learn how to convert between formats with our free online tools.",
-  openGraph: {
+  alternates: { canonical: "https://allaboutpdfediting.xyz/blog/pdf-vs-image" },
+    openGraph: {
     title: "PDF vs Image – Which Format Should You Use?",
     description: "PDF or JPG? Learn the difference and when to use each format for your documents.",
   },

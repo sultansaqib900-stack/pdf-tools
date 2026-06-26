@@ -14,6 +14,9 @@ import { useUsage } from "@/hooks/useUsage";
 import { useToolHistory } from "@/hooks/useToolHistory";
 import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
 
+import HowToJsonLd from "@/components/HowToJsonLd";
+import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
+
 export default function InsertBlankPage() {
   const usage = useUsage();
   const upsell = usePremiumUpsell();
@@ -154,6 +157,8 @@ export default function InsertBlankPage() {
         description="Add blank pages to any PDF file. Insert empty pages at the end of your document for free."
         url="https://allaboutpdfediting.xyz/insert-blank"
       />
+      <HowToJsonLd name="Insert Blank Pages in PDF" description="Add empty pages to any PDF document at specific positions" steps={[{name:"Upload PDF",text:"Select the PDF to add blank pages to"},{name:"Set position and count",text:"Choose where to insert blank pages and how many"},{name:"Download updated PDF",text:"Download the PDF with blank pages inserted"}]} />
+      <AiSummaryJsonLd name="Insert Blank Pages" summary="Add empty blank pages to PDF documents at any position" category="Utilities" inputType="PDF" outputType="PDF" processing="client-side" price="free" features={["Blank page insertion","Position control","Multiple pages","Free online tool","Client-side"]} limits="Files up to 10MB" />
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">Insert Blank Pages</h1>
         <p className="text-[var(--muted)]">Add blank pages anywhere in your PDF document.</p>

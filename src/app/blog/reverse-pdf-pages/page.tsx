@@ -3,7 +3,8 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "How to Reverse PDF Pages Online Free – Flip Page Order Instantly | PDFTools",
   description: "Reverse PDF page order online for free. Flip the entire page sequence of any PDF — last page becomes first. No uploads, 100% private, all in your browser.",
-  openGraph: {
+  alternates: { canonical: "https://allaboutpdfediting.xyz/blog/reverse-pdf-pages" },
+    openGraph: {
     title: "How to Reverse PDF Pages Online Free – Flip Page Order",
     description: "Reverse the entire page sequence of any PDF instantly. 100% free, no uploads, no signup.",
   },

@@ -14,6 +14,9 @@ import { useUsage } from "@/hooks/useUsage";
 import { useToolHistory } from "@/hooks/useToolHistory";
 import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
 
+import HowToJsonLd from "@/components/HowToJsonLd";
+import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
+
 export default function WordCounterPage() {
   const usage = useUsage();
   const upsell = usePremiumUpsell();
@@ -79,6 +82,8 @@ export default function WordCounterPage() {
         description="Count words, characters, and pages in any PDF file. Free online PDF word counter."
         url="https://allaboutpdfediting.xyz/word-counter"
       />
+      <HowToJsonLd name="PDF Word Counter" description="Count words characters pages in PDF documents" steps={[{name:"Upload PDF",text:"Select the PDF to analyze"},{name:"View statistics",text:"See word count character count and page count"},{name:"Copy results",text:"Copy statistics to clipboard for reporting"}]} />
+      <AiSummaryJsonLd name="Word Counter" summary="Count words characters pages and paragraphs in PDF documents" category="Utilities" inputType="PDF" outputType="Statistics" processing="client-side" price="free" features={["Word count","Character count","Page count","Paragraph count","Free tool"]} limits="Files up to 10MB" />
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">PDF Word Counter</h1>
         <p className="text-[var(--muted)]">Count words, characters, and pages in any PDF document.</p>

@@ -14,6 +14,9 @@ import { useUsage } from "@/hooks/useUsage";
 import { useToolHistory } from "@/hooks/useToolHistory";
 import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
 
+import HowToJsonLd from "@/components/HowToJsonLd";
+import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
+
 export default function ReversePDFPage() {
   const usage = useUsage();
   const upsell = usePremiumUpsell();
@@ -92,6 +95,8 @@ export default function ReversePDFPage() {
         description="Reverse PDF page order online for free. Flip the entire page sequence of any PDF instantly."
         url="https://allaboutpdfediting.xyz/reverse-pdf"
       />
+      <HowToJsonLd name="Reverse PDF Page Order" description="Flip the entire page sequence of any PDF document" steps={[{name:"Upload PDF",text:"Select the PDF to reverse"},{name:"Reverse pages",text:"The tool reverses the entire page order"},{name:"Download reversed PDF",text:"Download the PDF with pages in reversed order"}]} />
+      <AiSummaryJsonLd name="Reverse PDF Order" summary="Reverse the complete page sequence of PDF documents" category="Utilities" inputType="PDF" outputType="PDF" processing="client-side" price="free" features={["Page reversal","Full document","Quick processing","Free tool","Client-side"]} limits="Files up to 10MB" />
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">Reverse PDF Order</h1>
         <p className="text-[var(--muted)]">Flip the page order of any PDF file completely.</p>

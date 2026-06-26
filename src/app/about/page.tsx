@@ -14,7 +14,7 @@ export default function AboutPage() {
         <div className="bg-[var(--card)] border border-[var(--card-border)] rounded-xl p-5">
           <p className="font-semibold text-[var(--foreground)] mb-2">The Mission</p>
           <p>
-            Make professional PDF editing free and private for everyone. <strong>25+ tools</strong>,
+            Make professional PDF editing free and private for everyone. <strong>29 tools</strong>,
             no signups, no uploads, no hidden costs. Everything runs in your browser and respects
             your privacy.
           </p>
@@ -31,7 +31,7 @@ export default function AboutPage() {
 
         <h2 className="text-lg font-semibold text-[var(--foreground)] pt-2">What We Offer</h2>
         <ul className="list-disc pl-5 space-y-1.5 text-sm">
-          <li><strong>25+ free PDF tools</strong> — Compress, merge, split, convert, edit, sign, protect, and more</li>
+          <li><strong>29 free PDF tools</strong> — Compress, merge, split, convert, edit, sign, protect, and more</li>
           <li><strong>AI Chat with PDF</strong> — Upload any PDF and ask AI questions about its content</li>
           <li><strong>AI OCR</strong> — Extract text from scanned/image-based PDFs using AI vision</li>
           <li><strong>Premium subscription</strong> — Unlimited usage, no ads, larger files, batch processing</li>

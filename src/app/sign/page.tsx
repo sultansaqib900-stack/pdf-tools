@@ -14,6 +14,9 @@ import SuccessAnimation from "@/components/SuccessAnimation";
 import ErrorBanner from "@/components/ErrorBanner";
 import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
 
+import HowToJsonLd from "@/components/HowToJsonLd";
+import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
+
 export default function SignPage() {
   const usage = useUsage();
   const upsell = usePremiumUpsell();
@@ -158,6 +161,8 @@ export default function SignPage() {
         description="Sign PDF documents online for free. Draw your signature and add it to any PDF in your browser."
         url="https://allaboutpdfediting.xyz/sign"
       />
+      <HowToJsonLd name="Sign PDF Online" description="Add electronic signatures to PDF documents" steps={[{name:"Upload PDF",text:"Select the PDF document to sign"},{name:"Draw signature",text:"Draw type or upload your signature"},{name:"Place and download",text:"Position your signature and download the signed PDF"}]} />
+      <AiSummaryJsonLd name="Sign PDF" summary="Add electronic signatures to PDF documents by drawing typing or uploading" category="BusinessApplications" inputType="PDF" outputType="PDF" processing="client-side" price="free" features={["Draw signature","Type signature","Upload signature","Position placement","Free e-sign tool"]} limits="Files up to 10MB" />
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">e-Sign PDF</h1>
         <p className="text-[var(--muted)]">Draw your signature and place it on your PDF document.</p>

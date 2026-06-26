@@ -3,7 +3,8 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "How to Fill PDF Forms Online Free – Complete Forms Instantly | PDFTools",
   description: "Fill PDF forms online free without Adobe Acrobat. Complete text fields, checkboxes, dropdowns instantly in your browser. 100% private, no uploads.",
-  openGraph: {
+  alternates: { canonical: "https://allaboutpdfediting.xyz/blog/fill-pdf-forms-online" },
+    openGraph: {
     title: "How to Fill PDF Forms Online Free – No Software Needed",
     description: "Complete PDF forms instantly in your browser. Text fields, checkboxes, dropdowns — all free, no uploads, no signup.",
   },

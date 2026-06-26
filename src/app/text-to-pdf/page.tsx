@@ -14,6 +14,9 @@ import { useUsage } from "@/hooks/useUsage";
 import { useToolHistory } from "@/hooks/useToolHistory";
 import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
 
+import HowToJsonLd from "@/components/HowToJsonLd";
+import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
+
 export default function TextToPdfPage() {
   const usage = useUsage();
   const upsell = usePremiumUpsell();
@@ -102,6 +105,8 @@ export default function TextToPdfPage() {
         description="Convert plain text to PDF online for free. Create PDF documents from text in your browser."
         url="https://allaboutpdfediting.xyz/text-to-pdf"
       />
+      <HowToJsonLd name="Convert Text to PDF" description="Convert plain text to formatted PDF documents" steps={[{name:"Enter or paste text",text:"Type or paste your text content"},{name:"Choose formatting",text:"Select font size and page layout"},{name:"Download PDF",text:"Download your text as a formatted PDF document"}]} />
+      <AiSummaryJsonLd name="Text to PDF" summary="Convert plain text content into formatted PDF documents" category="Utilities" inputType="Text" outputType="PDF" processing="client-side" price="free" features={["Text conversion","Font selection","Page formatting","Free online tool","Client-side"]} limits="Files up to 10MB" />
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">Text to PDF</h1>
         <p className="text-[var(--muted)]">Convert plain text into a downloadable PDF document instantly.</p>

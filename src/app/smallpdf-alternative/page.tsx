@@ -26,7 +26,7 @@ export default function SmallPDFAltPage() {
             <li className="flex items-center gap-2"><span className="text-red-500">✗</span> Requires signup for more</li>
             <li className="flex items-center gap-2"><span className="text-red-500">✗</span> Paid: $12/month</li>
             <li className="flex items-center gap-2"><span className="text-red-500">✗</span> Limited free tools</li>
-            <li className="flex items-center gap-2"><span className="text-amber-500">~</span> 25+ tools</li>
+            <li className="flex items-center gap-2"><span className="text-amber-500">~</span> 29 tools</li>
           </ul>
         </div>
         <div className="bg-indigo-50 dark:bg-indigo-950/20 border-2 border-indigo-500 rounded-xl p-6 relative">

@@ -14,6 +14,9 @@ import { useUsage } from "@/hooks/useUsage";
 import { useToolHistory } from "@/hooks/useToolHistory";
 import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
 
+import HowToJsonLd from "@/components/HowToJsonLd";
+import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
+
 const sizes: { label: string; w: number; h: number }[] = [
   { label: "A4 (210×297 mm)", w: 595.28, h: 841.89 },
   { label: "Letter (8.5×11 in)", w: 612, h: 792 },
@@ -127,6 +130,8 @@ export default function ResizePage() {
         description="Change PDF page size online for free. Choose A4 Letter Legal or custom dimensions."
         url="https://allaboutpdfediting.xyz/resize"
       />
+      <HowToJsonLd name="Resize PDF Pages" description="Change PDF page size to A4 Letter Legal or custom dimensions" steps={[{name:"Upload PDF",text:"Select the PDF to resize"},{name:"Choose page size",text:"Select A4 Letter Legal or enter custom dimensions"},{name:"Download resized PDF",text:"Download the PDF with new page dimensions"}]} />
+      <AiSummaryJsonLd name="Resize PDF" summary="Change PDF page dimensions to standard sizes like A4 Letter Legal or custom" category="Utilities" inputType="PDF" outputType="PDF" processing="client-side" price="free" features={["Page resizing","A4 Letter Legal","Custom dimensions","Free browser tool","Client-side"]} limits="Files up to 10MB" />
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">Resize PDF Pages</h1>
         <p className="text-[var(--muted)]">Change the page size of your PDF document. Choose a preset or set custom dimensions.</p>

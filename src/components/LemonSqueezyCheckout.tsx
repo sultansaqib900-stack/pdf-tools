@@ -1,13 +1,15 @@
 "use client";
 
 import { useState } from "react";
-import { LS_CONFIG } from "@/lib/lemonsqueezy";
+import { LS_CONFIG, buildCheckoutUrl } from "@/lib/lemonsqueezy";
+import { getClientId } from "@/lib/premium";
 
 interface LemonSqueezyCheckoutProps {
   checkoutUrl: string;
   label: string;
   variant?: "primary" | "secondary";
   disabled?: boolean;
+  planKey?: "monthly" | "yearly";
 }
 
 export default function LemonSqueezyCheckout({
@@ -15,10 +17,11 @@ export default function LemonSqueezyCheckout({
   label,
   variant = "primary",
   disabled = false,
+  planKey,
 }: LemonSqueezyCheckoutProps) {
   const [loading, setLoading] = useState(false);
 
-  const handleCheckout = () => {
+  const handleCheckout = async () => {
     if (!LS_CONFIG.enabled) {
       alert(
         "Payments are not configured yet.\n\n" +
@@ -32,8 +35,31 @@ export default function LemonSqueezyCheckout({
     }
 
     setLoading(true);
-    window.open(checkoutUrl, "_blank");
-    setLoading(false);
+
+    try {
+      const clientId = getClientId();
+      let url = checkoutUrl;
+
+      if (planKey && clientId) {
+        try {
+          const res = await fetch("/api/premium/init-checkout", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ clientId, plan: planKey }),
+          });
+          const data = await res.json();
+          if (data.ok && data.nonce) {
+            url = buildCheckoutUrl(planKey, data.nonce);
+          }
+        } catch {
+          // fall back to the static checkout URL
+        }
+      }
+
+      window.open(url, "_blank");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const baseClass =

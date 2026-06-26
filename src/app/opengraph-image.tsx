@@ -79,7 +79,7 @@ export default function OpenGraphImage() {
             lineHeight: 1.4,
           }}
         >
-          25+ Free PDF Tools &bull; AI Chat with PDF &bull; 100% Private — No Uploads
+          29 Free PDF Tools &bull; AI Chat with PDF &bull; 100% Private — No Uploads
         </p>
         <div
           style={{

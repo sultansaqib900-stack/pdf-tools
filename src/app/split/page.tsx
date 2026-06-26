@@ -14,6 +14,9 @@ import { useUsage } from "@/hooks/useUsage";
 import { useToolHistory } from "@/hooks/useToolHistory";
 import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
 
+import HowToJsonLd from "@/components/HowToJsonLd";
+import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
+
 export default function SplitPage() {
   const usage = useUsage();
   const upsell = usePremiumUpsell();
@@ -118,6 +121,8 @@ export default function SplitPage() {
         description="Split PDF files online for free. Extract pages from PDF documents instantly in your browser. No uploads."
         url="https://allaboutpdfediting.xyz/split"
       />
+      <HowToJsonLd name="Split PDF Pages Online" description="Separate PDF pages into multiple files or extract specific pages" steps={[{name:"Upload PDF",text:"Select the PDF file to split"},{name:"Choose split method",text:"Select page ranges or split every page"},{name:"Download split files",text:"Download the individual PDF files"}]} />
+      <AiSummaryJsonLd name="Split PDF" summary="Separate PDF pages into multiple documents or extract specific page ranges" category="Utilities" inputType="PDF" outputType="PDF" processing="client-side" price="free" features={["Page range extraction","Split every page","Multiple output files","Client-side processing","Free"]} limits="Files up to 10MB" />
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">Split PDF</h1>
         <p className="text-[var(--muted)]">Extract pages or split into separate files.</p>

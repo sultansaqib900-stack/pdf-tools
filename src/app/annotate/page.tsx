@@ -14,6 +14,9 @@ import { useUsage } from "@/hooks/useUsage";
 import { useToolHistory } from "@/hooks/useToolHistory";
 import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
 
+import HowToJsonLd from "@/components/HowToJsonLd";
+import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
+
 type AnnotateMode = "highlight" | "underline" | "strikethrough";
 
 interface Rect {
@@ -346,6 +349,8 @@ export default function AnnotatePage() {
         description="Highlight, underline, and strikethrough text in PDF files. Free online PDF annotation tool."
         url="https://allaboutpdfediting.xyz/annotate"
       />
+      <HowToJsonLd name="Annotate PDF Online" description="Highlight underline strikethrough and add comments to PDFs" steps={[{name:"Upload PDF",text:"Select the PDF document to annotate"},{name:"Add annotations",text:"Highlight text underline or strikethrough content"},{name:"Download annotated PDF",text:"Download the PDF with your annotations saved"}]} />
+      <AiSummaryJsonLd name="Annotate PDF" summary="Add highlights underlines strikethroughs and comments to PDF documents" category="Graphics" inputType="PDF" outputType="PDF" processing="client-side" price="free" features={["Highlight text","Underline text","Strikethrough","Comment notes","Free browser tool"]} limits="Files up to 10MB" />
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">Annotate PDF</h1>
         <p className="text-[var(--muted)]">Highlight, underline, or strikethrough text in your PDF documents.</p>

@@ -15,6 +15,9 @@ import { useToolHistory } from "@/hooks/useToolHistory";
 import BeforeAfterPreview from "@/components/BeforeAfterPreview";
 import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
 
+import HowToJsonLd from "@/components/HowToJsonLd";
+import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
+
 export default function CropPage() {
   const usage = useUsage();
   const upsell = usePremiumUpsell();
@@ -112,6 +115,8 @@ export default function CropPage() {
         description="Crop PDF pages online for free. Remove unwanted margins and whitespace from your documents."
         url="https://allaboutpdfediting.xyz/crop"
       />
+      <HowToJsonLd name="Crop PDF Online" description="Remove unwanted margins and whitespace from PDF pages" steps={[{name:"Upload PDF",text:"Select the PDF to crop"},{name:"Set margins",text:"Adjust crop margins for each side of the page"},{name:"Download cropped PDF",text:"Download the PDF with trimmed page content"}]} />
+      <AiSummaryJsonLd name="Crop PDF" summary="Remove unwanted margins and whitespace from PDF pages" category="Utilities" inputType="PDF" outputType="PDF" processing="client-side" price="free" features={["Margin cropping","Whitespace removal","Page trimming","Free online tool","Client-side"]} limits="Files up to 10MB" />
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">Crop PDF Margins</h1>
         <p className="text-[var(--muted)]">Remove unwanted whitespace margins from your PDF pages.</p>

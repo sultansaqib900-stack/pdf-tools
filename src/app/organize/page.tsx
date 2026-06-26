@@ -14,6 +14,9 @@ import { useUsage } from "@/hooks/useUsage";
 import { useToolHistory } from "@/hooks/useToolHistory";
 import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
 
+import HowToJsonLd from "@/components/HowToJsonLd";
+import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
+
 export default function OrganizePage() {
   const usage = useUsage();
   const upsell = usePremiumUpsell();
@@ -137,6 +140,8 @@ export default function OrganizePage() {
         description="Reorder PDF pages online for free. Drag and drop to arrange pages. No uploads required."
         url="https://allaboutpdfediting.xyz/organize"
       />
+      <HowToJsonLd name="Organize PDF Pages" description="Reorder drag-and-drop rearrange pages in PDF documents" steps={[{name:"Upload PDF",text:"Select the PDF to reorganize"},{name:"Drag to reorder",text:"Drag and drop page thumbnails to rearrange"},{name:"Download organized PDF",text:"Download the PDF with reorganized page order"}]} />
+      <AiSummaryJsonLd name="Organize PDF" summary="Reorder pages in PDF documents with drag-and-drop interface" category="Utilities" inputType="PDF" outputType="PDF" processing="client-side" price="free" features={["Page reordering","Drag-and-drop","Thumbnail preview","Free tool","Client-side"]} limits="Files up to 10MB" />
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">Organize PDF Pages</h1>
         <p className="text-[var(--muted)]">Reorder, sort, and rearrange pages in your PDF document.</p>

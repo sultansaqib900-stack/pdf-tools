@@ -14,6 +14,9 @@ import { useUsage } from "@/hooks/useUsage";
 import { useToolHistory } from "@/hooks/useToolHistory";
 import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
 
+import HowToJsonLd from "@/components/HowToJsonLd";
+import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
+
 export default function MetadataPage() {
   const usage = useUsage();
   const upsell = usePremiumUpsell();
@@ -105,6 +108,8 @@ export default function MetadataPage() {
         description="View and edit PDF document properties like title author and keywords online for free."
         url="https://allaboutpdfediting.xyz/metadata"
       />
+      <HowToJsonLd name="Edit PDF Metadata" description="View and edit PDF document properties title author subject keywords" steps={[{name:"Upload PDF",text:"Select the PDF to edit metadata"},{name:"Edit properties",text:"Update title author subject and keywords"},{name:"Download updated PDF",text:"Download the PDF with new metadata"}]} />
+      <AiSummaryJsonLd name="Metadata Editor" summary="View and edit PDF document properties including title author subject and keywords" category="Utilities" inputType="PDF" outputType="PDF" processing="client-side" price="free" features={["Title editing","Author editing","Subject editing","Keyword editing","Free tool"]} limits="Files up to 10MB" />
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">PDF Metadata Editor</h1>
         <p className="text-[var(--muted)]">View and edit PDF metadata like title, author, subject, and keywords.</p>

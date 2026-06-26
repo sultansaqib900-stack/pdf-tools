@@ -14,6 +14,9 @@ import { useUsage } from "@/hooks/useUsage";
 import { useToolHistory } from "@/hooks/useToolHistory";
 import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
 
+import HowToJsonLd from "@/components/HowToJsonLd";
+import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
+
 export default function RotatePage() {
   const usage = useUsage();
   const upsell = usePremiumUpsell();
@@ -96,6 +99,8 @@ export default function RotatePage() {
         description="Rotate PDF pages online for free. Change page orientation to portrait or landscape in your browser."
         url="https://allaboutpdfediting.xyz/rotate"
       />
+      <HowToJsonLd name="Rotate PDF Pages" description="Rotate PDF pages by 90 180 or 270 degrees" steps={[{name:"Upload PDF",text:"Select the PDF with pages to rotate"},{name:"Select rotation",text:"Choose 90 180 or 270 degree rotation"},{name:"Download rotated PDF",text:"Download the PDF with corrected page orientation"}]} />
+      <AiSummaryJsonLd name="Rotate PDF" summary="Rotate PDF pages by 90 180 or 270 degrees to fix orientation issues" category="Utilities" inputType="PDF" outputType="PDF" processing="client-side" price="free" features={["Page rotation","90 180 270 degrees","Orientation fix","Free online tool","Client-side only"]} limits="Files up to 10MB" />
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">Rotate PDF</h1>
         <p className="text-[var(--muted)]">Rotate all pages in a PDF by 90, 180, or 270 degrees.</p>

@@ -20,12 +20,7 @@ let _isPremiumVal: boolean | undefined;
 export function isPremium(): boolean {
   if (typeof window === "undefined") return false;
   if (_isPremiumVal === undefined) {
-    // Defer localStorage read to avoid hydration mismatch (server vs client)
-    _isPremiumVal = false;
-    setTimeout(() => {
-      _isPremiumVal = localStorage.getItem(STORAGE_KEY) === "true";
-    }, 0);
-    return false;
+    _isPremiumVal = localStorage.getItem(STORAGE_KEY) === "true";
   }
   return _isPremiumVal;
 }
@@ -33,6 +28,7 @@ export function isPremium(): boolean {
 export function setPremium(value: boolean): void {
   if (typeof window === "undefined") return;
   localStorage.setItem(STORAGE_KEY, value ? "true" : "false");
+  _isPremiumVal = value;
 }
 
 export async function verifyPremiumServer(): Promise<boolean> {
@@ -48,13 +44,13 @@ export async function verifyPremiumServer(): Promise<boolean> {
   }
 }
 
-export async function confirmPremium(): Promise<boolean> {
+export async function confirmPremium(nonce?: string): Promise<boolean> {
   const clientId = getClientId();
   try {
     const res = await fetch("/api/premium/confirm", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ clientId }),
+      body: JSON.stringify({ clientId, nonce }),
     });
     const data = await res.json();
     if (data.premium) setPremium(true);
@@ -62,6 +58,22 @@ export async function confirmPremium(): Promise<boolean> {
   } catch {
     setPremium(true);
     return true;
+  }
+}
+
+export async function claimPremium(email: string): Promise<boolean> {
+  const clientId = getClientId();
+  try {
+    const res = await fetch("/api/premium/claim", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email: email.trim(), clientId }),
+    });
+    const data = await res.json();
+    if (data.premium) setPremium(true);
+    return data.premium;
+  } catch {
+    return false;
   }
 }
 
@@ -91,7 +103,7 @@ export async function getTotalProcessed(): Promise<number> {
 }
 
 export const UNLIMITED_TOOLS = [
-  "compress", "merge", "image-to-pdf", "split", "unlock",
+  "compress", "image-to-pdf", "split", "unlock",
 ] as const;
 
 export function isUnlimited(tool: string): boolean {
