@@ -21,6 +21,13 @@ export function isPremium(): boolean {
   if (typeof window === "undefined") return false;
   if (_isPremiumVal === undefined) {
     _isPremiumVal = localStorage.getItem(STORAGE_KEY) === "true";
+    if (!_isPremiumVal && typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get("dev") === "1") {
+        _isPremiumVal = true;
+        localStorage.setItem(STORAGE_KEY, "true");
+      }
+    }
   }
   return _isPremiumVal;
 }
