@@ -131,7 +131,7 @@ export function isUnlimited(tool: string): boolean {
 export const FREE_LIMITS = {
   maxFileSize: 10 * 1024 * 1024,
   maxDailyUses: 5,
-  waitSeconds: 5,
+  waitSeconds: 2,
 } as const;
 
 export const PREMIUM_LIMITS = {
