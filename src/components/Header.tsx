@@ -1,20 +1,18 @@
 "use client";
 
 import Link from "next/link";
-import { useState, useEffect, lazy, Suspense } from "react";
+import { useState, lazy, Suspense } from "react";
 import { isPremium } from "@/lib/premium";
 import { useAuth } from "@/components/AuthProvider";
-import { useRouter } from "next/navigation";
 
 const ShareModal = lazy(() => import("./ShareModal"));
 const ExportHistory = lazy(() => import("./ExportHistory"));
 
 export default function Header() {
   const { user } = useAuth();
-  const router = useRouter();
-  const [dark, setDark] = useState(() => {
-    if (typeof window === "undefined") return false;
-    return document.documentElement.classList.contains("dark");
+  const [theme, setTheme] = useState(() => {
+    if (typeof window === "undefined") return "midnight";
+    return document.documentElement.getAttribute("data-theme") || "midnight";
   });
   const [menuOpen, setMenuOpen] = useState(false);
   const [premium, setPremium] = useState(() => {
@@ -23,53 +21,86 @@ export default function Header() {
   });
   const [shareOpen, setShareOpen] = useState(false);
   const [premiumMenu, setPremiumMenu] = useState(false);
+  const [resourcesMenu, setResourcesMenu] = useState(false);
+  const [toolsMenu, setToolsMenu] = useState(false);
+  const [themeMenu, setThemeMenu] = useState(false);
 
-  useEffect(() => {
-    const mq = window.matchMedia("(prefers-color-scheme: dark)");
-    const handler = () => {
-      const stored = localStorage.getItem("theme");
-      if (!stored) {
-        setDark(true);
-        document.documentElement.classList.add("dark");
-      }
-    };
-    mq.addEventListener("change", handler);
-    return () => mq.removeEventListener("change", handler);
-  }, []);
+  const themes = [
+    { id: "midnight", label: "Midnight", color: "#6366f1" },
+    { id: "amber", label: "Amber", color: "#f59e0b" },
+    { id: "ocean", label: "Ocean", color: "#06b6d4" },
+  ];
 
-  const toggleDark = () => {
-    const newDark = !dark;
-    setDark(newDark);
-    document.documentElement.classList.toggle("dark", newDark);
-    localStorage.setItem("theme", newDark ? "dark" : "light");
+  const pickTheme = (id: string) => {
+    setTheme(id);
+    document.documentElement.setAttribute("data-theme", id);
+    localStorage.setItem("theme", id);
+    setThemeMenu(false);
   };
 
   const navLinks = [
     { href: "/compress", label: "Compress" },
     { href: "/merge", label: "Merge" },
     { href: "/split", label: "Split" },
-    { href: "/image-to-pdf", label: "Image to PDF" },
-    { href: "/pdf-to-images", label: "PDF to Images" },
-    { href: "/protect", label: "Protect" },
-    { href: "/redact", label: "Redact" },
-    { href: "/annotate", label: "Annotate" },
-    { href: "/unlock", label: "Unlock" },
-    { href: "/watermark", label: "Watermark" },
-    { href: "/sign", label: "Sign" },
-    { href: "/extract-text", label: "Extract" },
-    { href: "/rotate", label: "Rotate" },
-    { href: "/resize", label: "Resize" },
-    { href: "/crop", label: "Crop" },
-    { href: "/delete-pages", label: "Delete" },
-    { href: "/text-to-pdf", label: "Text to PDF" },
-    { href: "/organize", label: "Organize" },
-    { href: "/metadata", label: "Metadata" },
-    { href: "/word-counter", label: "Words" },
-    { href: "/insert-blank", label: "Blank Pages" },
-    { href: "/pdf-to-excel", label: "PDF to Excel" },
-    { href: "/add-page-numbers", label: "Numbers" },
-    { href: "/html-to-pdf", label: "HTML to PDF" },
-    { href: "/batch", label: "Batch" },
+  ];
+
+  const toolCategories = [
+    {
+      name: "Convert & Compress",
+      links: [
+        { href: "/compress", label: "Compress PDF" },
+        { href: "/merge", label: "Merge PDF" },
+        { href: "/split", label: "Split PDF" },
+        { href: "/image-to-pdf", label: "Image to PDF" },
+        { href: "/scan-to-pdf", label: "Scan to PDF" },
+        { href: "/pdf-to-images", label: "PDF to Images" },
+        { href: "/pdf-to-word", label: "PDF to Word" },
+        { href: "/word-to-pdf", label: "Word to PDF" },
+        { href: "/pdf-to-excel", label: "PDF to Excel" },
+        { href: "/html-to-pdf", label: "HTML to PDF" },
+        { href: "/text-to-pdf", label: "Text to PDF" },
+        { href: "/pdf-to-pdfa", label: "PDF to PDF/A" },
+        { href: "/repair-pdf", label: "Repair PDF" },
+      ],
+    },
+    {
+      name: "Edit & Organize",
+      links: [
+        { href: "/edit-pdf", label: "Edit PDF" },
+        { href: "/organize", label: "Organize Pages" },
+        { href: "/delete-pages", label: "Delete Pages" },
+        { href: "/insert-blank", label: "Insert Blank Pages" },
+        { href: "/reverse-pdf", label: "Reverse Order" },
+        { href: "/crop", label: "Crop PDF" },
+        { href: "/resize", label: "Resize PDF" },
+        { href: "/rotate", label: "Rotate PDF" },
+        { href: "/add-page-numbers", label: "Add Page Numbers" },
+        { href: "/annotate", label: "Annotate PDF" },
+        { href: "/word-counter", label: "Word Counter" },
+        { href: "/metadata", label: "Edit Metadata" },
+      ],
+    },
+    {
+      name: "Security & Sign",
+      links: [
+        { href: "/protect", label: "Protect PDF" },
+        { href: "/unlock", label: "Unlock PDF" },
+        { href: "/sign", label: "Sign PDF" },
+        { href: "/redact", label: "Redact PDF" },
+        { href: "/flatten-pdf", label: "Flatten PDF" },
+        { href: "/watermark", label: "Watermark PDF" },
+      ],
+    },
+    {
+      name: "Extract & AI",
+      links: [
+        { href: "/extract-text", label: "Extract Text" },
+        { href: "/ocr-pdf", label: "OCR PDF" },
+        { href: "/chat-pdf", label: "Chat with PDF" },
+        { href: "/fill-form", label: "Fill PDF Form" },
+        { href: "/batch", label: "Batch Process" },
+      ],
+    },
   ];
 
   const premiumLinks = [
@@ -96,12 +127,33 @@ export default function Header() {
           PDFTools
         </Link>
 
-        <nav className="hidden md:flex items-center gap-4 text-sm font-medium overflow-x-auto flex-nowrap scrollbar-none ml-4">
+        <nav className="hidden md:flex items-center gap-3 text-sm font-medium ml-4" role="navigation" aria-label="Main navigation">
           {navLinks.map((link) => (
             <Link key={link.href} href={link.href} className="text-[var(--muted)] hover:text-[var(--foreground)] transition-colors whitespace-nowrap relative after:absolute after:bottom-[-4px] after:left-0 after:w-0 after:h-0.5 after:bg-indigo-500 after:rounded-full after:transition-all hover:after:w-full">
               {link.label}
             </Link>
           ))}
+          <Link href="/image-to-pdf" className="text-[var(--muted)] hover:text-[var(--foreground)] transition-colors whitespace-nowrap">Image to PDF</Link>
+          <div className="relative" onMouseEnter={() => setToolsMenu(true)} onMouseLeave={() => setToolsMenu(false)}>
+            <button className="text-[var(--muted)] hover:text-[var(--foreground)] transition-all flex items-center gap-1">
+              More Tools
+              <svg className={`w-3 h-3 transition-transform ${toolsMenu ? "rotate-180" : ""}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
+            </button>
+            {toolsMenu && (
+              <div className="absolute top-full left-0 mt-1 bg-[var(--card)]/95 backdrop-blur-lg border border-[var(--card-border)] rounded-xl shadow-2xl py-4 min-w-[600px] z-50 animate-scaleIn origin-top-left grid grid-cols-2 gap-x-4 gap-y-2 px-4" style={{ gridTemplateRows: "auto 1fr" }}>
+                {toolCategories.map((cat) => (
+                  <div key={cat.name} className="space-y-0.5">
+                    <p className="text-[10px] font-semibold text-[var(--muted)] uppercase tracking-wider mb-1.5 px-3">{cat.name}</p>
+                    {cat.links.map((link) => (
+                      <Link key={link.href} href={link.href} onClick={() => setToolsMenu(false)} className="block px-3 py-1.5 text-xs text-[var(--muted)] hover:text-indigo-500 hover:bg-indigo-50/50 dark:hover:bg-indigo-950/10 rounded-lg transition-all">
+                        {link.label}
+                      </Link>
+                    ))}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
           <div className="relative" onMouseEnter={() => setPremiumMenu(true)} onMouseLeave={() => setPremiumMenu(false)}>
             <button className="text-amber-500 hover:text-amber-600 transition-all whitespace-nowrap font-semibold flex items-center gap-1 animate-glowPulse">
               Premium ⭐
@@ -121,6 +173,35 @@ export default function Header() {
               </div>
             )}
           </div>
+          <div className="relative" onMouseEnter={() => setResourcesMenu(true)} onMouseLeave={() => setResourcesMenu(false)}>
+            <button className="text-[var(--muted)] hover:text-[var(--foreground)] transition-all flex items-center gap-1">
+              Resources
+              <svg className={`w-3 h-3 transition-transform duration-300 ${resourcesMenu ? "rotate-180" : ""}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
+            </button>
+            {resourcesMenu && (
+              <div className="absolute top-full right-0 mt-1 bg-[var(--card)]/95 backdrop-blur-lg border border-[var(--card-border)] rounded-xl shadow-2xl py-2 min-w-[200px] z-50 animate-scaleIn origin-top-right">
+                <Link href="/blog" className="block px-4 py-2 text-xs text-[var(--muted)] hover:text-indigo-500 hover:bg-indigo-50/50 dark:hover:bg-indigo-950/10 transition-all hover:translate-x-1">📝 Blog</Link>
+                <Link href="/ultimate-guide-to-pdf-editing" className="block px-4 py-2 text-xs text-[var(--muted)] hover:text-indigo-500 hover:bg-indigo-50/50 dark:hover:bg-indigo-950/10 transition-all hover:translate-x-1">📖 Ultimate Guide</Link>
+                <Link href="/tools" className="block px-4 py-2 text-xs text-[var(--muted)] hover:text-indigo-500 hover:bg-indigo-50/50 dark:hover:bg-indigo-950/10 transition-all hover:translate-x-1">🔧 All Tools</Link>
+                <Link href="/contact" className="block px-4 py-2 text-xs text-[var(--muted)] hover:text-indigo-500 hover:bg-indigo-50/50 dark:hover:bg-indigo-950/10 transition-all hover:translate-x-1">📞 Contact</Link>
+                <div className="border-t border-[var(--card-border)] my-1" />
+                <p className="px-4 py-1 text-[10px] font-semibold text-[var(--muted)] uppercase tracking-wider">Comparisons</p>
+                <Link href="/smallpdf-alternative" className="block px-4 py-2 text-xs text-[var(--muted)] hover:text-indigo-500 hover:bg-indigo-50/50 dark:hover:bg-indigo-950/10 transition-all hover:translate-x-1">vs SmallPDF</Link>
+                <Link href="/ilovepdf-alternative" className="block px-4 py-2 text-xs text-[var(--muted)] hover:text-indigo-500 hover:bg-indigo-50/50 dark:hover:bg-indigo-950/10 transition-all hover:translate-x-1">vs iLovePDF</Link>
+                <Link href="/adobe-acrobat-alternative" className="block px-4 py-2 text-xs text-[var(--muted)] hover:text-indigo-500 hover:bg-indigo-50/50 dark:hover:bg-indigo-950/10 transition-all hover:translate-x-1">vs Adobe Acrobat</Link>
+                <Link href="/best-free-pdf-editor" className="block px-4 py-2 text-xs text-[var(--muted)] hover:text-indigo-500 hover:bg-indigo-50/50 dark:hover:bg-indigo-950/10 transition-all hover:translate-x-1">🏆 Best Free PDF Editor</Link>
+                <div className="border-t border-[var(--card-border)] my-1" />
+                <p className="px-4 py-1 text-[10px] font-semibold text-[var(--muted)] uppercase tracking-wider">By Role</p>
+                <Link href="/pdf-tools-for-students" className="block px-4 py-2 text-xs text-[var(--muted)] hover:text-indigo-500 hover:bg-indigo-50/50 dark:hover:bg-indigo-950/10 transition-all hover:translate-x-1">🎓 For Students</Link>
+                <Link href="/pdf-tools-for-business" className="block px-4 py-2 text-xs text-[var(--muted)] hover:text-indigo-500 hover:bg-indigo-50/50 dark:hover:bg-indigo-950/10 transition-all hover:translate-x-1">💼 For Business</Link>
+                <div className="border-t border-[var(--card-border)] my-1" />
+                <p className="px-4 py-1 text-[10px] font-semibold text-[var(--muted)] uppercase tracking-wider">More</p>
+                <Link href="/contact" className="block px-4 py-2 text-xs text-[var(--muted)] hover:text-indigo-500 hover:bg-indigo-50/50 dark:hover:bg-indigo-950/10 transition-all hover:translate-x-1">📧 Contact</Link>
+                <Link href="/qa" className="block px-4 py-2 text-xs text-[var(--muted)] hover:text-indigo-500 hover:bg-indigo-50/50 dark:hover:bg-indigo-950/10 transition-all hover:translate-x-1">❓ Q&A</Link>
+                <Link href="/offline" className="block px-4 py-2 text-xs text-[var(--muted)] hover:text-indigo-500 hover:bg-indigo-50/50 dark:hover:bg-indigo-950/10 transition-all hover:translate-x-1">📡 Offline Mode</Link>
+              </div>
+            )}
+          </div>
         </nav>
 
         <div className="flex items-center gap-2 shrink-0">
@@ -128,13 +209,23 @@ export default function Header() {
           <button onClick={() => setShareOpen(true)} className="p-2 rounded-lg bg-[var(--card)] border border-[var(--card-border)] text-[var(--muted)] hover:text-[var(--foreground)] hover:border-indigo-500/30 transition-all active:scale-90" aria-label="Share">
             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
           </button>
-          <button onClick={toggleDark} className="p-2 rounded-lg bg-[var(--card)] border border-[var(--card-border)] text-[var(--muted)] hover:text-[var(--foreground)] hover:border-indigo-500/30 transition-all active:scale-90" aria-label="Toggle dark mode">
-            {dark ? (
-              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
-            ) : (
-              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <div className="relative">
+            <button onClick={() => setThemeMenu(!themeMenu)} className="p-2 rounded-lg bg-[var(--card)] border border-[var(--card-border)] text-[var(--muted)] hover:text-[var(--foreground)] hover:border-indigo-500/30 transition-all active:scale-90 flex items-center gap-1.5" aria-label="Switch theme">
+              <span className="w-3.5 h-3.5 rounded-full border border-[var(--card-border)]" style={{ backgroundColor: themes.find(t => t.id === theme)?.color }} />
+              <svg className={`w-3 h-3 transition-transform ${themeMenu ? "rotate-180" : ""}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
+            </button>
+            {themeMenu && (
+              <div className="absolute top-full right-0 mt-1 bg-[var(--card)]/95 backdrop-blur-lg border border-[var(--card-border)] rounded-xl shadow-2xl py-1 min-w-[130px] z-50 animate-scaleIn origin-top-right">
+                {themes.map(t => (
+                  <button key={t.id} onClick={() => pickTheme(t.id)} className="w-full flex items-center gap-2 px-3 py-2 text-xs text-[var(--muted)] hover:text-[var(--foreground)] hover:bg-[var(--card-border)]/30 transition-all">
+                    <span className="w-3 h-3 rounded-full" style={{ backgroundColor: t.color }} />
+                    {t.label}
+                    {theme === t.id && <svg className="w-3 h-3 ml-auto text-[var(--accent)]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>}
+                  </button>
+                ))}
+              </div>
             )}
-          </button>
+          </div>
           {premium ? (
             <span className="hidden sm:inline-flex bg-emerald-600 text-white px-4 py-2 rounded-lg text-sm font-medium animate-successBounce">✓ Premium</span>
           ) : (
@@ -152,7 +243,7 @@ export default function Header() {
               Sign In
             </Link>
           )}
-          <button onClick={() => setMenuOpen(!menuOpen)} className="md:hidden p-2 rounded-lg text-[var(--muted)] hover:text-[var(--foreground)] hover:bg-[var(--card)] transition" aria-label="Menu">
+          <button onClick={() => setMenuOpen(!menuOpen)} className="md:hidden p-2 rounded-lg text-[var(--muted)] hover:text-[var(--foreground)] hover:bg-[var(--card)] transition" aria-label="Menu" aria-expanded={menuOpen}>
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
           </button>
         </div>
@@ -169,6 +260,16 @@ export default function Header() {
             <Link key={link.href} href={link.href} onClick={() => setMenuOpen(false)} className="block text-sm text-[var(--muted)] hover:text-[var(--foreground)] hover:translate-x-1 transition-all">{link.label}</Link>
           ))}
           <Link href="/premium" onClick={() => setMenuOpen(false)} className="block text-sm font-bold text-indigo-500 bg-indigo-50 dark:bg-indigo-950/20 px-3 py-2 rounded-lg hover:bg-indigo-100 dark:hover:bg-indigo-950/40 transition">Premium →</Link>
+          <div className="border-t border-[var(--card-border)] my-2" />
+          <p className="text-xs font-semibold text-indigo-500 uppercase tracking-wider">📖 Resources</p>
+          <Link href="/blog" onClick={() => setMenuOpen(false)} className="block text-sm text-[var(--muted)] hover:text-[var(--foreground)] hover:translate-x-1 transition-all">Blog</Link>
+          <Link href="/ultimate-guide-to-pdf-editing" onClick={() => setMenuOpen(false)} className="block text-sm text-[var(--muted)] hover:text-[var(--foreground)] hover:translate-x-1 transition-all">Ultimate Guide</Link>
+          <Link href="/tools" onClick={() => setMenuOpen(false)} className="block text-sm text-[var(--muted)] hover:text-[var(--foreground)] hover:translate-x-1 transition-all">All Tools</Link>
+          <Link href="/pdf-tools-for-students" onClick={() => setMenuOpen(false)} className="block text-sm text-[var(--muted)] hover:text-[var(--foreground)] hover:translate-x-1 transition-all">For Students</Link>
+          <Link href="/pdf-tools-for-business" onClick={() => setMenuOpen(false)} className="block text-sm text-[var(--muted)] hover:text-[var(--foreground)] hover:translate-x-1 transition-all">For Business</Link>
+          <Link href="/contact" onClick={() => setMenuOpen(false)} className="block text-sm text-[var(--muted)] hover:text-[var(--foreground)] hover:translate-x-1 transition-all">Contact</Link>
+          <Link href="/qa" onClick={() => setMenuOpen(false)} className="block text-sm text-[var(--muted)] hover:text-[var(--foreground)] hover:translate-x-1 transition-all">Q&A</Link>
+          <Link href="/offline" onClick={() => setMenuOpen(false)} className="block text-sm text-[var(--muted)] hover:text-[var(--foreground)] hover:translate-x-1 transition-all">Offline Mode</Link>
           <div className="border-t border-[var(--card-border)] my-2" />
           {user ? (
             <Link href="/dashboard" onClick={() => setMenuOpen(false)} className="block text-sm text-[var(--foreground)] font-medium">{user.email}</Link>

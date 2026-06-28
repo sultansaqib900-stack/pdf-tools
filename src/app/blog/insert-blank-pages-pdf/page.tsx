@@ -1,10 +1,14 @@
 import type { Metadata } from "next";
 export const metadata: Metadata = { title: "How to Insert Blank Pages into a PDF Online Free", description: "Add blank pages to PDF documents online for free. Insert empty pages at any position in your PDF." };
 import ArticleJsonLd from "@/components/ArticleJsonLd";
+import HowToJsonLd from "@/components/HowToJsonLd";
+import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 export default function BlogPost() {
   return (
     <article className="max-w-3xl mx-auto px-4 py-12">
       <ArticleJsonLd title="How to Insert Blank Pages into a PDF Online Free" description="Add blank pages to PDF documents online for free." url="https://allaboutpdfediting.xyz/blog/insert-blank-pages-pdf" datePublished="2026-06-25" />
+      <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Blog", item: "https://allaboutpdfediting.xyz/blog" }, { name: "How to Insert Blank Pages into a PDF Online Free", item: "https://allaboutpdfediting.xyz/blog/insert-blank-pages-pdf" }]} />
+      <HowToJsonLd name="How to Insert Blank Pages into a PDF Online Free" description="Add blank pages to PDF documents online for free." steps={[{name:"Upload your PDF — Visit our Insert Blank Pages tool and select your file.",text:"Upload your PDF — Visit our Insert Blank Pages tool and select your file."},{name:"Choose position — Select where to insert blank pages: before or after specifi...",text:"Choose position — Select where to insert blank pages: before or after specific page numbers."},{name:"Set the count — Choose how many blank pages to add.",text:"Set the count — Choose how many blank pages to add."},{name:"Download — Your PDF with inserted blank pages is ready.",text:"Download — Your PDF with inserted blank pages is ready."}]} />
       <a href="/blog" className="text-sm text-indigo-500 hover:underline mb-6 inline-block">&larr; Back to blog</a>
       <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">How to Insert Blank Pages into a PDF Online Free</h1>
       <p className="text-sm text-[var(--muted)] mb-8">3 min read · Updated June 2026</p>

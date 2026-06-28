@@ -1,5 +1,7 @@
 import Link from "next/link";
 import ArticleJsonLd from "@/components/ArticleJsonLd";
+import HowToJsonLd from "@/components/HowToJsonLd";
+import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 
 export default function BlogPost() {
   return (
@@ -10,6 +12,8 @@ export default function BlogPost() {
         url="https://allaboutpdfediting.xyz/blog/crop-pdf-margins"
         datePublished="2026-06-24"
       />
+      <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Blog", item: "https://allaboutpdfediting.xyz/blog" }, { name: "How to Crop PDF Margins Online Free — Remove Whitespace", item: "https://allaboutpdfediting.xyz/blog/crop-pdf-margins" }]} />
+      <HowToJsonLd name="How to Crop PDF Margins Online Free — Remove Whitespace" description="Remove unwanted margins and whitespace from PDF pages online for free..." steps={[{name:"Go to the Crop PDF page",text:"Go to the Crop PDF page"},{name:"Upload your PDF file",text:"Upload your PDF file"},{name:"Enter the amount to crop from each side (top, bottom, left, right)",text:"Enter the amount to crop from each side (top, bottom, left, right)"},{name:"Choose points or millimeters as your unit",text:"Choose points or millimeters as your unit"},{name:"Click &quot;Crop PDF&quot; and download the result",text:"Click &quot;Crop PDF&quot; and download the result"}]} />
       <Link href="/blog" className="text-sm text-indigo-500 hover:underline mb-6 inline-block">&larr; Back to blog</Link>
       <h1 className="text-3xl font-bold text-[var(--foreground)] mb-3">How to Crop PDF Margins Online Free — Remove Whitespace</h1>
       <p className="text-sm text-[var(--muted)] mb-8">June 24, 2026 &middot; 3 min read</p>

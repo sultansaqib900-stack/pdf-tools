@@ -16,6 +16,8 @@ import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
 
 import HowToJsonLd from "@/components/HowToJsonLd";
 import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
+import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
+import FaqPageJsonLd from "@/components/FaqPageJsonLd";
 
 export default function AddPageNumbersPage() {
   const usage = useUsage();
@@ -104,9 +106,14 @@ export default function AddPageNumbersPage() {
   }, [file, position, startNumber]);
 
   const addNumbers = useCallback(async () => {
-    if (!isPremium()) { setShowTimer(true); return; }
+    if (!isPremium()) {
+      const remaining = await usage.peekUsage();
+      if (remaining <= 0) { upsell.showUpsell("daily-limit"); return; }
+      setShowTimer(true);
+      return;
+    }
     runAddNumbers();
-  }, [runAddNumbers]);
+    }, [usage, upsell, runAddNumbers])
 
   const restoreOriginal = useCallback(async () => {
     if (!originalBytes.current) return;
@@ -136,6 +143,8 @@ export default function AddPageNumbersPage() {
         url="https://allaboutpdfediting.xyz/add-page-numbers"
       />
       <HowToJsonLd name="Add Page Numbers to PDF" description="Insert page numbers at any position in PDF documents" steps={[{name:"Upload PDF",text:"Select the PDF to add page numbers"},{name:"Customize numbering",text:"Choose position style and starting number"},{name:"Download numbered PDF",text:"Download the PDF with page numbers added"}]} />
+      <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Add Page Numbers", item: "https://allaboutpdfediting.xyz/add-page-numbers" }]} />
+      <FaqPageJsonLd />
       <AiSummaryJsonLd name="Add Page Numbers" summary="Insert page numbers into PDF documents with customizable position and formatting" category="Utilities" inputType="PDF" outputType="PDF" processing="client-side" price="free" features={["Page numbering","Position selection","Custom start number","Style options","Free tool"]} limits="Files up to 10MB" />
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">Add Page Numbers</h1>

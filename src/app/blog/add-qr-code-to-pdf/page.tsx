@@ -1,5 +1,7 @@
 "use client";
 import ArticleJsonLd from "@/components/ArticleJsonLd";
+import HowToJsonLd from "@/components/HowToJsonLd";
+import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 
 export default function BlogPost() {
   return (
@@ -10,6 +12,8 @@ export default function BlogPost() {
         url="https://allaboutpdfediting.xyz/blog/add-qr-code-to-pdf"
         datePublished="2026-06-26"
       />
+      <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Blog", item: "https://allaboutpdfediting.xyz/blog" }, { name: "How to Add QR Code to PDF Pages Online Free", item: "https://allaboutpdfediting.xyz/blog/add-qr-code-to-pdf" }]} />
+      <HowToJsonLd name="How to Add QR Code to PDF Pages Online Free" description="Add QR codes to every page of your PDF for document tracking and linking." steps={[{name:"Upload your PDF — Select the document where you want to add QR codes.",text:"Upload your PDF — Select the document where you want to add QR codes."},{name:"Enter the QR content — Paste a URL or text that the QR code should encode.",text:"Enter the QR content — Paste a URL or text that the QR code should encode."},{name:"Choose position and size — Select where on the page the QR code appears (top-...",text:"Choose position and size — Select where on the page the QR code appears (top-left, top-right, bottom-left, bottom-right, or center) and adjust its size. Download the result."}]} />
       <a href="/blog" className="text-sm text-indigo-500 hover:underline mb-6 inline-block">&larr; Back to blog</a>
       <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">How to Add QR Code to PDF Pages Online Free</h1>
       <p className="text-sm text-[var(--muted)] mb-8">4 min read · Updated June 2026</p>

@@ -77,6 +77,17 @@ export async function claimPremium(email: string): Promise<boolean> {
   }
 }
 
+export async function peekUsage(): Promise<{ ok: boolean; remaining: number }> {
+  const clientId = getClientId();
+  try {
+    const res = await fetch(`/api/usage/check?clientId=${encodeURIComponent(clientId)}`);
+    const data = await res.json();
+    return { ok: data.ok, remaining: data.remaining ?? 0 };
+  } catch {
+    return { ok: true, remaining: 5 };
+  }
+}
+
 export async function trackUsage(): Promise<{ ok: boolean; remaining: number }> {
   const clientId = getClientId();
   try {

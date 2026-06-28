@@ -1,5 +1,7 @@
 "use client";
 import ArticleJsonLd from "@/components/ArticleJsonLd";
+import HowToJsonLd from "@/components/HowToJsonLd";
+import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 
 export default function BlogPost() {
   return (
@@ -10,6 +12,8 @@ export default function BlogPost() {
         url="https://allaboutpdfediting.xyz/blog/extract-pdf-form-data"
         datePublished="2026-06-26"
       />
+      <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Blog", item: "https://allaboutpdfediting.xyz/blog" }, { name: "How to Extract PDF Form Data to CSV Online Free", item: "https://allaboutpdfediting.xyz/blog/extract-pdf-form-data" }]} />
+      <HowToJsonLd name="How to Extract PDF Form Data to CSV Online Free" description="Extract form field data from PDF forms and export to CSV." steps={[{name:"Upload your PDF form — Select the completed PDF that contains filled AcroForm...",text:"Upload your PDF form — Select the completed PDF that contains filled AcroForm fields."},{name:"Review detected fields — The tool automatically identifies all form fields an...",text:"Review detected fields — The tool automatically identifies all form fields and their values."},{name:"Export to CSV — Download the extracted data as a spreadsheet-ready CSV file.",text:"Export to CSV — Download the extracted data as a spreadsheet-ready CSV file."}]} />
       <a href="/blog" className="text-sm text-indigo-500 hover:underline mb-6 inline-block">&larr; Back to blog</a>
       <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">How to Extract PDF Form Data to CSV Online Free</h1>
       <p className="text-sm text-[var(--muted)] mb-8">5 min read · Updated June 2026</p>

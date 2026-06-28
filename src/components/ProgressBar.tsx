@@ -49,7 +49,7 @@ export default function ProgressBar({
     }, interval);
 
     return () => clearInterval(t);
-  }, [processing, fileSize, onComplete, progress]);
+  }, [processing, fileSize, onComplete]);
 
   if (!processing && !done) return null;
 

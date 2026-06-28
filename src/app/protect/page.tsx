@@ -16,6 +16,8 @@ import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
 
 import HowToJsonLd from "@/components/HowToJsonLd";
 import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
+import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
+import FaqPageJsonLd from "@/components/FaqPageJsonLd";
 
 export default function ProtectPage() {
   const usage = useUsage();
@@ -70,9 +72,14 @@ export default function ProtectPage() {
   }, [file, password]);
 
   const protect = useCallback(async () => {
-    if (!isPremium()) { setShowTimer(true); return; }
+    if (!isPremium()) {
+      const remaining = await usage.peekUsage();
+      if (remaining <= 0) { upsell.showUpsell("daily-limit"); return; }
+      setShowTimer(true);
+      return;
+    }
     runProtect();
-  }, [runProtect]);
+    }, [usage, upsell, runProtect])
 
   const restoreOriginal = useCallback(async () => {
     if (!originalBytes.current) return;
@@ -93,6 +100,8 @@ export default function ProtectPage() {
         url="https://allaboutpdfediting.xyz/protect"
       />
       <HowToJsonLd name="Password Protect PDF" description="Add password protection to encrypt PDF files" steps={[{name:"Upload PDF",text:"Select the PDF file to protect"},{name:"Set password",text:"Enter a strong password for encryption"},{name:"Download protected PDF",text:"Download your password-encrypted PDF document"}]} />
+      <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Protect PDF", item: "https://allaboutpdfediting.xyz/protect" }]} />
+      <FaqPageJsonLd />
       <AiSummaryJsonLd name="Password Protect PDF" summary="Encrypt PDF files with password protection to prevent unauthorized access" category="SecurityApplications" inputType="PDF" outputType="PDF" processing="client-side" price="free" features={["Password encryption","AES security","User password","Owner password","Client-side only"]} limits="Files up to 10MB" />
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">Password Protect PDF</h1>

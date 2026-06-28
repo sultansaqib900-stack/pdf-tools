@@ -1,5 +1,7 @@
 import Link from "next/link";
 import ArticleJsonLd from "@/components/ArticleJsonLd";
+import HowToJsonLd from "@/components/HowToJsonLd";
+import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 
 export default function BlogPost() {
   return (
@@ -10,6 +12,8 @@ export default function BlogPost() {
         url="https://allaboutpdfediting.xyz/blog/delete-pages-from-pdf"
         datePublished="2026-06-24"
       />
+      <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Blog", item: "https://allaboutpdfediting.xyz/blog" }, { name: "How to Delete Pages from a PDF Online Free (No Signup)", item: "https://allaboutpdfediting.xyz/blog/delete-pages-from-pdf" }]} />
+      <HowToJsonLd name="How to Delete Pages from a PDF Online Free (No Signup)" description="Remove unwanted pages from a PDF document online for free..." steps={[{name:"Go to the Delete Pages tool",text:"Go to the Delete Pages tool"},{name:"Upload your PDF by dragging and dropping or clicking to select",text:"Upload your PDF by dragging and dropping or clicking to select"},{name:"All pages appear as numbered buttons. Uncheck the pages you want to remove",text:"All pages appear as numbered buttons. Uncheck the pages you want to remove"},{name:"Click &quot;Delete Pages&quot; and the new PDF downloads automatically",text:"Click &quot;Delete Pages&quot; and the new PDF downloads automatically"}]} />
       <Link href="/blog" className="text-sm text-indigo-500 hover:underline mb-6 inline-block">&larr; Back to blog</Link>
       <h1 className="text-3xl font-bold text-[var(--foreground)] mb-3">How to Delete Pages from a PDF Online Free (No Signup)</h1>
       <p className="text-sm text-[var(--muted)] mb-8">June 24, 2026 &middot; 3 min read</p>

@@ -1,10 +1,14 @@
 import type { Metadata } from "next";
 export const metadata: Metadata = { title: "How to Split PDF Pages Online Free — Extract Specific Pages", description: "Split PDF files online for free. Extract specific pages or split every page into separate files instantly in your browser. No uploads, no signup." };
 import ArticleJsonLd from "@/components/ArticleJsonLd";
+import HowToJsonLd from "@/components/HowToJsonLd";
+import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 export default function BlogPost() {
   return (
     <article className="max-w-3xl mx-auto px-4 py-12">
       <ArticleJsonLd title="How to Split PDF Pages Online Free — Extract Specific Pages" description="Split PDF files online for free. Extract specific pages or split every page into separate files." url="https://allaboutpdfediting.xyz/blog/split-pdf-pages-online" datePublished="2026-06-26" />
+      <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Blog", item: "https://allaboutpdfediting.xyz/blog" }, { name: "How to Split PDF Pages Online Free — Extract Specific Pages", item: "https://allaboutpdfediting.xyz/blog/split-pdf-pages-online" }]} />
+      <HowToJsonLd name="How to Split PDF Pages Online Free — Extract Specific Pages" description="Split PDF files online for free. Extract specific pages or split every page into separate files." steps={[{name:"Upload your PDF — Drag and drop your file or click to select it. Your file st...",text:"Upload your PDF — Drag and drop your file or click to select it. Your file stays on your device."},{name:"Choose your split mode — Select &quot;Extract all pages&quot; to split every page into ...",text:"Choose your split mode — Select &quot;Extract all pages&quot; to split every page into its own file, or &quot;Extract page range&quot; to select a specific range."},{name:"Set your page range (optional) — If you chose range mode, enter the starting ...",text:"Set your page range (optional) — If you chose range mode, enter the starting and ending page numbers."},{name:"Click Split — Your browser processes the PDF instantly using pdf-lib WebAssem...",text:"Click Split — Your browser processes the PDF instantly using pdf-lib WebAssembly."},{name:"Download — Individual pages download automatically as separate PDF files.",text:"Download — Individual pages download automatically as separate PDF files."}]} />
       <a href="/blog" className="text-sm text-indigo-500 hover:underline mb-6 inline-block">&larr; Back to blog</a>
       <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">How to Split PDF Pages Online Free — Extract Specific Pages</h1>
       <p className="text-sm text-[var(--muted)] mb-8">5 min read · Updated June 2026</p>

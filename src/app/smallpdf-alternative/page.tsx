@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { Metadata } from "next";
+import AdBanner from "@/components/AdBanner";
 
 export const metadata: Metadata = {
   title: "SmallPDF Alternative — Free & Private PDF Editor Online | PDFTools",
@@ -100,6 +101,8 @@ export default function SmallPDFAltPage() {
           </table>
         </div>
       </div>
+
+      <AdBanner className="mb-8" />
 
       <div className="border border-[var(--card-border)] rounded-xl p-6 text-center">
         <h2 className="text-xl font-bold text-[var(--foreground)] mb-2">Ready to Switch?</h2>

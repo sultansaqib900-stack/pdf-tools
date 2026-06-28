@@ -1,5 +1,7 @@
 import Link from "next/link";
 import ArticleJsonLd from "@/components/ArticleJsonLd";
+import HowToJsonLd from "@/components/HowToJsonLd";
+import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 
 export default function BlogPost() {
   return (
@@ -10,6 +12,8 @@ export default function BlogPost() {
         url="https://allaboutpdfediting.xyz/blog/organize-pdf-pages"
         datePublished="2026-06-24"
       />
+      <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Blog", item: "https://allaboutpdfediting.xyz/blog" }, { name: "How to Reorder and Organize PDF Pages Online Free", item: "https://allaboutpdfediting.xyz/blog/organize-pdf-pages" }]} />
+      <HowToJsonLd name="How to Reorder and Organize PDF Pages Online Free" description="Drag and drop to reorder pages in your PDF document..." steps={[{name:"Go to the Organize Pages tool",text:"Go to the Organize Pages tool"},{name:"Upload your PDF by dragging and dropping",text:"Upload your PDF by dragging and dropping"},{name:"Drag page thumbnails into the correct order",text:"Drag page thumbnails into the correct order"},{name:"Click &quot;Save New Order&quot; and download your reorganized PDF",text:"Click &quot;Save New Order&quot; and download your reorganized PDF"}]} />
       <Link href="/blog" className="text-sm text-indigo-500 hover:underline mb-6 inline-block">&larr; Back to blog</Link>
       <h1 className="text-3xl font-bold text-[var(--foreground)] mb-3">How to Reorder and Organize PDF Pages Online Free</h1>
       <p className="text-sm text-[var(--muted)] mb-8">June 24, 2026 &middot; 3 min read</p>

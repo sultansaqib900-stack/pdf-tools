@@ -16,6 +16,8 @@ import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
 
 import HowToJsonLd from "@/components/HowToJsonLd";
 import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
+import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
+import FaqPageJsonLd from "@/components/FaqPageJsonLd";
 
 export default function RotatePage() {
   const usage = useUsage();
@@ -77,9 +79,14 @@ export default function RotatePage() {
   }, [file, rotation]);
 
   const rotate = useCallback(async () => {
-    if (!isPremium()) { setShowTimer(true); return; }
+    if (!isPremium()) {
+      const remaining = await usage.peekUsage();
+      if (remaining <= 0) { upsell.showUpsell("daily-limit"); return; }
+      setShowTimer(true);
+      return;
+    }
     runRotate();
-  }, [runRotate]);
+    }, [usage, upsell, runRotate])
 
   const restoreOriginal = useCallback(async () => {
     if (!originalBytes.current) return;
@@ -100,6 +107,8 @@ export default function RotatePage() {
         url="https://allaboutpdfediting.xyz/rotate"
       />
       <HowToJsonLd name="Rotate PDF Pages" description="Rotate PDF pages by 90 180 or 270 degrees" steps={[{name:"Upload PDF",text:"Select the PDF with pages to rotate"},{name:"Select rotation",text:"Choose 90 180 or 270 degree rotation"},{name:"Download rotated PDF",text:"Download the PDF with corrected page orientation"}]} />
+      <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Rotate PDF", item: "https://allaboutpdfediting.xyz/rotate" }]} />
+      <FaqPageJsonLd />
       <AiSummaryJsonLd name="Rotate PDF" summary="Rotate PDF pages by 90 180 or 270 degrees to fix orientation issues" category="Utilities" inputType="PDF" outputType="PDF" processing="client-side" price="free" features={["Page rotation","90 180 270 degrees","Orientation fix","Free online tool","Client-side only"]} limits="Files up to 10MB" />
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">Rotate PDF</h1>

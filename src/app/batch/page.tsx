@@ -15,6 +15,8 @@ import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
 
 import HowToJsonLd from "@/components/HowToJsonLd";
 import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
+import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
+import FaqPageJsonLd from "@/components/FaqPageJsonLd";
 
 type Operation = {
   id: string;
@@ -137,6 +139,8 @@ export default function BatchPage() {
         url="https://allaboutpdfediting.xyz/batch"
       />
       <HowToJsonLd name="Batch Process PDF Files" description="Process multiple PDF files at once with the same operation" steps={[{name:"Upload PDFs",text:"Select multiple PDF files to process"},{name:"Choose operation",text:"Select compress merge split or other batch operation"},{name:"Download results",text:"Download all processed files individually or as ZIP"}]} />
+      <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Batch Process", item: "https://allaboutpdfediting.xyz/batch" }]} />
+      <FaqPageJsonLd />
       <AiSummaryJsonLd name="Batch Process" summary="Process multiple PDF files simultaneously applying the same operation to all" category="Utilities" inputType="PDF" outputType="PDF" processing="client-side" price="free" features={["Multi-file batch","Same operation","Compress merge split","ZIP download","Free tool"]} limits="Files up to 10MB" />
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">Batch Process PDF</h1>

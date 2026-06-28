@@ -18,7 +18,7 @@ export default function FreeWaitTimer({ onDone }: { onDone: () => void }) {
       });
     }, 1000);
     return () => clearInterval(id);
-  }, [seconds, onDone]);
+  }, []);
 
   if (seconds <= 0) return null;
 

@@ -16,6 +16,8 @@ import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
 
 import HowToJsonLd from "@/components/HowToJsonLd";
 import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
+import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
+import FaqPageJsonLd from "@/components/FaqPageJsonLd";
 
 export default function HtmlToPdfPage() {
   const usage = useUsage();
@@ -33,7 +35,12 @@ export default function HtmlToPdfPage() {
 
   const convert = useCallback(async () => {
     if (!html.trim()) return;
-    if (!isPremium()) { setShowTimer(true); return; }
+    if (!isPremium()) {
+      const remaining = await usage.peekUsage();
+      if (remaining <= 0) { upsell.showUpsell("daily-limit"); return; }
+      setShowTimer(true);
+      return;
+    }
     setProcessing(true);
     const canProceed = await usage.checkAndTrack();
     if (!canProceed) { setProcessing(false); upsell.showUpsell("daily-limit"); return; }
@@ -56,7 +63,7 @@ export default function HtmlToPdfPage() {
       setError("Failed to generate PDF.");
       setProcessing(false);
     }
-  }, [html]);
+  }, [html, usage, upsell]);
 
   const runConvert = convert;
 
@@ -79,6 +86,8 @@ export default function HtmlToPdfPage() {
         url="https://allaboutpdfediting.xyz/html-to-pdf"
       />
       <HowToJsonLd name="Convert HTML to PDF" description="Convert HTML markup and web pages to PDF documents" steps={[{name:"Enter HTML",text:"Paste HTML code or enter a URL"},{name:"Preview",text:"Preview how the PDF will look"},{name:"Download PDF",text:"Download the HTML content as a PDF document"}]} />
+      <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "HTML to PDF", item: "https://allaboutpdfediting.xyz/html-to-pdf" }]} />
+      <FaqPageJsonLd />
       <AiSummaryJsonLd name="HTML to PDF" summary="Convert HTML markup and web page URLs into PDF documents" category="Utilities" inputType="HTML" outputType="PDF" processing="client-side" price="free" features={["HTML conversion","URL to PDF","Preview","Free tool","Client-side processing"]} limits="Files up to 10MB" />
       <iframe ref={iframeRef} className="hidden" title="preview" />
 

@@ -16,6 +16,8 @@ import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
 
 import HowToJsonLd from "@/components/HowToJsonLd";
 import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
+import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
+import FaqPageJsonLd from "@/components/FaqPageJsonLd";
 
 export default function MetadataPage() {
   const usage = useUsage();
@@ -86,9 +88,14 @@ export default function MetadataPage() {
   }, [file, title, author, subject, keywords]);
 
   const process = useCallback(async () => {
-    if (!isPremium()) { setShowTimer(true); return; }
+    if (!isPremium()) {
+      const remaining = await usage.peekUsage();
+      if (remaining <= 0) { upsell.showUpsell("daily-limit"); return; }
+      setShowTimer(true);
+      return;
+    }
     runEdit();
-  }, [runEdit]);
+    }, [usage, upsell, runEdit])
 
   const restoreOriginal = useCallback(async () => {
     if (!originalBytes.current) return;
@@ -109,6 +116,8 @@ export default function MetadataPage() {
         url="https://allaboutpdfediting.xyz/metadata"
       />
       <HowToJsonLd name="Edit PDF Metadata" description="View and edit PDF document properties title author subject keywords" steps={[{name:"Upload PDF",text:"Select the PDF to edit metadata"},{name:"Edit properties",text:"Update title author subject and keywords"},{name:"Download updated PDF",text:"Download the PDF with new metadata"}]} />
+      <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Edit Metadata", item: "https://allaboutpdfediting.xyz/metadata" }]} />
+      <FaqPageJsonLd />
       <AiSummaryJsonLd name="Metadata Editor" summary="View and edit PDF document properties including title author subject and keywords" category="Utilities" inputType="PDF" outputType="PDF" processing="client-side" price="free" features={["Title editing","Author editing","Subject editing","Keyword editing","Free tool"]} limits="Files up to 10MB" />
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">PDF Metadata Editor</h1>

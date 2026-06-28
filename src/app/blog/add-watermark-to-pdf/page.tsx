@@ -1,10 +1,14 @@
 import type { Metadata } from "next";
 export const metadata: Metadata = { title: "How to Add Watermark to PDF Online Free — Text & Image Watermarks", description: "Add watermarks to PDF documents online for free. Apply text or image watermarks to protect your documents." };
 import ArticleJsonLd from "@/components/ArticleJsonLd";
+import HowToJsonLd from "@/components/HowToJsonLd";
+import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 export default function BlogPost() {
   return (
     <article className="max-w-3xl mx-auto px-4 py-12">
       <ArticleJsonLd title="How to Add Watermark to PDF Online Free" description="Add watermarks to PDF documents online for free." url="https://allaboutpdfediting.xyz/blog/add-watermark-to-pdf" datePublished="2026-06-25" />
+      <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Blog", item: "https://allaboutpdfediting.xyz/blog" }, { name: "How to Add Watermark to PDF Online Free", item: "https://allaboutpdfediting.xyz/blog/add-watermark-to-pdf" }]} />
+      <HowToJsonLd name="How to Add Watermark to PDF Online Free" description="Add watermarks to PDF documents online for free." steps={[{name:"Open the watermark tool — Go to our PDF Watermark tool.",text:"Open the watermark tool — Go to our PDF Watermark tool."},{name:"Upload your PDF — Select the document you want to watermark.",text:"Upload your PDF — Select the document you want to watermark."},{name:"Choose watermark type — Enter text or upload an image for the watermark.",text:"Choose watermark type — Enter text or upload an image for the watermark."},{name:"Customize appearance — Set opacity, position, rotation, and size.",text:"Customize appearance — Set opacity, position, rotation, and size."},{name:"Download — Your watermarked PDF is ready.",text:"Download — Your watermarked PDF is ready."}]} />
       <a href="/blog" className="text-sm text-indigo-500 hover:underline mb-6 inline-block">&larr; Back to blog</a>
       <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">How to Add Watermark to PDF Online Free</h1>
       <p className="text-sm text-[var(--muted)] mb-8">4 min read · Updated June 2026</p>

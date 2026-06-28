@@ -11,6 +11,8 @@ export const metadata: Metadata = {
 };
 
 import ArticleJsonLd from "@/components/ArticleJsonLd";
+import HowToJsonLd from "@/components/HowToJsonLd";
+import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 
 export default function BlogPost() {
   return (
@@ -21,6 +23,8 @@ export default function BlogPost() {
         url="https://allaboutpdfediting.xyz/blog/reverse-pdf-pages"
         datePublished="2026-06-25"
       />
+      <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Blog", item: "https://allaboutpdfediting.xyz/blog" }, { name: "How to Reverse PDF Pages Online Free", item: "https://allaboutpdfediting.xyz/blog/reverse-pdf-pages" }]} />
+      <HowToJsonLd name="How to Reverse PDF Pages Online Free" description="Reverse PDF page order online for free..." steps={[{name:"Go to the reverser — Open our free PDF page reverser.",text:"Go to the reverser — Open our free PDF page reverser."},{name:"Upload your PDF — Drag and drop or click to select your file.",text:"Upload your PDF — Drag and drop or click to select your file."},{name:"Click Reverse — The tool flips all pages instantly. Download the reversed ver...",text:"Click Reverse — The tool flips all pages instantly. Download the reversed version."}]} />
       <a href="/blog" className="text-sm text-indigo-500 hover:underline mb-6 inline-block">&larr; Back to blog</a>
       <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">How to Reverse PDF Pages Online Free</h1>
       <p className="text-sm text-[var(--muted)] mb-8">3 min read · Updated June 2026</p>

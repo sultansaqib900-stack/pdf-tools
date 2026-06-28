@@ -11,6 +11,8 @@ export const metadata: Metadata = {
 };
 
 import ArticleJsonLd from "@/components/ArticleJsonLd";
+import HowToJsonLd from "@/components/HowToJsonLd";
+import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 
 export default function BlogPost() {
   return (
@@ -21,6 +23,8 @@ export default function BlogPost() {
         url="https://allaboutpdfediting.xyz/blog/compress-pdf-without-losing-quality"
         datePublished="2026-06-24"
       />
+      <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Blog", item: "https://allaboutpdfediting.xyz/blog" }, { name: "How to Compress PDF Without Losing Quality", item: "https://allaboutpdfediting.xyz/blog/compress-pdf-without-losing-quality" }]} />
+      <HowToJsonLd name="How to Compress PDF Without Losing Quality" description="Compress PDF files without losing quality using our free online tool..." steps={[{name:"Go to the compressor — Open our free PDF compress tool.",text:"Go to the compressor — Open our free PDF compress tool."},{name:"Upload your PDF — Drag and drop or click to select your file.",text:"Upload your PDF — Drag and drop or click to select your file."},{name:"Click Compress — The tool processes your file instantly. Download the smaller...",text:"Click Compress — The tool processes your file instantly. Download the smaller version."}]} />
       <a href="/blog" className="text-sm text-indigo-500 hover:underline mb-6 inline-block">&larr; Back to blog</a>
       <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">How to Compress PDF Without Losing Quality</h1>
       <p className="text-sm text-[var(--muted)] mb-8">5 min read · Updated June 2026</p>

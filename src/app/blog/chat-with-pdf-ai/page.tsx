@@ -11,6 +11,8 @@ export const metadata: Metadata = {
 };
 
 import ArticleJsonLd from "@/components/ArticleJsonLd";
+import HowToJsonLd from "@/components/HowToJsonLd";
+import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 
 export default function BlogPost() {
   return (
@@ -21,6 +23,8 @@ export default function BlogPost() {
         url="https://allaboutpdfediting.xyz/blog/chat-with-pdf-ai"
         datePublished="2026-06-26"
       />
+      <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Blog", item: "https://allaboutpdfediting.xyz/blog" }, { name: "Chat with PDF – Free AI PDF Assistant", item: "https://allaboutpdfediting.xyz/blog/chat-with-pdf-ai" }]} />
+      <HowToJsonLd name="Chat with PDF – Free AI PDF Assistant" description="Upload a PDF and ask AI questions about its content..." steps={[{name:"Upload your PDF — Go to our Chat with PDF tool and select your file (up to 20...",text:"Upload your PDF — Go to our Chat with PDF tool and select your file (up to 20MB)."},{name:"Text is extracted — PDF.js extracts all text from every page, right in your b...",text:"Text is extracted — PDF.js extracts all text from every page, right in your browser. The actual file never leaves your device."},{name:"Ask questions — Type any question about the document content and get AI-power...",text:"Ask questions — Type any question about the document content and get AI-powered answers instantly."}]} />
       <a href="/blog" className="text-sm text-indigo-500 hover:underline mb-6 inline-block">&larr; Back to blog</a>
       <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">Chat with PDF – Free AI PDF Assistant</h1>
       <p className="text-sm text-[var(--muted)] mb-8">4 min read · Updated June 2026</p>

@@ -11,6 +11,8 @@ export const metadata: Metadata = {
 };
 
 import ArticleJsonLd from "@/components/ArticleJsonLd";
+import HowToJsonLd from "@/components/HowToJsonLd";
+import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 
 export default function BlogPost() {
   return (
@@ -21,6 +23,8 @@ export default function BlogPost() {
         url="https://allaboutpdfediting.xyz/blog/remove-password-from-pdf"
         datePublished="2026-06-24"
       />
+      <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Blog", item: "https://allaboutpdfediting.xyz/blog" }, { name: "How to Remove Password from PDF Files", item: "https://allaboutpdfediting.xyz/blog/remove-password-from-pdf" }]} />
+      <HowToJsonLd name="How to Remove Password from PDF Files" description="Remove password protection from PDF files online for free..." steps={[{name:"Go to the unlock tool — Visit our free PDF unlock page.",text:"Go to the unlock tool — Visit our free PDF unlock page."},{name:"Upload your PDF — Select the password-protected file from your device.",text:"Upload your PDF — Select the password-protected file from your device."},{name:"Enter the password — Type the password and click Unlock. Download the unlocke...",text:"Enter the password — Type the password and click Unlock. Download the unlocked version instantly."}]} />
       <a href="/blog" className="text-sm text-indigo-500 hover:underline mb-6 inline-block">&larr; Back to blog</a>
       <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">How to Remove Password from PDF Files</h1>
       <p className="text-sm text-[var(--muted)] mb-8">4 min read · Updated June 2026</p>

@@ -16,6 +16,8 @@ import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
 
 import HowToJsonLd from "@/components/HowToJsonLd";
 import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
+import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
+import FaqPageJsonLd from "@/components/FaqPageJsonLd";
 
 export default function OrganizePage() {
   const usage = useUsage();
@@ -118,9 +120,14 @@ export default function OrganizePage() {
   }, [file, order]);
 
   const process = useCallback(async () => {
-    if (!isPremium()) { setShowTimer(true); return; }
+    if (!isPremium()) {
+      const remaining = await usage.peekUsage();
+      if (remaining <= 0) { upsell.showUpsell("daily-limit"); return; }
+      setShowTimer(true);
+      return;
+    }
     runOrganize();
-  }, [runOrganize]);
+    }, [usage, upsell, runOrganize])
 
   const restoreOriginal = useCallback(async () => {
     if (!originalBytes.current) return;
@@ -141,6 +148,8 @@ export default function OrganizePage() {
         url="https://allaboutpdfediting.xyz/organize"
       />
       <HowToJsonLd name="Organize PDF Pages" description="Reorder drag-and-drop rearrange pages in PDF documents" steps={[{name:"Upload PDF",text:"Select the PDF to reorganize"},{name:"Drag to reorder",text:"Drag and drop page thumbnails to rearrange"},{name:"Download organized PDF",text:"Download the PDF with reorganized page order"}]} />
+      <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Organize PDF", item: "https://allaboutpdfediting.xyz/organize" }]} />
+      <FaqPageJsonLd />
       <AiSummaryJsonLd name="Organize PDF" summary="Reorder pages in PDF documents with drag-and-drop interface" category="Utilities" inputType="PDF" outputType="PDF" processing="client-side" price="free" features={["Page reordering","Drag-and-drop","Thumbnail preview","Free tool","Client-side"]} limits="Files up to 10MB" />
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">Organize PDF Pages</h1>

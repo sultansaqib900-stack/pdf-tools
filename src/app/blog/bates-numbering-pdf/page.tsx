@@ -1,5 +1,7 @@
 "use client";
 import ArticleJsonLd from "@/components/ArticleJsonLd";
+import HowToJsonLd from "@/components/HowToJsonLd";
+import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 
 export default function BlogPost() {
   return (
@@ -10,6 +12,8 @@ export default function BlogPost() {
         url="https://allaboutpdfediting.xyz/blog/bates-numbering-pdf"
         datePublished="2026-06-26"
       />
+      <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Blog", item: "https://allaboutpdfediting.xyz/blog" }, { name: "How to Add Bates Numbering to PDF Documents", item: "https://allaboutpdfediting.xyz/blog/bates-numbering-pdf" }]} />
+      <HowToJsonLd name="How to Add Bates Numbering to PDF Documents" description="Learn how to add Bates numbering, sequential page numbers, and custom labels to every page of a PDF. Perfect for legal documents and discovery." steps={[{name:"Upload your PDF — Drag and drop any PDF file.",text:"Upload your PDF — Drag and drop any PDF file."},{name:"Configure your labels — Set prefix, suffix, start number, digit padding, and ...",text:"Configure your labels — Set prefix, suffix, start number, digit padding, and position."},{name:"Apply and download — The tool stamps every page and gives you a numbered PDF ...",text:"Apply and download — The tool stamps every page and gives you a numbered PDF to save."}]} />
       <a href="/blog" className="text-sm text-indigo-500 hover:underline mb-6 inline-block">&larr; Back to blog</a>
       <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">How to Add Bates Numbering to PDF Documents</h1>
       <p className="text-sm text-[var(--muted)] mb-8">5 min read · Updated June 2026</p>

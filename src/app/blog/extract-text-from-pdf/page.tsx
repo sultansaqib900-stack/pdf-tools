@@ -1,10 +1,14 @@
 import type { Metadata } from "next";
 export const metadata: Metadata = { title: "How to Extract Text from PDF Online Free — Copy Text Instantly", description: "Extract text from PDF files online for free. Copy text from scanned or digital PDFs instantly." };
 import ArticleJsonLd from "@/components/ArticleJsonLd";
+import HowToJsonLd from "@/components/HowToJsonLd";
+import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 export default function BlogPost() {
   return (
     <article className="max-w-3xl mx-auto px-4 py-12">
       <ArticleJsonLd title="How to Extract Text from PDF Online Free" description="Extract text from PDF files online for free." url="https://allaboutpdfediting.xyz/blog/extract-text-from-pdf" datePublished="2026-06-25" />
+      <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Blog", item: "https://allaboutpdfediting.xyz/blog" }, { name: "How to Extract Text from PDF Online Free", item: "https://allaboutpdfediting.xyz/blog/extract-text-from-pdf" }]} />
+      <HowToJsonLd name="How to Extract Text from PDF Online Free" description="Extract text from PDF files online for free." steps={[{name:"Open the extractor — Visit our PDF text extractor tool.",text:"Open the extractor — Visit our PDF text extractor tool."},{name:"Upload your PDF — Select the file you want to extract text from.",text:"Upload your PDF — Select the file you want to extract text from."},{name:"Copy the text — The extracted text appears instantly. Copy it to your clipboa...",text:"Copy the text — The extracted text appears instantly. Copy it to your clipboard or download as a text file."}]} />
       <a href="/blog" className="text-sm text-indigo-500 hover:underline mb-6 inline-block">&larr; Back to blog</a>
       <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">How to Extract Text from PDF Online Free</h1>
       <p className="text-sm text-[var(--muted)] mb-8">4 min read · Updated June 2026</p>

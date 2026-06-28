@@ -11,6 +11,8 @@ export const metadata: Metadata = {
 };
 
 import ArticleJsonLd from "@/components/ArticleJsonLd";
+import HowToJsonLd from "@/components/HowToJsonLd";
+import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 
 export default function BlogPost() {
   return (
@@ -21,6 +23,8 @@ export default function BlogPost() {
         url="https://allaboutpdfediting.xyz/blog/sign-pdf-without-printing"
         datePublished="2026-06-24"
       />
+      <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Blog", item: "https://allaboutpdfediting.xyz/blog" }, { name: "How to Sign a PDF Without Printing", item: "https://allaboutpdfediting.xyz/blog/sign-pdf-without-printing" }]} />
+      <HowToJsonLd name="How to Sign a PDF Without Printing" description="Learn how to sign a PDF online free without printing or scanning..." steps={[{name:"Open the e-sign tool — Go to our free e-Sign PDF tool.",text:"Open the e-sign tool — Go to our free e-Sign PDF tool."},{name:"Draw your signature — Use your mouse, trackpad, or touchscreen to draw your s...",text:"Draw your signature — Use your mouse, trackpad, or touchscreen to draw your signature in the pad."},{name:"Upload and download — Select your PDF, click Sign, and download the signed do...",text:"Upload and download — Select your PDF, click Sign, and download the signed document immediately."}]} />
       <a href="/blog" className="text-sm text-indigo-500 hover:underline mb-6 inline-block">&larr; Back to blog</a>
       <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">How to Sign a PDF Without Printing</h1>
       <p className="text-sm text-[var(--muted)] mb-8">5 min read · Updated June 2026</p>

@@ -1,5 +1,7 @@
 import Link from "next/link";
 import ArticleJsonLd from "@/components/ArticleJsonLd";
+import HowToJsonLd from "@/components/HowToJsonLd";
+import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 
 export default function BlogPost() {
   return (
@@ -10,6 +12,8 @@ export default function BlogPost() {
         url="https://allaboutpdfediting.xyz/blog/merge-multiple-pdfs-into-one"
         datePublished="2026-06-24"
       />
+      <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Blog", item: "https://allaboutpdfediting.xyz/blog" }, { name: "How to Merge Multiple PDFs Into One Document Online Free", item: "https://allaboutpdfediting.xyz/blog/merge-multiple-pdfs-into-one" }]} />
+      <HowToJsonLd name="How to Merge Multiple PDFs Into One Document Online Free" description="Combine several PDF files into a single document without installing software..." steps={[{name:"Go to the Merge PDF page",text:"Go to the Merge PDF page"},{name:"Drag and drop your PDF files (select multiple at once)",text:"Drag and drop your PDF files (select multiple at once)"},{name:"Reorder them by dragging &amp;mdash; the order appears in the list",text:"Reorder them by dragging &amp;mdash; the order appears in the list"},{name:"Click &quot;Merge PDFs&quot; to combine them",text:"Click &quot;Merge PDFs&quot; to combine them"},{name:"Your merged document downloads automatically",text:"Your merged document downloads automatically"}]} />
       <Link href="/blog" className="text-sm text-indigo-500 hover:underline mb-6 inline-block">&larr; Back to blog</Link>
       <h1 className="text-3xl font-bold text-[var(--foreground)] mb-3">How to Merge Multiple PDFs Into One Document Online Free</h1>
       <p className="text-sm text-[var(--muted)] mb-8">June 24, 2026 &middot; 3 min read</p>

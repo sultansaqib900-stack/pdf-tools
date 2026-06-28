@@ -1,5 +1,7 @@
 "use client";
 import ArticleJsonLd from "@/components/ArticleJsonLd";
+import HowToJsonLd from "@/components/HowToJsonLd";
+import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 
 export default function BlogPost() {
   return (
@@ -10,6 +12,8 @@ export default function BlogPost() {
         url="https://allaboutpdfediting.xyz/blog/split-pdf-by-bookmarks"
         datePublished="2026-06-26"
       />
+      <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Blog", item: "https://allaboutpdfediting.xyz/blog" }, { name: "How to Split a PDF by Bookmarks", item: "https://allaboutpdfediting.xyz/blog/split-pdf-by-bookmarks" }]} />
+      <HowToJsonLd name="How to Split a PDF by Bookmarks" description="Learn how to split a PDF into separate files using bookmarks and outline structure. Extract chapters, sections, and parts automatically." steps={[{name:"Upload your PDF — The file must contain bookmarks (also called an outline or ...",text:"Upload your PDF — The file must contain bookmarks (also called an outline or table of contents)."},{name:"Review the detected bookmarks — The tool shows every bookmark found with its ...",text:"Review the detected bookmarks — The tool shows every bookmark found with its starting page number."},{name:"Download each chapter — Each bookmark becomes a separate PDF file, named afte...",text:"Download each chapter — Each bookmark becomes a separate PDF file, named after the bookmark title."}]} />
       <a href="/blog" className="text-sm text-indigo-500 hover:underline mb-6 inline-block">&larr; Back to blog</a>
       <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">How to Split a PDF by Bookmarks</h1>
       <p className="text-sm text-[var(--muted)] mb-8">6 min read · Updated June 2026</p>

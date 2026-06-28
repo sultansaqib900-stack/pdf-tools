@@ -16,6 +16,8 @@ import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
 
 import HowToJsonLd from "@/components/HowToJsonLd";
 import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
+import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
+import FaqPageJsonLd from "@/components/FaqPageJsonLd";
 
 const sizes: { label: string; w: number; h: number }[] = [
   { label: "A4 (210×297 mm)", w: 595.28, h: 841.89 },
@@ -108,9 +110,14 @@ export default function ResizePage() {
   }, [file, selectedSize, mode, customW, customH]);
 
   const process = useCallback(async () => {
-    if (!isPremium()) { setShowTimer(true); return; }
+    if (!isPremium()) {
+      const remaining = await usage.peekUsage();
+      if (remaining <= 0) { upsell.showUpsell("daily-limit"); return; }
+      setShowTimer(true);
+      return;
+    }
     runResize();
-  }, [runResize]);
+    }, [usage, upsell, runResize])
 
   const restoreOriginal = useCallback(async () => {
     if (!originalBytes.current) return;
@@ -131,6 +138,8 @@ export default function ResizePage() {
         url="https://allaboutpdfediting.xyz/resize"
       />
       <HowToJsonLd name="Resize PDF Pages" description="Change PDF page size to A4 Letter Legal or custom dimensions" steps={[{name:"Upload PDF",text:"Select the PDF to resize"},{name:"Choose page size",text:"Select A4 Letter Legal or enter custom dimensions"},{name:"Download resized PDF",text:"Download the PDF with new page dimensions"}]} />
+      <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Resize PDF", item: "https://allaboutpdfediting.xyz/resize" }]} />
+      <FaqPageJsonLd />
       <AiSummaryJsonLd name="Resize PDF" summary="Change PDF page dimensions to standard sizes like A4 Letter Legal or custom" category="Utilities" inputType="PDF" outputType="PDF" processing="client-side" price="free" features={["Page resizing","A4 Letter Legal","Custom dimensions","Free browser tool","Client-side"]} limits="Files up to 10MB" />
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">Resize PDF Pages</h1>

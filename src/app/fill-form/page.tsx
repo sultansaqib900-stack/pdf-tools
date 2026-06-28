@@ -16,6 +16,8 @@ import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
 
 import HowToJsonLd from "@/components/HowToJsonLd";
 import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
+import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
+import FaqPageJsonLd from "@/components/FaqPageJsonLd";
 
 interface FieldEntry {
   name: string;
@@ -130,9 +132,14 @@ export default function FillFormPage() {
   }, [file, fields]);
 
   const fill = useCallback(async () => {
-    if (!isPremium()) { setShowTimer(true); return; }
+    if (!isPremium()) {
+      const remaining = await usage.peekUsage();
+      if (remaining <= 0) { upsell.showUpsell("daily-limit"); return; }
+      setShowTimer(true);
+      return;
+    }
     runFill();
-  }, [runFill]);
+    }, [usage, upsell, runFill])
 
   const restoreOriginal = useCallback(async () => {
     if (!originalBytes.current) return;
@@ -153,6 +160,8 @@ export default function FillFormPage() {
         url="https://allaboutpdfediting.xyz/fill-form"
       />
       <HowToJsonLd name="Fill PDF Form Online" description="Complete interactive PDF form fields text checkboxes dropdowns" steps={[{name:"Upload PDF form",text:"Select a PDF with interactive form fields"},{name:"Fill in fields",text:"Complete text fields checkboxes and dropdowns"},{name:"Download filled form",text:"Download the completed PDF form"}]} />
+      <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Fill PDF Form", item: "https://allaboutpdfediting.xyz/fill-form" }]} />
+      <FaqPageJsonLd />
       <AiSummaryJsonLd name="Fill PDF Form" summary="Fill interactive PDF form fields including text checkboxes radio buttons and dropdowns" category="BusinessApplications" inputType="PDF" outputType="PDF" processing="client-side" price="free" features={["Form filling","Checkboxes","Dropdowns","Radio buttons","Free tool"]} limits="Files up to 10MB" />
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">Fill PDF Form</h1>

@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export default function Footer() {
   return (
     <footer className="w-full border-t border-[var(--card-border)] bg-[var(--card)]">
@@ -18,29 +20,34 @@ export default function Footer() {
                 ["Fill PDF Form", "/fill-form"], ["Flatten PDF", "/flatten-pdf"],
                 ["Reverse PDF Order", "/reverse-pdf"], ["Batch Process", "/batch"],
               ].map(([label, href]) => (
-                <a key={href} href={href} className="block hover:text-[var(--foreground)] hover:translate-x-0.5 transition-all">{label}</a>
+                <Link key={href} href={href} className="block hover:text-[var(--foreground)] hover:translate-x-0.5 transition-all">{label}</Link>
               ))}
+            </div>
+          </div>
+          <div>
+            <h4 className="font-semibold text-sm mb-3 text-[var(--foreground)]">Resources</h4>
+            <div className="space-y-2 text-sm text-[var(--muted)]">
+              <Link href="/blog" className="block hover:text-[var(--foreground)] hover:translate-x-0.5 transition-all">Blog</Link>
+              <Link href="/ultimate-guide-to-pdf-editing" className="block hover:text-[var(--foreground)] hover:translate-x-0.5 transition-all">Ultimate Guide</Link>
+              <Link href="/tools" className="block hover:text-[var(--foreground)] hover:translate-x-0.5 transition-all">All Tools</Link>
+              <Link href="/contact" className="block hover:text-[var(--foreground)] hover:translate-x-0.5 transition-all">Contact</Link>
+              <Link href="/qa" className="block hover:text-[var(--foreground)] hover:translate-x-0.5 transition-all">Q&A</Link>
+              <Link href="/offline" className="block hover:text-[var(--foreground)] hover:translate-x-0.5 transition-all">Offline Mode</Link>
             </div>
           </div>
           <div>
             <h4 className="font-semibold text-sm mb-3 text-[var(--foreground)]">Company</h4>
             <div className="space-y-2 text-sm text-[var(--muted)]">
-              <a href="/about" className="block hover:text-[var(--foreground)] hover:translate-x-0.5 transition-all">About</a>
-              <a href="/blog" className="block hover:text-[var(--foreground)] hover:translate-x-0.5 transition-all">Blog</a>
+              <Link href="/about" className="block hover:text-[var(--foreground)] hover:translate-x-0.5 transition-all">About</Link>
+              <Link href="/privacy" className="block hover:text-[var(--foreground)] hover:translate-x-0.5 transition-all">Privacy</Link>
+              <Link href="/terms" className="block hover:text-[var(--foreground)] hover:translate-x-0.5 transition-all">Terms</Link>
               <a href="mailto:saqibbostan83@gmail.com" className="block hover:text-[var(--foreground)] hover:translate-x-0.5 transition-all">Contact</a>
-            </div>
-          </div>
-          <div>
-            <h4 className="font-semibold text-sm mb-3 text-[var(--foreground)]">Legal</h4>
-            <div className="space-y-2 text-sm text-[var(--muted)]">
-              <a href="/privacy" className="block hover:text-[var(--foreground)] hover:translate-x-0.5 transition-all">Privacy</a>
-              <a href="/terms" className="block hover:text-[var(--foreground)] hover:translate-x-0.5 transition-all">Terms</a>
             </div>
           </div>
           <div>
             <h4 className="font-semibold text-sm mb-3 text-[var(--foreground)]">Monetize</h4>
             <div className="space-y-2 text-sm text-[var(--muted)]">
-              <a href="/premium" className="block hover:text-[var(--foreground)] hover:translate-x-0.5 transition-all">Go Premium</a>
+              <Link href="/premium" className="block hover:text-[var(--foreground)] hover:translate-x-0.5 transition-all">Go Premium</Link>
               <a href="mailto:saqibbostan83@gmail.com?subject=Advertising" className="block hover:text-[var(--foreground)] hover:translate-x-0.5 transition-all">Advertise</a>
             </div>
           </div>

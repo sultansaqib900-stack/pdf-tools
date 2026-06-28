@@ -2,13 +2,16 @@
 
 import { usePageMeta } from "@/hooks/usePageMeta";
 import ToolGrid from "@/components/ToolGrid";
-import LiveStats from "@/components/LiveStats";
-import EmailSubscribe from "@/components/EmailSubscribe";
-import FeedbackSection from "@/components/FeedbackSection";
-import RecentTools from "@/components/RecentTools";
-import PremiumFeatureShowcase from "@/components/PremiumFeatureShowcase";
+import ToolSearch from "@/components/ToolSearch";
 import FaqPageJsonLd from "@/components/FaqPageJsonLd";
 import { useEffect, useRef, useState } from "react";
+import dynamic from "next/dynamic";
+
+const LiveStats = dynamic(() => import("@/components/LiveStats"));
+const EmailSubscribe = dynamic(() => import("@/components/EmailSubscribe"));
+const FeedbackSection = dynamic(() => import("@/components/FeedbackSection"));
+const RecentTools = dynamic(() => import("@/components/RecentTools"));
+const PremiumFeatureShowcase = dynamic(() => import("@/components/PremiumFeatureShowcase"));
 
 function AnimatedHero() {
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
@@ -124,6 +127,10 @@ export default function Home() {
   return (
     <div>
       <AnimatedHero />
+
+      <section className="max-w-6xl mx-auto px-4 -mt-8 mb-8">
+        <ToolSearch />
+      </section>
 
       <section className="max-w-6xl mx-auto px-4 -mt-6 mb-12">
         <ToolGrid />

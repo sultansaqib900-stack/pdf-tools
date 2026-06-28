@@ -1,24 +1,44 @@
 @import "tailwindcss";
 @variant dark (&:where(.dark, .dark *));
 
-:root {
-  --background: #f8fafc;
-  --foreground: #0f172a;
-  --card: #ffffff;
-  --card-border: #e2e8f0;
-  --muted: #64748b;
-  --accent: #4f46e5;
-  --accent-hover: #4338ca;
-}
-
-.dark {
-  --background: #0f172a;
+:root,
+[data-theme="midnight"] {
+  --background: #0b1120;
   --foreground: #f1f5f9;
-  --card: #1e293b;
-  --card-border: #334155;
-  --muted: #94a3b8;
+  --card: #171f2e;
+  --card-border: #2a3448;
+  --muted: #8899b4;
   --accent: #6366f1;
   --accent-hover: #818cf8;
+  --gradient-from: #1e1b4b;
+  --gradient-via: #312e81;
+  --gradient-to: #3730a3;
+}
+
+[data-theme="amber"] {
+  --background: #17120e;
+  --foreground: #fef3c7;
+  --card: #261f16;
+  --card-border: #3d3528;
+  --muted: #c9944a;
+  --accent: #f59e0b;
+  --accent-hover: #fbbf24;
+  --gradient-from: #451a03;
+  --gradient-via: #78350f;
+  --gradient-to: #92400e;
+}
+
+[data-theme="ocean"] {
+  --background: #080f14;
+  --foreground: #ccfbf1;
+  --card: #0f1f28;
+  --card-border: #1a2f3a;
+  --muted: #5eead4;
+  --accent: #06b6d4;
+  --accent-hover: #22d3ee;
+  --gradient-from: #042f2e;
+  --gradient-via: #0f766e;
+  --gradient-to: #0e7490;
 }
 
 body {
@@ -187,7 +207,8 @@ a:active:not(.sr-only) {
   transform: translateY(-4px);
   box-shadow: 0 8px 30px rgba(0,0,0,0.08);
 }
-.dark .card-hover:hover {
+.dark .card-hover:hover,
+[data-theme] .card-hover:hover {
   box-shadow: 0 8px 30px rgba(0,0,0,0.3);
 }
 
@@ -237,12 +258,7 @@ html { scroll-behavior: smooth; }
 
 @layer utilities {
   .bg-gradient-hero {
-    background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #a855f7 100%);
-    background-size: 200% 200%;
-    animation: gradientShift 6s ease infinite;
-  }
-  .dark .bg-gradient-hero {
-    background: linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #3730a3 100%);
+    background: linear-gradient(135deg, var(--gradient-from) 0%, var(--gradient-via) 50%, var(--gradient-to) 100%);
     background-size: 200% 200%;
     animation: gradientShift 6s ease infinite;
   }

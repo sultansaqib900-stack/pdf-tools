@@ -1,5 +1,7 @@
 import Link from "next/link";
 import ArticleJsonLd from "@/components/ArticleJsonLd";
+import HowToJsonLd from "@/components/HowToJsonLd";
+import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 
 export default function BlogPost() {
   return (
@@ -10,6 +12,8 @@ export default function BlogPost() {
         url="https://allaboutpdfediting.xyz/blog/resize-pdf-pages"
         datePublished="2026-06-24"
       />
+      <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Blog", item: "https://allaboutpdfediting.xyz/blog" }, { name: "How to Resize PDF Pages Online Free — Change to A4, Letter &amp; Custom Sizes", item: "https://allaboutpdfediting.xyz/blog/resize-pdf-pages" }]} />
+      <HowToJsonLd name="How to Resize PDF Pages Online Free — Change to A4, Letter &amp; Custom Sizes" description="Change page size of PDF documents online for free..." steps={[{name:"Go to the Resize PDF page",text:"Go to the Resize PDF page"},{name:"Upload your PDF file",text:"Upload your PDF file"},{name:"Choose a preset size (A4, Letter, Legal, etc.) or enter custom dimensions",text:"Choose a preset size (A4, Letter, Legal, etc.) or enter custom dimensions"},{name:"Click &quot;Resize&quot; and your updated PDF downloads automatically",text:"Click &quot;Resize&quot; and your updated PDF downloads automatically"}]} />
       <Link href="/blog" className="text-sm text-indigo-500 hover:underline mb-6 inline-block">&larr; Back to blog</Link>
       <h1 className="text-3xl font-bold text-[var(--foreground)] mb-3">How to Resize PDF Pages Online Free — Change to A4, Letter & Custom Sizes</h1>
       <p className="text-sm text-[var(--muted)] mb-8">June 24, 2026 &middot; 3 min read</p>

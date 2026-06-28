@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /vault/
+
+Sitemap: https://allaboutpdfediting.xyz/sitemap.xml
+
+# Tier 1 country crawl optimization
+ Crawl-Delay: 5

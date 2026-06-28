@@ -1,5 +1,7 @@
 "use client";
 import ArticleJsonLd from "@/components/ArticleJsonLd";
+import HowToJsonLd from "@/components/HowToJsonLd";
+import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 
 export default function BlogPost() {
   return (
@@ -10,6 +12,8 @@ export default function BlogPost() {
         url="https://allaboutpdfediting.xyz/blog/compare-pdfs-online"
         datePublished="2026-06-26"
       />
+      <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Blog", item: "https://allaboutpdfediting.xyz/blog" }, { name: "How to Compare Two PDF Files Online Free", item: "https://allaboutpdfediting.xyz/blog/compare-pdfs-online" }]} />
+      <HowToJsonLd name="How to Compare Two PDF Files Online Free" description="Compare two PDF files side by side and spot text differences instantly." steps={[{name:"Upload the original PDF — Drag and drop or select the older version of your d...",text:"Upload the original PDF — Drag and drop or select the older version of your document."},{name:"Upload the revised PDF — Select the newer version you want to compare against.",text:"Upload the revised PDF — Select the newer version you want to compare against."},{name:"View the differences — The tool processes both files instantly and shows high...",text:"View the differences — The tool processes both files instantly and shows highlighted changes."}]} />
       <a href="/blog" className="text-sm text-indigo-500 hover:underline mb-6 inline-block">&larr; Back to blog</a>
       <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">How to Compare Two PDF Files Online Free</h1>
       <p className="text-sm text-[var(--muted)] mb-8">5 min read · Updated June 2026</p>

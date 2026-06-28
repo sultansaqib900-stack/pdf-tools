@@ -4,7 +4,6 @@ import Script from "next/script";
 
 interface AdBannerProps {
   className?: string;
-  slot?: string;
 }
 
 export default function AdBanner({ className }: AdBannerProps) {

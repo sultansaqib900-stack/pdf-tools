@@ -1,5 +1,7 @@
 "use client";
 import ArticleJsonLd from "@/components/ArticleJsonLd";
+import HowToJsonLd from "@/components/HowToJsonLd";
+import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 
 export default function BlogPost() {
   return (
@@ -10,6 +12,8 @@ export default function BlogPost() {
         url="https://allaboutpdfediting.xyz/blog/bulk-rename-pdf-files"
         datePublished="2026-06-26"
       />
+      <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Blog", item: "https://allaboutpdfediting.xyz/blog" }, { name: "How to Bulk Rename PDF Files by Metadata Online Free", item: "https://allaboutpdfediting.xyz/blog/bulk-rename-pdf-files" }]} />
+      <HowToJsonLd name="How to Bulk Rename PDF Files by Metadata Online Free" description="Rename multiple PDF files at once using embedded metadata." steps={[{name:"Upload your PDFs — Select multiple PDF files that contain metadata.",text:"Upload your PDFs — Select multiple PDF files that contain metadata."},{name:"Define a naming pattern — Use metadata tags like {`{title} - {author}`} to cr...",text:"Define a naming pattern — Use metadata tags like {`{title} - {author}`} to create a template."},{name:"Preview and rename — See how files will be named before applying. Download th...",text:"Preview and rename — See how files will be named before applying. Download the renamed files."}]} />
       <a href="/blog" className="text-sm text-indigo-500 hover:underline mb-6 inline-block">&larr; Back to blog</a>
       <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">How to Bulk Rename PDF Files by Metadata Online Free</h1>
       <p className="text-sm text-[var(--muted)] mb-8">4 min read · Updated June 2026</p>

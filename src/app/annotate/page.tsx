@@ -16,6 +16,8 @@ import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
 
 import HowToJsonLd from "@/components/HowToJsonLd";
 import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
+import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
+import FaqPageJsonLd from "@/components/FaqPageJsonLd";
 
 type AnnotateMode = "highlight" | "underline" | "strikethrough";
 
@@ -335,9 +337,14 @@ export default function AnnotatePage() {
   }, [file, pdfDoc, rects, saving, usage]);
 
   const process = useCallback(async () => {
-    if (!isPremium()) { setShowTimer(true); return; }
+    if (!isPremium()) {
+      const remaining = await usage.peekUsage();
+      if (remaining <= 0) { upsell.showUpsell("daily-limit"); return; }
+      setShowTimer(true);
+      return;
+    }
     runAnnotate();
-  }, [runAnnotate]);
+    }, [usage, upsell, runAnnotate])
 
   const hasRects = rects.some((r) => r.length > 0);
   const totalAnnotations = rects.flat().length;
@@ -350,6 +357,8 @@ export default function AnnotatePage() {
         url="https://allaboutpdfediting.xyz/annotate"
       />
       <HowToJsonLd name="Annotate PDF Online" description="Highlight underline strikethrough and add comments to PDFs" steps={[{name:"Upload PDF",text:"Select the PDF document to annotate"},{name:"Add annotations",text:"Highlight text underline or strikethrough content"},{name:"Download annotated PDF",text:"Download the PDF with your annotations saved"}]} />
+      <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Annotate PDF", item: "https://allaboutpdfediting.xyz/annotate" }]} />
+      <FaqPageJsonLd />
       <AiSummaryJsonLd name="Annotate PDF" summary="Add highlights underlines strikethroughs and comments to PDF documents" category="Graphics" inputType="PDF" outputType="PDF" processing="client-side" price="free" features={["Highlight text","Underline text","Strikethrough","Comment notes","Free browser tool"]} limits="Files up to 10MB" />
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">Annotate PDF</h1>

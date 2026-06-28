@@ -1,10 +1,14 @@
 import type { Metadata } from "next";
 export const metadata: Metadata = { title: "How to Add Page Numbers to PDF Files Online Free", description: "Add page numbers to PDF documents online for free. Number pages from any starting position with custom formatting." };
 import ArticleJsonLd from "@/components/ArticleJsonLd";
+import HowToJsonLd from "@/components/HowToJsonLd";
+import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 export default function BlogPost() {
   return (
     <article className="max-w-3xl mx-auto px-4 py-12">
       <ArticleJsonLd title="How to Add Page Numbers to PDF Files Online Free" description="Add page numbers to PDF documents online for free. Number pages from any starting position with custom formatting." url="https://allaboutpdfediting.xyz/blog/add-page-numbers-to-pdf" datePublished="2026-06-25" />
+      <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Blog", item: "https://allaboutpdfediting.xyz/blog" }, { name: "How to Add Page Numbers to PDF Files Online Free", item: "https://allaboutpdfediting.xyz/blog/add-page-numbers-to-pdf" }]} />
+      <HowToJsonLd name="How to Add Page Numbers to PDF Files Online Free" description="Add page numbers to PDF documents online for free. Number pages from any starting position with custom formatting." steps={[{name:"Upload your PDF — Go to our Add Page Numbers tool and select your file.",text:"Upload your PDF — Go to our Add Page Numbers tool and select your file."},{name:"Configure numbering — Choose the starting page, number position (top or botto...",text:"Configure numbering — Choose the starting page, number position (top or bottom), and format (1, 2, 3 or i, ii, iii)."},{name:"Download — The tool processes your file instantly. Your numbered PDF is ready...",text:"Download — The tool processes your file instantly. Your numbered PDF is ready to download."}]} />
       <a href="/blog" className="text-sm text-indigo-500 hover:underline mb-6 inline-block">&larr; Back to blog</a>
       <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">How to Add Page Numbers to PDF Files Online Free</h1>
       <p className="text-sm text-[var(--muted)] mb-8">4 min read · Updated June 2026</p>

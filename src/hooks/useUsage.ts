@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { trackUsage, isPremium, getTotalProcessed, isUnlimited } from "@/lib/premium";
+import { trackUsage, peekUsage as peekUsageApi, isPremium, getTotalProcessed, isUnlimited } from "@/lib/premium";
 import { trackEvent } from "@/lib/analytics";
 
 function getToolName(): string {
@@ -28,13 +28,20 @@ export function useUsage(toolName?: string) {
     trackEvent("tool_start", { tool });
 
     const result = await trackUsage();
-    if (result.remaining <= 0) {
+    if (result.remaining < 0) {
       trackEvent("tool_limit_reached", { tool });
       return false;
     }
     setRemaining(result.remaining);
     return true;
   }, [tool, unlimited]);
+
+  const peekUsage = useCallback(async (): Promise<number> => {
+    if (isPremium() || unlimited) return 999;
+    const result = await peekUsageApi();
+    setRemaining(result.remaining);
+    return result.remaining;
+  }, [unlimited]);
 
   const refreshUsage = useCallback(async () => {
     if (isPremium() || unlimited) return;
@@ -48,6 +55,7 @@ export function useUsage(toolName?: string) {
     showUsageBar,
     setShowUsageBar,
     checkAndTrack,
+    peekUsage,
     refreshUsage,
     unlimited,
   };

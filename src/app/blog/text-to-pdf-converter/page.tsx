@@ -1,5 +1,7 @@
 import Link from "next/link";
 import ArticleJsonLd from "@/components/ArticleJsonLd";
+import HowToJsonLd from "@/components/HowToJsonLd";
+import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 
 export default function BlogPost() {
   return (
@@ -10,6 +12,8 @@ export default function BlogPost() {
         url="https://allaboutpdfediting.xyz/blog/text-to-pdf-converter"
         datePublished="2026-06-24"
       />
+      <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Blog", item: "https://allaboutpdfediting.xyz/blog" }, { name: "How to Convert Text to PDF Online Free (No Software Needed)", item: "https://allaboutpdfediting.xyz/blog/text-to-pdf-converter" }]} />
+      <HowToJsonLd name="How to Convert Text to PDF Online Free (No Software Needed)" description="Convert plain text to PDF documents online for free..." steps={[{name:"Open the Text to PDF tool",text:"Open the Text to PDF tool"},{name:"Type or paste your text into the text area",text:"Type or paste your text into the text area"},{name:"Optionally add a document title",text:"Optionally add a document title"},{name:"Click &quot;Convert to PDF&quot; and your new file downloads instantly",text:"Click &quot;Convert to PDF&quot; and your new file downloads instantly"}]} />
       <Link href="/blog" className="text-sm text-indigo-500 hover:underline mb-6 inline-block">&larr; Back to blog</Link>
       <h1 className="text-3xl font-bold text-[var(--foreground)] mb-3">How to Convert Text to PDF Online Free (No Software Needed)</h1>
       <p className="text-sm text-[var(--muted)] mb-8">June 24, 2026 &middot; 3 min read</p>

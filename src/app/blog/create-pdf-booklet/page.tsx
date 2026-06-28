@@ -1,5 +1,7 @@
 "use client";
 import ArticleJsonLd from "@/components/ArticleJsonLd";
+import HowToJsonLd from "@/components/HowToJsonLd";
+import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 
 export default function BlogPost() {
   return (
@@ -10,6 +12,8 @@ export default function BlogPost() {
         url="https://allaboutpdfediting.xyz/blog/create-pdf-booklet"
         datePublished="2026-06-26"
       />
+      <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Blog", item: "https://allaboutpdfediting.xyz/blog" }, { name: "How to Create a PDF Booklet for Printing Online Free", item: "https://allaboutpdfediting.xyz/blog/create-pdf-booklet" }]} />
+      <HowToJsonLd name="How to Create a PDF Booklet for Printing Online Free" description="Convert any PDF into a printable booklet with side-by-side pages." steps={[{name:"Upload your PDF — Select the document you want to convert into a booklet.",text:"Upload your PDF — Select the document you want to convert into a booklet."},{name:"Choose a layout — Pick booklet (side-by-side), 2x2 grid, or 4x4 grid.",text:"Choose a layout — Pick booklet (side-by-side), 2x2 grid, or 4x4 grid."},{name:"Download and print — The tool rearranges your pages instantly. Download the r...",text:"Download and print — The tool rearranges your pages instantly. Download the result and print it."}]} />
       <a href="/blog" className="text-sm text-indigo-500 hover:underline mb-6 inline-block">&larr; Back to blog</a>
       <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">How to Create a PDF Booklet for Printing Online Free</h1>
       <p className="text-sm text-[var(--muted)] mb-8">5 min read · Updated June 2026</p>

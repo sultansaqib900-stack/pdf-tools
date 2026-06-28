@@ -1,5 +1,7 @@
 "use client";
 import ArticleJsonLd from "@/components/ArticleJsonLd";
+import HowToJsonLd from "@/components/HowToJsonLd";
+import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 
 export default function BlogPost() {
   return (
@@ -10,6 +12,8 @@ export default function BlogPost() {
         url="https://allaboutpdfediting.xyz/blog/search-and-redact-pdf"
         datePublished="2026-06-26"
       />
+      <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Blog", item: "https://allaboutpdfediting.xyz/blog" }, { name: "How to Search and Redact Words in PDF Online Free", item: "https://allaboutpdfediting.xyz/blog/search-and-redact-pdf" }]} />
+      <HowToJsonLd name="How to Search and Redact Words in PDF Online Free" description="Automatically find and redact specific words or phrases across your entire PDF document." steps={[{name:"Upload your PDF — Select the document containing sensitive information.",text:"Upload your PDF — Select the document containing sensitive information."},{name:"Enter search terms — Type the words, phrases, or patterns you want to find an...",text:"Enter search terms — Type the words, phrases, or patterns you want to find and redact. The tool supports multiple terms at once."},{name:"Apply redaction — Review the matches and apply permanent black-box redaction....",text:"Apply redaction — Review the matches and apply permanent black-box redaction. Download the cleaned document."}]} />
       <a href="/blog" className="text-sm text-indigo-500 hover:underline mb-6 inline-block">&larr; Back to blog</a>
       <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">How to Search and Redact Words in PDF Online Free</h1>
       <p className="text-sm text-[var(--muted)] mb-8">5 min read · Updated June 2026</p>

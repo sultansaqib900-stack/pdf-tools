@@ -1,10 +1,14 @@
 import type { Metadata } from "next";
 export const metadata: Metadata = { title: "How to Convert Images to PDF Online Free — JPG, PNG to PDF", description: "Convert images to PDF online for free. Turn JPG, PNG, BMP and other image formats into PDF documents instantly." };
 import ArticleJsonLd from "@/components/ArticleJsonLd";
+import HowToJsonLd from "@/components/HowToJsonLd";
+import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 export default function BlogPost() {
   return (
     <article className="max-w-3xl mx-auto px-4 py-12">
       <ArticleJsonLd title="How to Convert Images to PDF Online Free" description="Convert images to PDF online for free." url="https://allaboutpdfediting.xyz/blog/convert-image-to-pdf" datePublished="2026-06-25" />
+      <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Blog", item: "https://allaboutpdfediting.xyz/blog" }, { name: "How to Convert Images to PDF Online Free", item: "https://allaboutpdfediting.xyz/blog/convert-image-to-pdf" }]} />
+      <HowToJsonLd name="How to Convert Images to PDF Online Free" description="Convert images to PDF online for free." steps={[{name:"Open the converter — Go to our Image to PDF tool.",text:"Open the converter — Go to our Image to PDF tool."},{name:"Upload your images — Select one or multiple images. Drag to reorder them.",text:"Upload your images — Select one or multiple images. Drag to reorder them."},{name:"Choose page size — Select the output page size (A4, Letter, or match image si...",text:"Choose page size — Select the output page size (A4, Letter, or match image size)."},{name:"Download your PDF — The combined PDF is ready instantly.",text:"Download your PDF — The combined PDF is ready instantly."}]} />
       <a href="/blog" className="text-sm text-indigo-500 hover:underline mb-6 inline-block">&larr; Back to blog</a>
       <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">How to Convert Images to PDF Online Free</h1>
       <p className="text-sm text-[var(--muted)] mb-8">4 min read · Updated June 2026</p>

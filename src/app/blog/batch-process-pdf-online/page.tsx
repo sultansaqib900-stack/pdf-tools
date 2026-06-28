@@ -1,10 +1,14 @@
 import type { Metadata } from "next";
 export const metadata: Metadata = { title: "How to Batch Process PDF Files Online Free — Edit Multiple PDFs at Once", description: "Batch process multiple PDF files online for free. Apply the same operation to many PDFs at once." };
 import ArticleJsonLd from "@/components/ArticleJsonLd";
+import HowToJsonLd from "@/components/HowToJsonLd";
+import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 export default function BlogPost() {
   return (
     <article className="max-w-3xl mx-auto px-4 py-12">
       <ArticleJsonLd title="How to Batch Process PDF Files Online Free" description="Batch process multiple PDF files online for free. Apply the same operation to many PDFs at once." url="https://allaboutpdfediting.xyz/blog/batch-process-pdf-online" datePublished="2026-06-25" />
+      <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Blog", item: "https://allaboutpdfediting.xyz/blog" }, { name: "How to Batch Process PDF Files Online Free", item: "https://allaboutpdfediting.xyz/blog/batch-process-pdf-online" }]} />
+      <HowToJsonLd name="How to Batch Process PDF Files Online Free" description="Batch process multiple PDF files online for free. Apply the same operation to many PDFs at once." steps={[{name:"Go to the batch tool — Open our batch PDF processor.",text:"Go to the batch tool — Open our batch PDF processor."},{name:"Select your files — Choose multiple PDFs at once using the file picker or dra...",text:"Select your files — Choose multiple PDFs at once using the file picker or drag and drop."},{name:"Choose the operation — Select what you want to do: compress all, merge all, o...",text:"Choose the operation — Select what you want to do: compress all, merge all, or convert all."},{name:"Process and download — Click go and each file is processed individually. Down...",text:"Process and download — Click go and each file is processed individually. Download results as a zip or individually."}]} />
       <a href="/blog" className="text-sm text-indigo-500 hover:underline mb-6 inline-block">&larr; Back to blog</a>
       <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">How to Batch Process PDF Files Online Free</h1>
       <p className="text-sm text-[var(--muted)] mb-8">4 min read · Updated June 2026</p>

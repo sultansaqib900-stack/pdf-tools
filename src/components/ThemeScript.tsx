@@ -1,3 +1,5 @@
+const THEMES = ["midnight", "amber", "ocean"];
+
 export default function ThemeScript() {
   return (
     <script
@@ -5,9 +7,12 @@ export default function ThemeScript() {
         __html: `
           (function() {
             try {
+              document.documentElement.classList.add('dark');
               var theme = localStorage.getItem('theme');
-              if (theme === 'dark' || !theme || window.matchMedia('(prefers-color-scheme: dark)').matches) {
-                document.documentElement.classList.add('dark');
+              if (theme && ${JSON.stringify(THEMES)}.includes(theme)) {
+                document.documentElement.setAttribute('data-theme', theme);
+              } else {
+                document.documentElement.setAttribute('data-theme', 'midnight');
               }
             } catch(e) {}
           })();

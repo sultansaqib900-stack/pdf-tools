@@ -1,5 +1,7 @@
 "use client";
 import ArticleJsonLd from "@/components/ArticleJsonLd";
+import HowToJsonLd from "@/components/HowToJsonLd";
+import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 
 export default function BlogPost() {
   return (
@@ -10,6 +12,8 @@ export default function BlogPost() {
         url="https://allaboutpdfediting.xyz/blog/secure-pdf-vault"
         datePublished="2026-06-26"
       />
+      <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Blog", item: "https://allaboutpdfediting.xyz/blog" }, { name: "How to Store PDFs Securely Online Free", item: "https://allaboutpdfediting.xyz/blog/secure-pdf-vault" }]} />
+      <HowToJsonLd name="How to Store PDFs Securely Online Free" description="Store your PDF documents securely in an encrypted browser vault with password protection." steps={[{name:"Set a vault password — Choose a strong password that will encrypt all your st...",text:"Set a vault password — Choose a strong password that will encrypt all your stored documents."},{name:"Upload documents — Drag and drop PDFs into the vault. They are encrypted imme...",text:"Upload documents — Drag and drop PDFs into the vault. They are encrypted immediately before storage."},{name:"Access anytime — Return to the vault, enter your password, and download or vi...",text:"Access anytime — Return to the vault, enter your password, and download or view your documents securely."}]} />
       <a href="/blog" className="text-sm text-indigo-500 hover:underline mb-6 inline-block">&larr; Back to blog</a>
       <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">How to Store PDFs Securely Online Free</h1>
       <p className="text-sm text-[var(--muted)] mb-8">5 min read · Updated June 2026</p>

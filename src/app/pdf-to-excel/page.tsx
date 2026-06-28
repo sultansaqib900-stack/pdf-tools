@@ -16,6 +16,8 @@ import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
 
 import HowToJsonLd from "@/components/HowToJsonLd";
 import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
+import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
+import FaqPageJsonLd from "@/components/FaqPageJsonLd";
 
 export default function PdfToExcelPage() {
   const usage = useUsage();
@@ -109,9 +111,14 @@ export default function PdfToExcelPage() {
 
   const extract = useCallback(async () => {
     if (!file) return;
-    if (!isPremium()) { setShowTimer(true); return; }
+    if (!isPremium()) {
+      const remaining = await usage.peekUsage();
+      if (remaining <= 0) { upsell.showUpsell("daily-limit"); return; }
+      setShowTimer(true);
+      return;
+    }
     runExtract();
-  }, [file, runExtract]);
+    }, [usage, upsell, file, runExtract])
 
   const downloadCsv = useCallback(() => {
     if (!csv) return;
@@ -132,6 +139,8 @@ export default function PdfToExcelPage() {
         url="https://allaboutpdfediting.xyz/pdf-to-excel"
       />
       <HowToJsonLd name="Convert PDF to Excel" description="Extract tables from PDF files to Excel CSV spreadsheets" steps={[{name:"Upload PDF",text:"Select the PDF with tables to extract"},{name:"Review extracted data",text:"Preview the extracted table data"},{name:"Download CSV",text:"Download the extracted data as a spreadsheet file"}]} />
+      <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "PDF to Excel", item: "https://allaboutpdfediting.xyz/pdf-to-excel" }]} />
+      <FaqPageJsonLd />
       <AiSummaryJsonLd name="PDF to Excel" summary="Extract table data from PDF files to Excel CSV format" category="BusinessApplications" inputType="PDF" outputType="CSV" processing="client-side" price="free" features={["Table extraction","CSV export","Data preview","Free tool","Client-side"]} limits="Files up to 10MB" />
       <canvas ref={canvasRef} className="hidden" />
 

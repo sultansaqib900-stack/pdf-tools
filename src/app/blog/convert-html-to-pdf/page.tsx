@@ -1,10 +1,14 @@
 import type { Metadata } from "next";
 export const metadata: Metadata = { title: "How to Convert HTML to PDF Online Free — Webpage to PDF Converter", description: "Convert HTML to PDF online for free. Turn web pages or HTML code into PDF documents instantly." };
 import ArticleJsonLd from "@/components/ArticleJsonLd";
+import HowToJsonLd from "@/components/HowToJsonLd";
+import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 export default function BlogPost() {
   return (
     <article className="max-w-3xl mx-auto px-4 py-12">
       <ArticleJsonLd title="How to Convert HTML to PDF Online Free" description="Convert HTML to PDF online for free." url="https://allaboutpdfediting.xyz/blog/convert-html-to-pdf" datePublished="2026-06-25" />
+      <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Blog", item: "https://allaboutpdfediting.xyz/blog" }, { name: "How to Convert HTML to PDF Online Free", item: "https://allaboutpdfediting.xyz/blog/convert-html-to-pdf" }]} />
+      <HowToJsonLd name="How to Convert HTML to PDF Online Free" description="Convert HTML to PDF online for free." steps={[{name:"Open the converter — Go to our HTML to PDF tool.",text:"Open the converter — Go to our HTML to PDF tool."},{name:"Enter your HTML — Paste HTML code or a URL. The tool renders it with full CSS...",text:"Enter your HTML — Paste HTML code or a URL. The tool renders it with full CSS support."},{name:"Download your PDF — The rendered PDF preserves fonts, colors, layout, and ima...",text:"Download your PDF — The rendered PDF preserves fonts, colors, layout, and images."}]} />
       <a href="/blog" className="text-sm text-indigo-500 hover:underline mb-6 inline-block">&larr; Back to blog</a>
       <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">How to Convert HTML to PDF Online Free</h1>
       <p className="text-sm text-[var(--muted)] mb-8">5 min read · Updated June 2026</p>

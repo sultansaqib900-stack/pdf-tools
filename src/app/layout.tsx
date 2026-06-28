@@ -9,6 +9,7 @@ import InstallPrompt from "@/components/InstallPrompt";
 import CookieConsent from "@/components/CookieConsent";
 import ClientIdProvider from "@/components/ClientIdProvider";
 import FeedbackWidget from "@/components/FeedbackWidget";
+import AdBlockDetector from "@/components/AdBlockDetector";
 import AdsterraBanner from "@/components/AdsterraBanner";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import ToastProvider from "@/components/Toast";
@@ -16,7 +17,9 @@ import OrganizationJsonLd from "@/components/OrganizationJsonLd";
 import WebSiteJsonLd from "@/components/WebSiteJsonLd";
 import SiteNavJsonLd from "@/components/SiteNavJsonLd";
 import CanonicalTag from "@/components/CanonicalTag";
+import HreflangTags from "@/components/HreflangTags";
 import { Analytics } from "@vercel/analytics/react";
+import Script from "next/script";
 import { AuthProvider } from "@/components/AuthProvider";
 
 export const metadata: Metadata = {
@@ -66,7 +69,10 @@ export default function RootLayout({
         <link rel="preconnect" href="https://pagead2.googlesyndication.com" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" />
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+        <HreflangTags />
+        <meta name="google-site-verification" content="N8odpQukXkhYSNhTcTrnMKWHWTi5D5h_Cre96ZVGlTw" />
         <ThemeScript />
         <script dangerouslySetInnerHTML={{ __html: `if("serviceWorker" in navigator){window.addEventListener("load",()=>{navigator.serviceWorker.register("/sw.js").catch(()=>{})})}` }} />
         <script
@@ -82,6 +88,8 @@ export default function RootLayout({
               applicationCategory: "UtilityApplication",
               operatingSystem: "All",
               browserRequirements: "Requires JavaScript",
+              inLanguage: "en",
+              areaServed: ["US", "CA", "GB", "AU", "NZ", "IE"],
               offers: {
                 "@type": "Offer",
                 price: "0",
@@ -90,6 +98,13 @@ export default function RootLayout({
             }),
           }}
         />
+        <Script src="https://www.googletagmanager.com/gtag/js?id=G-0YRS54VR4X" strategy="afterInteractive" />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-0YRS54VR4X');`}
+        </Script>
         <OrganizationJsonLd />
         <WebSiteJsonLd />
         <SiteNavJsonLd />
@@ -106,6 +121,7 @@ export default function RootLayout({
         <AuthProvider>
         <Header />
         <main id="main-content" className="flex-1"><ErrorBoundary>{children}</ErrorBoundary></main>
+        <AdBlockDetector />
         <AdsterraBanner />
         <Footer />
         <InstallPrompt />

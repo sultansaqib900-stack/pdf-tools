@@ -1,10 +1,14 @@
 import type { Metadata } from "next";
 export const metadata: Metadata = { title: "How to Convert PDF to Images Online Free — PDF to JPG/PNG", description: "Convert PDF pages to high-quality images online for free. Turn each PDF page into JPG or PNG images instantly." };
 import ArticleJsonLd from "@/components/ArticleJsonLd";
+import HowToJsonLd from "@/components/HowToJsonLd";
+import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 export default function BlogPost() {
   return (
     <article className="max-w-3xl mx-auto px-4 py-12">
       <ArticleJsonLd title="How to Convert PDF to Images Online Free" description="Convert PDF pages to high-quality images online for free." url="https://allaboutpdfediting.xyz/blog/convert-pdf-to-images" datePublished="2026-06-25" />
+      <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Blog", item: "https://allaboutpdfediting.xyz/blog" }, { name: "How to Convert PDF to Images Online Free", item: "https://allaboutpdfediting.xyz/blog/convert-pdf-to-images" }]} />
+      <HowToJsonLd name="How to Convert PDF to Images Online Free" description="Convert PDF pages to high-quality images online for free." steps={[{name:"Open the converter — Visit our PDF to Image tool.",text:"Open the converter — Visit our PDF to Image tool."},{name:"Upload your PDF — Select the document you want to convert.",text:"Upload your PDF — Select the document you want to convert."},{name:"Choose output format — Pick JPG for smaller files or PNG for maximum quality.",text:"Choose output format — Pick JPG for smaller files or PNG for maximum quality."},{name:"Download — Each page is saved as a separate image file.",text:"Download — Each page is saved as a separate image file."}]} />
       <a href="/blog" className="text-sm text-indigo-500 hover:underline mb-6 inline-block">&larr; Back to blog</a>
       <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">How to Convert PDF to Images Online Free</h1>
       <p className="text-sm text-[var(--muted)] mb-8">4 min read · Updated June 2026</p>

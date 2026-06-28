@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { Metadata } from "next";
+import AdBanner from "@/components/AdBanner";
 
 export const metadata: Metadata = {
   title: "Best Free PDF Editor Online 2026 — Top 10 Free PDF Tools Compared",
@@ -58,6 +59,8 @@ export default function ComparisonPage() {
           </tbody>
         </table>
       </div>
+
+      <AdBanner className="mb-8" />
 
       <div className="bg-indigo-50 dark:bg-indigo-950/20 border border-indigo-200 dark:border-indigo-800 rounded-xl p-6 mb-10">
         <h2 className="text-xl font-bold text-[var(--foreground)] mb-2">🏆 Winner: PDFTools</h2>

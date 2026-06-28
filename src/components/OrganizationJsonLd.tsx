@@ -6,6 +6,8 @@ export default function OrganizationJsonLd() {
     url: "https://allaboutpdfediting.xyz",
     logo: "https://allaboutpdfediting.xyz/opengraph-image.png",
     description: "Free online PDF tools to compress, merge, split, convert, and edit PDFs instantly in your browser. No uploads. 100% private.",
+    inLanguage: "en",
+    areaServed: ["US", "CA", "GB", "AU", "NZ", "IE"],
     sameAs: [],
   };
 

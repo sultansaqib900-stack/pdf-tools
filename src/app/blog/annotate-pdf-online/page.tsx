@@ -1,10 +1,14 @@
 import type { Metadata } from "next";
 export const metadata: Metadata = { title: "How to Annotate PDF Online Free — Highlight, Comment & Markup", description: "Annotate PDF documents online for free. Highlight text, add comments, draw shapes, and markup PDFs instantly in your browser." };
 import ArticleJsonLd from "@/components/ArticleJsonLd";
+import HowToJsonLd from "@/components/HowToJsonLd";
+import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 export default function BlogPost() {
   return (
     <article className="max-w-3xl mx-auto px-4 py-12">
       <ArticleJsonLd title="How to Annotate PDF Online Free — Highlight, Comment & Markup" description="Annotate PDF documents online for free. Highlight text, add comments, draw shapes, and markup PDFs instantly in your browser." url="https://allaboutpdfediting.xyz/blog/annotate-pdf-online" datePublished="2026-06-25" />
+      <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Blog", item: "https://allaboutpdfediting.xyz/blog" }, { name: "How to Annotate PDF Online Free — Highlight, Comment &amp; Markup", item: "https://allaboutpdfediting.xyz/blog/annotate-pdf-online" }]} />
+      <HowToJsonLd name="How to Annotate PDF Online Free — Highlight, Comment &amp; Markup" description="Annotate PDF documents online for free. Highlight text, add comments, draw shapes, and markup PDFs instantly in your browser." steps={[{name:"Open the annotator — Go to our free PDF annotator tool.",text:"Open the annotator — Go to our free PDF annotator tool."},{name:"Upload your PDF — Drag and drop or click to select your document.",text:"Upload your PDF — Drag and drop or click to select your document."},{name:"Start annotating — Use the toolbar to highlight text, add comments, or draw s...",text:"Start annotating — Use the toolbar to highlight text, add comments, or draw shapes. Download your annotated PDF when done."}]} />
       <a href="/blog" className="text-sm text-indigo-500 hover:underline mb-6 inline-block">&larr; Back to blog</a>
       <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">How to Annotate PDF Online Free — Highlight, Comment & Markup</h1>
       <p className="text-sm text-[var(--muted)] mb-8">5 min read · Updated June 2026</p>

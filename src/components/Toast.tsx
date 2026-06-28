@@ -89,10 +89,11 @@ export default function ToastProvider() {
   };
 
   return (
-    <div className="fixed top-4 right-4 z-[100] flex flex-col gap-2 pointer-events-none">
+    <div className="fixed top-4 right-4 z-[100] flex flex-col gap-2 pointer-events-none" role="region" aria-label="Notifications" aria-live="polite">
       {toasts.map((toast) => (
         <div
           key={toast.id}
+          role="alert"
           className={`pointer-events-auto flex items-center gap-3 px-4 py-3 rounded-lg shadow-lg text-white ${colors[toast.type]} animate-slideIn`}
         >
           <span className="shrink-0">{icons[toast.type]}</span>

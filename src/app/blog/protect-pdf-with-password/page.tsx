@@ -1,10 +1,14 @@
 import type { Metadata } from "next";
 export const metadata: Metadata = { title: "How to Password Protect a PDF Online Free — Secure Your Documents", description: "Password protect PDF files online for free. Encrypt your PDF documents with a strong password." };
 import ArticleJsonLd from "@/components/ArticleJsonLd";
+import HowToJsonLd from "@/components/HowToJsonLd";
+import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 export default function BlogPost() {
   return (
     <article className="max-w-3xl mx-auto px-4 py-12">
       <ArticleJsonLd title="How to Password Protect a PDF Online Free" description="Password protect PDF files online for free." url="https://allaboutpdfediting.xyz/blog/protect-pdf-with-password" datePublished="2026-06-25" />
+      <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Blog", item: "https://allaboutpdfediting.xyz/blog" }, { name: "How to Password Protect a PDF Online Free", item: "https://allaboutpdfediting.xyz/blog/protect-pdf-with-password" }]} />
+      <HowToJsonLd name="How to Password Protect a PDF Online Free" description="Password protect PDF files online for free." steps={[{name:"Open the protector — Go to our Password Protect tool.",text:"Open the protector — Go to our Password Protect tool."},{name:"Upload your PDF — Select the document you want to encrypt.",text:"Upload your PDF — Select the document you want to encrypt."},{name:"Enter a password — Choose a strong password with letters, numbers, and symbols.",text:"Enter a password — Choose a strong password with letters, numbers, and symbols."},{name:"Download your protected PDF — The encrypted file requires the password to open.",text:"Download your protected PDF — The encrypted file requires the password to open."}]} />
       <a href="/blog" className="text-sm text-indigo-500 hover:underline mb-6 inline-block">&larr; Back to blog</a>
       <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">How to Password Protect a PDF Online Free</h1>
       <p className="text-sm text-[var(--muted)] mb-8">4 min read · Updated June 2026</p>

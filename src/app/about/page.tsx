@@ -1,3 +1,5 @@
+import AdBanner from "@/components/AdBanner";
+
 export default function AboutPage() {
   return (
     <div className="max-w-3xl mx-auto px-4 py-16">
@@ -18,7 +20,8 @@ export default function AboutPage() {
             no signups, no uploads, no hidden costs. Everything runs in your browser and respects
             your privacy.
           </p>
-        </div>
+          <AdBanner className="mb-8" />
+    </div>
 
         <h2 className="text-lg font-semibold text-[var(--foreground)] pt-2">Why I Built This</h2>
         <p>
