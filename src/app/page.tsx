@@ -178,6 +178,32 @@ export default function Home() {
 
       <SectionReveal>
         <section className="max-w-6xl mx-auto px-4 pb-8">
+          <div className="bg-[var(--card)] border border-[var(--card-border)] rounded-xl p-8">
+            <h2 className="text-2xl font-bold text-[var(--foreground)] mb-6">Popular Use Cases</h2>
+            <p className="text-sm text-[var(--muted)] mb-6">Find the right PDF tool for your specific needs.</p>
+            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
+              {[
+                { name: "Compress PDF for College Students", href: "/for/compress-pdf-college-students", icon: "🎓" },
+                { name: "Merge PDF for Office Workers", href: "/for/merge-pdf-office-workers", icon: "💼" },
+                { name: "Split PDF for Teachers", href: "/for/split-pdf-teachers", icon: "🍎" },
+                { name: "Protect PDF for Lawyers", href: "/for/protect-pdf-lawyers", icon: "⚖️" },
+                { name: "Sign PDF for Freelancers", href: "/for/sign-pdf-freelancers", icon: "✍️" },
+                { name: "Image to PDF for Small Business", href: "/for/image-to-pdf-small-business-owners", icon: "🏪" },
+                { name: "OCR PDF for Researchers", href: "/for/ocr-pdf-researchers", icon: "🔬" },
+                { name: "Edit PDF for Real Estate Agents", href: "/for/edit-pdf-real-estate-agents", icon: "🏠" },
+              ].map((uc) => (
+                <a key={uc.href} href={uc.href} className="flex items-center gap-2 px-3 py-2.5 rounded-lg bg-[var(--background)] border border-[var(--card-border)] text-sm text-[var(--foreground)] hover:border-indigo-500/30 hover:bg-indigo-50/50 dark:hover:bg-indigo-950/20 transition card-hover">
+                  <span className="text-base">{uc.icon}</span>
+                  {uc.name}
+                </a>
+              ))}
+            </div>
+          </div>
+        </section>
+      </SectionReveal>
+
+      <SectionReveal>
+        <section className="max-w-6xl mx-auto px-4 pb-8">
           <div className="bg-gradient-to-br from-indigo-50/50 to-transparent dark:from-indigo-950/20 dark:to-transparent border border-[var(--card-border)] rounded-xl p-8">
             <h2 className="text-2xl font-bold text-[var(--foreground)] mb-4">Latest from Our Blog</h2>
             <p className="text-sm text-[var(--muted)] mb-6">Tips and guides to get the most out of PDFTools.</p>

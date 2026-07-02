@@ -18,6 +18,11 @@ import HowToJsonLd from "@/components/HowToJsonLd";
 import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
 import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 import FaqPageJsonLd from "@/components/FaqPageJsonLd";
+import RelatedContent from "@/components/RelatedContent";
+import { getRelatedContent } from "@/lib/related-content";
+import UseCaseLinks from "@/components/UseCaseLinks";
+
+const rc = getRelatedContent("compress");
 
 export default function CompressPage() {
   const usage = useUsage();
@@ -125,7 +130,7 @@ export default function CompressPage() {
       />
       <HowToJsonLd name="Compress PDF Online Free" description="Reduce PDF file size without losing quality" steps={[{name:"Upload PDF",text:"Select the PDF file you want to compress"},{name:"Choose compression level",text:"Select compression level low medium or high"},{name:"Download compressed PDF",text:"Download your smaller PDF file"}]} />
       <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Compress PDF", item: "https://allaboutpdfediting.xyz/compress" }]} />
-      <FaqPageJsonLd />
+      <FaqPageJsonLd questions={rc?.faqs} />
       <AiSummaryJsonLd name="Compress PDF" summary="Reduce PDF file size instantly without losing quality" category="Utilities" inputType="PDF" outputType="PDF" processing="client-side" price="free" features={["Lossless compression","Size reduction","Quality preservation","Instant processing","No uploads"]} limits="Files up to 10MB" />
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">Compress PDF</h1>
@@ -228,6 +233,10 @@ export default function CompressPage() {
           <p>Our free compress PDF tool lets you reduce PDF file size without sacrificing quality, making it easy to email documents or upload to websites. The compression works entirely in your browser using pdf-lib, which removes redundant data and optimizes object streams for maximum efficiency. You can achieve significant compression ratios depending on your file's content — images, fonts, and embedded elements all compress differently. For best results, compress PDF online free before sharing large attachments, as smaller files transfer faster and use less storage. Whether you are reducing scan quality or optimizing a presentation, this tool helps you make a smaller PDF while preserving readability. Since everything runs client-side, your files never leave your device, ensuring complete privacy and security. Try it now and see how much smaller your PDFs can get with just one click — no sign-up, no uploads, no limits.</p>
         </div>
       </div>
+
+      <RelatedContent slug="compress" />
+
+      <UseCaseLinks toolSlug="compress" />
 
       <PremiumUpsell
         show={upsell.state.show}

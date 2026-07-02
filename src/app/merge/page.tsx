@@ -18,6 +18,11 @@ import HowToJsonLd from "@/components/HowToJsonLd";
 import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
 import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 import FaqPageJsonLd from "@/components/FaqPageJsonLd";
+import RelatedContent from "@/components/RelatedContent";
+import { getRelatedContent } from "@/lib/related-content";
+import UseCaseLinks from "@/components/UseCaseLinks";
+
+const rc = getRelatedContent("merge");
 
 export default function MergePage() {
   const usage = useUsage();
@@ -128,7 +133,7 @@ export default function MergePage() {
       />
       <HowToJsonLd name="Merge PDF Files Online" description="Combine multiple PDF files into a single document" steps={[{name:"Upload PDFs",text:"Select two or more PDF files to merge"},{name:"Arrange order",text:"Drag and drop files to set the desired order"},{name:"Download merged PDF",text:"Download the combined single PDF document"}]} />
       <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Merge PDF", item: "https://allaboutpdfediting.xyz/merge" }]} />
-      <FaqPageJsonLd />
+      <FaqPageJsonLd questions={rc?.faqs} />
       <AiSummaryJsonLd name="Merge PDF" summary="Combine multiple PDF documents into one file with customizable page order" category="Utilities" inputType="PDF" outputType="PDF" processing="client-side" price="free" features={["Multi-file merging","Order customization","Drag-and-drop","Free processing","No file uploads"]} limits="Files up to 10MB" />
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">Merge PDF</h1>
@@ -239,6 +244,10 @@ export default function MergePage() {
           <p>With our merge PDF tool, you can combine PDF documents into a single file effortlessly, making it perfect for consolidating reports, invoices, scanned contracts, or any collection of related pages. Simply upload your PDFs, drag to reorder them, and click merge — the intuitive interface gives you full control over the final page sequence. The tool processes everything locally in your browser using pdf-lib, so your sensitive documents never touch a server. To merge PDF files online free, just select multiple PDFs, arrange them in the desired order, and download the combined result in seconds. This feature is especially useful for merging scanned documents that arrive as separate files, unifying chapter drafts into a complete manuscript, or creating comprehensive portfolios from individual pages. Everything stays private and secure.</p>
         </div>
       </div>
+
+      <RelatedContent slug="merge" />
+
+      <UseCaseLinks toolSlug="merge" />
 
       <PremiumUpsell
         show={upsell.state.show}

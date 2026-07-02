@@ -18,6 +18,11 @@ import HowToJsonLd from "@/components/HowToJsonLd";
 import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
 import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 import FaqPageJsonLd from "@/components/FaqPageJsonLd";
+import RelatedContent from "@/components/RelatedContent";
+import { getRelatedContent } from "@/lib/related-content";
+import UseCaseLinks from "@/components/UseCaseLinks";
+
+const rc = getRelatedContent("split");
 
 export default function SplitPage() {
   const usage = useUsage();
@@ -130,7 +135,7 @@ export default function SplitPage() {
       />
       <HowToJsonLd name="Split PDF Pages Online" description="Separate PDF pages into multiple files or extract specific pages" steps={[{name:"Upload PDF",text:"Select the PDF file to split"},{name:"Choose split method",text:"Select page ranges or split every page"},{name:"Download split files",text:"Download the individual PDF files"}]} />
       <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Split PDF", item: "https://allaboutpdfediting.xyz/split" }]} />
-      <FaqPageJsonLd />
+      <FaqPageJsonLd questions={rc?.faqs} />
       <AiSummaryJsonLd name="Split PDF" summary="Separate PDF pages into multiple documents or extract specific page ranges" category="Utilities" inputType="PDF" outputType="PDF" processing="client-side" price="free" features={["Page range extraction","Split every page","Multiple output files","Client-side processing","Free"]} limits="Files up to 10MB" />
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">Split PDF</h1>
@@ -234,6 +239,10 @@ export default function SplitPage() {
           <p>Need to split PDF online free? Our tool lets you extract PDF pages or split every page into individual files, giving you complete flexibility over how you manage your documents. Choose between extracting a specific page range or splitting the entire document into separate pages — the choice is yours. This is ideal when you need only certain sections from a large report, want to share pages one at a time, or need to reorganize content by removing specific pages. Processing happens entirely client-side using pdf-lib, meaning your document never leaves your browser. To extract PDF pages, simply upload your file, select your range, and download. Each extracted page preserves original quality and formatting, so you get clean, accurate results every time.</p>
         </div>
       </div>
+      <RelatedContent slug="split" />
+
+      <UseCaseLinks toolSlug="split" />
+
       <PremiumUpsell
         show={upsell.state.show}
         mode={upsell.state.mode}

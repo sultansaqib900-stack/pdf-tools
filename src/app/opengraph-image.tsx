@@ -31,7 +31,6 @@ export default function OpenGraphImage() {
           alignItems: "center",
           justifyContent: "center",
           background: "linear-gradient(135deg, #0f0c29 0%, #1e1b4b 40%, #312e81 70%, #4338ca 100%)",
-          fontFamily: "Inter, sans-serif",
           position: "relative",
           overflow: "hidden",
         }}

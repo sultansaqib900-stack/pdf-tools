@@ -18,6 +18,11 @@ import HowToJsonLd from "@/components/HowToJsonLd";
 import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
 import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 import FaqPageJsonLd from "@/components/FaqPageJsonLd";
+import RelatedContent from "@/components/RelatedContent";
+import { getRelatedContent } from "@/lib/related-content";
+import UseCaseLinks from "@/components/UseCaseLinks";
+
+const rc = getRelatedContent("annotate");
 
 type AnnotateMode = "highlight" | "underline" | "strikethrough";
 
@@ -358,7 +363,7 @@ export default function AnnotatePage() {
       />
       <HowToJsonLd name="Annotate PDF Online" description="Highlight underline strikethrough and add comments to PDFs" steps={[{name:"Upload PDF",text:"Select the PDF document to annotate"},{name:"Add annotations",text:"Highlight text underline or strikethrough content"},{name:"Download annotated PDF",text:"Download the PDF with your annotations saved"}]} />
       <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Annotate PDF", item: "https://allaboutpdfediting.xyz/annotate" }]} />
-      <FaqPageJsonLd />
+      <FaqPageJsonLd questions={rc?.faqs} />
       <AiSummaryJsonLd name="Annotate PDF" summary="Add highlights underlines strikethroughs and comments to PDF documents" category="Graphics" inputType="PDF" outputType="PDF" processing="client-side" price="free" features={["Highlight text","Underline text","Strikethrough","Comment notes","Free browser tool"]} limits="Files up to 10MB" />
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">Annotate PDF</h1>
@@ -506,6 +511,10 @@ export default function AnnotatePage() {
           <p>All processing happens locally in your browser — no uploads, no servers, complete privacy. Keywords: annotate PDF online free, highlight PDF, underline PDF, strikethrough PDF, PDF annotation tool.</p>
         </div>
       </div>
+
+      <RelatedContent slug="annotate" />
+
+      <UseCaseLinks toolSlug="annotate" />
 
       <PremiumUpsell show={upsell.state.show} mode={upsell.state.mode} message={upsell.state.message} onClose={upsell.hideUpsell} />
     </div>

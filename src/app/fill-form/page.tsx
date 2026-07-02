@@ -18,6 +18,11 @@ import HowToJsonLd from "@/components/HowToJsonLd";
 import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
 import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 import FaqPageJsonLd from "@/components/FaqPageJsonLd";
+import RelatedContent from "@/components/RelatedContent";
+import { getRelatedContent } from "@/lib/related-content";
+import UseCaseLinks from "@/components/UseCaseLinks";
+
+const rc = getRelatedContent("fill-form");
 
 interface FieldEntry {
   name: string;
@@ -161,7 +166,7 @@ export default function FillFormPage() {
       />
       <HowToJsonLd name="Fill PDF Form Online" description="Complete interactive PDF form fields text checkboxes dropdowns" steps={[{name:"Upload PDF form",text:"Select a PDF with interactive form fields"},{name:"Fill in fields",text:"Complete text fields checkboxes and dropdowns"},{name:"Download filled form",text:"Download the completed PDF form"}]} />
       <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Fill PDF Form", item: "https://allaboutpdfediting.xyz/fill-form" }]} />
-      <FaqPageJsonLd />
+      <FaqPageJsonLd questions={rc?.faqs} />
       <AiSummaryJsonLd name="Fill PDF Form" summary="Fill interactive PDF form fields including text checkboxes radio buttons and dropdowns" category="BusinessApplications" inputType="PDF" outputType="PDF" processing="client-side" price="free" features={["Form filling","Checkboxes","Dropdowns","Radio buttons","Free tool"]} limits="Files up to 10MB" />
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">Fill PDF Form</h1>
@@ -314,6 +319,10 @@ export default function FillFormPage() {
           <p>Keywords: fill PDF form online free, complete PDF forms, PDF form filler, fillable PDF, submit PDF form, flatten PDF form fields.</p>
         </div>
       </div>
+      <RelatedContent slug="fill-form" />
+
+      <UseCaseLinks toolSlug="fill-form" />
+
       <PremiumUpsell
         show={upsell.state.show}
         mode={upsell.state.mode}

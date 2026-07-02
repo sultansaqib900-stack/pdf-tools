@@ -18,6 +18,10 @@ import HowToJsonLd from "@/components/HowToJsonLd";
 import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
 import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 import FaqPageJsonLd from "@/components/FaqPageJsonLd";
+import RelatedContent from "@/components/RelatedContent";
+import { getRelatedContent } from "@/lib/related-content";
+
+const rc = getRelatedContent("text-to-pdf");
 
 export default function TextToPdfPage() {
   const usage = useUsage();
@@ -114,7 +118,7 @@ export default function TextToPdfPage() {
       />
       <HowToJsonLd name="Convert Text to PDF" description="Convert plain text to formatted PDF documents" steps={[{name:"Enter or paste text",text:"Type or paste your text content"},{name:"Choose formatting",text:"Select font size and page layout"},{name:"Download PDF",text:"Download your text as a formatted PDF document"}]} />
       <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Text to PDF", item: "https://allaboutpdfediting.xyz/text-to-pdf" }]} />
-      <FaqPageJsonLd />
+      <FaqPageJsonLd questions={rc?.faqs} />
       <AiSummaryJsonLd name="Text to PDF" summary="Convert plain text content into formatted PDF documents" category="Utilities" inputType="Text" outputType="PDF" processing="client-side" price="free" features={["Text conversion","Font selection","Page formatting","Free online tool","Client-side"]} limits="Files up to 10MB" />
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">Text to PDF</h1>
@@ -191,6 +195,8 @@ export default function TextToPdfPage() {
           <p>Keywords: text to PDF converter online free, convert text to PDF, plain text to PDF document, create PDF from text online free.</p>
         </div>
       </div>
+      <RelatedContent slug="text-to-pdf" />
+
       <PremiumUpsell
         show={upsell.state.show}
         mode={upsell.state.mode}

@@ -17,6 +17,10 @@ import HowToJsonLd from "@/components/HowToJsonLd";
 import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
 import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 import FaqPageJsonLd from "@/components/FaqPageJsonLd";
+import RelatedContent from "@/components/RelatedContent";
+import { getRelatedContent } from "@/lib/related-content";
+
+const rc = getRelatedContent("pdf-to-pdfa");
 
 export default function PdfToPdfaPage() {
   const usage = useUsage();
@@ -86,7 +90,7 @@ export default function PdfToPdfaPage() {
       <SoftwareAppJsonLd name="PDF to PDF/A - Free Online Converter" description="Convert PDF to PDF/A archive format for long-term preservation." url="https://allaboutpdfediting.xyz/pdf-to-pdfa" />
       <HowToJsonLd name="PDF to PDF/A" description="Convert PDFs to PDF/A archive format" steps={[{name:"Upload PDF",text:"Select a PDF file"},{name:"Convert",text:"Convert to PDF/A archive format"},{name:"Download",text:"Download your archived PDF"}]} />
       <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "PDF to PDF/A", item: "https://allaboutpdfediting.xyz/pdf-to-pdfa" }]} />
-      <FaqPageJsonLd />
+      <FaqPageJsonLd questions={rc?.faqs} />
       <AiSummaryJsonLd name="PDF to PDF/A" summary="Convert PDF documents to PDF/A format for long-term archival and preservation" category="Convert" inputType="PDF" outputType="PDF/A" processing="client-side" price="free" features={["PDF to PDF/A conversion","Archive format","Long-term preservation","Metadata embedding"]} limits="Files up to 10MB" />
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">PDF to PDF/A</h1>
@@ -119,6 +123,7 @@ export default function PdfToPdfaPage() {
         <SuccessAnimation show={success} message="PDF/A created!" />
       </div>
       <AdBanner className="mt-8" />
+      <RelatedContent slug="pdf-to-pdfa" />
       <PremiumUpsell show={upsell.state.show} mode={upsell.state.mode} message={upsell.state.message} onClose={upsell.hideUpsell} />
     </div>
   );

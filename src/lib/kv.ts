@@ -27,6 +27,15 @@ export async function getPremiumStatus(clientId: string): Promise<boolean> {
   }
 }
 
+export async function getPremiumStatusByEmail(email: string): Promise<boolean> {
+  try {
+    const val = await kv.get(keys.premiumByEmail(email));
+    return val === true;
+  } catch {
+    return false;
+  }
+}
+
 export async function setPremiumStatus(clientId: string, value: boolean) {
   try {
     if (value) {
@@ -42,6 +51,11 @@ export async function setPremiumStatus(clientId: string, value: boolean) {
 export async function setPremiumByEmail(email: string, clientId?: string) {
   try {
     await kv.set(keys.premiumByEmail(email), true, { ex: 365 * 24 * 60 * 60 });
+    const userKeyStr = `${KV_PREFIX}user:${email.toLowerCase()}`;
+    const existingUser = await kv.get<any>(userKeyStr);
+    if (existingUser) {
+      await kv.set(userKeyStr, { ...existingUser, premium: true }, { ex: 365 * 24 * 60 * 60 });
+    }
     if (clientId) {
       await kv.set(keys.premiumByClientId(clientId), true, { ex: 365 * 24 * 60 * 60 });
     }

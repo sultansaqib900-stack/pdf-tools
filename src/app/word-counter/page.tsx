@@ -18,6 +18,10 @@ import HowToJsonLd from "@/components/HowToJsonLd";
 import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
 import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 import FaqPageJsonLd from "@/components/FaqPageJsonLd";
+import RelatedContent from "@/components/RelatedContent";
+import { getRelatedContent } from "@/lib/related-content";
+
+const rc = getRelatedContent("word-counter");
 
 export default function WordCounterPage() {
   const usage = useUsage();
@@ -91,7 +95,7 @@ export default function WordCounterPage() {
       />
       <HowToJsonLd name="PDF Word Counter" description="Count words characters pages in PDF documents" steps={[{name:"Upload PDF",text:"Select the PDF to analyze"},{name:"View statistics",text:"See word count character count and page count"},{name:"Copy results",text:"Copy statistics to clipboard for reporting"}]} />
       <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Word Counter", item: "https://allaboutpdfediting.xyz/word-counter" }]} />
-      <FaqPageJsonLd />
+      <FaqPageJsonLd questions={rc?.faqs} />
       <AiSummaryJsonLd name="Word Counter" summary="Count words characters pages and paragraphs in PDF documents" category="Utilities" inputType="PDF" outputType="Statistics" processing="client-side" price="free" features={["Word count","Character count","Page count","Paragraph count","Free tool"]} limits="Files up to 10MB" />
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">PDF Word Counter</h1>
@@ -196,6 +200,8 @@ export default function WordCounterPage() {
           <p>Keywords: PDF word counter, count words in PDF, PDF character count, PDF page counter, word count PDF online free, PDF word count tool.</p>
         </div>
       </div>
+
+      <RelatedContent slug="word-counter" />
 
       <PremiumUpsell
         show={upsell.state.show}

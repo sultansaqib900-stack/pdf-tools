@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { getSession, getUserByEmail } from "@/lib/auth/sessions";
+import { getPremiumStatusByEmail, setPremiumByEmail } from "@/lib/kv";
 
 export async function GET(request: Request) {
   try {
@@ -15,6 +16,13 @@ export async function GET(request: Request) {
     const user = await getUserByEmail(session.email);
     if (!user) {
       return NextResponse.json({ error: "User not found" }, { status: 401 });
+    }
+    if (!user.premium) {
+      const emailPremium = await getPremiumStatusByEmail(user.email);
+      if (emailPremium) {
+        user.premium = true;
+        await setPremiumByEmail(user.email);
+      }
     }
     return NextResponse.json({
       user: { id: user.id, email: user.email, name: user.name, premium: user.premium },

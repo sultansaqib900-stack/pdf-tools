@@ -10,7 +10,6 @@ import { usePageMeta } from "@/hooks/usePageMeta";
 import HowToJsonLd from "@/components/HowToJsonLd";
 import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
 
-
 export default function SearchRedactPage() {
   usePageMeta("Search & Redact PDF - Auto-Redact Multiple Words | PDFTools Premium", "Search for specific words or phrases in a PDF and redact all occurrences automatically. Bulk redaction tool. Premium.");
   const [file, setFile] = useState<File | null>(null);
@@ -41,6 +40,31 @@ export default function SearchRedactPage() {
     );
   }
 
+  const ocrPage = async (canvas: HTMLCanvasElement): Promise<Array<{ text: string; x: number; y: number; w: number; h: number }>> => {
+    const Tesseract = await import("tesseract.js");
+    const { data } = await Tesseract.recognize(canvas, "eng", {
+      logger: () => {},
+    });
+    const words: Array<{ text: string; x: number; y: number; w: number; h: number }> = [];
+    for (const block of data.blocks || []) {
+      for (const paragraph of block.paragraphs || []) {
+        for (const line of paragraph.lines || []) {
+          for (const word of line.words || []) {
+            const bbox = word.bbox;
+            words.push({
+              text: word.text,
+              x: bbox.x0,
+              y: bbox.y0,
+              w: bbox.x1 - bbox.x0,
+              h: bbox.y1 - bbox.y0,
+            });
+          }
+        }
+      }
+    }
+    return words;
+  };
+
   const runRedact = async () => {
     if (!file || !searchTerms.trim()) return;
     setProcessing(true);
@@ -48,39 +72,75 @@ export default function SearchRedactPage() {
     setSuccess(false);
     try {
       const terms = searchTerms.split(",").map(t => t.trim().toLowerCase()).filter(Boolean);
+      const bytes = await file.arrayBuffer();
+      pdfBytesRef.current = bytes;
+      const { PDFDocument, rgb } = await import("pdf-lib");
+      const pdfLibDoc = await PDFDocument.load(bytes);
       const pdfjsLib = await import("pdfjs-dist");
       if (!pdfjsLib.GlobalWorkerOptions.workerSrc) {
         pdfjsLib.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";
       }
-      const bytes = await file.arrayBuffer();
-      pdfBytesRef.current = bytes;
       const pdf = await pdfjsLib.getDocument({ data: bytes }).promise;
-      const { PDFDocument, rgb } = await import("pdf-lib");
-      const pdfLibDoc = await PDFDocument.load(bytes);
       let totalMatches = 0;
+
+      const offscreen = document.createElement("canvas");
 
       for (let pageIdx = 0; pageIdx < pdf.numPages; pageIdx++) {
         const page = await pdf.getPage(pageIdx + 1);
-        const content = await page.getTextContent();
-        const viewport = page.getViewport({ scale: 1 });
+        const viewport = page.getViewport({ scale: 2 });
+        offscreen.width = viewport.width;
+        offscreen.height = viewport.height;
+        const ctx = offscreen.getContext("2d")!;
+        await page.render({ canvas: offscreen, viewport }).promise;
+
         const pdfPage = pdfLibDoc.getPages()[pageIdx];
+        const pageHeight = pdfPage.getHeight();
+        const scaleX = pageHeight / viewport.height;
+        const scaleY = pageHeight / viewport.height;
 
-        for (const item of content.items) {
-          const tItem = item as { str: string; transform: number[]; width?: number; height?: number };
-          const text = tItem.str || "";
+        let textItems: Array<{ str: string; x: number; y: number; w: number; h: number }> = [];
+
+        try {
+          const content = await page.getTextContent();
+          for (const item of content.items) {
+            const tItem = item as { str: string; transform: number[]; width?: number; height?: number };
+            textItems.push({
+              str: tItem.str || "",
+              x: tItem.transform[4],
+              y: tItem.transform[5],
+              w: tItem.width || (tItem.str || "").length * 5,
+              h: tItem.height || 12,
+            });
+          }
+        } catch {}
+
+        const hasText = textItems.some(t => t.str.trim().length > 0);
+        if (!hasText) {
+          const words = await ocrPage(offscreen);
+          for (const word of words) {
+            textItems.push({
+              str: word.text,
+              x: word.x * scaleX,
+              y: (viewport.height - word.y - word.h) * scaleY,
+              w: word.w * scaleX,
+              h: word.h * scaleY,
+            });
+          }
+        }
+
+        for (const item of textItems) {
+          const text = item.str || "";
           const lowerText = text.toLowerCase();
-
           for (const term of terms) {
             let idx = 0;
             while ((idx = lowerText.indexOf(term, idx)) !== -1) {
-              const scale = viewport.scale || 1;
               const charsBefore = text.substring(0, idx).length;
               const charsOfTerm = term.length;
-              const avgCharWidth = (tItem.width || text.length * 5) / Math.max(text.length, 1);
-              const x = tItem.transform[4] + (charsBefore * avgCharWidth);
-              const y = tItem.transform[5];
+              const avgCharWidth = item.w / Math.max(text.length, 1);
+              const x = item.x + charsBefore * avgCharWidth;
+              const y = item.y;
               const w = charsOfTerm * avgCharWidth;
-              const h = (tItem.height || 12);
+              const h = item.h;
 
               pdfPage.drawRectangle({
                 x, y: y - h * 0.2,
@@ -106,7 +166,7 @@ export default function SearchRedactPage() {
       URL.revokeObjectURL(url);
       setSuccess(true);
     } catch {
-      setError("Failed to redact. The file may be encrypted or scanned (image-only).");
+      setError("Failed to redact. The file may be encrypted or corrupted.");
     }
     setProcessing(false);
   };
@@ -116,13 +176,13 @@ export default function SearchRedactPage() {
       <SoftwareAppJsonLd name="Search & Redact PDF" description="Automatically find and redact specific words or phrases in PDF documents." url="https://allaboutpdfediting.xyz/search-redact" image="https://allaboutpdfediting.xyz/opengraph-image.png" aggregateRating={{ ratingValue: 4.8, bestRating: 5, ratingCount: 167 }} />
       <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Search & Redact", item: "https://allaboutpdfediting.xyz/search-redact" }]} />
       <HowToJsonLd name="Search and Redact PDF" description="Automatically find and redact specific words or phrases across a PDF document" steps={[{name:"Upload PDF",text:"Upload the PDF document you want to redact"},{name:"Enter search terms",text:"Type the words or phrases you want to find and redact"},{name:"Download redacted PDF",text:"Download the PDF with all matching content permanently blacked out"}]} />
-      <AiSummaryJsonLd name="Search and Redact" summary="Auto-find and permanently redact specific words phrases or patterns across entire PDF documents" category="SecurityApplications" inputType="PDF" outputType="PDF" processing="client-side" price="premium" features={["Auto-search and redact","Batch redaction","Phrase matching","Permanent removal","Client-side processing"]} limits="Premium subscribers" />
+      <AiSummaryJsonLd name="Search and Redact" summary="Auto-find and permanently redact specific words phrases or patterns across entire PDF documents" category="SecurityApplications" inputType="PDF" outputType="PDF" processing="client-side" price="premium" features={["Auto-search and redact","Batch redaction","Phrase matching","OCR for scanned PDFs","Permanent removal","Client-side processing"]} limits="Premium subscribers" />
       <div className="mb-8">
         <div className="flex items-center gap-3 mb-2">
           <h1 className="text-3xl font-bold text-[var(--foreground)]">Search & Redact</h1>
           <span className="text-xs font-semibold bg-gradient-to-r from-amber-500 to-orange-600 text-white px-2.5 py-0.5 rounded-full">Premium</span>
         </div>
-        <p className="text-[var(--muted)]">Find every occurrence of a word or phrase and black them out — all at once.</p>
+        <p className="text-[var(--muted)]">Find every occurrence of a word or phrase and black them out — works on text and scanned PDFs.</p>
       </div>
 
       <AdBanner className="mb-8" />
@@ -153,6 +213,7 @@ export default function SearchRedactPage() {
         <h2 className="text-xl font-bold text-[var(--foreground)] mb-3">About Search & Redact</h2>
         <div className="text-sm text-[var(--muted)] space-y-3 leading-relaxed">
           <p>Unlike the manual redaction tool, this searches your entire PDF for specific words or phrases and redacts every occurrence automatically. Type "confidential, secret, internal" and every instance of those words across all pages will be permanently blacked out.</p>
+          <p>Works on both text-based and scanned PDFs. Scanned documents are processed through OCR (optical character recognition) to detect and redact matching text.</p>
           <p>Ideal for: legal document sanitization, removing PII (personally identifiable information), declassifying documents, preparing files for public release, and compliance with data privacy regulations.</p>
         </div>
       </div>

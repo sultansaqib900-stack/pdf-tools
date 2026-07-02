@@ -17,6 +17,10 @@ import HowToJsonLd from "@/components/HowToJsonLd";
 import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
 import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 import FaqPageJsonLd from "@/components/FaqPageJsonLd";
+import RelatedContent from "@/components/RelatedContent";
+import { getRelatedContent } from "@/lib/related-content";
+
+const rc = getRelatedContent("scan-to-pdf");
 
 export default function ScanToPdfPage() {
   const usage = useUsage();
@@ -140,7 +144,7 @@ export default function ScanToPdfPage() {
       />
       <HowToJsonLd name="Scan to PDF" description="Scan documents with camera and convert to PDF" steps={[{name:"Open camera",text:"Allow camera access to start scanning"},{name:"Capture pages",text:"Take photos of each page you want to scan"},{name:"Download PDF",text:"Download all captured pages as a single PDF"}]} />
       <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Scan to PDF", item: "https://allaboutpdfediting.xyz/scan-to-pdf" }]} />
-      <FaqPageJsonLd />
+      <FaqPageJsonLd questions={rc?.faqs} />
       <AiSummaryJsonLd name="Scan to PDF" summary="Use your device camera to scan documents and convert them to PDF instantly" category="Scanner" inputType="Camera" outputType="PDF" processing="client-side" price="free" features={["Camera scanning","Multi-page capture","Instant PDF conversion","Free online tool","Client-side only"]} limits="Files up to 10MB" />
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">Scan to PDF</h1>
@@ -250,6 +254,8 @@ export default function ScanToPdfPage() {
           <p>Each capture becomes a separate PDF page. Position your document within the on-screen guide, tap capture, and repeat for multi-page documents. Perfect for digitizing paperwork on the go — no scanner hardware or mobile app needed.</p>
         </div>
       </div>
+      <RelatedContent slug="scan-to-pdf" />
+
       <PremiumUpsell
         show={upsell.state.show}
         mode={upsell.state.mode}

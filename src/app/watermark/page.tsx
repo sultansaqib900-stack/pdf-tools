@@ -18,6 +18,11 @@ import HowToJsonLd from "@/components/HowToJsonLd";
 import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
 import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 import FaqPageJsonLd from "@/components/FaqPageJsonLd";
+import RelatedContent from "@/components/RelatedContent";
+import { getRelatedContent } from "@/lib/related-content";
+import UseCaseLinks from "@/components/UseCaseLinks";
+
+const rc = getRelatedContent("watermark");
 
 export default function WatermarkPage() {
   const usage = useUsage();
@@ -120,7 +125,7 @@ export default function WatermarkPage() {
       />
       <HowToJsonLd name="Add Watermark to PDF" description="Add text or image watermarks to every page of a PDF" steps={[{name:"Upload PDF",text:"Select the PDF to watermark"},{name:"Customize watermark",text:"Enter text adjust opacity size and position"},{name:"Download watermarked PDF",text:"Download the PDF with watermarks applied"}]} />
       <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Watermark PDF", item: "https://allaboutpdfediting.xyz/watermark" }]} />
-      <FaqPageJsonLd />
+      <FaqPageJsonLd questions={rc?.faqs} />
       <AiSummaryJsonLd name="Watermark PDF" summary="Add custom text watermarks to every page of PDF documents" category="Graphics" inputType="PDF" outputType="PDF" processing="client-side" price="free" features={["Text watermark","Opacity control","Position selection","Batch watermarking","Free tool"]} limits="Files up to 10MB" />
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">Add Watermark to PDF</h1>
@@ -229,6 +234,10 @@ export default function WatermarkPage() {
           <p>Keywords: add watermark to PDF online free, PDF watermark tool, mark PDF as confidential, draft watermark PDF free online.</p>
         </div>
       </div>
+      <RelatedContent slug="watermark" />
+
+      <UseCaseLinks toolSlug="watermark" />
+
       <PremiumUpsell
         show={upsell.state.show}
         mode={upsell.state.mode}

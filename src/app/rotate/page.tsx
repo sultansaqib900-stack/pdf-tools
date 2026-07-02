@@ -18,6 +18,11 @@ import HowToJsonLd from "@/components/HowToJsonLd";
 import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
 import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 import FaqPageJsonLd from "@/components/FaqPageJsonLd";
+import RelatedContent from "@/components/RelatedContent";
+import { getRelatedContent } from "@/lib/related-content";
+import UseCaseLinks from "@/components/UseCaseLinks";
+
+const rc = getRelatedContent("rotate");
 
 export default function RotatePage() {
   const usage = useUsage();
@@ -108,7 +113,7 @@ export default function RotatePage() {
       />
       <HowToJsonLd name="Rotate PDF Pages" description="Rotate PDF pages by 90 180 or 270 degrees" steps={[{name:"Upload PDF",text:"Select the PDF with pages to rotate"},{name:"Select rotation",text:"Choose 90 180 or 270 degree rotation"},{name:"Download rotated PDF",text:"Download the PDF with corrected page orientation"}]} />
       <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Rotate PDF", item: "https://allaboutpdfediting.xyz/rotate" }]} />
-      <FaqPageJsonLd />
+      <FaqPageJsonLd questions={rc?.faqs} />
       <AiSummaryJsonLd name="Rotate PDF" summary="Rotate PDF pages by 90 180 or 270 degrees to fix orientation issues" category="Utilities" inputType="PDF" outputType="PDF" processing="client-side" price="free" features={["Page rotation","90 180 270 degrees","Orientation fix","Free online tool","Client-side only"]} limits="Files up to 10MB" />
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">Rotate PDF</h1>
@@ -210,6 +215,10 @@ export default function RotatePage() {
           <p>Fix upside-down or sideways pages instantly with our rotate PDF tool, the simplest way to correct misaligned documents. Whether you scanned a document at the wrong angle, received a PDF that displays incorrectly, or need to adjust mixed-orientation files, this tool lets you rotate all pages by 90, 180, or 270 degrees in one click. To rotate PDF online free, upload your file, choose your angle, and download the corrected version immediately. All processing happens client-side using pdf-lib, ensuring your files stay private and never leave your device. This is especially helpful when dealing with misaligned scans, rotated camera photos converted to PDF, or any document that needs quick page rotation across the whole file.</p>
         </div>
       </div>
+      <RelatedContent slug="rotate" />
+
+      <UseCaseLinks toolSlug="rotate" />
+
       <PremiumUpsell
         show={upsell.state.show}
         mode={upsell.state.mode}

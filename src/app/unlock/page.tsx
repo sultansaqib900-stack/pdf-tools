@@ -18,6 +18,11 @@ import HowToJsonLd from "@/components/HowToJsonLd";
 import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
 import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 import FaqPageJsonLd from "@/components/FaqPageJsonLd";
+import RelatedContent from "@/components/RelatedContent";
+import { getRelatedContent } from "@/lib/related-content";
+import UseCaseLinks from "@/components/UseCaseLinks";
+
+const rc = getRelatedContent("unlock");
 
 export default function UnlockPage() {
   const usage = useUsage();
@@ -98,7 +103,7 @@ export default function UnlockPage() {
       />
       <HowToJsonLd name="Unlock PDF Online" description="Remove password protection from PDF files" steps={[{name:"Upload PDF",text:"Select the password-protected PDF"},{name:"Enter password",text:"Type the PDF owner or user password"},{name:"Download unlocked PDF",text:"Download the PDF with password protection removed"}]} />
       <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Unlock PDF", item: "https://allaboutpdfediting.xyz/unlock" }]} />
-      <FaqPageJsonLd />
+      <FaqPageJsonLd questions={rc?.faqs} />
       <AiSummaryJsonLd name="Unlock PDF" summary="Remove password protection from PDF files to access and edit content freely" category="SecurityApplications" inputType="PDF" outputType="PDF" processing="client-side" price="free" features={["Password removal","Owner password unlock","User password unlock","Free tool","Client-side only"]} limits="Files up to 10MB" />
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">Unlock PDF</h1>
@@ -191,6 +196,10 @@ export default function UnlockPage() {
           <p>Keywords: unlock PDF online free, remove PDF password, decrypt PDF file, remove PDF protection online free.</p>
         </div>
       </div>
+      <RelatedContent slug="unlock" />
+
+      <UseCaseLinks toolSlug="unlock" />
+
       <PremiumUpsell
         show={upsell.state.show}
         mode={upsell.state.mode}

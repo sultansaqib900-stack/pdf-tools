@@ -18,6 +18,10 @@ import HowToJsonLd from "@/components/HowToJsonLd";
 import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
 import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 import FaqPageJsonLd from "@/components/FaqPageJsonLd";
+import RelatedContent from "@/components/RelatedContent";
+import { getRelatedContent } from "@/lib/related-content";
+
+const rc = getRelatedContent("reverse-pdf");
 
 export default function ReversePDFPage() {
   const usage = useUsage();
@@ -104,7 +108,7 @@ export default function ReversePDFPage() {
       />
       <HowToJsonLd name="Reverse PDF Page Order" description="Flip the entire page sequence of any PDF document" steps={[{name:"Upload PDF",text:"Select the PDF to reverse"},{name:"Reverse pages",text:"The tool reverses the entire page order"},{name:"Download reversed PDF",text:"Download the PDF with pages in reversed order"}]} />
       <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Reverse PDF Order", item: "https://allaboutpdfediting.xyz/reverse-pdf" }]} />
-      <FaqPageJsonLd />
+      <FaqPageJsonLd questions={rc?.faqs} />
       <AiSummaryJsonLd name="Reverse PDF Order" summary="Reverse the complete page sequence of PDF documents" category="Utilities" inputType="PDF" outputType="PDF" processing="client-side" price="free" features={["Page reversal","Full document","Quick processing","Free tool","Client-side"]} limits="Files up to 10MB" />
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">Reverse PDF Order</h1>
@@ -184,6 +188,8 @@ export default function ReversePDFPage() {
           <p>Keywords: reverse PDF pages online free, flip PDF order, invert page sequence, reverse PDF file, reorder PDF pages.</p>
         </div>
       </div>
+      <RelatedContent slug="reverse-pdf" />
+
       <PremiumUpsell
         show={upsell.state.show}
         mode={upsell.state.mode}

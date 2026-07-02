@@ -18,6 +18,10 @@ import HowToJsonLd from "@/components/HowToJsonLd";
 import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
 import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 import FaqPageJsonLd from "@/components/FaqPageJsonLd";
+import RelatedContent from "@/components/RelatedContent";
+import { getRelatedContent } from "@/lib/related-content";
+
+const rc = getRelatedContent("pdf-to-images");
 
 export default function PdfToImagesPage() {
   const usage = useUsage();
@@ -126,7 +130,7 @@ export default function PdfToImagesPage() {
       />
       <HowToJsonLd name="Convert PDF to Images" description="Extract PDF pages as high-quality JPG or PNG images" steps={[{name:"Upload PDF",text:"Select the PDF to convert to images"},{name:"Choose format",text:"Select JPG or PNG output format"},{name:"Download images",text:"Download individual page images or a ZIP archive"}]} />
       <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "PDF to Images", item: "https://allaboutpdfediting.xyz/pdf-to-images" }]} />
-      <FaqPageJsonLd />
+      <FaqPageJsonLd questions={rc?.faqs} />
       <AiSummaryJsonLd name="PDF to Images" summary="Convert PDF pages to high-quality JPG or PNG images" category="Graphics" inputType="PDF" outputType="Image" processing="client-side" price="free" features={["Page extraction","JPG PNG output","High quality","ZIP download","Free browser tool"]} limits="Files up to 10MB" />
       <canvas ref={canvasRef} className="hidden" />
 
@@ -238,6 +242,8 @@ export default function PdfToImagesPage() {
           <p>Extract every page of your PDF as a high-quality PNG image using our PDF to images tool, designed for quick and private conversion. This is perfect for creating thumbnails, sharing individual pages on social media, or embedding document content into presentations and reports. To convert PDF to PNG, simply upload your file and click extract — each page is rendered client-side using PDF.js, ensuring your document never leaves your device. Use our free PDF to images online free tool to get high-resolution PNGs that preserve the original layout, fonts, and formatting of every page. Each image can be downloaded individually or all at once, giving you full control over how you use your extracted content.</p>
         </div>
       </div>
+      <RelatedContent slug="pdf-to-images" />
+
       <PremiumUpsell
         show={upsell.state.show}
         mode={upsell.state.mode}

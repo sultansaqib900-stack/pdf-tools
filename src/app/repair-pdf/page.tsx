@@ -17,6 +17,10 @@ import HowToJsonLd from "@/components/HowToJsonLd";
 import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
 import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 import FaqPageJsonLd from "@/components/FaqPageJsonLd";
+import RelatedContent from "@/components/RelatedContent";
+import { getRelatedContent } from "@/lib/related-content";
+
+const rc = getRelatedContent("repair-pdf");
 
 export default function RepairPdfPage() {
   const usage = useUsage();
@@ -93,7 +97,7 @@ export default function RepairPdfPage() {
       <SoftwareAppJsonLd name="Repair PDF - Free Online PDF Repair" description="Fix corrupted PDF files online for free." url="https://allaboutpdfediting.xyz/repair-pdf" />
       <HowToJsonLd name="Repair PDF" description="Fix corrupted PDF documents" steps={[{name:"Upload PDF",text:"Select a corrupted PDF file"},{name:"Repair",text:"Rebuild the PDF structure"},{name:"Download",text:"Download your repaired PDF"}]} />
       <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Repair PDF", item: "https://allaboutpdfediting.xyz/repair-pdf" }]} />
-      <FaqPageJsonLd />
+      <FaqPageJsonLd questions={rc?.faqs} />
       <AiSummaryJsonLd name="Repair PDF" summary="Fix corrupted PDF files by rebuilding their internal structure" category="Utilities" inputType="PDF" outputType="PDF" processing="client-side" price="free" features={["PDF repair","Corruption fix","Structure rebuild","Client-side processing"]} limits="Files up to 10MB" />
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">Repair PDF</h1>
@@ -126,6 +130,7 @@ export default function RepairPdfPage() {
         <SuccessAnimation show={success} message="PDF repaired!" />
       </div>
       <AdBanner className="mt-8" />
+      <RelatedContent slug="repair-pdf" />
       <PremiumUpsell show={upsell.state.show} mode={upsell.state.mode} message={upsell.state.message} onClose={upsell.hideUpsell} />
     </div>
   );

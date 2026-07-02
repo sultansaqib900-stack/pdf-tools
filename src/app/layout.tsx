@@ -12,6 +12,7 @@ import FeedbackWidget from "@/components/FeedbackWidget";
 import AdBlockDetector from "@/components/AdBlockDetector";
 import AdsterraBanner from "@/components/AdsterraBanner";
 import ErrorBoundary from "@/components/ErrorBoundary";
+import PremiumVerifier from "@/components/PremiumVerifier";
 import ToastProvider from "@/components/Toast";
 import OrganizationJsonLd from "@/components/OrganizationJsonLd";
 import WebSiteJsonLd from "@/components/WebSiteJsonLd";
@@ -121,6 +122,7 @@ gtag('config', 'G-0YRS54VR4X');`}
           Skip to content
         </a>
         <AuthProvider>
+        <PremiumVerifier />
         <Header />
         <main id="main-content" className="flex-1"><ErrorBoundary>{children}</ErrorBoundary></main>
         <AdBlockDetector />

@@ -8,6 +8,7 @@ import { LS_CONFIG } from "@/lib/lemonsqueezy";
 import { setPremium, confirmPremium, claimPremium } from "@/lib/premium";
 import Link from "next/link";
 import ProductJsonLd from "@/components/ProductJsonLd";
+import { useAuth } from "@/components/AuthProvider";
 
 const plans = [
   {
@@ -69,16 +70,17 @@ const premiumTools = [
 function SuccessMessage() {
   const searchParams = useSearchParams();
   const [confirmed, setConfirmed] = useState(false);
+  const { user } = useAuth();
 
   useEffect(() => {
     if (searchParams.get("success") === "true" && !confirmed) {
       setConfirmed(true);
       const nonce = searchParams.get("nonce") || undefined;
-      confirmPremium(nonce).then((ok) => {
+      confirmPremium(nonce, user?.email).then((ok) => {
         if (ok) setPremium(true);
       });
     }
-  }, [searchParams, confirmed]);
+  }, [searchParams, confirmed, user?.email]);
 
   if (searchParams.get("success") === "true") {
     return (

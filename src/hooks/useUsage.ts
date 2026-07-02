@@ -27,11 +27,13 @@ export function useUsage(toolName?: string) {
 
     trackEvent("tool_start", { tool });
 
-    const result = await trackUsage();
-    if (result.remaining < 0) {
+    const peek = await peekUsageApi();
+    if (peek.remaining <= 0) {
       trackEvent("tool_limit_reached", { tool });
       return false;
     }
+
+    const result = await trackUsage();
     setRemaining(result.remaining);
     return true;
   }, [tool, unlimited]);

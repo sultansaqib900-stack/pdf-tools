@@ -1,10 +1,21 @@
 import type { MetadataRoute } from "next";
+import { seoPages } from "@/lib/programmatic-seo";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const base = "https://allaboutpdfediting.xyz";
 
-  return [
+  const es = (path: string) => `${base}/es${path}`;
+
+  const forPages: MetadataRoute.Sitemap = seoPages.map((p) => ({
+    url: `${base}/for/${p.slug}`,
+    lastModified: new Date(),
+    changeFrequency: "weekly" as const,
+    priority: 0.6,
+  }));
+
+  return [...forPages,
     { url: base, lastModified: new Date(), changeFrequency: "weekly", priority: 1 },
+    { url: es(""), lastModified: new Date(), changeFrequency: "weekly", priority: 0.9 },
     { url: `${base}/tools`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.9 },
     { url: `${base}/compress`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.8 },
     { url: `${base}/merge`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.8 },
@@ -131,6 +142,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${base}/adobe-acrobat-alternative`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.7 },
     { url: `${base}/ultimate-guide-to-pdf-editing`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.7 },
     { url: `${base}/pdf-tools-for-students`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.6 },
+    { url: `${base}/pdf-tools-for-teachers`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.6 },
+    { url: `${base}/pdf-tools-for-lawyers`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.6 },
+    { url: `${base}/pdf-tools-for-small-business`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.6 },
     { url: `${base}/pdf-tools-for-business`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.6 },
+    { url: `${base}/sitemap`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.5 },
   ];
 }

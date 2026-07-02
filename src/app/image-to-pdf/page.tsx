@@ -18,6 +18,11 @@ import HowToJsonLd from "@/components/HowToJsonLd";
 import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
 import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 import FaqPageJsonLd from "@/components/FaqPageJsonLd";
+import RelatedContent from "@/components/RelatedContent";
+import { getRelatedContent } from "@/lib/related-content";
+import UseCaseLinks from "@/components/UseCaseLinks";
+
+const rc = getRelatedContent("image-to-pdf");
 
 export default function ImageToPdfPage() {
   const usage = useUsage();
@@ -125,7 +130,7 @@ export default function ImageToPdfPage() {
       />
       <HowToJsonLd name="Convert Image to PDF" description="Convert JPG PNG and other images to PDF documents" steps={[{name:"Upload images",text:"Select one or more images JPG PNG BMP WebP"},{name:"Arrange order",text:"Drag to reorder images as needed"},{name:"Download PDF",text:"Download your images combined into a PDF"}]} />
       <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Image to PDF", item: "https://allaboutpdfediting.xyz/image-to-pdf" }]} />
-      <FaqPageJsonLd />
+      <FaqPageJsonLd questions={rc?.faqs} />
       <AiSummaryJsonLd name="Image to PDF" summary="Convert images JPG PNG BMP to PDF documents with customizable page layout" category="Graphics" inputType="Image" outputType="PDF" processing="client-side" price="free" features={["Image to PDF conversion","Multi-image support","Page orientation","Free online tool","Client-side only"]} limits="Files up to 10MB" />
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">Image to PDF</h1>
@@ -225,6 +230,10 @@ export default function ImageToPdfPage() {
           <p>Convert your images to PDF documents with our free image to PDF converter, designed for speed and simplicity. Whether you have JPG photos from your camera, PNG screenshots, or other image formats, you can combine them into a single PDF with just a few clicks. This is great for creating photo albums, digitizing handwritten notes, or converting scanned documents into a portable format that anyone can view. Our JPG to PDF converter works entirely in your browser using pdf-lib, so your images stay private and secure with no server uploads. Simply upload your images, preview them in the gallery, and download your PDF. Each image becomes a separate page preserving its original dimensions and quality — perfect for archiving or sharing.</p>
         </div>
       </div>
+      <RelatedContent slug="image-to-pdf" />
+
+      <UseCaseLinks toolSlug="image-to-pdf" />
+
       <PremiumUpsell
         show={upsell.state.show}
         mode={upsell.state.mode}

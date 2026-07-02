@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useCallback } from "react";
+import { useState, useCallback } from "react";
 import AdBanner from "@/components/AdBanner";
 import { isPremium } from "@/lib/premium";
 import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
@@ -21,7 +21,6 @@ export default function QrStampPage() {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
   const [premiumBanner, setPremiumBanner] = useState(false);
-  const canvasRef = useRef<HTMLCanvasElement>(null);
 
   if (typeof window !== "undefined" && !isPremium()) {
     if (!premiumBanner) setPremiumBanner(true);
@@ -43,28 +42,12 @@ export default function QrStampPage() {
   }
 
   const generateQrDataUrl = useCallback(async (text: string, size: number): Promise<string> => {
-    const canvas = canvasRef.current!;
-    canvas.width = size;
-    canvas.height = size;
-    const ctx = canvas.getContext("2d")!;
-    ctx.fillStyle = "#ffffff";
-    ctx.fillRect(0, 0, size, size);
-    ctx.fillStyle = "#000000";
-
-    const len = text.length;
-    const moduleCount = 21 + Math.ceil(len / 4);
-    const cellSize = Math.floor(size / moduleCount);
-    const offset = Math.floor((size - cellSize * moduleCount) / 2);
-
-    for (let row = 0; row < moduleCount; row++) {
-      for (let col = 0; col < moduleCount; col++) {
-        const hash = (row * 13 + col * 7 + text.charCodeAt((row * moduleCount + col) % len)) % 3;
-        if (hash !== 0) {
-          ctx.fillRect(offset + col * cellSize, offset + row * cellSize, cellSize, cellSize);
-        }
-      }
-    }
-    return canvas.toDataURL("image/png");
+    const QRCode = await import("qrcode");
+    return QRCode.toDataURL(text, {
+      width: size,
+      margin: 1,
+      color: { dark: "#000000", light: "#ffffff" },
+    });
   }, []);
 
   const stamp = async () => {
@@ -125,11 +108,10 @@ export default function QrStampPage() {
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-12">
-      <canvas ref={canvasRef} className="hidden" />
       <SoftwareAppJsonLd name="QR Code PDF Stamping" description="Add QR codes and barcodes to any PDF page. Premium." url="https://allaboutpdfediting.xyz/qr-stamp" image="https://allaboutpdfediting.xyz/opengraph-image.png" aggregateRating={{ ratingValue: 4.6, bestRating: 5, ratingCount: 112 }} />
       <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "QR Stamp", item: "https://allaboutpdfediting.xyz/qr-stamp" }]} />
       <HowToJsonLd name="Add QR Code to PDF" description="Add QR codes to every page of a PDF document" steps={[{name:"Upload PDF",text:"Upload the PDF document to stamp with QR codes"},{name:"Enter URL or text",text:"Type the URL or text to encode in the QR code"},{name:"Download stamped PDF",text:"Download the PDF with QR codes added to each page"}]} />
-      <AiSummaryJsonLd name="QR Code Stamp" summary="Add QR codes to every page of PDF documents with customizable position and size" category="Graphics" inputType="PDF+Text" outputType="PDF" processing="client-side" price="premium" features={["QR code generation","Position customization","Size adjustment","Canvas-based rendering","No external APIs"]} limits="Premium subscribers" />
+      <AiSummaryJsonLd name="QR Code Stamp" summary="Add QR codes to every page of PDF documents with customizable position and size" category="Graphics" inputType="PDF+Text" outputType="PDF" processing="client-side" price="premium" features={["QR code generation","Position customization","Size adjustment","No external APIs"]} limits="Premium subscribers" />
       <div className="mb-8">
         <div className="flex items-center gap-3 mb-2">
           <h1 className="text-3xl font-bold text-[var(--foreground)]">QR Code Stamp</h1>

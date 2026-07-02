@@ -16,6 +16,10 @@ import HowToJsonLd from "@/components/HowToJsonLd";
 import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
 import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 import FaqPageJsonLd from "@/components/FaqPageJsonLd";
+import RelatedContent from "@/components/RelatedContent";
+import { getRelatedContent } from "@/lib/related-content";
+
+const rc = getRelatedContent("word-to-pdf");
 
 export default function WordToPdfPage() {
   const usage = useUsage();
@@ -97,7 +101,7 @@ export default function WordToPdfPage() {
       <SoftwareAppJsonLd name="Word to PDF - Free Online Converter" description="Convert Word (DOCX) to PDF online for free." url="https://allaboutpdfediting.xyz/word-to-pdf" />
       <HowToJsonLd name="Word to PDF" description="Convert Word documents to PDF" steps={[{name:"Upload DOCX",text:"Select a Word document"},{name:"Convert",text:"Convert to PDF instantly"},{name:"Download",text:"Download your PDF"}]} />
       <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Word to PDF", item: "https://allaboutpdfediting.xyz/word-to-pdf" }]} />
-      <FaqPageJsonLd />
+      <FaqPageJsonLd questions={rc?.faqs} />
       <AiSummaryJsonLd name="Word to PDF" summary="Convert Word DOCX documents to PDF format" category="Convert" inputType="DOCX" outputType="PDF" processing="client-side" price="free" features={["DOCX to PDF conversion","Format preservation","Client-side processing"]} limits="Files up to 10MB" />
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">Word to PDF</h1>
@@ -129,6 +133,7 @@ export default function WordToPdfPage() {
         {error && <ErrorBanner message={error} onRetry={runConvert} onDismiss={() => setError(null)} />}
       </div>
       <AdBanner className="mt-8" />
+      <RelatedContent slug="word-to-pdf" />
       <PremiumUpsell show={upsell.state.show} mode={upsell.state.mode} message={upsell.state.message} onClose={upsell.hideUpsell} />
     </div>
   );

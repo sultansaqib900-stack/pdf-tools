@@ -18,6 +18,10 @@ import HowToJsonLd from "@/components/HowToJsonLd";
 import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
 import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 import FaqPageJsonLd from "@/components/FaqPageJsonLd";
+import RelatedContent from "@/components/RelatedContent";
+import { getRelatedContent } from "@/lib/related-content";
+
+const rc = getRelatedContent("resize");
 
 const sizes: { label: string; w: number; h: number }[] = [
   { label: "A4 (210×297 mm)", w: 595.28, h: 841.89 },
@@ -139,7 +143,7 @@ export default function ResizePage() {
       />
       <HowToJsonLd name="Resize PDF Pages" description="Change PDF page size to A4 Letter Legal or custom dimensions" steps={[{name:"Upload PDF",text:"Select the PDF to resize"},{name:"Choose page size",text:"Select A4 Letter Legal or enter custom dimensions"},{name:"Download resized PDF",text:"Download the PDF with new page dimensions"}]} />
       <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Resize PDF", item: "https://allaboutpdfediting.xyz/resize" }]} />
-      <FaqPageJsonLd />
+      <FaqPageJsonLd questions={rc?.faqs} />
       <AiSummaryJsonLd name="Resize PDF" summary="Change PDF page dimensions to standard sizes like A4 Letter Legal or custom" category="Utilities" inputType="PDF" outputType="PDF" processing="client-side" price="free" features={["Page resizing","A4 Letter Legal","Custom dimensions","Free browser tool","Client-side"]} limits="Files up to 10MB" />
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">Resize PDF Pages</h1>
@@ -252,6 +256,8 @@ export default function ResizePage() {
           <p>Keywords: resize PDF online free, change PDF page size, PDF to A4 online, PDF page dimensions, change PDF paper size.</p>
         </div>
       </div>
+
+      <RelatedContent slug="resize" />
 
       <PremiumUpsell
         show={upsell.state.show}

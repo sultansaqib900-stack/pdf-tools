@@ -18,6 +18,11 @@ import HowToJsonLd from "@/components/HowToJsonLd";
 import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
 import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 import FaqPageJsonLd from "@/components/FaqPageJsonLd";
+import RelatedContent from "@/components/RelatedContent";
+import { getRelatedContent } from "@/lib/related-content";
+import UseCaseLinks from "@/components/UseCaseLinks";
+
+const rc = getRelatedContent("extract-text");
 
 export default function ExtractTextPage() {
   const usage = useUsage();
@@ -125,7 +130,7 @@ export default function ExtractTextPage() {
       />
       <HowToJsonLd name="Extract Text from PDF" description="Copy text content from scanned or digital PDF files" steps={[{name:"Upload PDF",text:"Select the PDF to extract text from"},{name:"Extract text",text:"The tool reads all text content from the document"},{name:"Copy or download",text:"Copy text to clipboard or download as TXT file"}]} />
       <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Extract Text", item: "https://allaboutpdfediting.xyz/extract-text" }]} />
-      <FaqPageJsonLd />
+      <FaqPageJsonLd questions={rc?.faqs} />
       <AiSummaryJsonLd name="Extract Text" summary="Extract and copy text content from scanned or digital PDF documents" category="Utilities" inputType="PDF" outputType="Text" processing="client-side" price="free" features={["Text extraction","OCR support","TXT export","Clipboard copy","Free tool"]} limits="Files up to 10MB" />
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">Extract Text from PDF</h1>
@@ -216,6 +221,10 @@ export default function ExtractTextPage() {
           <p>Our free PDF text extractor lets you extract text from PDF documents quickly and privately, making it an essential tool for researchers, students, and professionals. Whether you need to copy quotes for academic work, analyze document content for data processing, or repurpose text from a scanned PDF, this tool handles it all with ease. The extraction runs entirely in your browser using PDF.js, so your documents never leave your device — complete privacy guaranteed. To extract text from PDF online free, just upload your file and click extract. The tool reads every page and presents the text in a clean, copyable format with page markers. You can copy to clipboard or download as a .txt file for further editing.</p>
         </div>
       </div>
+
+      <RelatedContent slug="extract-text" />
+
+      <UseCaseLinks toolSlug="extract-text" />
 
       <PremiumUpsell
         show={upsell.state.show}

@@ -18,6 +18,11 @@ import HowToJsonLd from "@/components/HowToJsonLd";
 import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
 import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 import FaqPageJsonLd from "@/components/FaqPageJsonLd";
+import RelatedContent from "@/components/RelatedContent";
+import { getRelatedContent } from "@/lib/related-content";
+import UseCaseLinks from "@/components/UseCaseLinks";
+
+const rc = getRelatedContent("protect");
 
 export default function ProtectPage() {
   const usage = useUsage();
@@ -101,7 +106,7 @@ export default function ProtectPage() {
       />
       <HowToJsonLd name="Password Protect PDF" description="Add password protection to encrypt PDF files" steps={[{name:"Upload PDF",text:"Select the PDF file to protect"},{name:"Set password",text:"Enter a strong password for encryption"},{name:"Download protected PDF",text:"Download your password-encrypted PDF document"}]} />
       <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Protect PDF", item: "https://allaboutpdfediting.xyz/protect" }]} />
-      <FaqPageJsonLd />
+      <FaqPageJsonLd questions={rc?.faqs} />
       <AiSummaryJsonLd name="Password Protect PDF" summary="Encrypt PDF files with password protection to prevent unauthorized access" category="SecurityApplications" inputType="PDF" outputType="PDF" processing="client-side" price="free" features={["Password encryption","AES security","User password","Owner password","Client-side only"]} limits="Files up to 10MB" />
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">Password Protect PDF</h1>
@@ -191,6 +196,10 @@ export default function ProtectPage() {
           <p>Secure your sensitive documents by adding a password with our protect tool, keeping your files safe from unauthorized access. To password protect PDF online free, upload your file, enter a strong password, and download the encrypted version instantly. The encryption is applied entirely in your browser using pdf-lib, so your document never leaves your device and no data is transmitted over the network. This is essential for protecting confidential business reports, personal financial documents, legal contracts, or any PDF that contains sensitive information. Once protected, the password must be entered to open the file, giving you full control over who can view it. Encrypt PDF file securely with our fully client-side tool — no data transmission, no server storage, complete privacy guaranteed.</p>
         </div>
       </div>
+      <RelatedContent slug="protect" />
+
+      <UseCaseLinks toolSlug="protect" />
+
       <PremiumUpsell
         show={upsell.state.show}
         mode={upsell.state.mode}

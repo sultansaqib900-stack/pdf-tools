@@ -21,13 +21,6 @@ export function isPremium(): boolean {
   if (typeof window === "undefined") return false;
   if (_isPremiumVal === undefined) {
     _isPremiumVal = localStorage.getItem(STORAGE_KEY) === "true";
-    if (!_isPremiumVal && typeof window !== "undefined") {
-      const params = new URLSearchParams(window.location.search);
-      if (params.get("dev") === "1") {
-        _isPremiumVal = true;
-        localStorage.setItem(STORAGE_KEY, "true");
-      }
-    }
   }
   return _isPremiumVal;
 }
@@ -38,11 +31,14 @@ export function setPremium(value: boolean): void {
   _isPremiumVal = value;
 }
 
-export async function verifyPremiumServer(): Promise<boolean> {
+export async function verifyPremiumServer(email?: string): Promise<boolean> {
   const clientId = getClientId();
-  if (!clientId) return isPremium();
+  if (!clientId && !email) return isPremium();
   try {
-    const res = await fetch(`/api/premium/verify?clientId=${encodeURIComponent(clientId)}`);
+    const params = new URLSearchParams();
+    if (clientId) params.set("clientId", clientId);
+    if (email) params.set("email", email);
+    const res = await fetch(`/api/premium/verify?${params}`);
     const data = await res.json();
     if (data.premium) setPremium(true);
     return data.premium;
@@ -51,13 +47,13 @@ export async function verifyPremiumServer(): Promise<boolean> {
   }
 }
 
-export async function confirmPremium(nonce?: string): Promise<boolean> {
+export async function confirmPremium(nonce?: string, email?: string): Promise<boolean> {
   const clientId = getClientId();
   try {
     const res = await fetch("/api/premium/confirm", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ clientId, nonce }),
+      body: JSON.stringify({ clientId, nonce, email }),
     });
     const data = await res.json();
     if (data.premium) setPremium(true);

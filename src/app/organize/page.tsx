@@ -18,6 +18,11 @@ import HowToJsonLd from "@/components/HowToJsonLd";
 import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
 import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 import FaqPageJsonLd from "@/components/FaqPageJsonLd";
+import RelatedContent from "@/components/RelatedContent";
+import { getRelatedContent } from "@/lib/related-content";
+import UseCaseLinks from "@/components/UseCaseLinks";
+
+const rc = getRelatedContent("organize");
 
 export default function OrganizePage() {
   const usage = useUsage();
@@ -149,7 +154,7 @@ export default function OrganizePage() {
       />
       <HowToJsonLd name="Organize PDF Pages" description="Reorder drag-and-drop rearrange pages in PDF documents" steps={[{name:"Upload PDF",text:"Select the PDF to reorganize"},{name:"Drag to reorder",text:"Drag and drop page thumbnails to rearrange"},{name:"Download organized PDF",text:"Download the PDF with reorganized page order"}]} />
       <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Organize PDF", item: "https://allaboutpdfediting.xyz/organize" }]} />
-      <FaqPageJsonLd />
+      <FaqPageJsonLd questions={rc?.faqs} />
       <AiSummaryJsonLd name="Organize PDF" summary="Reorder pages in PDF documents with drag-and-drop interface" category="Utilities" inputType="PDF" outputType="PDF" processing="client-side" price="free" features={["Page reordering","Drag-and-drop","Thumbnail preview","Free tool","Client-side"]} limits="Files up to 10MB" />
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">Organize PDF Pages</h1>
@@ -264,6 +269,10 @@ export default function OrganizePage() {
           <p>Keywords: organize PDF pages online free, reorder PDF pages, rearrange PDF file, PDF page organizer free online.</p>
         </div>
       </div>
+
+      <RelatedContent slug="organize" />
+
+      <UseCaseLinks toolSlug="organize" />
 
       <PremiumUpsell
         show={upsell.state.show}

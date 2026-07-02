@@ -17,6 +17,11 @@ import HowToJsonLd from "@/components/HowToJsonLd";
 import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
 import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 import FaqPageJsonLd from "@/components/FaqPageJsonLd";
+import RelatedContent from "@/components/RelatedContent";
+import { getRelatedContent } from "@/lib/related-content";
+import UseCaseLinks from "@/components/UseCaseLinks";
+
+const rc = getRelatedContent("redact");
 
 interface Rect {
   id: string;
@@ -94,7 +99,7 @@ export default function RedactPage() {
       }
       const pdfData = await getDocument({ data: pdfBytesRef.current!.slice(0) }).promise;
       const pdfPage = await pdfData.getPage(currentPage + 1);
-      const vp = pdfPage.getViewport({ scale: 1.5 });
+      const vp = pdfPage.getViewport({ scale: RENDER_SCALE });
       canvas.width = vp.width;
       canvas.height = vp.height;
       await pdfPage.render({ canvas: canvas, viewport: vp }).promise;
@@ -203,6 +208,8 @@ export default function RedactPage() {
     };
   }, [pageImages, currentPage, rects]);
 
+  const RENDER_SCALE = 1.5;
+
   const runRedact = useCallback(async () => {
     if (!file || !pdfDoc || saving) return;
     setSaving(true);
@@ -214,9 +221,6 @@ export default function RedactPage() {
       const bytes = pdfBytesRef.current!.slice(0);
       const outDoc = await PDFDocument.load(bytes, { ignoreEncryption: true });
       const allRects = rects;
-      const canvas = canvasRef.current;
-      if (!canvas) { setError("Rendering error. Please try again."); setSaving(false); return; }
-      const scale = outDoc.getPage(0).getWidth() / canvas.width;
 
       for (let i = 0; i < allRects.length; i++) {
         const pageRects = allRects[i] || [];
@@ -224,10 +228,10 @@ export default function RedactPage() {
         const page = outDoc.getPage(i);
         for (const r of pageRects) {
           page.drawRectangle({
-            x: r.x * scale,
-            y: page.getHeight() - (r.y + r.h) * scale,
-            width: r.w * scale,
-            height: r.h * scale,
+            x: r.x / RENDER_SCALE,
+            y: page.getHeight() - (r.y + r.h) / RENDER_SCALE,
+            width: r.w / RENDER_SCALE,
+            height: r.h / RENDER_SCALE,
             color: rgb(0, 0, 0),
           });
         }
@@ -242,8 +246,8 @@ export default function RedactPage() {
       a.click();
       URL.revokeObjectURL(url);
       setSuccess(true);
-    } catch {
-      setError("Failed to redact PDF. The file may be encrypted or corrupted.");
+    } catch (e) {
+      setError("Failed to redact PDF: " + (e instanceof Error ? e.message : "unknown error"));
     }
     setSaving(false);
   }, [file, pdfDoc, rects, saving, usage]);
@@ -269,7 +273,7 @@ export default function RedactPage() {
       />
       <HowToJsonLd name="Redact PDF Online" description="Permanently black out sensitive content in PDF files" steps={[{name:"Upload PDF",text:"Select the PDF with content to redact"},{name:"Select areas to redact",text:"Draw black boxes over sensitive text and images"},{name:"Download redacted PDF",text:"Download the PDF with permanently removed content"}]} />
       <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Redact PDF", item: "https://allaboutpdfediting.xyz/redact" }]} />
-      <FaqPageJsonLd />
+      <FaqPageJsonLd questions={rc?.faqs} />
       <AiSummaryJsonLd name="Redact PDF" summary="Permanently black out sensitive text images and areas in PDF documents" category="SecurityApplications" inputType="PDF" outputType="PDF" processing="client-side" price="free" features={["Area redaction","Text blackout","Permanent removal","Client-side","No server uploads"]} limits="Files up to 10MB" />
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">Redact PDF</h1>
@@ -396,6 +400,10 @@ export default function RedactPage() {
           <p>All processing happens locally in your browser — no uploads, no servers, complete privacy. Keywords: redact PDF online free, black out text PDF, hide sensitive information PDF, PDF redaction tool.</p>
         </div>
       </div>
+
+      <RelatedContent slug="redact" />
+
+      <UseCaseLinks toolSlug="redact" />
 
       <PremiumUpsell show={upsell.state.show} mode={upsell.state.mode} message={upsell.state.message} onClose={upsell.hideUpsell} />
     </div>

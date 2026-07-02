@@ -18,6 +18,11 @@ import HowToJsonLd from "@/components/HowToJsonLd";
 import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
 import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 import FaqPageJsonLd from "@/components/FaqPageJsonLd";
+import RelatedContent from "@/components/RelatedContent";
+import { getRelatedContent } from "@/lib/related-content";
+import UseCaseLinks from "@/components/UseCaseLinks";
+
+const rc = getRelatedContent("sign");
 
 export default function SignPage() {
   const usage = useUsage();
@@ -170,7 +175,7 @@ export default function SignPage() {
       />
       <HowToJsonLd name="Sign PDF Online" description="Add electronic signatures to PDF documents" steps={[{name:"Upload PDF",text:"Select the PDF document to sign"},{name:"Draw signature",text:"Draw type or upload your signature"},{name:"Place and download",text:"Position your signature and download the signed PDF"}]} />
       <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Sign PDF", item: "https://allaboutpdfediting.xyz/sign" }]} />
-      <FaqPageJsonLd />
+      <FaqPageJsonLd questions={rc?.faqs} />
       <AiSummaryJsonLd name="Sign PDF" summary="Add electronic signatures to PDF documents by drawing typing or uploading" category="BusinessApplications" inputType="PDF" outputType="PDF" processing="client-side" price="free" features={["Draw signature","Type signature","Upload signature","Position placement","Free e-sign tool"]} limits="Files up to 10MB" />
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">e-Sign PDF</h1>
@@ -267,6 +272,10 @@ export default function SignPage() {
           <p>Add your signature to PDF documents digitally with our e-sign tool, designed for quick and secure document signing without printing or scanning. Draw your signature using your mouse or touchscreen, upload a PDF, and your signature is placed neatly on the last page. To sign PDF online free, simply draw in the signature pad, select your document, and download the signed file immediately. Everything runs entirely in your browser — drawing, embedding, and downloading — so your data never reaches a server. This is ideal for contracts, rental agreements, consent forms, approval workflows, and any document that requires a personal touch. Our e-sign PDF document tool gives you a simple, private way to sign.</p>
         </div>
       </div>
+      <RelatedContent slug="sign" />
+
+      <UseCaseLinks toolSlug="sign" />
+
       <PremiumUpsell
         show={upsell.state.show}
         mode={upsell.state.mode}

@@ -13,6 +13,10 @@ import HowToJsonLd from "@/components/HowToJsonLd";
 import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
 import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 import FaqPageJsonLd from "@/components/FaqPageJsonLd";
+import RelatedContent from "@/components/RelatedContent";
+import { getRelatedContent } from "@/lib/related-content";
+
+const rc = getRelatedContent("chat-pdf");
 
 interface Message {
   role: "user" | "assistant";
@@ -221,7 +225,7 @@ export default function ChatPDFPage() {
       />
       <HowToJsonLd name="Chat with PDF AI" description="Upload a PDF and ask AI questions about its content" steps={[{name:"Upload PDF",text:"Select a PDF document to analyze"},{name:"Ask questions",text:"Type questions about the content in natural language"},{name:"Get answers",text:"Receive AI-generated answers based on the document content"}]} />
       <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Chat with PDF", item: "https://allaboutpdfediting.xyz/chat-pdf" }]} />
-      <FaqPageJsonLd />
+      <FaqPageJsonLd questions={rc?.faqs} />
       <AiSummaryJsonLd name="Chat with PDF" summary="Upload a PDF document and ask AI-powered questions about its content" category="AIApplications" inputType="PDF" outputType="Answers" processing="server-side" price="free" features={["AI-powered QandA","Natural language","Document analysis","Free daily limit","No signup"]} limits="Free daily limit" />
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">Chat with PDF</h1>
@@ -405,6 +409,8 @@ export default function ChatPDFPage() {
           <p>Keywords: chat with PDF, AI PDF assistant, ask PDF questions, PDF chatbot, AI document reader, PDF analyzer.</p>
         </div>
       </div>
+      <RelatedContent slug="chat-pdf" />
+
       <PremiumUpsell
         show={upsell.state.show}
         mode={upsell.state.mode}

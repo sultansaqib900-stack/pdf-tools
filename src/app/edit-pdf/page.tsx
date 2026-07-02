@@ -17,6 +17,11 @@ import HowToJsonLd from "@/components/HowToJsonLd";
 import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
 import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 import FaqPageJsonLd from "@/components/FaqPageJsonLd";
+import RelatedContent from "@/components/RelatedContent";
+import { getRelatedContent } from "@/lib/related-content";
+import UseCaseLinks from "@/components/UseCaseLinks";
+
+const rc = getRelatedContent("edit-pdf");
 
 interface TextBox {
   id: string;
@@ -298,7 +303,7 @@ export default function EditPdfPage() {
       <SoftwareAppJsonLd name="Edit PDF - Free Online PDF Editor" description="Edit PDF files online for free. Add text, shapes, and drawings to any PDF." url="https://allaboutpdfediting.xyz/edit-pdf" />
       <HowToJsonLd name="Edit PDF" description="Add text and shapes to PDF documents" steps={[{name:"Upload PDF",text:"Select a PDF to edit"},{name:"Add content",text:"Use the toolbar to add text boxes, rectangles, circles, or lines"},{name:"Download",text:"Save your edited PDF"}]} />
       <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Edit PDF", item: "https://allaboutpdfediting.xyz/edit-pdf" }]} />
-      <FaqPageJsonLd />
+      <FaqPageJsonLd questions={rc?.faqs} />
       <AiSummaryJsonLd name="Edit PDF" summary="Edit PDF files online — add text boxes, shapes, and drawings to any PDF" category="Editor" inputType="PDF" outputType="PDF" processing="client-side" price="free" features={["Add text boxes","Draw shapes","Multi-page editing","Client-side processing","Free online tool"]} limits="Files up to 10MB" />
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">Edit PDF</h1>
@@ -384,6 +389,10 @@ export default function EditPdfPage() {
           <p>Your original PDF stays private. All editing happens client-side using pdf-lib. Simply upload, edit, and download your modified PDF.</p>
         </div>
       </div>
+      <RelatedContent slug="edit-pdf" />
+
+      <UseCaseLinks toolSlug="edit-pdf" />
+
       <PremiumUpsell show={upsell.state.show} mode={upsell.state.mode} message={upsell.state.message} onClose={upsell.hideUpsell} />
     </div>
   );

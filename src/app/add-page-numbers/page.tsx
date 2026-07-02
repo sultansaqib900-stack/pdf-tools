@@ -18,6 +18,11 @@ import HowToJsonLd from "@/components/HowToJsonLd";
 import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
 import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 import FaqPageJsonLd from "@/components/FaqPageJsonLd";
+import RelatedContent from "@/components/RelatedContent";
+import { getRelatedContent } from "@/lib/related-content";
+import UseCaseLinks from "@/components/UseCaseLinks";
+
+const rc = getRelatedContent("add-page-numbers");
 
 export default function AddPageNumbersPage() {
   const usage = useUsage();
@@ -144,7 +149,7 @@ export default function AddPageNumbersPage() {
       />
       <HowToJsonLd name="Add Page Numbers to PDF" description="Insert page numbers at any position in PDF documents" steps={[{name:"Upload PDF",text:"Select the PDF to add page numbers"},{name:"Customize numbering",text:"Choose position style and starting number"},{name:"Download numbered PDF",text:"Download the PDF with page numbers added"}]} />
       <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Add Page Numbers", item: "https://allaboutpdfediting.xyz/add-page-numbers" }]} />
-      <FaqPageJsonLd />
+      <FaqPageJsonLd questions={rc?.faqs} />
       <AiSummaryJsonLd name="Add Page Numbers" summary="Insert page numbers into PDF documents with customizable position and formatting" category="Utilities" inputType="PDF" outputType="PDF" processing="client-side" price="free" features={["Page numbering","Position selection","Custom start number","Style options","Free tool"]} limits="Files up to 10MB" />
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">Add Page Numbers</h1>
@@ -247,6 +252,10 @@ export default function AddPageNumbersPage() {
           <p>Number your PDF pages easily with our free tool, designed for authors, office workers, and anyone preparing professional documents. Whether you are laying out a book, organizing a multi-section report, or creating an instruction manual, adding sequential page numbers helps readers navigate your content with confidence. Our tool lets you choose from six positions — top or bottom, aligned left, center, or right — and set any starting number. To add page numbers to PDF online free, just upload your file, pick your settings, and download instantly. The numbering is applied client-side using pdf-lib, so your files remain private and secure. The clean Helvetica font and balanced size blend seamlessly with your document's layout.</p>
         </div>
       </div>
+      <RelatedContent slug="add-page-numbers" />
+
+      <UseCaseLinks toolSlug="add-page-numbers" />
+
       <PremiumUpsell
         show={upsell.state.show}
         mode={upsell.state.mode}

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@vercel/kv";
 import { setPremiumStatus } from "@/lib/kv";
+import { setPremiumByEmail } from "@/lib/kv";
 
 const kv = createClient({
   url: process.env.pdf_tools_KV_REST_API_URL || process.env.KV_REST_API_URL || "",
@@ -9,7 +10,7 @@ const kv = createClient({
 
 export async function POST(req: NextRequest) {
   try {
-    const { clientId, nonce } = await req.json();
+    const { clientId, nonce, email } = await req.json();
     if (!clientId) {
       return NextResponse.json({ ok: false, error: "No clientId" }, { status: 400 });
     }
@@ -33,6 +34,11 @@ export async function POST(req: NextRequest) {
     }
 
     await setPremiumStatus(clientId, true);
+
+    if (email) {
+      await setPremiumByEmail(email, clientId);
+    }
+
     return NextResponse.json({ ok: true, premium: true });
   } catch {
     return NextResponse.json({ ok: false }, { status: 500 });

@@ -33,6 +33,7 @@ export default function Footer() {
               <Link href="/contact" className="block hover:text-[var(--foreground)] hover:translate-x-0.5 transition-all">Contact</Link>
               <Link href="/qa" className="block hover:text-[var(--foreground)] hover:translate-x-0.5 transition-all">Q&A</Link>
               <Link href="/offline" className="block hover:text-[var(--foreground)] hover:translate-x-0.5 transition-all">Offline Mode</Link>
+              <Link href="/sitemap" className="block hover:text-[var(--foreground)] hover:translate-x-0.5 transition-all">Sitemap</Link>
             </div>
           </div>
           <div>
