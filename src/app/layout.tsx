@@ -75,6 +75,7 @@ export default function RootLayout({
         <HreflangTags />
         <meta name="google-site-verification" content="N8odpQukXkhYSNhTcTrnMKWHWTi5D5h_Cre96ZVGlTw" />
         <meta name="google-adsense-account" content="ca-pub-6315496314477761" />
+        <link rel="ads.txt" href="/ads.txt" />
         <ThemeScript />
         <Script src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6315496314477761" strategy="afterInteractive" crossOrigin="anonymous" />
         <script dangerouslySetInnerHTML={{ __html: `if("serviceWorker" in navigator){window.addEventListener("load",()=>{navigator.serviceWorker.register("/sw.js").catch(()=>{})})}` }} />
