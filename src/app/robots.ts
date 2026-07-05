@@ -7,7 +7,6 @@ export default function robots(): MetadataRoute.Robots {
         userAgent: "*",
         allow: "/",
         disallow: ["/api/", "/vault/"],
-        crawlDelay: 10,
       },
     ],
     sitemap: "https://allaboutpdfediting.xyz/sitemap.xml",
