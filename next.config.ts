@@ -18,10 +18,16 @@ const nextConfig: NextConfig = {
   async headers() {
     return [
       {
-        source: "/(.*)",
-        missing: [
-          { type: "path", value: "/ads.txt" },
+        source: "/(ads\\.txt)",
+        headers: [
+          {
+            key: "X-Content-Type-Options",
+            value: "nosniff",
+          },
         ],
+      },
+      {
+        source: "/(.*)",
         headers: [
           {
             key: "Content-Security-Policy",
