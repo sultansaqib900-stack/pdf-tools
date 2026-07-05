@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useRef } from "react";
-import AdBanner from "@/components/AdBanner";
 import { isPremium } from "@/lib/premium";
 import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
 import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
@@ -115,7 +114,6 @@ export default function PdfDiffPage() {
         <p className="text-[var(--muted)]">Upload two PDFs and see exactly what changed — word by word, page by page.</p>
       </div>
 
-      <AdBanner className="mb-8" />
 
       <div className="grid md:grid-cols-2 gap-4 mb-8">
         <div
@@ -214,7 +212,6 @@ export default function PdfDiffPage() {
         </div>
       )}
 
-      <AdBanner className="mb-8" />
 
       <div className="border-t border-[var(--card-border)] pt-8 mt-8">
         <h2 className="text-xl font-bold text-[var(--foreground)] mb-3">About PDF Comparison</h2>

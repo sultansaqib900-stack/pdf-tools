@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useRef } from "react";
-import AdBanner from "@/components/AdBanner";
 import { isPremium } from "@/lib/premium";
 import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
 import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
@@ -114,7 +113,6 @@ export default function FormDataExtractPage() {
         <p className="text-[var(--muted)]">Extract filled AcroForm field data from PDFs into a CSV file for Excel, Google Sheets, or analysis.</p>
       </div>
 
-      <AdBanner className="mb-8" />
 
       <div className="bg-[var(--card)] border border-[var(--card-border)] rounded-xl p-6 space-y-5">
         <div>
@@ -152,7 +150,6 @@ export default function FormDataExtractPage() {
         <div className="mt-6 p-4 bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-800 rounded-xl text-red-600 dark:text-red-400 text-sm">{error}</div>
       )}
 
-      <AdBanner className="mt-8" />
 
       <div className="border-t border-[var(--card-border)] pt-8 mt-8">
         <h2 className="text-xl font-bold text-[var(--foreground)] mb-3">About Form Data Extraction</h2>

@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useCallback, useRef, useEffect } from "react";
-import AdBanner from "@/components/AdBanner";
 import ToolInfo from "@/components/ToolInfo";
 import UsageBar from "@/components/UsageBar";
 import PremiumUpsell, { usePremiumUpsell } from "@/components/PremiumUpsell";
@@ -237,7 +236,6 @@ export default function ChatPDFPage() {
         description="Your file stays private. Text is extracted in your browser using PDF.js. Only extracted text is sent to the AI API — your actual PDF file is never uploaded."
       />
 
-      <AdBanner className="mb-8" />
 
       {!pdfText && (
         <div
@@ -399,7 +397,6 @@ export default function ChatPDFPage() {
         </div>
       )}
 
-      <AdBanner className="mt-8" />
 
       <div className="max-w-3xl mx-auto mt-12 pt-8 border-t border-[var(--card-border)]">
         <h2 className="text-xl font-bold text-[var(--foreground)] mb-3">About Chat with PDF</h2>

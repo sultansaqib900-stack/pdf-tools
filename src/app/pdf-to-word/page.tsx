@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useCallback, useEffect, useRef } from "react";
-import AdBanner from "@/components/AdBanner";
 import ToolInfo from "@/components/ToolInfo";
 import FreeWaitTimer from "@/components/FreeWaitTimer";
 import UsageBar from "@/components/UsageBar";
@@ -106,7 +105,6 @@ export default function PdfToWordPage() {
         <p className="text-[var(--muted)]">Convert PDF documents to editable Word (DOCX) files.</p>
       </div>
       <ToolInfo name="PDF to Word" description="Convert PDFs to editable Word documents entirely in your browser. No uploads, no servers." />
-      <AdBanner className="mb-8" />
       <div className="mb-4"><UsageBar remaining={usage.remaining} unlimited={usage.unlimited} /></div>
       <div className="bg-[var(--card)] rounded-xl border border-[var(--card-border)] p-8 space-y-6">
         <div onDrop={onDrop} onDragOver={(e) => { e.preventDefault(); setDragging(true); }} onDragLeave={() => setDragging(false)}
@@ -130,7 +128,6 @@ export default function PdfToWordPage() {
         )}
         {error && <ErrorBanner message={error} onRetry={runConvert} onDismiss={() => setError(null)} />}
       </div>
-      <AdBanner className="mt-8" />
       <RelatedContent slug="pdf-to-word" />
 
       <UseCaseLinks toolSlug="pdf-to-word" />

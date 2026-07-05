@@ -2,7 +2,6 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 import FaqPageJsonLd from "@/components/FaqPageJsonLd";
-import AdBanner from "@/components/AdBanner";
 
 export const metadata: Metadata = {
   title: "Free PDF Tools for Teachers — Worksheets, Certificates, Grading & More | PDFTools",
@@ -120,7 +119,6 @@ export default function PDFToolsForTeachersPage() {
           </section>
         ))}
 
-        <AdBanner className="mb-12" />
 
         {/* Premium Spotlight: Certificate Generator */}
         <section className="mb-12 p-6 rounded-xl border-2 border-amber-400/30 bg-gradient-to-br from-amber-950/10 to-transparent">

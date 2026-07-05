@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useCallback, useEffect, useRef } from "react";
-import AdBanner from "@/components/AdBanner";
 import ToolInfo from "@/components/ToolInfo";
 import FreeWaitTimer from "@/components/FreeWaitTimer";
 import UsageBar from "@/components/UsageBar";
@@ -142,7 +141,6 @@ export default function ExtractTextPage() {
         description="Your PDF stays private. Text extraction runs locally in your browser using PDF.js — no uploads, no servers. Get all text content as plain text you can copy or download."
       />
 
-      <AdBanner />
 
       <div className="mb-4">
         <UsageBar remaining={usage.remaining} unlimited={usage.unlimited} />
@@ -214,7 +212,6 @@ export default function ExtractTextPage() {
         <SuccessAnimation show={success} message="Text extracted!" onRestore={restoreOriginal} />
       </div>
 
-      <AdBanner className="mt-8" />
       <div className="max-w-3xl mx-auto mt-12 pt-8 border-t border-[var(--card-border)]">
         <h2 className="text-xl font-bold text-[var(--foreground)] mb-3">About Extract Text</h2>
         <div className="text-sm text-[var(--muted)] space-y-3 leading-relaxed">

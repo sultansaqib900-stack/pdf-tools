@@ -2,7 +2,6 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 import FaqPageJsonLd from "@/components/FaqPageJsonLd";
-import AdBanner from "@/components/AdBanner";
 
 export const metadata: Metadata = {
   title: "Free PDF Tools for Small Business — Invoices, Contracts, Forms & More | PDFTools",
@@ -111,7 +110,6 @@ export default function PDFToolsForSmallBizPage() {
           </section>
         ))}
 
-        <AdBanner className="mb-12" />
 
         {/* FAQ */}
         <section className="mb-12">

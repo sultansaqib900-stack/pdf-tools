@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useCallback, useEffect, useRef } from "react";
-import AdBanner from "@/components/AdBanner";
 import ToolInfo from "@/components/ToolInfo";
 import FreeWaitTimer from "@/components/FreeWaitTimer";
 import UsageBar from "@/components/UsageBar";
@@ -142,7 +141,6 @@ export default function CompressPage() {
         description="Your PDF never leaves your device. All compression happens locally in your browser using pdf-lib. Select a file, click compress, and download the smaller version — no uploads, no servers, no privacy risks."
       />
 
-      <AdBanner className="mb-8" />
 
       <div className="mb-4">
         <UsageBar remaining={usage.remaining} />
@@ -226,7 +224,6 @@ export default function CompressPage() {
         <SuccessAnimation show={success} message="Compression complete!" details={`${file ? formatBytes((result?.originalSize || 0)) : ""} → ${file ? formatBytes((result?.size || 0)) : ""}`} onRestore={restoreOriginal} />
       </div>
 
-      <AdBanner className="mt-8" />
       <div className="max-w-3xl mx-auto mt-12 pt-8 border-t border-[var(--card-border)]">
         <h2 className="text-xl font-bold text-[var(--foreground)] mb-3">About Compress PDF</h2>
         <div className="text-sm text-[var(--muted)] space-y-3 leading-relaxed">

@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useCallback, useEffect, useRef } from "react";
-import AdBanner from "@/components/AdBanner";
 import ToolInfo from "@/components/ToolInfo";
 import FreeWaitTimer from "@/components/FreeWaitTimer";
 import UsageBar from "@/components/UsageBar";
@@ -115,7 +114,6 @@ export default function UnlockPage() {
         description="Your file stays private. Password removal happens locally in your browser using pdf-lib — no uploads, no servers. Provide the password and download the unlocked PDF instantly."
       />
 
-      <AdBanner className="mb-8" />
       <div className="mb-4">
         <UsageBar remaining={usage.remaining} unlimited={usage.unlimited} />
       </div>
@@ -186,7 +184,6 @@ export default function UnlockPage() {
         <SuccessAnimation show={success} message="PDF unlocked!" onRestore={restoreOriginal} />
       </div>
 
-      <AdBanner className="mt-8" />
 
       <div className="max-w-3xl mx-auto mt-12 pt-8 border-t border-[var(--card-border)]">
         <h2 className="text-xl font-bold text-[var(--foreground)] mb-3">About Unlock PDF</h2>

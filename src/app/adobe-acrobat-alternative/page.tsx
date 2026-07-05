@@ -2,7 +2,6 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 import ArticleJsonLd from "@/components/ArticleJsonLd";
-import AdBanner from "@/components/AdBanner";
 
 export const metadata: Metadata = {
   title: "Adobe Acrobat Alternative — Free PDF Editor Online | PDFTools",
@@ -111,7 +110,6 @@ export default function AdobeAcrobatAltPage() {
         </div>
       </div>
 
-      <AdBanner className="mb-8" />
 
       <div className="bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800 rounded-xl p-6 mb-8">
         <h2 className="text-xl font-bold text-[var(--foreground)] mb-2">When to Keep Adobe Acrobat</h2>

@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useCallback, useEffect } from "react";
-import AdBanner from "@/components/AdBanner";
 import ToolInfo from "@/components/ToolInfo";
 import FreeWaitTimer from "@/components/FreeWaitTimer";
 import UsageBar from "@/components/UsageBar";
@@ -127,7 +126,6 @@ export default function TextToPdfPage() {
 
       <ToolInfo name="Text to PDF" description="Your text stays private. Conversion happens locally in your browser — no uploads, no servers. Type or paste any text and download it as a formatted PDF." />
 
-      <AdBanner className="mb-8" />
       <div className="mb-4">
         <UsageBar remaining={usage.remaining} unlimited={usage.unlimited} />
       </div>
@@ -185,7 +183,6 @@ export default function TextToPdfPage() {
         <SuccessAnimation show={success} message="PDF created successfully!" />
       </div>
 
-      <AdBanner className="mt-8" />
 
       <div className="max-w-3xl mx-auto mt-12 pt-8 border-t border-[var(--card-border)]">
         <h2 className="text-xl font-bold text-[var(--foreground)] mb-3">About Text to PDF Converter</h2>

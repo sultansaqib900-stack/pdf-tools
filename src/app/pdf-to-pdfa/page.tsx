@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useCallback, useEffect } from "react";
-import AdBanner from "@/components/AdBanner";
 import ToolInfo from "@/components/ToolInfo";
 import FreeWaitTimer from "@/components/FreeWaitTimer";
 import UsageBar from "@/components/UsageBar";
@@ -97,7 +96,6 @@ export default function PdfToPdfaPage() {
         <p className="text-[var(--muted)]">Convert PDF to PDF/A archive format for long-term preservation.</p>
       </div>
       <ToolInfo name="PDF to PDF/A" description="Convert your PDFs to the PDF/A archival standard. Ideal for legal, government, and long-term document storage." />
-      <AdBanner className="mb-8" />
       <div className="mb-4"><UsageBar remaining={usage.remaining} unlimited={usage.unlimited} /></div>
       <div className="bg-[var(--card)] rounded-xl border border-[var(--card-border)] p-8 space-y-6">
         <div onDrop={onDrop} onDragOver={(e) => { e.preventDefault(); setDragging(true); }} onDragLeave={() => setDragging(false)}
@@ -122,7 +120,6 @@ export default function PdfToPdfaPage() {
         {error && <ErrorBanner message={error} onRetry={runConvert} onDismiss={() => setError(null)} />}
         <SuccessAnimation show={success} message="PDF/A created!" />
       </div>
-      <AdBanner className="mt-8" />
       <RelatedContent slug="pdf-to-pdfa" />
       <PremiumUpsell show={upsell.state.show} mode={upsell.state.mode} message={upsell.state.message} onClose={upsell.hideUpsell} />
     </div>

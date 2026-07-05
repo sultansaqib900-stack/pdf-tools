@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useCallback, useEffect, useRef } from "react";
-import AdBanner from "@/components/AdBanner";
 import ToolInfo from "@/components/ToolInfo";
 import UsageBar from "@/components/UsageBar";
 import ProgressBar from "@/components/ProgressBar";
@@ -153,7 +152,6 @@ export default function BatchPage() {
 
       <ToolInfo name="Batch Processing" description="Apply operations to multiple PDFs in one go. Each file is processed locally in your browser and downloaded individually. No uploads, no servers." />
 
-      <AdBanner className="mb-8" />
 
       <div className="mb-4">
         <UsageBar remaining={usage.remaining} unlimited={usage.unlimited} />
@@ -224,7 +222,6 @@ export default function BatchPage() {
         <SuccessAnimation show={success} message="Batch processing complete!" />
       </div>
 
-      <AdBanner className="mt-8" />
 
       <div className="max-w-3xl mx-auto mt-12 pt-8 border-t border-[var(--card-border)]">
         <h2 className="text-xl font-bold text-[var(--foreground)] mb-3">About Batch Processing</h2>

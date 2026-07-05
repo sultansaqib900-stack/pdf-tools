@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useCallback, useEffect, useRef } from "react";
-import AdBanner from "@/components/AdBanner";
 import ToolInfo from "@/components/ToolInfo";
 import FreeWaitTimer from "@/components/FreeWaitTimer";
 import { isPremium, checkFileSize } from "@/lib/premium";
@@ -138,7 +137,6 @@ export default function CropPage() {
 
       <ToolInfo name="Crop PDF" description="Your file stays private. All cropping happens locally in your browser — no uploads, no servers. Remove margins in seconds." />
 
-      <AdBanner className="mb-8" />
 
       <div className="mb-4">
         <UsageBar remaining={usage.remaining} />
@@ -217,7 +215,6 @@ export default function CropPage() {
         <SuccessAnimation show={success} message="PDF cropped successfully!" />
       </div>
 
-      <AdBanner className="mt-8" />
 
       <div className="max-w-3xl mx-auto mt-12 pt-8 border-t border-[var(--card-border)]">
         <h2 className="text-xl font-bold text-[var(--foreground)] mb-3">About Crop PDF</h2>

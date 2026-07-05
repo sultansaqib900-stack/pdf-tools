@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useCallback, useRef, useEffect } from "react";
-import AdBanner from "@/components/AdBanner";
 import ToolInfo from "@/components/ToolInfo";
 import FreeWaitTimer from "@/components/FreeWaitTimer";
 import UsageBar from "@/components/UsageBar";
@@ -187,7 +186,6 @@ export default function SignPage() {
         description="Your files stay private. Drawing and signing happens entirely in your browser — no uploads, no servers. Draw your signature, select a PDF, and download the signed document."
       />
 
-      <AdBanner className="mb-8" />
       <div className="mb-4">
         <UsageBar remaining={usage.remaining} unlimited={usage.unlimited} />
       </div>
@@ -265,7 +263,6 @@ export default function SignPage() {
         <SuccessAnimation show={success} message="PDF signed!" onRestore={restoreOriginal} />
       </div>
 
-      <AdBanner className="mt-8" />
       <div className="max-w-3xl mx-auto mt-12 pt-8 border-t border-[var(--card-border)]">
         <h2 className="text-xl font-bold text-[var(--foreground)] mb-3">About e-Sign PDF</h2>
         <div className="text-sm text-[var(--muted)] space-y-3 leading-relaxed">

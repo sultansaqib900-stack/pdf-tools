@@ -1,4 +1,3 @@
-import AdBanner from "@/components/AdBanner";
 
 export default function AboutPage() {
   return (
@@ -20,7 +19,6 @@ export default function AboutPage() {
             no signups, no uploads, no hidden costs. Everything runs in your browser and respects
             your privacy.
           </p>
-          <AdBanner className="mb-8" />
     </div>
 
         <h2 className="text-lg font-semibold text-[var(--foreground)] pt-2">Why I Built This</h2>
@@ -50,7 +48,7 @@ export default function AboutPage() {
 
         <h2 className="text-lg font-semibold text-[var(--foreground)] pt-2">Tech Stack</h2>
         <p className="flex flex-wrap gap-2">
-          {["Next.js", "TypeScript", "Tailwind CSS", "pdf-lib", "pdfjs-dist", "Gemini API", "WebAssembly", "Vercel", "Upstash Redis", "Lemon Squeezy", "Adsterra", "Buttondown"].map((tech) => (
+          {["Next.js", "TypeScript", "Tailwind CSS", "pdf-lib", "pdfjs-dist", "Gemini API", "WebAssembly", "Vercel", "Upstash Redis", "Lemon Squeezy", "Buttondown"].map((tech) => (
             <span key={tech} className="px-3 py-1 rounded-full bg-[var(--card)] border border-[var(--card-border)] text-xs font-medium text-[var(--foreground)]">
               {tech}
             </span>

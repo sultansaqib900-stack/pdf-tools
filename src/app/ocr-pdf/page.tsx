@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useCallback, useEffect, useRef } from "react";
-import AdBanner from "@/components/AdBanner";
 import ToolInfo from "@/components/ToolInfo";
 import FreeWaitTimer from "@/components/FreeWaitTimer";
 import UsageBar from "@/components/UsageBar";
@@ -145,7 +144,6 @@ export default function OcrPdfPage() {
         description="Your documents never leave your device. OCR processing happens entirely in your browser using Tesseract.js — no uploads, no servers."
       />
 
-      <AdBanner className="mb-8" />
 
       <div className="mb-4">
         <UsageBar remaining={usage.remaining} unlimited={usage.unlimited} />
@@ -236,7 +234,6 @@ export default function OcrPdfPage() {
         {error && <ErrorBanner message={error} onRetry={runOcr} onDismiss={() => setError(null)} />}
       </div>
 
-      <AdBanner className="mt-8" />
       <div className="max-w-3xl mx-auto mt-12 pt-8 border-t border-[var(--card-border)]">
         <h2 className="text-xl font-bold text-[var(--foreground)] mb-3">About OCR PDF</h2>
         <div className="text-sm text-[var(--muted)] space-y-3 leading-relaxed">

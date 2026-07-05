@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useRef } from "react";
-import AdBanner from "@/components/AdBanner";
 import { isPremium } from "@/lib/premium";
 import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
 import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
@@ -185,7 +184,6 @@ export default function SearchRedactPage() {
         <p className="text-[var(--muted)]">Find every occurrence of a word or phrase and black them out — works on text and scanned PDFs.</p>
       </div>
 
-      <AdBanner className="mb-8" />
 
       <div className="bg-[var(--card)] border border-[var(--card-border)] rounded-xl p-6 space-y-5">
         <input type="file" accept=".pdf" onChange={(e) => setFile(e.target.files?.[0] || null)} className="text-sm file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:bg-indigo-100 dark:file:bg-indigo-900 file:text-indigo-700 dark:file:text-indigo-300 file:text-xs file:font-medium w-full" />
@@ -207,7 +205,6 @@ export default function SearchRedactPage() {
       )}
       {error && <div className="mt-6 p-4 bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-800 rounded-xl text-red-600 text-sm">{error}</div>}
 
-      <AdBanner className="mt-8" />
 
       <div className="border-t border-[var(--card-border)] pt-8 mt-8">
         <h2 className="text-xl font-bold text-[var(--foreground)] mb-3">About Search & Redact</h2>

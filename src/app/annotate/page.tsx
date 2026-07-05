@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useCallback, useRef, useEffect } from "react";
-import AdBanner from "@/components/AdBanner";
 import ToolInfo from "@/components/ToolInfo";
 import FreeWaitTimer from "@/components/FreeWaitTimer";
 import UsageBar from "@/components/UsageBar";
@@ -372,7 +371,6 @@ export default function AnnotatePage() {
 
       <ToolInfo name="Annotate PDF" description="Your file stays completely private. All annotation happens locally — no uploads, no servers. Drag to draw highlights, underlines, or strikethroughs over text, then download the annotated PDF." />
 
-      <AdBanner className="mb-8" />
 
       <div className="mb-4">
         <UsageBar remaining={usage.remaining} />
@@ -501,7 +499,6 @@ export default function AnnotatePage() {
         <SuccessAnimation show={success} message="Annotations applied!" details={`${totalAnnotations} annotations across ${pages.length} page(s).`} />
       </div>
 
-      <AdBanner className="mt-8" />
 
       <div className="max-w-3xl mx-auto mt-12 pt-8 border-t border-[var(--card-border)]">
         <h2 className="text-xl font-bold text-[var(--foreground)] mb-3">About Annotate PDF</h2>

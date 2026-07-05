@@ -79,7 +79,6 @@ export default function PrivacyPage() {
           <li><strong>Upstash Redis</strong> — Serverless KV store for premium verification and usage counters.</li>
           <li><strong>Lemon Squeezy</strong> — Payment processing for premium subscriptions.</li>
           <li><strong>Buttondown</strong> — Email newsletter delivery.</li>
-          <li><strong>Adsterra</strong> — Native banner ads (effectivecpmnetwork.com). May use cookies for ad targeting.</li>
           <li><strong>Gemini API (Google AI)</strong> — Used for Chat with PDF and AI OCR features. Only the text you explicitly submit or extracted page images are sent to Google&apos;s API for processing. No raw PDF files are transmitted.</li>
         </ul>
 

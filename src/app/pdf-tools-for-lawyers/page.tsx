@@ -2,7 +2,6 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 import FaqPageJsonLd from "@/components/FaqPageJsonLd";
-import AdBanner from "@/components/AdBanner";
 
 export const metadata: Metadata = {
   title: "Free PDF Tools for Lawyers — Redact, Merge, Protect & Convert Legal PDFs | PDFTools",
@@ -125,7 +124,6 @@ export default function PDFToolsForLawyersPage() {
           </section>
         ))}
 
-        <AdBanner className="mb-12" />
 
         {/* Premium Spotlight */}
         <section className="mb-12 p-6 rounded-xl border-2 border-amber-400/30 bg-gradient-to-br from-amber-950/10 to-transparent">

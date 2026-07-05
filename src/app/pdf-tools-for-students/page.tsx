@@ -2,7 +2,6 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 import FaqPageJsonLd from "@/components/FaqPageJsonLd";
-import AdBanner from "@/components/AdBanner";
 
 export const metadata: Metadata = {
   title: "Free PDF Tools for College Students — Compress, Merge, Edit & More | PDFTools",
@@ -120,7 +119,6 @@ export default function PDFToolsForStudentsPage() {
           </section>
         ))}
 
-        <AdBanner className="mb-12" />
 
         {/* Student Use-Case Spotlight */}
         <section className="mb-12">

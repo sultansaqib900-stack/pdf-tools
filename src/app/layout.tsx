@@ -10,7 +10,6 @@ import CookieConsent from "@/components/CookieConsent";
 import ClientIdProvider from "@/components/ClientIdProvider";
 import FeedbackWidget from "@/components/FeedbackWidget";
 import AdBlockDetector from "@/components/AdBlockDetector";
-import AdsterraBanner from "@/components/AdsterraBanner";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import PremiumVerifier from "@/components/PremiumVerifier";
 import ToastProvider from "@/components/Toast";
@@ -127,7 +126,6 @@ gtag('config', 'G-0YRS54VR4X');`}
         <Header />
         <main id="main-content" className="flex-1"><ErrorBoundary>{children}</ErrorBoundary></main>
         <AdBlockDetector />
-        <AdsterraBanner />
         <Footer />
         <InstallPrompt />
         <CookieConsent />

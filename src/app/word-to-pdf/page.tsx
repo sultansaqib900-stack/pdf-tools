@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useCallback, useEffect } from "react";
-import AdBanner from "@/components/AdBanner";
 import ToolInfo from "@/components/ToolInfo";
 import FreeWaitTimer from "@/components/FreeWaitTimer";
 import UsageBar from "@/components/UsageBar";
@@ -108,7 +107,6 @@ export default function WordToPdfPage() {
         <p className="text-[var(--muted)]">Convert Word (DOCX) documents to PDF.</p>
       </div>
       <ToolInfo name="Word to PDF" description="Convert Word documents to PDF entirely in your browser. No uploads, no servers." />
-      <AdBanner className="mb-8" />
       <div className="mb-4"><UsageBar remaining={usage.remaining} unlimited={usage.unlimited} /></div>
       <div className="bg-[var(--card)] rounded-xl border border-[var(--card-border)] p-8 space-y-6">
         <div onDrop={onDrop} onDragOver={(e) => { e.preventDefault(); setDragging(true); }} onDragLeave={() => setDragging(false)}
@@ -132,7 +130,6 @@ export default function WordToPdfPage() {
         )}
         {error && <ErrorBanner message={error} onRetry={runConvert} onDismiss={() => setError(null)} />}
       </div>
-      <AdBanner className="mt-8" />
       <RelatedContent slug="word-to-pdf" />
       <PremiumUpsell show={upsell.state.show} mode={upsell.state.mode} message={upsell.state.message} onClose={upsell.hideUpsell} />
     </div>

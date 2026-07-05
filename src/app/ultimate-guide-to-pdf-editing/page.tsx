@@ -2,7 +2,6 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 import ArticleJsonLd from "@/components/ArticleJsonLd";
-import AdBanner from "@/components/AdBanner";
 
 export const metadata: Metadata = {
   title: "Ultimate Guide to PDF Editing — Free Online PDF Tools | PDFTools",
@@ -283,7 +282,6 @@ export default function UltimateGuidePage() {
         </div>
       </section>
 
-      <AdBanner className="mb-8" />
 
       <div className="bg-indigo-50 dark:bg-indigo-950/20 border-2 border-indigo-500 rounded-xl p-6 text-center">
         <h2 className="text-xl font-bold text-[var(--foreground)] mb-2">Start Editing PDFs Free</h2>

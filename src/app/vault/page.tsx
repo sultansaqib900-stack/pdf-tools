@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import AdBanner from "@/components/AdBanner";
 import { isPremium } from "@/lib/premium";
 import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
 import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
@@ -200,7 +199,6 @@ export default function VaultPage() {
       {success && <div className="mt-4 p-4 bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-200 dark:border-emerald-800 rounded-xl text-center text-sm text-emerald-700">{success}</div>}
       {error && <div className="mt-4 p-4 bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-800 rounded-xl text-red-600 text-sm">{error}</div>}
 
-      <AdBanner className="mt-8" />
 
       <div className="border-t border-[var(--card-border)] pt-8 mt-8">
         <h2 className="text-xl font-bold text-[var(--foreground)] mb-3">About Secure PDF Vault</h2>

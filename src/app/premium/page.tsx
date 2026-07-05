@@ -2,7 +2,6 @@
 
 import { Suspense, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import AdBanner from "@/components/AdBanner";
 import LemonSqueezyCheckout from "@/components/LemonSqueezyCheckout";
 import { LS_CONFIG } from "@/lib/lemonsqueezy";
 import { setPremium, confirmPremium, claimPremium } from "@/lib/premium";
@@ -149,7 +148,6 @@ export default function PremiumPage() {
         <SuccessMessage />
       </Suspense>
 
-      <AdBanner className="mb-12" />
 
       {/* Premium Tools Grid */}
       <div className="mb-12">
@@ -252,7 +250,6 @@ export default function PremiumPage() {
         <ClaimSection />
       </Suspense>
 
-      <AdBanner />
       <ProductJsonLd />
     </div>
   );

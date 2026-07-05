@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useCallback, useEffect, useRef } from "react";
-import AdBanner from "@/components/AdBanner";
 import ToolInfo from "@/components/ToolInfo";
 import FreeWaitTimer from "@/components/FreeWaitTimer";
 import { isPremium, checkFileSize } from "@/lib/premium";
@@ -130,7 +129,6 @@ export default function MetadataPage() {
 
       <ToolInfo name="PDF Metadata Editor" description="Your file stays private. Metadata editing happens locally in your browser — no uploads, no servers. View and update document properties instantly." />
 
-      <AdBanner className="mb-8" />
 
       <div className="mb-4">
         <UsageBar remaining={usage.remaining} unlimited={usage.unlimited} />
@@ -210,7 +208,6 @@ export default function MetadataPage() {
         <SuccessAnimation show={success} message="Metadata updated successfully!" details={`Title: ${title || "(none)"}`} onRestore={restoreOriginal} />
       </div>
 
-      <AdBanner className="mt-8" />
 
       <div className="max-w-3xl mx-auto mt-12 pt-8 border-t border-[var(--card-border)]">
         <h2 className="text-xl font-bold text-[var(--foreground)] mb-3">About PDF Metadata Editor</h2>

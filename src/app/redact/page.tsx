@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useCallback, useRef, useEffect } from "react";
-import AdBanner from "@/components/AdBanner";
 import ToolInfo from "@/components/ToolInfo";
 import FreeWaitTimer from "@/components/FreeWaitTimer";
 import UsageBar from "@/components/UsageBar";
@@ -282,7 +281,6 @@ export default function RedactPage() {
 
       <ToolInfo name="Redact PDF" description="Your file stays completely private. All redaction happens locally — no uploads, no servers. Drag to draw black rectangles over sensitive content, then download the permanently redacted PDF." />
 
-      <AdBanner className="mb-8" />
 
       <div className="mb-4">
         <UsageBar remaining={usage.remaining} />
@@ -390,7 +388,6 @@ export default function RedactPage() {
         <SuccessAnimation show={success} message="Redactions applied!" details={`${rects.flat().length} areas redacted across ${pages.length} page(s).`} />
       </div>
 
-      <AdBanner className="mt-8" />
 
       <div className="max-w-3xl mx-auto mt-12 pt-8 border-t border-[var(--card-border)]">
         <h2 className="text-xl font-bold text-[var(--foreground)] mb-3">About Redact PDF</h2>

@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useCallback, useRef, useEffect } from "react";
-import AdBanner from "@/components/AdBanner";
 import ToolInfo from "@/components/ToolInfo";
 import FreeWaitTimer from "@/components/FreeWaitTimer";
 import UsageBar from "@/components/UsageBar";
@@ -310,7 +309,6 @@ export default function EditPdfPage() {
         <p className="text-[var(--muted)]">Add text, shapes, and drawings to any PDF.</p>
       </div>
       <ToolInfo name="Edit PDF" description="Edit PDFs directly in your browser with zero uploads. Add text boxes, rectangles, circles, and lines to any page." />
-      <AdBanner className="mb-8" />
       <div className="mb-4"><UsageBar remaining={usage.remaining} unlimited={usage.unlimited} /></div>
 
       {!file ? (
@@ -381,7 +379,6 @@ export default function EditPdfPage() {
         </div>
       )}
 
-      <AdBanner className="mt-8" />
       <div className="max-w-3xl mx-auto mt-12 pt-8 border-t border-[var(--card-border)]">
         <h2 className="text-xl font-bold text-[var(--foreground)] mb-3">About Edit PDF</h2>
         <div className="text-sm text-[var(--muted)] space-y-3 leading-relaxed">

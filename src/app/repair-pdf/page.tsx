@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useCallback, useEffect } from "react";
-import AdBanner from "@/components/AdBanner";
 import ToolInfo from "@/components/ToolInfo";
 import FreeWaitTimer from "@/components/FreeWaitTimer";
 import UsageBar from "@/components/UsageBar";
@@ -104,7 +103,6 @@ export default function RepairPdfPage() {
         <p className="text-[var(--muted)]">Fix corrupted or damaged PDF files.</p>
       </div>
       <ToolInfo name="Repair PDF" description="Fix corrupted PDF files by rebuilding their internal structure. All processing happens in your browser." />
-      <AdBanner className="mb-8" />
       <div className="mb-4"><UsageBar remaining={usage.remaining} unlimited={usage.unlimited} /></div>
       <div className="bg-[var(--card)] rounded-xl border border-[var(--card-border)] p-8 space-y-6">
         <div onDrop={onDrop} onDragOver={(e) => { e.preventDefault(); setDragging(true); }} onDragLeave={() => setDragging(false)}
@@ -129,7 +127,6 @@ export default function RepairPdfPage() {
         {error && <ErrorBanner message={error} onRetry={runRepair} onDismiss={() => setError(null)} />}
         <SuccessAnimation show={success} message="PDF repaired!" />
       </div>
-      <AdBanner className="mt-8" />
       <RelatedContent slug="repair-pdf" />
       <PremiumUpsell show={upsell.state.show} mode={upsell.state.mode} message={upsell.state.message} onClose={upsell.hideUpsell} />
     </div>
