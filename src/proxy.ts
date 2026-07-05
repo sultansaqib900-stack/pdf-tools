@@ -11,6 +11,10 @@ export function proxy(request: NextRequest) {
   );
   if (pathnameHasLocale) return;
 
+  const userAgent = request.headers.get("user-agent") || "";
+  const isBot = /bot|crawl|spider|googlebot|bingbot|slurp|duckduckbot|baiduspider|yandexbot/i.test(userAgent);
+  if (isBot) return;
+
   const localeCookie = request.cookies.get("NEXT_LOCALE")?.value as Locale | undefined;
   if (localeCookie && locales.includes(localeCookie)) {
     const response = NextResponse.next();
