@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 import { seoPages } from "@/lib/programmatic-seo";
+import { getErrorPages } from "@/lib/error-pages";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const base = "https://allaboutpdfediting.xyz";
@@ -13,7 +14,14 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.6,
   }));
 
-  return [...forPages,
+  const errorPages: MetadataRoute.Sitemap = getErrorPages().map((p) => ({
+    url: `${base}/error/${p.slug}`,
+    lastModified: new Date(),
+    changeFrequency: "monthly" as const,
+    priority: 0.7,
+  }));
+
+  return [...errorPages, ...forPages,
     { url: base, lastModified: new Date(), changeFrequency: "weekly", priority: 1 },
     { url: es(""), lastModified: new Date(), changeFrequency: "weekly", priority: 0.9 },
     { url: es("/compress"), lastModified: new Date(), changeFrequency: "monthly", priority: 0.8 },
