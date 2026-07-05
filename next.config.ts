@@ -19,6 +19,9 @@ const nextConfig: NextConfig = {
     return [
       {
         source: "/(.*)",
+        missing: [
+          { type: "path", value: "/ads.txt" },
+        ],
         headers: [
           {
             key: "Content-Security-Policy",
