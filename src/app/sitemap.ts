@@ -160,5 +160,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${base}/pdf-tools-for-small-business`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.6 },
     { url: `${base}/pdf-tools-for-business`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.6 },
     { url: `${base}/sitemap`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.5 },
+    { url: `${base}/embed`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.8 },
   ];
 }

@@ -11,6 +11,8 @@ import ClientIdProvider from "@/components/ClientIdProvider";
 import FeedbackWidget from "@/components/FeedbackWidget";
 import AdBlockDetector from "@/components/AdBlockDetector";
 import ErrorBoundary from "@/components/ErrorBoundary";
+import EmbedModeDetector from "@/components/EmbedModeDetector";
+import EmbedModePoweredBy from "@/components/EmbedModePoweredBy";
 import PremiumVerifier from "@/components/PremiumVerifier";
 import ToastProvider from "@/components/Toast";
 import OrganizationJsonLd from "@/components/OrganizationJsonLd";
@@ -123,15 +125,15 @@ gtag('config', 'G-0YRS54VR4X');`}
           Skip to content
         </a>
         <AuthProvider>
-        <PremiumVerifier />
-        <Header />
-        <main id="main-content" className="flex-1"><ErrorBoundary>{children}</ErrorBoundary></main>
-        <AdBlockDetector />
-        <Footer />
-        <InstallPrompt />
-        <CookieConsent />
-        <FeedbackWidget />
-        <Analytics />
+        <EmbedModeDetector><PremiumVerifier /></EmbedModeDetector>
+        <EmbedModeDetector><Header /></EmbedModeDetector>
+        <main id="main-content" className="flex-1"><ErrorBoundary>{children}</ErrorBoundary><EmbedModePoweredBy /></main>
+        <EmbedModeDetector><AdBlockDetector /></EmbedModeDetector>
+        <EmbedModeDetector><Footer /></EmbedModeDetector>
+        <EmbedModeDetector><InstallPrompt /></EmbedModeDetector>
+        <EmbedModeDetector><CookieConsent /></EmbedModeDetector>
+        <EmbedModeDetector><FeedbackWidget /></EmbedModeDetector>
+        <EmbedModeDetector><Analytics /></EmbedModeDetector>
         </AuthProvider>
       </body>
     </html>
