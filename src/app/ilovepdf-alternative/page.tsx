@@ -1,120 +1,224 @@
-import Link from "next/link";
 import type { Metadata } from "next";
-import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
-import ArticleJsonLd from "@/components/ArticleJsonLd";
+import Link from "next/link";
+import ComparisonPage from "@/components/ComparisonPage";
 
 export const metadata: Metadata = {
   title: "iLovePDF Alternative — Free, Private PDF Editor",
-  description: "A free iLovePDF alternative with no uploads, no signup and no daily limits. Compress, merge, split and edit PDFs in your browser.",
+  description: "A free iLovePDF alternative with no uploads, no signup and no file size ceiling on free tools. Compress, merge and split PDFs privately.",
   openGraph: {
     title: "iLovePDF Alternative — Free & Private",
-    description: "Free alternative to iLovePDF. No uploads, no signup, no daily limits. All in your browser.",
+    description: "Free alternative to iLovePDF. No uploads, no signup, no ads on tools. Everything runs in your browser.",
   },
 };
 
 export default function ILovePDFAltPage() {
   return (
-    <div className="max-w-4xl mx-auto px-4 py-12">
-      <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "iLovePDF Alternative", item: "https://allaboutpdfediting.xyz/ilovepdf-alternative" }]} />
-      <ArticleJsonLd title="iLovePDF Alternative — Free, Private PDF Editor Online" description="Looking for an iLovePDF alternative? PDFTools is a free, private PDF editor with no server uploads, no signup, and no daily limits." url="https://allaboutpdfediting.xyz/ilovepdf-alternative" datePublished="2026-06-27" />
-      <a href="/blog" className="text-sm text-indigo-500 hover:underline mb-6 inline-block">&larr; Back to blog</a>
-      <h1 className="text-3xl font-bold text-[var(--foreground)] mb-3">iLovePDF Alternative — Free &amp; Private</h1>
-      <p className="text-[var(--muted)] mb-8">iLovePDF is popular, but it uploads your files to their servers, shows distracting ads, and limits free users to one file per hour. Here&apos;s why PDFTools is the best free iLovePDF alternative.</p>
-
-      <div className="grid sm:grid-cols-2 gap-6 mb-10">
-        <div className="bg-[var(--card)] border border-[var(--card-border)] rounded-xl p-6">
-          <h2 className="text-lg font-bold text-[var(--foreground)] mb-4 text-center">iLovePDF</h2>
-          <ul className="space-y-3 text-sm text-[var(--muted)]">
-            <li className="flex items-center gap-2"><span className="text-red-500">✗</span> Files uploaded to servers</li>
-            <li className="flex items-center gap-2"><span className="text-red-500">✗</span> 1 file/hour free limit</li>
-            <li className="flex items-center gap-2"><span className="text-red-500">✗</span> Requires signup for batch</li>
-            <li className="flex items-center gap-2"><span className="text-red-500">✗</span> Paid: $7/month</li>
-            <li className="flex items-center gap-2"><span className="text-red-500">✗</span> Distracting ads</li>
-            <li className="flex items-center gap-2"><span className="text-amber-500">~</span> 25+ tools</li>
-          </ul>
-        </div>
-        <div className="bg-indigo-50 dark:bg-indigo-950/20 border-2 border-indigo-500 rounded-xl p-6 relative">
-          <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-indigo-600 text-white text-xs font-semibold px-3 py-1 rounded-full">Better Choice</div>
-          <h2 className="text-lg font-bold text-[var(--foreground)] mb-4 text-center">PDFTools</h2>
-          <ul className="space-y-3 text-sm text-[var(--muted)]">
-            <li className="flex items-center gap-2"><span className="text-emerald-500">✓</span> No uploads — browser only</li>
-            <li className="flex items-center gap-2"><span className="text-emerald-500">✓</span> 5 files/day free</li>
-            <li className="flex items-center gap-2"><span className="text-emerald-500">✓</span> No signup required</li>
-            <li className="flex items-center gap-2"><span className="text-emerald-500">✓</span> 100% free (Premium optional)</li>
-            <li className="flex items-center gap-2"><span className="text-emerald-500">✓</span> Minimal, clean interface</li>
-            <li className="flex items-center gap-2"><span className="text-emerald-500">✓</span> 24+ tools + AI Chat</li>
-          </ul>
-        </div>
-      </div>
-
-      <h2 className="text-xl font-bold text-[var(--foreground)] mb-4">Why Switch from iLovePDF</h2>
-
-      <div className="space-y-6 mb-10">
-        <div className="border border-[var(--card-border)] rounded-xl p-5">
-          <h3 className="font-semibold mb-2 text-[var(--foreground)]">1. Privacy — No Server Uploads</h3>
-          <p className="text-sm text-[var(--muted)]">iLovePDF processes files on their servers, meaning your documents are transmitted and stored externally. PDFTools runs entirely in your browser using WebAssembly and pdf-lib. Your files never leave your device. For confidential documents, contracts, or personal information, this is the safer choice. <Link href="/compress" className="text-indigo-500 underline">Test it yourself</Link> — your file stays on your computer.</p>
-        </div>
-        <div className="border border-[var(--card-border)] rounded-xl p-5">
-          <h3 className="font-semibold mb-2 text-[var(--foreground)]">2. No Hourly Limits</h3>
-          <p className="text-sm text-[var(--muted)]">iLovePDF restricts free users to 1 PDF per hour — a frustrating cap when you need to process multiple files. PDFTools gives you 5 uses per day free, with no arbitrary cooldown. <Link href="/premium" className="text-indigo-500 underline">Premium</Link> removes all limits.</p>
-        </div>
-        <div className="border border-[var(--card-border)] rounded-xl p-5">
-          <h3 className="font-semibold mb-2 text-[var(--foreground)]">3. Clean, Ad-Light Experience</h3>
-          <p className="text-sm text-[var(--muted)]">iLovePDF&apos;s free tier is cluttered with ads. PDFTools keeps a minimal interface with non-intrusive ad placements. Focus on your documents, not on pop-ups and banners.</p>
-        </div>
-        <div className="border border-[var(--card-border)] rounded-xl p-5">
-          <h3 className="font-semibold mb-2 text-[var(--foreground)]">4. AI-Powered PDF Features</h3>
-          <p className="text-sm text-[var(--muted)]">iLovePDF doesn&apos;t offer AI features. PDFTools lets you <Link href="/chat-pdf" className="text-indigo-500 underline">Chat with your PDF</Link> — ask questions, summarize content, extract key information from any document using AI.</p>
-        </div>
-      </div>
-
-      <div className="bg-[var(--card)] border border-[var(--card-border)] rounded-xl p-6 mb-8">
-        <h2 className="text-xl font-bold text-[var(--foreground)] mb-3">iLovePDF vs PDFTools: Tool Comparison</h2>
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="border-b border-[var(--card-border)]">
-                <th className="text-left py-2 pr-4 font-semibold text-[var(--foreground)]">Feature</th>
-                <th className="text-left py-2 pr-4 font-semibold text-[var(--foreground)]">iLovePDF</th>
-                <th className="text-left py-2 font-semibold text-[var(--foreground)]">PDFTools</th>
-              </tr>
-            </thead>
-            <tbody>
-              {[
-                ["Compress PDF", "✓", "✓"],
-                ["Merge PDF", "✓ (paid)", "✓"],
-                ["Split PDF", "✓ (paid)", "✓"],
-                ["Image to PDF", "✓", "✓"],
-                ["PDF to Images", "✓ (paid)", "✓"],
-                ["e-Sign PDF", "✓ (paid)", "✓"],
-                ["Unlock PDF", "✓ (paid)", "✓"],
-                ["Edit PDF", "✗", "✓"],
-                ["OCR PDF", "✗", "✓"],
-                ["Scan to PDF", "✗", "✓"],
-                ["Repair PDF", "✗", "✓"],
-                ["Chat with PDF", "✗", "✓"],
-                ["File size limit", "10MB free", "10MB free"],
-                ["Free rate limit", "1 file/hour", "5 files/day"],
-                ["Server upload", "Required", "None"],
-                ["Price", "From $7/mo", "Free / $8/mo premium"],
-              ].map((row) => (
-                <tr key={row[0]} className="border-b border-[var(--card-border)]">
-                  <td className="py-2 pr-4 font-medium text-[var(--foreground)]">{row[0]}</td>
-                  <td className={`py-2 pr-4 ${row[1] === "✓" ? "text-emerald-500" : row[1] === "✗" ? "text-red-500" : ""}`}>{row[1]}</td>
-                  <td className={`py-2 ${row[2] === "✓" ? "text-emerald-500 font-bold" : row[2] === "✗" ? "text-red-500" : "text-[var(--muted)]"}`}>{row[2]}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-
-      <div className="border border-[var(--card-border)] rounded-xl p-6 text-center">
-        <h2 className="text-xl font-bold text-[var(--foreground)] mb-2">Ready to Switch?</h2>
-        <p className="text-sm text-[var(--muted)] mb-4">Try the best free iLovePDF alternative. No uploads, no signup, 100% private.</p>
-        <Link href="/" className="inline-block px-6 py-3 bg-indigo-600 text-white font-medium rounded-xl hover:bg-indigo-700 transition">Try PDFTools Free →</Link>
-      </div>
-    </div>
+    <ComparisonPage
+      competitor="iLovePDF"
+      slug="ilovepdf-alternative"
+      pricingChecked="September 2026"
+      h1="iLovePDF Alternative: The Same Tools, Without the Upload"
+      intro={
+        <>
+          <p>
+            iLovePDF is one of the most generous free PDF suites on the web. Unlike most competitors
+            it does <em>not</em> cap how many tasks you run per day — the free tier is limited by{" "}
+            <strong>per-tool file size ceilings</strong> and by holding batch processing, OCR and the
+            desktop apps behind Premium. If you have read elsewhere that iLovePDF allows &ldquo;two
+            files a day&rdquo;, that is inaccurate; it is Smallpdf that meters tasks.
+          </p>
+          <p>
+            So the reason to switch is rarely the task count. It is that every file you process is
+            uploaded to iLovePDF&apos;s servers, and that the free web experience is heavily
+            ad-supported. PDFTools runs the same operations inside your browser, so your document is
+            never transmitted and there is nothing to queue behind an upload.
+          </p>
+        </>
+      }
+      theirStrengths={[
+        "No daily task cap on the free tier",
+        "A very wide tool catalogue, over 25 tools",
+        "Desktop and mobile apps on Premium",
+        "A documented public API for developers",
+        "Server-side OCR handles large scanned batches well",
+        "Mature, well-localised interface in many languages",
+      ]}
+      ourStrengths={[
+        "Files are never uploaded — processing is local",
+        "No file size ceiling imposed by an upload pipeline",
+        "No account or email address required",
+        "No ads interleaved with the tools themselves",
+        "Works with no connection once the page has loaded",
+        "Batch processing without a Premium tier for most tasks",
+      ]}
+      rows={[
+        { feature: "Where files are processed", them: "Uploaded to cloud servers", us: "In your browser only", advantage: true },
+        { feature: "Free daily task cap", them: "None", us: "None" },
+        { feature: "Free file size limit", them: "Per-tool ceilings", us: "10MB free / 100MB Premium" },
+        { feature: "Account required", them: "For some features", us: "Never", advantage: true },
+        { feature: "Ads on free tier", them: "Yes", us: "Yes, but not in the tool flow" },
+        { feature: "Paid plan", them: "~$4–9/month", us: "Free, or $8–12/month optional" },
+        { feature: "Batch processing", them: "Premium only", us: "Free for most tools", advantage: true },
+        { feature: "Works offline", them: "Desktop app only (Premium)", us: "Yes, in the browser", advantage: true },
+        { feature: "Public API", them: "Yes", us: "Premium only" },
+        { feature: "Desktop & mobile apps", them: "Yes (Premium)", us: "Web only" },
+        { feature: "OCR on scans", them: "Strong, server-side", us: "Good, browser-based" },
+        { feature: "Chat with your PDF (AI)", them: "AI credits on Premium", us: "Yes, free" },
+      ]}
+      sections={[
+        {
+          heading: "Upload time is the hidden cost of a cloud PDF tool",
+          body: (
+            <>
+              <p>
+                The size limits on iLovePDF&apos;s free tier exist because every file has to travel to
+                a server before anything happens. On a fast office connection that is invisible. On
+                home broadband with slow upstream, or on mobile data, a 50&nbsp;MB scanned document can
+                take longer to upload than the actual processing takes.
+              </p>
+              <p>
+                Local processing inverts this. Your file is already on the machine doing the work, so
+                the transfer time is zero regardless of size. The practical ceiling becomes your
+                device&apos;s memory rather than a network round-trip, which is why{" "}
+                <Link href="/compress" className="text-[var(--accent)] hover:underline">compressing</Link>{" "}
+                a large scan often finishes locally before a cloud tool has finished receiving it.
+              </p>
+            </>
+          ),
+        },
+        {
+          heading: "Privacy is a structural difference, not a policy promise",
+          body: (
+            <>
+              <p>
+                iLovePDF has a reasonable privacy policy and deletes processed files after a period.
+                That is a <em>promise</em>, backed by a company you have to trust. Browser-local
+                processing is a <em>structure</em>: there is no server that could retain your file,
+                because none ever received it.
+              </p>
+              <p>
+                You can confirm this yourself in about ten seconds. Press F12, open the Network tab,
+                and run any tool. Your document body never appears in a request. Disconnect your
+                wifi after the page loads and the tools still work — which would be impossible if the
+                processing happened remotely.
+              </p>
+              <p>
+                For anyone handling client contracts, HR records, medical documents or anything under
+                GDPR, this removes an entire compliance conversation. There is no data processor to
+                assess, because there is no data processing off your machine.
+              </p>
+            </>
+          ),
+        },
+        {
+          heading: "Where iLovePDF still wins",
+          body: (
+            <>
+              <p>
+                <strong>The API.</strong> iLovePDF publishes a proper developer API for automating PDF
+                work inside your own systems. If you need server-side automation, that is exactly the
+                right tool and a browser-based one cannot substitute for it.
+              </p>
+              <p>
+                <strong>Very large scanned batches.</strong> Running OCR across hundreds of pages is
+                genuinely faster on dedicated server hardware than in a browser tab, and iLovePDF has
+                built that pipeline well.
+              </p>
+              <p>
+                <strong>Cross-device workflows.</strong> Premium includes desktop and mobile apps that
+                sync. PDFTools is a website; it works on any device with a browser but it does not
+                carry state between them, because it deliberately stores nothing.
+              </p>
+            </>
+          ),
+        },
+        {
+          heading: "A like-for-like tool map",
+          body: (
+            <>
+              <p>
+                Nearly every iLovePDF tool has a direct counterpart here:{" "}
+                <Link href="/merge" className="text-[var(--accent)] hover:underline">Merge PDF</Link>,{" "}
+                <Link href="/split" className="text-[var(--accent)] hover:underline">Split PDF</Link>,{" "}
+                <Link href="/compress" className="text-[var(--accent)] hover:underline">Compress PDF</Link>,{" "}
+                <Link href="/rotate" className="text-[var(--accent)] hover:underline">Rotate PDF</Link>,{" "}
+                <Link href="/watermark" className="text-[var(--accent)] hover:underline">Watermark</Link>,{" "}
+                <Link href="/unlock" className="text-[var(--accent)] hover:underline">Unlock PDF</Link>,{" "}
+                <Link href="/protect" className="text-[var(--accent)] hover:underline">Protect PDF</Link>,{" "}
+                <Link href="/organize" className="text-[var(--accent)] hover:underline">Organize pages</Link> and{" "}
+                <Link href="/pdf-to-images" className="text-[var(--accent)] hover:underline">PDF to images</Link>.
+              </p>
+              <p>
+                There are also a few tools iLovePDF does not offer, including{" "}
+                <Link href="/pdf-diff" className="text-[var(--accent)] hover:underline">side-by-side PDF comparison</Link>,{" "}
+                <Link href="/bates-numbering" className="text-[var(--accent)] hover:underline">Bates numbering</Link> for
+                legal exhibits, and{" "}
+                <Link href="/metadata-sanitizer" className="text-[var(--accent)] hover:underline">metadata sanitising</Link>{" "}
+                to strip hidden author and GPS data before you share a file.
+              </p>
+            </>
+          ),
+        },
+      ]}
+      faqs={[
+        {
+          question: "Does iLovePDF have a daily task limit?",
+          answer:
+            "No. As of September 2026 iLovePDF's free tier is constrained by per-tool file size ceilings rather than a task count, so you can run many tasks per day within those size limits. Batch processing, OCR and the desktop and mobile apps require Premium.",
+        },
+        {
+          question: "What is the best free iLovePDF alternative?",
+          answer:
+            "PDFTools offers the same core operations — merge, split, compress, convert, rotate, watermark, protect and unlock — with no account and no upload. Files are processed locally in your browser, so documents are never transmitted to a server.",
+        },
+        {
+          question: "Does iLovePDF upload my files?",
+          answer:
+            "Yes. iLovePDF is a cloud service, so files are uploaded to its servers, processed there and deleted after a retention period. PDFTools processes files entirely in your browser, so nothing is uploaded at any point.",
+        },
+        {
+          question: "How much does iLovePDF Premium cost?",
+          answer:
+            "Roughly $4 to $9 per month depending on billing cycle and region, with annual billing cheaper than monthly, as of September 2026. Premium removes size limits and ads and unlocks batch processing plus the desktop and mobile apps.",
+        },
+        {
+          question: "Can I process large PDFs without a size limit?",
+          answer:
+            "Local processing has no upload ceiling, so the practical limit is your device's available memory rather than a network transfer. The PDFTools free tier applies a 10MB guideline and Premium raises this to 100MB, but large files never need to be uploaded first.",
+        },
+        {
+          question: "Is there an API like iLovePDF's?",
+          answer:
+            "iLovePDF offers a public developer API and it is the better choice for server-side automation. PDFTools includes API access with Premium, but its core design is browser-local processing rather than programmatic server integration.",
+        },
+        {
+          question: "Do PDFTools tools work without an internet connection?",
+          answer:
+            "Yes. Once a tool page has loaded, the processing engine runs locally, so you can disconnect and continue working. This is only possible because your file is never sent anywhere for processing.",
+        },
+      ]}
+      tools={[
+        { href: "/merge", label: "Merge PDF", icon: "merge" },
+        { href: "/split", label: "Split PDF", icon: "split" },
+        { href: "/compress", label: "Compress PDF", icon: "compress" },
+        { href: "/watermark", label: "Watermark PDF", icon: "droplet" },
+        { href: "/protect", label: "Protect PDF", icon: "lock" },
+        { href: "/pdf-diff", label: "Compare two PDFs", icon: "diff" },
+      ]}
+      verdict={
+        <>
+          <p>
+            iLovePDF is a strong free suite and the absence of a daily task cap makes it more usable
+            than most. If you need a documented API or heavy server-side OCR, stay with it.
+          </p>
+          <p>
+            Switch if the uploading itself is the problem — because the documents are confidential,
+            because your connection makes large uploads painful, or because you would rather not
+            create an account and work around ads. Those are exactly the constraints browser-local
+            processing removes.
+          </p>
+        </>
+      }
+    />
   );
 }
