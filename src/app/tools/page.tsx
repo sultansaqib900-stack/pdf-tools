@@ -3,7 +3,7 @@ import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "All PDF Tools - 40+ Free & Premium PDF Tools | PDFTools",
-  description: "Browse 40+ PDF tools. Compress, merge, split, convert, edit, sign, protect PDFs plus premium tools: PDF diff, certificates, audio, booklet creation, QR codes, and more. 100% free, no uploads.",
+  description: "Browse 40+ free PDF tools: compress, merge, split, convert, edit, sign and protect. Everything runs in your browser with no uploads.",
   openGraph: {
     title: "All PDF Tools - 40+ Free & Premium PDF Tools",
     description: "Browse 40+ PDF tools including premium features like document comparison, certificate generation, PDF-to-audio, and more.",
@@ -20,6 +20,12 @@ const categories = [
       { name: "Image to PDF", href: "/image-to-pdf", desc: "Convert JPG, PNG images to PDF documents" },
       { name: "HTML to PDF", href: "/html-to-pdf", desc: "Convert web pages and HTML to PDF" },
       { name: "Text to PDF", href: "/text-to-pdf", desc: "Convert plain text to PDF documents" },
+      { name: "PDF to Word", href: "/pdf-to-word", desc: "Convert PDF to editable Word documents" },
+      { name: "Word to PDF", href: "/word-to-pdf", desc: "Convert DOCX files to PDF" },
+      { name: "PDF to PDF/A", href: "/pdf-to-pdfa", desc: "Convert to PDF/A for long-term archiving" },
+      { name: "OCR PDF", href: "/ocr-pdf", desc: "Make scanned PDFs searchable and selectable" },
+      { name: "Scan to PDF", href: "/scan-to-pdf", desc: "Turn phone photos into clean PDF scans" },
+      { name: "Repair PDF", href: "/repair-pdf", desc: "Fix corrupted or damaged PDF files" },
     ],
   },
   {
@@ -86,6 +92,24 @@ const categories = [
   },
 ];
 
+const guides = [
+  { name: "Ultimate guide to PDF editing", href: "/ultimate-guide-to-pdf-editing", desc: "Everything you need to know about editing PDFs" },
+  { name: "Best free PDF editors in 2026", href: "/best-free-pdf-editor", desc: "Ten free PDF editors compared side by side" },
+  { name: "Edit PDF online", href: "/edit-pdf", desc: "Add text, images and annotations to any PDF" },
+  { name: "Adobe Acrobat alternative", href: "/adobe-acrobat-alternative", desc: "Free, no-subscription alternative to Acrobat" },
+  { name: "iLovePDF alternative", href: "/ilovepdf-alternative", desc: "The same tools, without the uploads" },
+  { name: "SmallPDF alternative", href: "/smallpdf-alternative", desc: "No daily task limits and no signup" },
+];
+
+const audiences = [
+  { name: "PDF tools for students", href: "/pdf-tools-for-students", desc: "Lecture slides, research papers and assignments" },
+  { name: "PDF tools for teachers", href: "/pdf-tools-for-teachers", desc: "Worksheets, submissions and certificates" },
+  { name: "PDF tools for lawyers", href: "/pdf-tools-for-lawyers", desc: "Redaction, discovery and Bates numbering" },
+  { name: "PDF tools for small business", href: "/pdf-tools-for-small-business", desc: "Invoices, contracts and signed agreements" },
+  { name: "PDF tools for business", href: "/pdf-tools-for-business", desc: "Secure document workflows at scale" },
+  { name: "Embed PDF tools on your site", href: "/embed", desc: "Free widgets you can drop into any page" },
+];
+
 export default function ToolsPage() {
   const total = categories.reduce((n, c) => n + c.tools.length, 0);
 
@@ -121,6 +145,40 @@ export default function ToolsPage() {
           </section>
         );
       })}
+
+      <section className="mb-10">
+        <h2 className="text-lg font-semibold text-[var(--foreground)] mb-1">Guides &amp; comparisons</h2>
+        <p className="text-[0.8125rem] text-[var(--muted)] mb-4">
+          Picking a tool, or moving from another PDF service? Start here.
+        </p>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5">
+          {guides.map((g) => (
+            <Link key={g.href} href={g.href} className="card-interactive group p-4">
+              <h3 className="text-[0.875rem] font-medium text-[var(--foreground)] group-hover:text-[var(--accent)] transition-colors">
+                {g.name}
+              </h3>
+              <p className="mt-1 text-[0.8125rem] leading-relaxed text-[var(--muted)]">{g.desc}</p>
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      <section className="mb-10">
+        <h2 className="text-lg font-semibold text-[var(--foreground)] mb-1">PDF tools by profession</h2>
+        <p className="text-[0.8125rem] text-[var(--muted)] mb-4">
+          Curated workflows for the documents you actually work with.
+        </p>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5">
+          {audiences.map((g) => (
+            <Link key={g.href} href={g.href} className="card-interactive group p-4">
+              <h3 className="text-[0.875rem] font-medium text-[var(--foreground)] group-hover:text-[var(--accent)] transition-colors">
+                {g.name}
+              </h3>
+              <p className="mt-1 text-[0.8125rem] leading-relaxed text-[var(--muted)]">{g.desc}</p>
+            </Link>
+          ))}
+        </div>
+      </section>
 
       <div className="mt-12 pt-8 border-t border-[var(--border)] text-center">
         <p className="text-[0.875rem] text-[var(--muted)]">Can&apos;t find what you need?</p>

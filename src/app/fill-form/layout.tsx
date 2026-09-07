@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Fill PDF Form Online Free — Complete Forms Instantly | PDFTools",
-  description: "Fill PDF forms online for free. Detect form fields, fill text fields, check boxes, select options, and download the completed PDF. No uploads, 100% private, all in your browser.",
+  title: "Fill PDF Forms Free — Complete Forms Instantly",
+  description: "Fill PDF forms online free. Complete text fields, checkboxes and dropdowns, then download the finished PDF. Private, no uploads.",
 };
 
 export default function Layout({ children }: { children: React.ReactNode }) {

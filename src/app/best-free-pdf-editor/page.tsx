@@ -2,7 +2,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Best Free PDF Editor Online 2026 — Top 10 Free PDF Tools Compared",
+  title: "Best Free PDF Editor 2026 — Top 10 Tools Compared",
   description: "Compare the best free PDF editors online in 2026. Free alternatives to Adobe Acrobat, SmallPDF, and iLovePDF. No uploads, no signup, all browser-based.",
   openGraph: {
     title: "Best Free PDF Editor Online 2026 — Top 10 Compared",

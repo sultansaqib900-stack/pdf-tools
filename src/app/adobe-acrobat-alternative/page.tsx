@@ -4,8 +4,8 @@ import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 import ArticleJsonLd from "@/components/ArticleJsonLd";
 
 export const metadata: Metadata = {
-  title: "Adobe Acrobat Alternative — Free PDF Editor Online | PDFTools",
-  description: "Looking for an Adobe Acrobat alternative? PDFTools is a free, private PDF editor that runs entirely in your browser. No downloads, no subscriptions, no server uploads.",
+  title: "Adobe Acrobat Alternative — Free PDF Editor",
+  description: "A free Adobe Acrobat alternative that runs entirely in your browser. No downloads, no subscription and no server uploads.",
   openGraph: {
     title: "Adobe Acrobat Alternative — Free PDF Editor",
     description: "Free alternative to Adobe Acrobat. No downloads, no subscriptions, no server uploads.",

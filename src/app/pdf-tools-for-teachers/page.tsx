@@ -4,8 +4,8 @@ import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 import FaqPageJsonLd from "@/components/FaqPageJsonLd";
 
 export const metadata: Metadata = {
-  title: "Free PDF Tools for Teachers — Worksheets, Certificates, Grading & More | PDFTools",
-  description: "12 free PDF tools for teachers. Create worksheets, merge student submissions, compress files for email, generate certificates, and more. 100% browser-based, no uploads, no signup.",
+  title: "PDF Tools for Teachers — Worksheets & Certificates",
+  description: "Free PDF tools for teachers: build worksheets, merge student submissions, generate certificates and compress files. No uploads.",
   openGraph: {
     title: "Free PDF Tools for Teachers — Save Hours on Document Busywork",
     description: "Create worksheets, merge assignments, generate certificates, and compress files — all free, all in your browser.",

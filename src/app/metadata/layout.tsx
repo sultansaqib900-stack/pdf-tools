@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "PDF Metadata Editor Online Free — Edit Title, Author & Keywords | PDFTools",
+  title: "PDF Metadata Editor — Edit Title, Author & Keywords",
   description: "Edit PDF metadata online for free. Update title, author, subject, and keywords of any PDF document. No uploads, 100% free, all in your browser.",
 };
 

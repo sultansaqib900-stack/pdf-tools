@@ -4,8 +4,8 @@ import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 import FaqPageJsonLd from "@/components/FaqPageJsonLd";
 
 export const metadata: Metadata = {
-  title: "Free PDF Tools for College Students — Compress, Merge, Edit & More | PDFTools",
-  description: "12 free PDF tools every student needs. Compress lecture slides for email, merge research papers, convert assignments to PDF, extract text from scanned textbooks, and more. Zero signup, 100% browser-based.",
+  title: "PDF Tools for Students — Compress, Merge & Annotate",
+  description: "Free PDF tools for students: compress lecture slides, merge research papers, annotate readings and convert assignments. No signup.",
   openGraph: {
     title: "Free PDF Tools for College Students — Save Time on Document Busywork",
     description: "Compress, merge, split, and edit PDFs for free. No uploads, no signup, no student email required. Everything runs in your browser.",

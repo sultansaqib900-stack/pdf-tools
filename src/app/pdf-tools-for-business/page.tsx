@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 
 export const metadata: Metadata = {
-  title: "PDF Tools for Business — Secure Document Management | PDFTools",
+  title: "PDF Tools for Business — Secure Document Workflows",
   description: "Free PDF tools for businesses. Compress, merge, protect, and edit business documents securely — no server uploads, no signup required.",
   openGraph: {
     title: "PDF Tools for Business",

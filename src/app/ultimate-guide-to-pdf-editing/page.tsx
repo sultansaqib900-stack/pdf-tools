@@ -4,7 +4,7 @@ import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 import ArticleJsonLd from "@/components/ArticleJsonLd";
 
 export const metadata: Metadata = {
-  title: "Ultimate Guide to PDF Editing — Free Online PDF Tools | PDFTools",
+  title: "Ultimate Guide to PDF Editing (2026)",
   description: "The complete guide to editing PDFs online free. Learn how to compress, merge, split, convert, sign, and edit PDFs — all in your browser with no uploads.",
 };
 

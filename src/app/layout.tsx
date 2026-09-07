@@ -29,6 +29,9 @@ export const metadata: Metadata = {
   // self-canonical that individual pages can still override. Replaces the old
   // client-side <CanonicalTag/>, which injected a second, conflicting
   // canonical on any page that declared its own.
+  // hreflang is emitted per-path by <HreflangTags/>, which knows which slugs
+  // actually have /es translations. Declaring languages here too would add a
+  // second, homepage-hardcoded set on every page.
   alternates: { canonical: "./" },
   title: "PDFTools - Free Online PDF Tools | Compress, Merge, Split & More",
   description:

@@ -4,8 +4,8 @@ import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 import FaqPageJsonLd from "@/components/FaqPageJsonLd";
 
 export const metadata: Metadata = {
-  title: "Free PDF Tools for Lawyers — Redact, Merge, Protect & Convert Legal PDFs | PDFTools",
-  description: "10+ free PDF tools for legal professionals. Redact sensitive info, merge discovery documents, protect client files, Bates number exhibits, and more. 100% browser-based, zero uploads, client data stays local.",
+  title: "PDF Tools for Lawyers — Redact & Protect Legal PDFs",
+  description: "Free PDF tools for legal work: redact sensitive text, merge discovery, Bates number exhibits and protect client files. No uploads.",
   openGraph: {
     title: "Free PDF Tools for Lawyers — Secure Legal Document Processing",
     description: "Redact, merge, protect, and Bates-number PDFs. All processing is local — client data never leaves your computer.",

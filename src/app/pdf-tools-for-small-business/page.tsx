@@ -4,8 +4,8 @@ import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 import FaqPageJsonLd from "@/components/FaqPageJsonLd";
 
 export const metadata: Metadata = {
-  title: "Free PDF Tools for Small Business — Invoices, Contracts, Forms & More | PDFTools",
-  description: "10+ free PDF tools for small businesses. Merge invoices, convert contracts to PDF, compress files for email, fill forms, sign agreements, and protect business documents. No signup, 100% browser-based.",
+  title: "PDF Tools for Small Business — Invoices & Contracts",
+  description: "Free PDF tools for small business: merge invoices, convert contracts, sign agreements and compress files for email. No signup.",
   openGraph: {
     title: "Free PDF Tools for Small Business",
     description: "Merge invoices, convert contracts, compress files for email, fill forms, and sign agreements — all free, all in your browser.",

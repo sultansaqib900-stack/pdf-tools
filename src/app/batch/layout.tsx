@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Batch Process PDFs Online — Compress, Rotate, Protect & Watermark | PDFTools",
+  title: "Batch Process PDFs — Compress & Convert in Bulk",
   description: "Process multiple PDFs at once. Compress, rotate, password protect, or add watermarks to PDF files in bulk. Premium feature. All in your browser.",
 };
 

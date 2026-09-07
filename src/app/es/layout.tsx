@@ -1,13 +1,13 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "PDFTools - Herramientas PDF Gratuitas | Comprimir, Unir, Dividir y Más",
+  title: "Herramientas PDF Gratis — Comprimir, Unir y Dividir",
   description:
-    "Más de 40 herramientas PDF gratuitas incluyendo funciones premium: comprimir, unir, dividir, convertir imágenes, extraer texto, comparar PDFs, generar certificados, convertir PDF a audio, crear folletos y más. 100% gratis, sin subidas, todo el procesamiento ocurre en tu navegador.",
+    "Más de 40 herramientas PDF gratuitas: comprime, une, divide y convierte. Todo ocurre en tu navegador, sin subidas y sin registro.",
   keywords: ["herramientas PDF", "comprimir PDF", "unir PDF", "dividir PDF", "editor PDF gratis", "convertir PDF"],
   openGraph: {
     title: "PDFTools - Herramientas PDF Gratuitas",
-    description: "Más de 40 herramientas PDF gratuitas. Comprime, une, divide, compara, convierte a audio, genera certificados y más. Sin subidas. 100% gratis.",
+    description: "Más de 40 herramientas PDF gratuitas: comprime, une, divide y convierte. Todo en tu navegador, sin subidas y sin registro.",
     url: "https://allaboutpdfediting.xyz/es",
     siteName: "PDFTools",
     type: "website",

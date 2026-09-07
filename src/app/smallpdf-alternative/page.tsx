@@ -2,8 +2,8 @@ import Link from "next/link";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "SmallPDF Alternative — Free & Private PDF Editor Online | PDFTools",
-  description: "Looking for a SmallPDF alternative? PDFTools is a free, private PDF editor with no uploads, no signup, and no daily limits. Compress, merge, split, and edit PDFs in your browser.",
+  title: "SmallPDF Alternative — Free, Private PDF Editor",
+  description: "A free SmallPDF alternative with no uploads, no signup and no daily limits. Compress, merge, split and edit PDFs in your browser.",
   openGraph: {
     title: "SmallPDF Alternative — Free & Private",
     description: "Free alternative to SmallPDF. No uploads, no signup, no daily limits. All in your browser.",

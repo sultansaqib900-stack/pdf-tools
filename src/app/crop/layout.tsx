@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Crop PDF Online Free — Remove Margins & Whitespace | PDFTools",
+  title: "Crop PDF Free — Remove Margins & Whitespace",
   description: "Crop PDF pages online for free. Remove unwanted margins from top, bottom, left, and right. No uploads, 100% free, all in your browser.",
 };
 

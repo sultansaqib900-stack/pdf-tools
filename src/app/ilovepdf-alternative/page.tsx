@@ -4,8 +4,8 @@ import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 import ArticleJsonLd from "@/components/ArticleJsonLd";
 
 export const metadata: Metadata = {
-  title: "iLovePDF Alternative — Free, Private PDF Editor Online | PDFTools",
-  description: "Looking for an iLovePDF alternative? PDFTools is a free, private PDF editor with no server uploads, no signup, and no daily limits. Compress, merge, split, and edit PDFs entirely in your browser.",
+  title: "iLovePDF Alternative — Free, Private PDF Editor",
+  description: "A free iLovePDF alternative with no uploads, no signup and no daily limits. Compress, merge, split and edit PDFs in your browser.",
   openGraph: {
     title: "iLovePDF Alternative — Free & Private",
     description: "Free alternative to iLovePDF. No uploads, no signup, no daily limits. All in your browser.",
