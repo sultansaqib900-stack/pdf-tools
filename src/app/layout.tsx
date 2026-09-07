@@ -18,7 +18,6 @@ import ToastProvider from "@/components/Toast";
 import OrganizationJsonLd from "@/components/OrganizationJsonLd";
 import WebSiteJsonLd from "@/components/WebSiteJsonLd";
 import SiteNavJsonLd from "@/components/SiteNavJsonLd";
-import CanonicalTag from "@/components/CanonicalTag";
 import HreflangTags from "@/components/HreflangTags";
 import { Analytics } from "@vercel/analytics/react";
 import Script from "next/script";
@@ -26,6 +25,11 @@ import { AuthProvider } from "@/components/AuthProvider";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://allaboutpdfediting.xyz"),
+  // "./" resolves per-route against metadataBase, giving every page a correct
+  // self-canonical that individual pages can still override. Replaces the old
+  // client-side <CanonicalTag/>, which injected a second, conflicting
+  // canonical on any page that declared its own.
+  alternates: { canonical: "./" },
   title: "PDFTools - Free Online PDF Tools | Compress, Merge, Split & More",
   description:
     "40+ free online PDF tools including premium features: compress, merge, split, convert images, extract text, compare PDFs, generate certificates, convert PDF to audio, create booklets, and more. 100% free, no uploads, all processing happens in your browser.",
@@ -117,8 +121,7 @@ gtag('config', 'G-0YRS54VR4X');`}
       </head>
       <body className="min-h-full flex flex-col">
         <Suspense fallback={null}>
-          <CanonicalTag />
-        </Suspense>
+          </Suspense>
         <AnalyticsScript />
         <ClientIdProvider />
         <a href="#main-content" className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-2 focus:bg-indigo-600 focus:text-white focus:rounded-lg focus:text-sm focus:font-medium">

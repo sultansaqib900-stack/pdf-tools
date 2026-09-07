@@ -1,5 +1,6 @@
 import { kv } from "@/lib/kv";
 import { randomBytes } from "crypto";
+import { generateToken, hashPassword, isLegacyHash } from "@/lib/auth/crypto";
 
 export interface User {
   id: string;
@@ -35,9 +36,25 @@ export async function createUser(email: string, hash: string, salt: string): Pro
 }
 
 export async function getUserByEmail(email: string): Promise<(User & { hash: string; salt: string }) | null> {
-  const data = await kv.get<any>(userKey(email));
+  const data = await kv.get<User & { hash: string; salt: string }>(userKey(email));
   if (!data) return null;
   return data;
+}
+
+/**
+ * Transparently re-hash a legacy SHA-256 password into scrypt after a
+ * successful login. No-op when the stored hash is already scrypt.
+ */
+export async function upgradePasswordHash(email: string, password: string): Promise<void> {
+  try {
+    const key = userKey(email);
+    const data = await kv.get<User & { hash: string; salt: string }>(key);
+    if (!data || !isLegacyHash(data.hash)) return;
+    const { hash, salt } = hashPassword(password);
+    await kv.set(key, { ...data, hash, salt }, { ex: 365 * 24 * 60 * 60 });
+  } catch {
+    // Non-fatal: the user is already authenticated.
+  }
 }
 
 export async function createSession(user: User): Promise<string> {
@@ -54,9 +71,3 @@ export async function deleteSession(token: string): Promise<void> {
   await kv.del(sessionKey(token));
 }
 
-function generateToken(): string {
-  const chars = "abcdefghijklmnopqrstuvwxyz0123456789";
-  let result = "";
-  for (let i = 0; i < 48; i++) result += chars.charAt(Math.floor(Math.random() * chars.length));
-  return result;
-}

@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { rateLimit, rateLimitResponse } from "@/lib/rate-limit";
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 
@@ -10,6 +11,16 @@ const SYSTEM_PROMPTS: Record<string, string> = {
 };
 
 export async function POST(req: NextRequest) {
+  // Gemini-backed and unauthenticated: fail closed so a KV outage cannot turn
+  // this into an open proxy against our billing account.
+  const { success, reset, limit } = await rateLimit(req, {
+    limit: 15,
+    window: 60,
+    scope: "ai:chat",
+    failClosed: true,
+  });
+  if (!success) return rateLimitResponse(reset, limit);
+
   try {
     const { text, question, history, mode = "qna" } = await req.json();
 

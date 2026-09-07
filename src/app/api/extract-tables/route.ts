@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { rateLimit, rateLimitResponse } from "@/lib/rate-limit";
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 const BATCH_SIZE = 5;
@@ -34,6 +35,14 @@ async function extractTablesFromPages(pages: string[]): Promise<string> {
 }
 
 export async function POST(req: NextRequest) {
+  const { success, reset, limit } = await rateLimit(req, {
+    limit: 10,
+    window: 60,
+    scope: "ai:tables",
+    failClosed: true,
+  });
+  if (!success) return rateLimitResponse(reset, limit);
+
   if (!GEMINI_API_KEY) {
     return NextResponse.json({ ok: false, error: "Gemini API key not configured." }, { status: 500 });
   }

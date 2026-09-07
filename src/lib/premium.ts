@@ -57,10 +57,11 @@ export async function confirmPremium(nonce?: string, email?: string): Promise<bo
     });
     const data = await res.json();
     if (data.premium) setPremium(true);
-    return data.premium;
+    return data.premium === true;
   } catch {
-    setPremium(true);
-    return true;
+    // Fail closed. Granting premium on a network error let anyone unlock the
+    // paid tier simply by blocking the request.
+    return false;
   }
 }
 

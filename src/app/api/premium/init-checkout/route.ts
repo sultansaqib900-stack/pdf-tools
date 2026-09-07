@@ -1,13 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
+import { rateLimit, rateLimitResponse } from "@/lib/rate-limit";
+import { kv } from "@/lib/kv";
 import crypto from "crypto";
-import { createClient } from "@vercel/kv";
-
-const kv = createClient({
-  url: process.env.pdf_tools_KV_REST_API_URL || process.env.KV_REST_API_URL || "",
-  token: process.env.pdf_tools_KV_REST_API_TOKEN || process.env.KV_REST_API_TOKEN || "",
-});
 
 export async function POST(req: NextRequest) {
+  const { success, reset, limit } = await rateLimit(req, {
+    limit: 20,
+    window: 300,
+    scope: "premium:checkout",
+    failClosed: false,
+  });
+  if (!success) return rateLimitResponse(reset, limit);
+
   try {
     const { clientId, plan } = await req.json();
     if (!clientId || !plan) {

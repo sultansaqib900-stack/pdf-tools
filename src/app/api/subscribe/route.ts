@@ -1,8 +1,17 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
+import { rateLimit, rateLimitResponse } from "@/lib/rate-limit";
 
 const BUTTONDOWN_API_KEY = process.env.BUTTONDOWN_API_KEY;
 
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
+  const { success, reset, limit } = await rateLimit(req, {
+    limit: 5,
+    window: 3600,
+    scope: "subscribe",
+    failClosed: true,
+  });
+  if (!success) return rateLimitResponse(reset, limit);
+
   try {
     const { email } = await req.json();
     if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {

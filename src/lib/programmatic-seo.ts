@@ -9,6 +9,18 @@ export interface SeoPage {
   painPoint: string;
   benefit: string;
   faqs: { question: string; answer: string }[];
+  /**
+   * All three pain points for this audience, so the page can render
+   * substantive unique copy rather than a single templated sentence.
+   */
+  painPoints: string[];
+  /**
+   * Whether this page carries enough genuinely unique, hand-written content to
+   * deserve indexing. Template-only permutations are rendered (so existing
+   * inbound links keep working) but marked noindex and excluded from the
+   * sitemap — this is what triggered AdSense "Low value content".
+   */
+  indexable: boolean;
 }
 
 const topTools = [
@@ -232,6 +244,43 @@ function getFaqs(toolSlug: string | null): { question: string; answer: string }[
   return toolUseCaseFaqs[toolSlug] || generalToolFaqs[toolSlug] || generalFaqs;
 }
 
+/**
+ * Tools that have hand-written, tool-specific FAQ content. Only permutations
+ * of these tools are eligible for indexing; everything else falls back to the
+ * shared `generalFaqs` and would be near-duplicate boilerplate.
+ */
+const TOOLS_WITH_UNIQUE_FAQS = new Set([
+  ...Object.keys(toolUseCaseFaqs),
+  ...Object.keys(generalToolFaqs),
+]);
+
+/**
+ * Audiences whose copy is distinct enough to stand on its own. Kept small and
+ * explicit: a handful of strong pages beats 300 thin ones. Grow this list only
+ * as real, differentiated content is written for each combination.
+ */
+const INDEXABLE_AUDIENCES = new Set([
+  "college-students",
+  "office-workers",
+  "freelancers",
+  "small-business-owners",
+  "lawyers",
+]);
+
+function isIndexable(toolSlug: string, audience: string): boolean {
+  return TOOLS_WITH_UNIQUE_FAQS.has(toolSlug) && INDEXABLE_AUDIENCES.has(audience);
+}
+
+/** Stable hash so generated copy does not change between builds. */
+function stableIndex(seed: string, modulo: number): number {
+  let h = 2166136261;
+  for (let i = 0; i < seed.length; i++) {
+    h ^= seed.charCodeAt(i);
+    h = Math.imul(h, 16777619);
+  }
+  return Math.abs(h) % modulo;
+}
+
 function generateSlug(toolSlug: string, audience: string): string {
   const toolName = topTools.find((t) => t.slug === toolSlug)?.name.toLowerCase().replace(/\s+/g, "-") || toolSlug;
   return `${toolName}-${audience}`;
@@ -244,8 +293,9 @@ export function getAllSeoPages(): SeoPage[] {
     for (const uc of useCases) {
       const slug = generateSlug(tool.slug, uc.audience);
       const toolName = tool.name;
-      const audienceLabel = uc.label.replace("for ", "");
-      const painPoint = uc.painPoints[Math.floor(Math.random() * uc.painPoints.length)];
+      // Deterministic: Math.random() here made the build non-reproducible,
+      // so the same URL served different copy on every deploy.
+      const painPoint = uc.painPoints[stableIndex(slug, uc.painPoints.length)];
       const faqs = getFaqs(tool.slug);
       const siteName = "PDFTools";
 
@@ -260,6 +310,8 @@ export function getAllSeoPages(): SeoPage[] {
         painPoint,
         benefit: uc.benefit,
         faqs: faqs.slice(0, 3),
+        painPoints: uc.painPoints,
+        indexable: isIndexable(tool.slug, uc.audience),
       });
     }
   }
@@ -268,3 +320,6 @@ export function getAllSeoPages(): SeoPage[] {
 }
 
 export const seoPages = getAllSeoPages();
+
+/** Only these belong in the sitemap and in Google's index. */
+export const indexableSeoPages = seoPages.filter((p) => p.indexable);

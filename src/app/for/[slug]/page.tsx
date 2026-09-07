@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { seoPages, type SeoPage } from "@/lib/programmatic-seo";
+import { seoPages } from "@/lib/programmatic-seo";
 import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 import FaqPageJsonLd from "@/components/FaqPageJsonLd";
 
@@ -21,20 +21,33 @@ const tools = [
 ];
 
 export async function generateStaticParams() {
-  return seoPages.map((p) => ({ slug: p.slug }));
+  // Only pre-render the pages we actually want in the index. The remaining
+  // permutations still resolve (so old links/backlinks don't 404) but are
+  // rendered on demand and marked noindex.
+  return seoPages.filter((p) => p.indexable).map((p) => ({ slug: p.slug }));
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
   const page = seoPages.find((p) => p.slug === slug);
   if (!page) return {};
+  const canonical = page.indexable
+    ? `https://allaboutpdfediting.xyz/for/${slug}`
+    // Thin permutations point at the real tool page, consolidating any signal
+    // they've accumulated instead of competing with it.
+    : `https://allaboutpdfediting.xyz/${page.toolSlug ?? ""}`;
+
   return {
     title: page.title,
     description: page.description,
+    alternates: { canonical },
+    robots: page.indexable
+      ? { index: true, follow: true }
+      : { index: false, follow: true, googleBot: { index: false, follow: true } },
     openGraph: {
       title: page.title,
       description: page.description,
-      url: `https://allaboutpdfediting.xyz/for/${slug}`,
+      url: canonical,
     },
   };
 }
@@ -45,17 +58,23 @@ export default async function SeoPage({ params }: { params: Promise<{ slug: stri
   if (!page) notFound();
 
   const toolUrl = page.toolSlug ? `/${page.toolSlug}` : null;
-  const relatedByTool = tools.filter((t: any) => t.href && t.href !== toolUrl).slice(0, 6);
+  const relatedByTool = tools.filter((t) => t.href !== toolUrl).slice(0, 6);
 
   return (
     <>
-      <BreadcrumbJsonLd
-        items={[
-          { name: "Home", item: "https://allaboutpdfediting.xyz" },
-          { name: page.h1, item: `https://allaboutpdfediting.xyz/for/${slug}` },
-        ]}
-      />
-      <FaqPageJsonLd questions={page.faqs} />
+      {page.indexable && (
+        <>
+          <BreadcrumbJsonLd
+            items={[
+              { name: "Home", item: "https://allaboutpdfediting.xyz" },
+              { name: page.h1, item: `https://allaboutpdfediting.xyz/for/${slug}` },
+            ]}
+          />
+          {/* Structured data only on pages we're willing to have indexed —
+              FAQ markup on boilerplate pages invites a manual action. */}
+          <FaqPageJsonLd questions={page.faqs} />
+        </>
+      )}
 
       <div className="max-w-4xl mx-auto px-4 py-12">
         {/* Hero */}
@@ -81,7 +100,11 @@ export default async function SeoPage({ params }: { params: Promise<{ slug: stri
           <div className="p-6 rounded-xl border border-red-200/50 dark:border-red-900/30 bg-red-50/50 dark:bg-red-950/10">
             <div className="text-2xl mb-2">😫</div>
             <h2 className="font-semibold text-[var(--foreground)] mb-2">The Problem</h2>
-            <p className="text-sm text-[var(--muted)]">{page.painPoint}</p>
+            <ul className="text-sm text-[var(--muted)] space-y-1.5 list-disc list-inside">
+              {page.painPoints.map((pp) => (
+                <li key={pp}>{pp}</li>
+              ))}
+            </ul>
           </div>
           <div className="p-6 rounded-xl border border-emerald-200/50 dark:border-emerald-900/30 bg-emerald-50/50 dark:bg-emerald-950/10">
             <div className="text-2xl mb-2">✅</div>
@@ -153,7 +176,11 @@ export default async function SeoPage({ params }: { params: Promise<{ slug: stri
 
         {/* Other use cases for this tool */}
         {page.toolSlug && (() => {
-          const others = seoPages.filter((p) => p.toolSlug === page.toolSlug && p.slug !== slug);
+          // Only link out to indexable siblings, and cap the count — a wall of
+          // 15 near-identical internal links is a classic doorway-page signal.
+          const others = seoPages
+            .filter((p) => p.toolSlug === page.toolSlug && p.slug !== slug && p.indexable)
+            .slice(0, 5);
           if (others.length === 0) return null;
           return (
             <section className="mb-12">
@@ -177,14 +204,14 @@ export default async function SeoPage({ params }: { params: Promise<{ slug: stri
         <section>
           <h2 className="text-xl font-bold text-[var(--foreground)] mb-4">More Free PDF Tools</h2>
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-            {relatedByTool.map((t: any) => (
+            {relatedByTool.map((t) => (
               <Link
                 key={t.href}
-                href={t.href || `/for/${slug}`}
+                href={t.href}
                 className="block p-4 rounded-xl border border-[var(--card-border)] bg-[var(--card)] hover:border-indigo-400/30 hover:shadow transition text-center"
               >
-                <div className="text-2xl mb-1">{t.icon || t.emoji || "📄"}</div>
-                <p className="text-xs font-medium text-[var(--foreground)]">{t.name || t.title}</p>
+                <div className="text-2xl mb-1">{t.icon}</div>
+                <p className="text-xs font-medium text-[var(--foreground)]">{t.name}</p>
               </Link>
             ))}
           </div>

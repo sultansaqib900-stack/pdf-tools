@@ -4,7 +4,7 @@ import { rateLimitResponse } from "@/lib/rate-limit";
 describe("rateLimitResponse", () => {
   it("returns 429 with rate limit headers", () => {
     const reset = Date.now() + 60000;
-    const res = rateLimitResponse(reset);
+    const res = rateLimitResponse(reset, 10);
 
     expect(res.status).toBe(429);
     expect(res.headers.get("X-RateLimit-Limit")).toBe("10");

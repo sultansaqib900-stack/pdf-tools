@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { seoPages } from "@/lib/programmatic-seo";
+import { indexableSeoPages } from "@/lib/programmatic-seo";
 
 export const metadata: Metadata = {
   title: "Sitemap — PDFTools",
@@ -179,11 +179,11 @@ export default function SitemapPage() {
         <div>
           <h2 className="text-xl font-semibold text-[var(--foreground)] mb-4">Use Cases by Audience</h2>
           <p className="text-sm text-[var(--muted)] mb-4">
-            Each audience has use-case pages for every tool — 300+ pages total.
+            In-depth guides for the audiences and tools we cover most often.
           </p>
           <div className="space-y-6">
             {Object.entries(audienceLabels).map(([audience, label]) => {
-              const pages = seoPages.filter((p) => p.slug.endsWith(`-${audience}`));
+              const pages = indexableSeoPages.filter((p) => p.slug.endsWith(`-${audience}`));
               if (pages.length === 0) return null;
               const toolNames = pages.map((p) => p.toolName);
               return (

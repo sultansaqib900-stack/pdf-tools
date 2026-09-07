@@ -1,6 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
+import { rateLimit, rateLimitResponse } from "@/lib/rate-limit";
+
+const MAX_PAGES_PER_REQUEST = 20;
 
 export async function POST(req: NextRequest) {
+  const { success, reset, limit } = await rateLimit(req, {
+    limit: 10,
+    window: 60,
+    scope: "ai:ocr",
+    failClosed: true,
+  });
+  if (!success) return rateLimitResponse(reset, limit);
+
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) {
     return NextResponse.json({ ok: false, error: "Gemini API key not configured." }, { status: 500 });
@@ -10,6 +21,12 @@ export async function POST(req: NextRequest) {
     const { pages, fileName } = await req.json();
     if (!pages || !Array.isArray(pages) || pages.length === 0) {
       return NextResponse.json({ ok: false, error: "No page images provided." }, { status: 400 });
+    }
+    if (pages.length > MAX_PAGES_PER_REQUEST) {
+      return NextResponse.json(
+        { ok: false, error: `Too many pages in one request (max ${MAX_PAGES_PER_REQUEST}).` },
+        { status: 413 }
+      );
     }
 
     const parts: ({ text: string } | { inlineData: { mimeType: string; data: string } })[] = pages.map((p: string) => ({

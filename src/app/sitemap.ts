@@ -1,5 +1,5 @@
 import type { MetadataRoute } from "next";
-import { seoPages } from "@/lib/programmatic-seo";
+import { indexableSeoPages } from "@/lib/programmatic-seo";
 import { getErrorPages } from "@/lib/error-pages";
 
 export default function sitemap(): MetadataRoute.Sitemap {
@@ -7,7 +7,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   const es = (path: string) => `${base}/es${path}`;
 
-  const forPages: MetadataRoute.Sitemap = seoPages.map((p) => ({
+  // Only genuinely differentiated use-case pages are submitted. Listing all
+  // 300 template permutations is what got the site flagged for low value
+  // content — the rest are noindex and deliberately excluded here.
+  const forPages: MetadataRoute.Sitemap = indexableSeoPages.map((p) => ({
     url: `${base}/for/${p.slug}`,
     lastModified: new Date(),
     changeFrequency: "weekly" as const,

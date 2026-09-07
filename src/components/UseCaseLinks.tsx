@@ -1,12 +1,14 @@
 import Link from "next/link";
-import { seoPages } from "@/lib/programmatic-seo";
+import { indexableSeoPages } from "@/lib/programmatic-seo";
 
 interface Props {
   toolSlug: string;
 }
 
 export default function UseCaseLinks({ toolSlug }: Props) {
-  const relevant = seoPages.filter((p) => p.toolSlug === toolSlug);
+  // Only surface indexable use-case pages. Linking every tool page to 15
+  // template permutations created a doorway-style internal link network.
+  const relevant = indexableSeoPages.filter((p) => p.toolSlug === toolSlug);
 
   if (relevant.length === 0) return null;
 

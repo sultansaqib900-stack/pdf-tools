@@ -1,14 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createClient } from "@vercel/kv";
-import { keys, setPremiumStatus } from "@/lib/kv";
+import { rateLimit, rateLimitResponse } from "@/lib/rate-limit";
+import { kv, keys, setPremiumStatus } from "@/lib/kv";
 import { validateEmail } from "@/lib/validation";
 
-const kv = createClient({
-  url: process.env.pdf_tools_KV_REST_API_URL || process.env.KV_REST_API_URL || "",
-  token: process.env.pdf_tools_KV_REST_API_TOKEN || process.env.KV_REST_API_TOKEN || "",
-});
-
 export async function POST(req: NextRequest) {
+  const { success, reset, limit } = await rateLimit(req, {
+    limit: 10,
+    window: 300,
+    scope: "premium:claim",
+    failClosed: true,
+  });
+  if (!success) return rateLimitResponse(reset, limit);
+
   try {
     const { email, clientId } = await req.json();
     if (!email || !clientId) {
