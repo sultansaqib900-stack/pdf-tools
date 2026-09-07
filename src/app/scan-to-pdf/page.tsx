@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useEffect, useRef } from "react";
+import ToolGuide from "@/components/ToolGuide";
 import ToolInfo from "@/components/ToolInfo";
 import FreeWaitTimer from "@/components/FreeWaitTimer";
 import UsageBar from "@/components/UsageBar";
@@ -251,6 +252,8 @@ export default function ScanToPdfPage() {
           <p>Each capture becomes a separate PDF page. Position your document within the on-screen guide, tap capture, and repeat for multi-page documents. Perfect for digitizing paperwork on the go — no scanner hardware or mobile app needed.</p>
         </div>
       </div>
+      <ToolGuide slug="scan-to-pdf" />
+
       <RelatedContent slug="scan-to-pdf" />
 
       <PremiumUpsell

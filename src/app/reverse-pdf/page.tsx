@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useEffect, useRef } from "react";
+import ToolGuide from "@/components/ToolGuide";
 import ToolInfo from "@/components/ToolInfo";
 import FreeWaitTimer from "@/components/FreeWaitTimer";
 import UsageBar from "@/components/UsageBar";
@@ -185,6 +186,8 @@ export default function ReversePDFPage() {
           <p>Keywords: reverse PDF pages online free, flip PDF order, invert page sequence, reverse PDF file, reorder PDF pages.</p>
         </div>
       </div>
+      <ToolGuide slug="reverse-pdf" />
+
       <RelatedContent slug="reverse-pdf" />
 
       <PremiumUpsell

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useEffect, useRef } from "react";
+import ToolGuide from "@/components/ToolGuide";
 import ToolInfo from "@/components/ToolInfo";
 import FreeWaitTimer from "@/components/FreeWaitTimer";
 import UsageBar from "@/components/UsageBar";
@@ -298,6 +299,8 @@ export default function InsertBlankPage() {
           <p>Keywords: insert blank pages in PDF online free, add empty pages to PDF, PDF page inserter, add blank page to PDF, insert page into PDF.</p>
         </div>
       </div>
+
+      <ToolGuide slug="insert-blank" />
 
       <RelatedContent slug="insert-blank" />
 

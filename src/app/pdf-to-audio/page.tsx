@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useCallback, useEffect } from "react";
+import ToolGuide from "@/components/ToolGuide";
 import { isPremium } from "@/lib/premium";
 import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
 import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
@@ -186,13 +187,7 @@ export default function PdfToAudioPage() {
       )}
 
 
-      <div className="border-t border-[var(--card-border)] pt-8 mt-8">
-        <h2 className="text-xl font-bold text-[var(--foreground)] mb-3">About PDF to Audio</h2>
-        <div className="text-sm text-[var(--muted)] space-y-3 leading-relaxed">
-          <p>Turn any PDF document into an audio file you can listen to. Perfect for commuting, exercising, multitasking, or accessibility needs. The browser&apos;s built-in Speech Synthesis API provides natural-sounding voices.</p>
-          <p>Use cases: listen to reports on your commute, have articles read aloud for accessibility, review documents hands-free, or convert study materials to audio for revision.</p>
-        </div>
-      </div>
+      <ToolGuide slug="pdf-to-audio" />
 
       <div className="text-center mt-8">
         <a href="/premium" className="text-sm text-indigo-500 hover:underline font-medium">Explore all Premium features →</a>

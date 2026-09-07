@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import ToolGuide from "@/components/ToolGuide";
 import { isPremium } from "@/lib/premium";
 import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
 import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
@@ -150,13 +151,7 @@ export default function BookletPage() {
       {error && <div className="mt-6 p-4 bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-800 rounded-xl text-red-600 text-sm">{error}</div>}
 
 
-      <div className="border-t border-[var(--card-border)] pt-8 mt-8">
-        <h2 className="text-xl font-bold text-[var(--foreground)] mb-3">About PDF Booklet Creator</h2>
-        <div className="text-sm text-[var(--muted)] space-y-3 leading-relaxed">
-          <p>Create professional booklets, brochures, and multi-up layouts for printing. The booklet layout places two pages side-by-side for saddle-stitch binding, while grid layouts pack multiple pages onto one sheet to save paper and ink.</p>
-          <p>Perfect for: creating printable booklets from digital documents, saving paper with N-up printing, making pocket-sized reference guides, and preparing documents for commercial printing.</p>
-        </div>
-      </div>
+      <ToolGuide slug="booklet" />
       <div className="text-center mt-8">
         <a href="/premium" className="text-sm text-indigo-500 hover:underline font-medium">Explore all Premium features →</a>
       </div>

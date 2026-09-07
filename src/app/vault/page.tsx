@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import ToolGuide from "@/components/ToolGuide";
 import { isPremium } from "@/lib/premium";
 import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
 import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
@@ -129,29 +130,30 @@ export default function VaultPage() {
   if (!vaultUnlocked) {
     return (
       <div className="max-w-3xl mx-auto px-4 py-12">
-        <SoftwareAppJsonLd name="Secure PDF Vault" description="Store PDFs in encrypted browser vault." url="https://allaboutpdfediting.xyz/vault" />
+        <SoftwareAppJsonLd name="Secure PDF Vault" description="Store PDFs in your browser on this device, with no server upload." url="https://allaboutpdfediting.xyz/vault" />
         <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Secure Vault", item: "https://allaboutpdfediting.xyz/vault" }]} />
         <div className="mb-8">
           <div className="flex items-center gap-3 mb-2">
             <h1 className="text-3xl font-bold text-[var(--foreground)]">Secure PDF Vault</h1>
             <span className="text-xs font-semibold bg-gradient-to-r from-amber-500 to-orange-600 text-white px-2.5 py-0.5 rounded-full">Premium</span>
           </div>
-          <p className="text-[var(--muted)]">Enter your vault password to access your encrypted document storage.</p>
+          <p className="text-[var(--muted)]">Enter your vault password to access documents stored in this browser.</p>
         </div>
         <div className="bg-[var(--card)] border border-[var(--card-border)] rounded-xl p-6 text-center space-y-4">
           <div className="text-6xl">🔐</div>
-          <p className="text-sm text-[var(--muted)]">Your vault stores PDFs encrypted in your browser&apos;s localStorage. Create a new password to start fresh, or enter an existing one.</p>
+          <p className="text-sm text-[var(--muted)]">Your vault keeps PDFs in this browser&apos;s local storage on this device — nothing is uploaded to a server, and nothing is backed up. Keep your own copy of anything important. Create a new password to start fresh, or enter an existing one.</p>
           <input type="password" value={vaultPassword} onChange={(e) => setVaultPassword(e.target.value)} placeholder="Enter vault password" className="w-full max-w-xs mx-auto px-4 py-2.5 rounded-xl border border-[var(--card-border)] bg-[var(--background)] text-sm text-center" onKeyDown={(e) => e.key === "Enter" && unlockVault()} />
           <button onClick={unlockVault} disabled={!vaultPassword.trim()} className="w-full max-w-xs mx-auto py-2.5 bg-gradient-to-r from-amber-500 to-orange-600 text-white font-medium rounded-xl hover:from-amber-600 hover:to-orange-700 disabled:opacity-40 transition">Unlock Vault</button>
         </div>
         {error && <div className="mt-4 p-4 bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-800 rounded-xl text-red-600 text-sm">{error}</div>}
+        <ToolGuide slug="vault" />
       </div>
     );
   }
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-12">
-      <SoftwareAppJsonLd name="Secure PDF Vault" description="Store PDFs in encrypted browser vault." url="https://allaboutpdfediting.xyz/vault" />
+      <SoftwareAppJsonLd name="Secure PDF Vault" description="Store PDFs in your browser on this device, with no server upload." url="https://allaboutpdfediting.xyz/vault" />
       <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Secure Vault", item: "https://allaboutpdfediting.xyz/vault" }]} />
       <HowToJsonLd name="Secure PDF Vault" description="Store and manage PDFs in an encrypted browser-based document vault" steps={[{name:"Set a master password",text:"Create a strong master password for your vault"},{name:"Upload PDFs",text:"Drag and drop PDFs into your encrypted vault"},{name:"Access anytime",text:"Open view and download your PDFs securely with password protection"}]} />
       <AiSummaryJsonLd name="PDF Vault" summary="Store sensitive PDF documents in an encrypted browser-based vault with password protection" category="SecurityApplications" inputType="PDF" outputType="Storage" processing="client-side" price="premium" features={["Encrypted storage","Password protection","localStorage persistence","Browser-based vault","No server storage"]} limits="Premium subscribers" />
@@ -200,10 +202,7 @@ export default function VaultPage() {
       {error && <div className="mt-4 p-4 bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-800 rounded-xl text-red-600 text-sm">{error}</div>}
 
 
-      <div className="border-t border-[var(--card-border)] pt-8 mt-8">
-        <h2 className="text-xl font-bold text-[var(--foreground)] mb-3">About Secure PDF Vault</h2>
-        <div className="text-sm text-[var(--muted)] space-y-3">Store your frequently-used PDFs in an encrypted browser vault so you never lose track of important documents. Files are persisted in your browser&apos;s localStorage and organized in a clean list. Set a vault password to control access.</div>
-      </div>
+      <ToolGuide slug="vault" />
       <div className="text-center mt-8">
         <a href="/premium" className="text-sm text-indigo-500 hover:underline font-medium">Explore all Premium features →</a>
       </div>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef } from "react";
+import ToolGuide from "@/components/ToolGuide";
 import { isPremium } from "@/lib/premium";
 import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
 import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
@@ -125,10 +126,7 @@ export default function MetadataSanitizerPage() {
       {error && <div className="mt-6 p-4 bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-800 rounded-xl text-red-600 text-sm">{error}</div>}
 
 
-      <div className="border-t border-[var(--card-border)] pt-8 mt-8">
-        <h2 className="text-xl font-bold text-[var(--foreground)] mb-3">About PDF Metadata Sanitizer</h2>
-        <div className="text-sm text-[var(--muted)] space-y-3">PDFs can contain hidden metadata — author name, creation date, software used, embedded annotations, and more. This tool strips all of that, leaving a clean, anonymous PDF. Essential before sharing documents publicly or with third parties.</div>
-      </div>
+      <ToolGuide slug="metadata-sanitizer" />
       <div className="text-center mt-8">
         <a href="/premium" className="text-sm text-indigo-500 hover:underline font-medium">Explore all Premium features →</a>
       </div>

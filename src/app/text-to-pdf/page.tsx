@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useEffect } from "react";
+import ToolGuide from "@/components/ToolGuide";
 import ToolInfo from "@/components/ToolInfo";
 import FreeWaitTimer from "@/components/FreeWaitTimer";
 import UsageBar from "@/components/UsageBar";
@@ -192,6 +193,8 @@ export default function TextToPdfPage() {
           <p>Keywords: text to PDF converter online free, convert text to PDF, plain text to PDF document, create PDF from text online free.</p>
         </div>
       </div>
+      <ToolGuide slug="text-to-pdf" />
+
       <RelatedContent slug="text-to-pdf" />
 
       <PremiumUpsell

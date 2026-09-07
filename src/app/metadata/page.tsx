@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useEffect, useRef } from "react";
+import ToolGuide from "@/components/ToolGuide";
 import ToolInfo from "@/components/ToolInfo";
 import FreeWaitTimer from "@/components/FreeWaitTimer";
 import { isPremium, checkFileSize } from "@/lib/premium";
@@ -217,6 +218,8 @@ export default function MetadataPage() {
           <p>Keywords: edit PDF metadata online free, PDF properties editor, change PDF title author, update PDF document properties.</p>
         </div>
       </div>
+
+      <ToolGuide slug="metadata" />
 
       <RelatedContent slug="metadata" />
 

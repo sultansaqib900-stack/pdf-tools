@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback } from "react";
+import ToolGuide from "@/components/ToolGuide";
 import { isPremium } from "@/lib/premium";
 import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
 import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
@@ -153,10 +154,7 @@ export default function QrStampPage() {
       {error && <div className="mt-6 p-4 bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-800 rounded-xl text-red-600 text-sm">{error}</div>}
 
 
-      <div className="border-t border-[var(--card-border)] pt-8 mt-8">
-        <h2 className="text-xl font-bold text-[var(--foreground)] mb-3">About QR Code Stamp</h2>
-        <div className="text-sm text-[var(--muted)] space-y-3">Add a QR code to every page of your PDF. Perfect for marketing materials (link to your website), invoices (link to payment portal), labels (link to product page), and business documents (link to your contact page). Choose position and size.</div>
-      </div>
+      <ToolGuide slug="qr-stamp" />
       <div className="text-center mt-8">
         <a href="/premium" className="text-sm text-indigo-500 hover:underline font-medium">Explore all Premium features →</a>
       </div>

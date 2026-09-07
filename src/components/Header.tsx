@@ -8,6 +8,8 @@ import { useAuth } from "@/components/AuthProvider";
 import Icon, { type IconName } from "@/components/ui/Icon";
 import ThemeToggle from "@/components/ui/ThemeToggle";
 
+const ES_SLUGS = new Set(["", "compress", "merge", "split", "image-to-pdf", "edit-pdf"]);
+
 const ShareModal = lazy(() => import("./ShareModal"));
 
 /* ── Navigation model ─────────────────────────────────────────────────────
@@ -111,9 +113,11 @@ export default function Header() {
   useEffect(() => setMenuOpen(false), [pathname]);
 
   const isEs = pathname.startsWith("/es");
-  const localeHref = isEs
-    ? pathname.replace(/^\/es/, "") || "/"
-    : `/es${pathname === "/" ? "" : pathname}`;
+  const cleanPath = isEs ? pathname.replace(/^\/es/, "") || "/" : pathname || "/";
+  // Only these pages have a Spanish translation; linking to /es/<anything else>
+  // produced a 404 and shipped soft-404 links on every page.
+  const hasEs = ES_SLUGS.has(cleanPath.replace(/^\//, ""));
+  const localeHref = isEs ? cleanPath : `/es${cleanPath === "/" ? "" : cleanPath}`;
 
   const navLink =
     "px-2.5 py-1.5 rounded-[var(--r-md)] text-[0.8125rem] font-medium text-[var(--muted-strong)] hover:text-[var(--foreground)] hover:bg-[var(--surface-hover)] transition-colors";
@@ -233,9 +237,11 @@ export default function Header() {
           <button onClick={() => setShareOpen(true)} className={`${iconBtn} hidden sm:inline-flex`} aria-label="Share this page">
             <Icon name="share" size={17} />
           </button>
-          <Link href={localeHref} className={`${iconBtn} hidden sm:inline-flex text-[0.6875rem] font-semibold`} aria-label={isEs ? "Switch to English" : "Cambiar a español"}>
-            {isEs ? "EN" : "ES"}
-          </Link>
+          {(isEs || hasEs) && (
+            <Link href={localeHref} className={`${iconBtn} hidden sm:inline-flex text-[0.6875rem] font-semibold`} aria-label={isEs ? "Switch to English" : "Cambiar a español"}>
+              {isEs ? "EN" : "ES"}
+            </Link>
+          )}
           <ThemeToggle />
 
           <div className="w-px h-5 bg-[var(--border)] mx-1.5 hidden sm:block" />
@@ -296,9 +302,11 @@ export default function Header() {
               {RESOURCE_LINKS.map((l) => (
                 <Link key={l.href} href={l.href} className="py-2 text-[0.8125rem] text-[var(--muted-strong)]">{l.label}</Link>
               ))}
-              <Link href={localeHref} className="py-2 text-[0.8125rem] text-[var(--muted-strong)]">
-                {isEs ? "English" : "Español"}
-              </Link>
+              {(isEs || hasEs) && (
+                <Link href={localeHref} className="py-2 text-[0.8125rem] text-[var(--muted-strong)]">
+                  {isEs ? "English" : "Español"}
+                </Link>
+              )}
             </div>
 
             <div className="rule" />

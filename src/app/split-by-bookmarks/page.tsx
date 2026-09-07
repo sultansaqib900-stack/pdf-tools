@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef } from "react";
+import ToolGuide from "@/components/ToolGuide";
 import { isPremium } from "@/lib/premium";
 import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
 import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
@@ -172,6 +173,7 @@ export default function SplitByBookmarksPage() {
           <button onClick={() => { setFile(null); setSplits([]); setDownloadUrls([]); }} className="mt-6 text-sm text-indigo-500 hover:underline">Start Over</button>
         </div>
       )}
+      <ToolGuide slug="split-by-bookmarks" />
     </div>
   );
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useEffect, useRef } from "react";
+import ToolGuide from "@/components/ToolGuide";
 import ToolInfo from "@/components/ToolInfo";
 import UsageBar from "@/components/UsageBar";
 import ProgressBar from "@/components/ProgressBar";
@@ -231,6 +232,8 @@ export default function BatchPage() {
           <p>Keywords: batch process PDF files, bulk PDF processing online, process multiple PDFs at once.</p>
         </div>
       </div>
+
+      <ToolGuide slug="batch" />
 
       <RelatedContent slug="batch" />
 

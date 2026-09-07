@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef } from "react";
+import ToolGuide from "@/components/ToolGuide";
 import { isPremium } from "@/lib/premium";
 import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
 import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
@@ -213,13 +214,7 @@ export default function PdfDiffPage() {
       )}
 
 
-      <div className="border-t border-[var(--card-border)] pt-8 mt-8">
-        <h2 className="text-xl font-bold text-[var(--foreground)] mb-3">About PDF Comparison</h2>
-        <div className="text-sm text-[var(--muted)] space-y-3 leading-relaxed">
-          <p>Our PDF Diff tool extracts text from both documents page by page using PDF.js and compares them line by line. Added content is shown in green, removed content in red — just like a code diff. All processing happens in your browser; your files never leave your device.</p>
-          <p>This is essential for legal document reviews, contract versioning, manuscript edits, and regulatory compliance. Unlike expensive tools like Adobe Acrobat Pro or Draftable, this is included with your Premium subscription.</p>
-        </div>
-      </div>
+      <ToolGuide slug="pdf-diff" />
 
       <div className="text-center mt-8">
         <a href="/premium" className="text-sm text-indigo-500 hover:underline font-medium">Explore all Premium features →</a>

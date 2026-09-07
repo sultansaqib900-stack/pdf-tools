@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef } from "react";
+import ToolGuide from "@/components/ToolGuide";
 import { isPremium } from "@/lib/premium";
 import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
 import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
@@ -117,10 +118,7 @@ export default function PdfInverterPage() {
       {error && <div className="mt-6 p-4 bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-800 rounded-xl text-red-600 text-sm">{error}</div>}
 
 
-      <div className="border-t border-[var(--card-border)] pt-8 mt-8">
-        <h2 className="text-xl font-bold text-[var(--foreground)] mb-3">About PDF Color Inverter</h2>
-        <div className="text-sm text-[var(--muted)] space-y-3 leading-relaxed">Transform your PDF for different viewing needs. Dark mode inverts colors for comfortable nighttime reading. Grayscale removes color for ink-efficient printing. High contrast boosts readability for visually impaired users or low-light environments.</div>
-      </div>
+      <ToolGuide slug="pdf-inverter" />
       <div className="text-center mt-8">
         <a href="/premium" className="text-sm text-indigo-500 hover:underline font-medium">Explore all Premium features →</a>
       </div>

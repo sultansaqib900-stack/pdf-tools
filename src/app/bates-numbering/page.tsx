@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef } from "react";
+import ToolGuide from "@/components/ToolGuide";
 import { isPremium } from "@/lib/premium";
 import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
 import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
@@ -183,6 +184,7 @@ export default function BatesNumberingPage() {
           )}
         </div>
       )}
+      <ToolGuide slug="bates-numbering" />
     </div>
   );
 }

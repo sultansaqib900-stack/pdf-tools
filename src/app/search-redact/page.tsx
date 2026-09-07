@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef } from "react";
+import ToolGuide from "@/components/ToolGuide";
 import { isPremium } from "@/lib/premium";
 import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
 import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
@@ -206,14 +207,7 @@ export default function SearchRedactPage() {
       {error && <div className="mt-6 p-4 bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-800 rounded-xl text-red-600 text-sm">{error}</div>}
 
 
-      <div className="border-t border-[var(--card-border)] pt-8 mt-8">
-        <h2 className="text-xl font-bold text-[var(--foreground)] mb-3">About Search & Redact</h2>
-        <div className="text-sm text-[var(--muted)] space-y-3 leading-relaxed">
-          <p>Unlike the manual redaction tool, this searches your entire PDF for specific words or phrases and redacts every occurrence automatically. Type "confidential, secret, internal" and every instance of those words across all pages will be permanently blacked out.</p>
-          <p>Works on both text-based and scanned PDFs. Scanned documents are processed through OCR (optical character recognition) to detect and redact matching text.</p>
-          <p>Ideal for: legal document sanitization, removing PII (personally identifiable information), declassifying documents, preparing files for public release, and compliance with data privacy regulations.</p>
-        </div>
-      </div>
+      <ToolGuide slug="search-redact" />
       <div className="text-center mt-8">
         <a href="/premium" className="text-sm text-indigo-500 hover:underline font-medium">Explore all Premium features →</a>
       </div>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useEffect, useRef } from "react";
+import ToolGuide from "@/components/ToolGuide";
 import ToolInfo from "@/components/ToolInfo";
 import FreeWaitTimer from "@/components/FreeWaitTimer";
 import UsageBar from "@/components/UsageBar";
@@ -188,6 +189,8 @@ export default function HtmlToPdfPage() {
           <p>Convert your HTML markup to a polished PDF document with our free tool, ideal for developers, content creators, and documentation authors. Whether you need to save a web page for offline reading, create printable documentation from HTML templates, or generate reports dynamically, our HTML to PDF converter makes it straightforward. To convert HTML to PDF online free, paste your HTML code into the editor and click download — the conversion uses html2canvas and jsPDF in your browser, so everything stays client-side with no data uploaded to any server. Just paste your markup, preview the result, and download your PDF instantly.</p>
         </div>
       </div>
+      <ToolGuide slug="html-to-pdf" />
+
       <RelatedContent slug="html-to-pdf" />
       <UseCaseLinks toolSlug="html-to-pdf" />
 

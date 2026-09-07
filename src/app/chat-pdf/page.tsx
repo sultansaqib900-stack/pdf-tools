@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useRef, useEffect } from "react";
+import ToolGuide from "@/components/ToolGuide";
 import ToolInfo from "@/components/ToolInfo";
 import UsageBar from "@/components/UsageBar";
 import PremiumUpsell, { usePremiumUpsell } from "@/components/PremiumUpsell";
@@ -406,6 +407,8 @@ export default function ChatPDFPage() {
           <p>Keywords: chat with PDF, AI PDF assistant, ask PDF questions, PDF chatbot, AI document reader, PDF analyzer.</p>
         </div>
       </div>
+      <ToolGuide slug="chat-pdf" />
+
       <RelatedContent slug="chat-pdf" />
 
       <PremiumUpsell

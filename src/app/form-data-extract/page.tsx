@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef } from "react";
+import ToolGuide from "@/components/ToolGuide";
 import { isPremium } from "@/lib/premium";
 import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
 import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
@@ -151,13 +152,7 @@ export default function FormDataExtractPage() {
       )}
 
 
-      <div className="border-t border-[var(--card-border)] pt-8 mt-8">
-        <h2 className="text-xl font-bold text-[var(--foreground)] mb-3">About Form Data Extraction</h2>
-        <div className="text-sm text-[var(--muted)] space-y-3 leading-relaxed">
-          <p>Extract all filled form fields from AcroForm PDFs into a structured CSV file. Each PDF becomes one row, each form field becomes one column. Perfect for processing survey responses, application forms, and data collection documents.</p>
-          <p>Supports text fields, checkboxes, dropdowns, and option lists. The CSV can be opened directly in Excel, Google Sheets, or any spreadsheet application.</p>
-        </div>
-      </div>
+      <ToolGuide slug="form-data-extract" />
 
       <div className="text-center mt-8">
         <a href="/premium" className="text-sm text-indigo-500 hover:underline font-medium">Explore all Premium features →</a>

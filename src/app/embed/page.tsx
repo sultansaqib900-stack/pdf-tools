@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 
 const TOOLS = [
   { id: "compress", label: "Compress PDF" },
@@ -135,8 +136,71 @@ export default function EmbedPage() {
         </div>
       </div>
 
-      <div className="mt-12 pt-8 border-t border-[var(--card-border)]">
-        <h2 className="text-xl font-bold mb-4">WordPress Plugin</h2>
+      <div className="mt-12 pt-8 border-t border-[var(--card-border)] space-y-8 text-sm leading-[1.75] text-[var(--muted)]">
+        <section>
+          <h2 className="text-xl font-bold text-[var(--foreground)] mb-2">How the embed works</h2>
+          <p>
+            The script registers a custom element. When the browser encounters your
+            <code className="px-1">&lt;pdf-tool&gt;</code> tag it loads the relevant tool into that
+            spot on your page, sized to its container. There is no iframe to a third-party domain and
+            no API call, because the tool is simply JavaScript running in your visitor&apos;s browser.
+          </p>
+          <p>
+            That is why there are no keys to manage and no quota to exceed. A page embedding a tool
+            costs you nothing whether it is used ten times a month or ten thousand, since the work
+            happens on the visitor&apos;s machine rather than on anyone&apos;s server.
+          </p>
+        </section>
+
+        <section>
+          <h2 className="text-xl font-bold text-[var(--foreground)] mb-2">Who this is for</h2>
+          <p>
+            An accountancy firm adding a compress tool beside its document upload instructions, so
+            clients can shrink a scan to fit the portal limit without leaving the page. A university
+            department putting a merge tool on its submission guidance. A print shop letting customers
+            fix page order before ordering. A software company adding a converter to its help centre
+            instead of writing a support article explaining how to do it elsewhere.
+          </p>
+          <p>
+            In each case the point is the same: the user solves their problem without being sent to
+            another site, and you never take custody of their documents.
+          </p>
+        </section>
+
+        <section>
+          <h2 className="text-xl font-bold text-[var(--foreground)] mb-2">What you are and are not responsible for</h2>
+          <p>
+            Because files never leave the visitor&apos;s browser, embedding a tool does not make you a
+            processor of your visitors&apos; documents. You are not storing them, transmitting them or
+            able to access them, which is a materially different position from adding an upload form.
+          </p>
+          <p>
+            You are still responsible for your own page: the script is third-party JavaScript, so it
+            should appear in your cookie and privacy disclosures the same way any embedded script does.
+            If your site uses a Content Security Policy, allow the script source or the element will
+            not load.
+          </p>
+        </section>
+
+        <section>
+          <h2 className="text-xl font-bold text-[var(--foreground)] mb-2">Practical notes</h2>
+          <p>
+            Give the element a container with a sensible minimum height so the layout does not jump as
+            it loads, and test on a phone — the tools are responsive but a narrow sidebar is a poor
+            home for a document editor. Place the tool near the instructions that explain why a visitor
+            needs it rather than on a page of its own.
+          </p>
+          <p>
+            If you would rather link than embed, every tool has its own page — for example{" "}
+            <Link href="/compress" className="text-[var(--accent)] hover:underline">Compress PDF</Link>,{" "}
+            <Link href="/merge" className="text-[var(--accent)] hover:underline">Merge PDF</Link> and{" "}
+            <Link href="/split" className="text-[var(--accent)] hover:underline">Split PDF</Link> — and the
+            full set is listed on the{" "}
+            <Link href="/tools" className="text-[var(--accent)] hover:underline">tools page</Link>.
+          </p>
+        </section>
+
+        <h2 className="text-xl font-bold text-[var(--foreground)] mb-4">WordPress Plugin</h2>
         <p className="text-sm text-[var(--muted)] mb-4">
           Using WordPress? Install our free plugin to add PDF tools via shortcode or Gutenberg block,
           no manual code needed.

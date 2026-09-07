@@ -242,6 +242,78 @@ export default function PremiumPage() {
         </div>
       </div>
 
+      <div className="mt-14 pt-8 border-t border-[var(--border)] space-y-8 text-[0.875rem] leading-[1.75] text-[var(--muted-strong)] max-w-3xl">
+        <section>
+          <h2 className="text-lg font-semibold text-[var(--foreground)] mb-2">What you are actually paying for</h2>
+          <p>
+            The free tools are not a trial. Compressing, merging, splitting, converting, signing and
+            protecting documents are free and stay free, without watermarks on the output and without a
+            daily task counter. A subscription is not how you unlock the basics.
+          </p>
+          <p>
+            What it buys is the removal of advertising, higher usage limits for people working at
+            volume, and a set of specialised tools that take real effort to build and maintain:{" "}
+            <Link href="/bates-numbering" className="text-[var(--accent)] hover:underline">Bates numbering</Link>{" "}
+            for legal productions,{" "}
+            <Link href="/pdf-diff" className="text-[var(--accent)] hover:underline">document comparison</Link>{" "}
+            for contract review,{" "}
+            <Link href="/search-redact" className="text-[var(--accent)] hover:underline">search-and-redact</Link>{" "}
+            across a whole file,{" "}
+            <Link href="/certificate-generator" className="text-[var(--accent)] hover:underline">bulk certificate generation</Link>,
+            and{" "}
+            <Link href="/form-data-extract" className="text-[var(--accent)] hover:underline">form data extraction</Link>{" "}
+            to a spreadsheet.
+          </p>
+        </section>
+
+        <section>
+          <h2 className="text-lg font-semibold text-[var(--foreground)] mb-2">Whether it is worth it for you</h2>
+          <p>
+            It probably is if you process documents as part of your job most weeks — reviewing
+            contracts, preparing productions, handling application forms, issuing certificates to a
+            cohort. One afternoon saved on a bulk task usually covers a year.
+          </p>
+          <p>
+            It probably is not if you compress a file occasionally or merge a couple of documents a
+            month. The free tools already do that properly, and we would rather say so than take a
+            subscription that goes unused. Try the premium tools before deciding whether the workflow
+            they replace was actually costing you anything.
+          </p>
+        </section>
+
+        <section>
+          <h2 className="text-lg font-semibold text-[var(--foreground)] mb-2">Privacy does not change with the plan</h2>
+          <p>
+            Paying does not buy better privacy, because there is no worse tier to improve on. Free and
+            premium tools alike run entirely in your browser and never upload your documents. You can
+            confirm it on a premium tool exactly as on a free one: open developer tools with F12, watch
+            the Network tab, and see that nothing carries your file.
+          </p>
+          <p>
+            The two AI features are the stated exception and behave the same on both plans — they send
+            text to an AI service because that work cannot happen locally.
+          </p>
+        </section>
+
+        <section>
+          <h2 className="text-lg font-semibold text-[var(--foreground)] mb-2">Billing, cancellation and support</h2>
+          <p>
+            Subscriptions renew automatically until cancelled, and cancelling stops the next renewal
+            while leaving access in place until the end of the period you have already paid for. There
+            is no cancellation fee and nothing to negotiate with a retention team.
+          </p>
+          <p>
+            The yearly plan is cheaper per month but pays for twelve months at once; if you are not yet
+            sure the tools fit your work, start monthly. For any billing question,{" "}
+            <Link href="/contact" className="text-[var(--accent)] hover:underline">get in touch</Link>{" "}
+            with the email address you subscribed with so we can find the account. Terms are in the{" "}
+            <Link href="/terms" className="text-[var(--accent)] hover:underline">terms of service</Link>,
+            and data handling in the{" "}
+            <Link href="/privacy" className="text-[var(--accent)] hover:underline">privacy policy</Link>.
+          </p>
+        </section>
+      </div>
+
       <Suspense fallback={null}>
         <ClaimSection />
       </Suspense>

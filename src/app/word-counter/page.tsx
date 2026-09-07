@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useEffect, useRef } from "react";
+import ToolGuide from "@/components/ToolGuide";
 import ToolInfo from "@/components/ToolInfo";
 import FreeWaitTimer from "@/components/FreeWaitTimer";
 import UsageBar from "@/components/UsageBar";
@@ -197,6 +198,8 @@ export default function WordCounterPage() {
           <p>Keywords: PDF word counter, count words in PDF, PDF character count, PDF page counter, word count PDF online free, PDF word count tool.</p>
         </div>
       </div>
+
+      <ToolGuide slug="word-counter" />
 
       <RelatedContent slug="word-counter" />
 
