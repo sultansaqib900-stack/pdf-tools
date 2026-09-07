@@ -1516,32 +1516,41 @@ Object.assign(toolGuides, {
 
   "vault": {
     summary:
-      "**PDF Vault** stores documents in your browser's local storage on this device, so they are available when you return without being held on any server. Treat it as convenient local storage, not as a backup or a secure archive.",
+      "**The PDF Vault** encrypts documents with AES-256 and stores them in this browser on this device. The key is derived from your password with PBKDF2, and the password is never stored \u2014 so nobody, including us, can open the vault without it.",
     steps: [
-      { title: "Add documents", body: "Files are kept in this browser's local storage on this device." },
-      { title: "Access them later", body: "They remain available when you come back in the same browser." },
-      { title: "Keep your own backups", body: "Store the authoritative copy somewhere you control." },
+      { title: "Choose a password", body: "It derives the encryption key. It is never saved or transmitted, so it cannot be reset." },
+      { title: "Add documents", body: "Each file is encrypted before it is written to storage." },
+      { title: "Unlock when you return", body: "Re-entering the password decrypts the vault. A wrong password fails outright rather than returning damaged files." },
+      { title: "Keep your own backups", body: "The vault is storage on one device, not a backup." },
     ],
     sections: [
       {
-        heading: "Understand where your files actually are",
+        heading: "What the encryption does and does not protect",
         paras: [
-          "Documents are held in this browser's storage on this computer. They are not uploaded to a server, which means nobody else can access them remotely — and equally, they are not backed up anywhere.",
-          "They are tied to this browser on this device. They will not appear in another browser, on your phone, or in a private browsing window.",
+          "Documents are encrypted with AES-256-GCM using a key derived from your password through 600,000 rounds of PBKDF2-SHA256. GCM authenticates the data, which is why a wrong password produces a clean failure instead of corrupted output. All of it runs in your browser through the built-in WebCrypto API, so nothing is uploaded.",
+          "This protects the contents against someone who can read your browser storage \u2014 another website cannot, but local software, a browser extension with storage access, or someone sitting at your unlocked computer otherwise could.",
+          "It does not protect against malicious code running on the page itself, which could capture the password as you type it. No in-browser vault can defend against that. For documents where that matters, use full-disk encryption and a dedicated password manager rather than a web page.",
         ],
       },
       {
-        heading: "How you can lose them",
+        heading: "A forgotten password means the files are gone",
         paras: [
-          "Clearing your browsing data will delete them. So will 'clear cookies and site data', many privacy cleanup tools, and some browsers' automatic storage eviction when disk space runs low. Reinstalling the browser or resetting the device removes them too.",
-          "For that reason, never keep the only copy of an important document here. Always keep the authoritative version in your own file storage or backup.",
+          "There is no reset link and no recovery question, because there is no server holding a copy of anything. The password is the only input to the key, so losing it means the ciphertext stays ciphertext permanently.",
+          "That is the honest cost of encryption that actually works. Use a password you keep in a password manager, not one you expect to remember.",
+        ],
+      },
+      {
+        heading: "It is storage on one device, not a backup",
+        paras: [
+          "The vault lives in one browser on one computer. It will not appear in another browser, on your phone, or in a private window.",
+          "Clearing your browsing data deletes it, as do many cleanup tools and a browser's automatic eviction when disk space runs short. Reinstalling the browser or resetting the device removes it too. Never keep the only copy of an important document here.",
         ],
       },
       {
         heading: "What it is genuinely useful for",
         paras: [
-          "Documents you return to repeatedly during a piece of work, so you do not have to locate and re-add them each session. A working set rather than an archive.",
-          "For documents that need real protection, [password-protect them](/protect) and store them in your own backed-up storage. For sensitive material you are about to share, [sanitise the metadata](/metadata-sanitizer) first.",
+          "A working set of documents you return to repeatedly during a piece of work, kept encrypted at rest so a stolen laptop does not hand them over, without the friction of re-locating the files each session.",
+          "For a document you are about to send to someone else, [password-protect the PDF itself](/protect) so the protection travels with the file, and [sanitise the metadata](/metadata-sanitizer) first.",
         ],
       },
     ],

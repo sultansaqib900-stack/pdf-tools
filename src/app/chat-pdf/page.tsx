@@ -147,7 +147,7 @@ export default function ChatPDFPage() {
       const res = await fetch("/api/chat-pdf/ocr", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ pages: pageImages, fileName: file.name }),
+        body: JSON.stringify({ pages: pageImages, fileName: file.name, clientId: getClientId() }),
       });
       const data = await res.json();
 
@@ -178,40 +178,35 @@ export default function ChatPDFPage() {
       const res = await fetch("/api/chat-pdf", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        // clientId lets the server verify entitlement and charge the free
+        // quota itself. It no longer trusts the page to report usage.
         body: JSON.stringify({
           text: pdfText,
           question: needsQuestion ? q : "",
           history: messages.map((m) => ({ role: m.role, text: m.text })),
           mode,
+          clientId: getClientId(),
         }),
       });
       const data = await res.json();
       if (data.ok) {
         setMessages((prev) => [...prev, { role: "assistant", text: data.answer }]);
+        if (typeof data.remaining === "number") setChatRemaining(data.remaining);
       } else {
         setMessages((prev) => [...prev, { role: "assistant", text: data.error || "Failed to get answer." }]);
+        if (data.limitReached) {
+          setChatRemaining(0);
+          upsell.showUpsell(
+            "daily-limit",
+            "You've used all 3 free AI chat questions today. Upgrade to Premium for unlimited questions."
+          );
+        }
       }
     } catch {
       setMessages((prev) => [...prev, { role: "assistant", text: "Connection error. Check internet and try again." }]);
     }
     setAnswering(false);
-
-    if (!isPremium()) {
-      const clientId = getClientId();
-      try {
-        const res = await fetch("/api/chat-pdf/track", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ clientId }),
-        });
-        const data = await res.json();
-        setChatRemaining(data.remaining);
-        if (data.remaining <= 0) {
-          upsell.showUpsell("daily-limit", "You've used all 3 free AI chat questions today. Upgrade to Premium for unlimited questions.");
-        }
-      } catch {}
-    }
-  }, [question, pdfText, answering, messages, extractError, aiMode]);
+  }, [question, pdfText, answering, messages, extractError, aiMode, upsell]);
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); askQuestion(); }

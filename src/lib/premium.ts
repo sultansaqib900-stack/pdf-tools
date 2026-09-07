@@ -17,6 +17,17 @@ export function getClientId(): string {
 
 let _isPremiumVal: boolean | undefined;
 
+/**
+ * Cached, client-side premium flag.
+ *
+ * IMPORTANT: this is a UI hint, not an access control. It reads localStorage,
+ * which the user can edit, so it must only ever decide what to *show* — never
+ * what to allow. Anything with a real cost (an API call, a paid conversion)
+ * has to verify entitlement server-side on the request itself.
+ *
+ * `PremiumVerifier` reconciles this value against /api/premium/verify on load,
+ * in both directions, so a revoked entitlement clears on the next page view.
+ */
 export function isPremium(): boolean {
   if (typeof window === "undefined") return false;
   if (_isPremiumVal === undefined) {
@@ -31,6 +42,17 @@ export function setPremium(value: boolean): void {
   _isPremiumVal = value;
 }
 
+/**
+ * Reconcile the cached premium flag with the server.
+ *
+ * This is the authority for the local cache, in BOTH directions. It previously
+ * only ever upgraded (`if (data.premium) setPremium(true)`), so a server answer
+ * of `false` was discarded — which meant a refunded or cancelled customer kept
+ * premium locally forever, no matter what the webhook did.
+ *
+ * A network failure leaves the cached value untouched rather than revoking, so
+ * a flaky connection does not lock a paying customer out mid-session.
+ */
 export async function verifyPremiumServer(email?: string): Promise<boolean> {
   const clientId = getClientId();
   if (!clientId && !email) return isPremium();
@@ -39,10 +61,13 @@ export async function verifyPremiumServer(email?: string): Promise<boolean> {
     if (clientId) params.set("clientId", clientId);
     if (email) params.set("email", email);
     const res = await fetch(`/api/premium/verify?${params}`);
+    if (!res.ok) return isPremium();
     const data = await res.json();
-    if (data.premium) setPremium(true);
-    return data.premium;
+    // Trust the server either way. `premium: false` is a real answer.
+    setPremium(data.premium === true);
+    return data.premium === true;
   } catch {
+    // Offline or transient failure: keep whatever we had.
     return isPremium();
   }
 }

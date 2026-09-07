@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { rateLimit, rateLimitResponse } from "@/lib/rate-limit";
+import { getPremiumStatus, getPremiumStatusByEmail, consumeChatCredit, CHAT_DAILY_LIMIT } from "@/lib/kv";
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 
@@ -21,8 +22,10 @@ export async function POST(req: NextRequest) {
   });
   if (!success) return rateLimitResponse(reset, limit);
 
+  let remainingAfterCall: number | undefined;
+
   try {
-    const { text, question, history, mode = "qna" } = await req.json();
+    const { text, question, history, mode = "qna", clientId, email } = await req.json();
 
     if (!text) {
       return NextResponse.json({ ok: false, error: "PDF text is required." }, { status: 400 });
@@ -30,6 +33,44 @@ export async function POST(req: NextRequest) {
 
     if (!GEMINI_API_KEY) {
       return NextResponse.json({ ok: false, error: "AI not configured. Admin needs to set GEMINI_API_KEY." }, { status: 503 });
+    }
+
+    // --- Entitlement / quota -------------------------------------------------
+    //
+    // Every call here costs real money against our Gemini account, so the free
+    // daily quota is enforced HERE rather than trusted from the client. The
+    // page used to increment a counter after the fact via /api/chat-pdf/track,
+    // which anyone could skip by calling this endpoint directly.
+    if (!clientId || typeof clientId !== "string") {
+      return NextResponse.json({ ok: false, error: "Missing client identifier." }, { status: 400 });
+    }
+
+    let premium = await getPremiumStatus(clientId);
+    if (!premium && typeof email === "string" && email) {
+      premium = await getPremiumStatusByEmail(email);
+    }
+
+    if (!premium) {
+      const { allowed, remaining, degraded } = await consumeChatCredit(clientId);
+      if (degraded) {
+        return NextResponse.json(
+          { ok: false, error: "AI is briefly unavailable. Please try again shortly." },
+          { status: 503 }
+        );
+      }
+      if (!allowed) {
+        return NextResponse.json(
+          {
+            ok: false,
+            error: `You have used all ${CHAT_DAILY_LIMIT} free AI questions today. Upgrade to Premium for unlimited questions.`,
+            remaining: 0,
+            limitReached: true,
+          },
+          { status: 429 }
+        );
+      }
+      // Surface the post-consumption balance so the UI need not guess.
+      remainingAfterCall = remaining;
     }
 
     const systemPrompt = SYSTEM_PROMPTS[mode] || SYSTEM_PROMPTS.qna;
@@ -70,7 +111,7 @@ export async function POST(req: NextRequest) {
     const data = await res.json();
     const answer = data?.candidates?.[0]?.content?.parts?.[0]?.text || "No response generated.";
 
-    return NextResponse.json({ ok: true, answer });
+    return NextResponse.json({ ok: true, answer, remaining: remainingAfterCall });
   } catch (err) {
     return NextResponse.json({ ok: false, error: "Failed to process request." }, { status: 500 });
   }

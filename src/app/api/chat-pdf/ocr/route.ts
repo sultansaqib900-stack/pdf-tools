@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { rateLimit, rateLimitResponse } from "@/lib/rate-limit";
+import { getPremiumStatus, getPremiumStatusByEmail, consumeChatCredit, CHAT_DAILY_LIMIT } from "@/lib/kv";
 
 const MAX_PAGES_PER_REQUEST = 20;
 
@@ -18,9 +19,42 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    const { pages, fileName } = await req.json();
+    const { pages, fileName, clientId, email } = await req.json();
     if (!pages || !Array.isArray(pages) || pages.length === 0) {
       return NextResponse.json({ ok: false, error: "No page images provided." }, { status: 400 });
+    }
+
+    // AI OCR is the most expensive call on the site — up to 20 page images per
+    // request against our Gemini billing — and previously had no entitlement
+    // check at all, only a rate limit. Charge it against the same daily quota
+    // as chat, enforced here rather than by the client.
+    if (!clientId || typeof clientId !== "string") {
+      return NextResponse.json({ ok: false, error: "Missing client identifier." }, { status: 400 });
+    }
+
+    let premium = await getPremiumStatus(clientId);
+    if (!premium && typeof email === "string" && email) {
+      premium = await getPremiumStatusByEmail(email);
+    }
+
+    if (!premium) {
+      const { allowed, degraded } = await consumeChatCredit(clientId);
+      if (degraded) {
+        return NextResponse.json(
+          { ok: false, error: "AI is briefly unavailable. Please try again shortly." },
+          { status: 503 }
+        );
+      }
+      if (!allowed) {
+        return NextResponse.json(
+          {
+            ok: false,
+            error: `You have used all ${CHAT_DAILY_LIMIT} free AI operations today. Upgrade to Premium for unlimited use.`,
+            limitReached: true,
+          },
+          { status: 429 }
+        );
+      }
     }
     if (pages.length > MAX_PAGES_PER_REQUEST) {
       return NextResponse.json(

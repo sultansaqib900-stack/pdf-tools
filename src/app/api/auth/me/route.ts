@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { getSession, getUserByEmail } from "@/lib/auth/sessions";
-import { getPremiumStatusByEmail, setPremiumByEmail } from "@/lib/kv";
+import { getPremiumStatusByEmail, setPremiumByEmail, setUserPremiumFlag } from "@/lib/kv";
 
 export async function GET(request: Request) {
   try {
@@ -17,12 +17,17 @@ export async function GET(request: Request) {
     if (!user) {
       return NextResponse.json({ error: "User not found" }, { status: 401 });
     }
-    if (!user.premium) {
-      const emailPremium = await getPremiumStatusByEmail(user.email);
-      if (emailPremium) {
-        user.premium = true;
-        await setPremiumByEmail(user.email);
-      }
+    // Reconcile the stored user record against the authoritative entitlement
+    // in BOTH directions. Previously this only ever upgraded, so a user record
+    // written before a refund kept `premium: true` permanently even after the
+    // webhook had revoked the email.
+    const emailPremium = await getPremiumStatusByEmail(user.email);
+    if (emailPremium && !user.premium) {
+      user.premium = true;
+      await setPremiumByEmail(user.email);
+    } else if (!emailPremium && user.premium) {
+      user.premium = false;
+      await setUserPremiumFlag(user.email, false);
     }
     return NextResponse.json({
       user: { id: user.id, email: user.email, name: user.name, premium: user.premium },

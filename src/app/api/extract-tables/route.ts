@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { rateLimit, rateLimitResponse } from "@/lib/rate-limit";
+import { getPremiumStatus, getPremiumStatusByEmail, consumeChatCredit, CHAT_DAILY_LIMIT } from "@/lib/kv";
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 const BATCH_SIZE = 5;
@@ -48,9 +49,40 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    const { pages } = await req.json();
+    const { pages, clientId, email } = await req.json();
     if (!pages || !Array.isArray(pages) || pages.length === 0) {
       return NextResponse.json({ ok: false, error: "No page images provided." }, { status: 400 });
+    }
+
+    // Gemini-backed and billed per page image, looped in batches — enforce the
+    // same free daily quota server-side rather than trusting the caller.
+    if (!clientId || typeof clientId !== "string") {
+      return NextResponse.json({ ok: false, error: "Missing client identifier." }, { status: 400 });
+    }
+
+    let premium = await getPremiumStatus(clientId);
+    if (!premium && typeof email === "string" && email) {
+      premium = await getPremiumStatusByEmail(email);
+    }
+
+    if (!premium) {
+      const { allowed, degraded } = await consumeChatCredit(clientId);
+      if (degraded) {
+        return NextResponse.json(
+          { ok: false, error: "AI is briefly unavailable. Please try again shortly." },
+          { status: 503 }
+        );
+      }
+      if (!allowed) {
+        return NextResponse.json(
+          {
+            ok: false,
+            error: `You have used all ${CHAT_DAILY_LIMIT} free AI operations today. Upgrade to Premium for unlimited use.`,
+            limitReached: true,
+          },
+          { status: 429 }
+        );
+      }
     }
 
     const csvParts: string[] = [];

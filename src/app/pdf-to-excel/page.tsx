@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useEffect, useRef } from "react";
+import { getClientId } from "@/lib/premium";
 import ToolShell from "@/components/ui/ToolShell";
 import Icon from "@/components/ui/Icon";
 import ToolGuide from "@/components/ToolGuide";
@@ -97,7 +98,7 @@ export default function PdfToExcelPage() {
       const res = await fetch("/api/extract-tables", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ pages }),
+        body: JSON.stringify({ pages, clientId: getClientId() }),
       });
 
       const data = await res.json();

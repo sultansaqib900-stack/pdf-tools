@@ -12,6 +12,8 @@ const KV_PREFIX = "pdftools:";
 export const keys = {
   premiumByClientId: (id: string) => `${KV_PREFIX}premium:client:${id}`,
   premiumByEmail: (email: string) => `${KV_PREFIX}premium:email:${email.toLowerCase()}`,
+  /** Set of device clientIds that redeemed this email, so revocation can reach them. */
+  clientsForEmail: (email: string) => `${KV_PREFIX}premium:clients:${email.toLowerCase()}`,
   dailyUsage: (clientId: string, date: string) => `${KV_PREFIX}usage:${clientId}:${date}`,
   chatUsage: (clientId: string, date: string) => `${KV_PREFIX}chatusage:${clientId}:${date}`,
   totalProcessed: () => `${KV_PREFIX}stats:total_processed`,
@@ -58,10 +60,75 @@ export async function setPremiumByEmail(email: string, clientId?: string) {
     }
     if (clientId) {
       await kv.set(keys.premiumByClientId(clientId), true, { ex: 365 * 24 * 60 * 60 });
+      await linkClientToEmail(email, clientId);
     }
     return true;
   } catch {
     return false;
+  }
+}
+
+/**
+ * Record that `clientId` was granted premium via `email`.
+ *
+ * Entitlement is stored under two independent keys (by email and by device
+ * clientId). Without this link, revoking an email would leave every device
+ * that had already redeemed it premium forever, because nothing connected the
+ * two. The set is what makes revocation actually reach the devices.
+ */
+export async function linkClientToEmail(email: string, clientId: string) {
+  try {
+    await kv.sadd(keys.clientsForEmail(email), clientId);
+    await kv.expire(keys.clientsForEmail(email), 400 * 24 * 60 * 60);
+  } catch {
+    // KV not available — the email-level grant still applies.
+  }
+}
+
+/**
+ * Update only the `premium` flag on a stored user record.
+ *
+ * Used to keep the user object consistent with the authoritative entitlement
+ * without touching the rest of the record.
+ */
+export async function setUserPremiumFlag(email: string, premium: boolean) {
+  try {
+    const userKeyStr = `${KV_PREFIX}user:${email.toLowerCase()}`;
+    const existingUser = await kv.get<any>(userKeyStr);
+    if (existingUser) {
+      await kv.set(userKeyStr, { ...existingUser, premium }, { ex: 365 * 24 * 60 * 60 });
+    }
+  } catch {
+    // KV not available
+  }
+}
+
+/**
+ * Revoke premium for an email and every device that redeemed it.
+ *
+ * Called by the LemonSqueezy webhook on refund, expiry, or cancellation.
+ * Previously the webhook only ever granted access, so a refunded customer kept
+ * premium indefinitely.
+ */
+export async function revokePremiumByEmail(email: string): Promise<{ ok: boolean; devices: number }> {
+  try {
+    await kv.del(keys.premiumByEmail(email));
+
+    const userKeyStr = `${KV_PREFIX}user:${email.toLowerCase()}`;
+    const existingUser = await kv.get<any>(userKeyStr);
+    if (existingUser) {
+      await kv.set(userKeyStr, { ...existingUser, premium: false }, { ex: 365 * 24 * 60 * 60 });
+    }
+
+    const clientIds = (await kv.smembers<string[]>(keys.clientsForEmail(email))) || [];
+    for (const id of clientIds) {
+      await kv.del(keys.premiumByClientId(id));
+    }
+    await kv.del(keys.clientsForEmail(email));
+
+    return { ok: true, devices: clientIds.length };
+  } catch {
+    return { ok: false, devices: 0 };
   }
 }
 
@@ -159,3 +226,36 @@ export async function trackChatUsage(clientId: string): Promise<{ ok: boolean; r
     return { ok: true, remaining: CHAT_DAILY_LIMIT };
   }
 }
+
+/**
+ * Atomically consume one AI credit for a non-premium client.
+ *
+ * This is the server-side enforcement point for the free daily AI quota. The
+ * counter was previously incremented by the client *after* a successful answer
+ * via /api/chat-pdf/track, and the AI route itself checked nothing — so
+ * calling the endpoint directly, or simply not calling track, gave unlimited
+ * Gemini requests billed to us.
+ *
+ * Increment-then-compare is deliberate: it is a single atomic INCR, so two
+ * concurrent requests cannot both observe the last remaining credit.
+ *
+ * Fails CLOSED. If KV is unreachable we cannot prove the caller has quota, and
+ * an open AI proxy is a worse outcome than a temporary outage.
+ */
+export async function consumeChatCredit(
+  clientId: string
+): Promise<{ allowed: boolean; remaining: number; degraded?: boolean }> {
+  const date = new Date().toISOString().slice(0, 10);
+  try {
+    const count = await kv.incr(keys.chatUsage(clientId, date));
+    await kv.expire(keys.chatUsage(clientId, date), 86400);
+    return {
+      allowed: count <= CHAT_DAILY_LIMIT,
+      remaining: Math.max(0, CHAT_DAILY_LIMIT - count),
+    };
+  } catch {
+    return { allowed: false, remaining: 0, degraded: true };
+  }
+}
+
+export { CHAT_DAILY_LIMIT };
