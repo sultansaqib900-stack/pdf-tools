@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useRef, useEffect } from "react";
+import ToolShell from "@/components/ui/ToolShell";
 import ToolGuide from "@/components/ToolGuide";
 import ToolInfo from "@/components/ToolInfo";
 import UsageBar from "@/components/UsageBar";
@@ -217,7 +218,7 @@ export default function ChatPDFPage() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-12">
+    <ToolShell icon="sparkles" width="4xl" title={"Chat with PDF"} lead={"Upload a PDF and ask questions about its content using AI."}>
       <SoftwareAppJsonLd
         name="Chat with PDF - Free AI PDF Assistant"
         description="Upload a PDF and ask AI questions about its content. Free daily limit, no signup required."
@@ -227,10 +228,6 @@ export default function ChatPDFPage() {
       <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Chat with PDF", item: "https://allaboutpdfediting.xyz/chat-pdf" }]} />
       <FaqPageJsonLd questions={rc?.faqs} />
       <AiSummaryJsonLd name="Chat with PDF" summary="Upload a PDF document and ask AI-powered questions about its content" category="AIApplications" inputType="PDF" outputType="Answers" processing="server-side" price="free" features={["AI-powered QandA","Natural language","Document analysis","Free daily limit","No signup"]} limits="Free daily limit" />
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">Chat with PDF</h1>
-        <p className="text-[var(--muted)]">Upload a PDF and ask questions about its content using AI.</p>
-      </div>
 
       <ToolInfo
         name="Chat with PDF"
@@ -417,6 +414,6 @@ export default function ChatPDFPage() {
         message={upsell.state.message}
         onClose={upsell.hideUpsell}
       />
-    </div>
+    </ToolShell>
   );
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useRef, useEffect } from "react";
+import ToolShell from "@/components/ui/ToolShell";
 import Icon from "@/components/ui/Icon";
 import ToolGuide from "@/components/ToolGuide";
 import ToolInfo from "@/components/ToolInfo";
@@ -300,16 +301,12 @@ export default function EditPdfPage() {
   }, [handleFile]);
 
   return (
-    <div className="max-w-5xl mx-auto px-4 py-12">
+    <ToolShell icon="edit" width="5xl" title={"Edit PDF"} lead={"Add text, shapes, and drawings to any PDF."}>
       <SoftwareAppJsonLd name="Edit PDF - Free Online PDF Editor" description="Edit PDF files online for free. Add text, shapes, and drawings to any PDF." url="https://allaboutpdfediting.xyz/edit-pdf" />
       <HowToJsonLd name="Edit PDF" description="Add text and shapes to PDF documents" steps={[{name:"Upload PDF",text:"Select a PDF to edit"},{name:"Add content",text:"Use the toolbar to add text boxes, rectangles, circles, or lines"},{name:"Download",text:"Save your edited PDF"}]} />
       <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Edit PDF", item: "https://allaboutpdfediting.xyz/edit-pdf" }]} />
       <FaqPageJsonLd questions={rc?.faqs} />
       <AiSummaryJsonLd name="Edit PDF" summary="Edit PDF files online — add text boxes, shapes, and drawings to any PDF" category="Editor" inputType="PDF" outputType="PDF" processing="client-side" price="free" features={["Add text boxes","Draw shapes","Multi-page editing","Client-side processing","Free online tool"]} limits="Files up to 10MB" />
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">Edit PDF</h1>
-        <p className="text-[var(--muted)]">Add text, shapes, and drawings to any PDF.</p>
-      </div>
       <ToolInfo name="Edit PDF" description="Edit PDFs directly in your browser with zero uploads. Add text boxes, rectangles, circles, and lines to any page." />
       <div className="mb-4"><UsageBar remaining={usage.remaining} unlimited={usage.unlimited} /></div>
 
@@ -395,6 +392,6 @@ export default function EditPdfPage() {
       <UseCaseLinks toolSlug="edit-pdf" />
 
       <PremiumUpsell show={upsell.state.show} mode={upsell.state.mode} message={upsell.state.message} onClose={upsell.hideUpsell} />
-    </div>
+    </ToolShell>
   );
 }

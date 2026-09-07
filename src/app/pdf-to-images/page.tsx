@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useEffect, useRef } from "react";
+import ToolShell from "@/components/ui/ToolShell";
 import Icon from "@/components/ui/Icon";
 import ToolGuide from "@/components/ToolGuide";
 import ToolInfo from "@/components/ToolInfo";
@@ -123,7 +124,7 @@ export default function PdfToImagesPage() {
   };
 
   return (
-    <div className="max-w-3xl mx-auto px-4 py-12">
+    <ToolShell icon="image" title={"PDF to Images"} lead={"Extract all pages as high-quality PNG images."}>
       <SoftwareAppJsonLd
         name="PDF to Images - Free Online Converter"
         description="Convert PDF pages to images online for free. Extract JPG PNG images from PDF documents in your browser."
@@ -135,10 +136,6 @@ export default function PdfToImagesPage() {
       <AiSummaryJsonLd name="PDF to Images" summary="Convert PDF pages to high-quality JPG or PNG images" category="Graphics" inputType="PDF" outputType="Image" processing="client-side" price="free" features={["Page extraction","JPG PNG output","High quality","ZIP download","Free browser tool"]} limits="Files up to 10MB" />
       <canvas ref={canvasRef} className="hidden" />
 
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">PDF to Images</h1>
-        <p className="text-[var(--muted)]">Extract all pages as high-quality PNG images.</p>
-      </div>
 
       <ToolInfo
         name="PDF to Images"
@@ -192,7 +189,7 @@ export default function PdfToImagesPage() {
                     <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none"/><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
                     Extracting page {Math.floor(progress / (100 / pageCount)) + 1} of {pageCount}...
                   </span>
-                  <div className="w-full bg-gray-700 rounded-full h-1.5">
+                  <div className="w-full bg-[var(--surface-sunken)] rounded-full h-1.5">
                     <div className="bg-[var(--accent)] h-1.5 rounded-full transition-all" style={{ width: `${progress}%` }} />
                   </div>
                 </span>
@@ -251,6 +248,6 @@ export default function PdfToImagesPage() {
         message={upsell.state.message}
         onClose={upsell.hideUpsell}
       />
-    </div>
+    </ToolShell>
   );
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useRef, useEffect } from "react";
+import ToolShell from "@/components/ui/ToolShell";
 import Icon from "@/components/ui/Icon";
 import ToolGuide from "@/components/ToolGuide";
 import ToolInfo from "@/components/ToolInfo";
@@ -266,7 +267,7 @@ export default function RedactPage() {
   const hasRects = rects.some((r) => r.length > 0);
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-12">
+    <ToolShell icon="redact" width="4xl" title={"Redact PDF"} lead={"Permanently black out sensitive information \u2014 text, numbers, or images."}>
       <SoftwareAppJsonLd
         name="Redact PDF - Free Online Tool"
         description="Permanently black out sensitive text and areas in your PDF documents. 100% private, no uploads."
@@ -276,10 +277,6 @@ export default function RedactPage() {
       <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Redact PDF", item: "https://allaboutpdfediting.xyz/redact" }]} />
       <FaqPageJsonLd questions={rc?.faqs} />
       <AiSummaryJsonLd name="Redact PDF" summary="Permanently black out sensitive text images and areas in PDF documents" category="SecurityApplications" inputType="PDF" outputType="PDF" processing="client-side" price="free" features={["Area redaction","Text blackout","Permanent removal","Client-side","No server uploads"]} limits="Files up to 10MB" />
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">Redact PDF</h1>
-        <p className="text-[var(--muted)]">Permanently black out sensitive information — text, numbers, or images.</p>
-      </div>
 
       <ToolInfo name="Redact PDF" description="Your file stays completely private. All redaction happens locally — no uploads, no servers. Drag to draw black rectangles over sensitive content, then download the permanently redacted PDF." />
 
@@ -407,6 +404,6 @@ export default function RedactPage() {
       <UseCaseLinks toolSlug="redact" />
 
       <PremiumUpsell show={upsell.state.show} mode={upsell.state.mode} message={upsell.state.message} onClose={upsell.hideUpsell} />
-    </div>
+    </ToolShell>
   );
 }

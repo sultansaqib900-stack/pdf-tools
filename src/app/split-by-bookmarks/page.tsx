@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef } from "react";
+import ToolShell from "@/components/ui/ToolShell";
 import Icon from "@/components/ui/Icon";
 import ToolGuide from "@/components/ToolGuide";
 import { isPremium } from "@/lib/premium";
@@ -118,13 +119,11 @@ export default function SplitByBookmarksPage() {
   }
 
   return (
-    <div className="max-w-3xl mx-auto px-4 py-12">
+    <ToolShell icon="bookmark" title={"Split PDF by Bookmarks"} lead={"Extract chapters and sections based on the PDF bookmark structure."} premium>
       <BreadcrumbJsonLd items={[{ name: "Tools", item: "https://allaboutpdfediting.xyz/tools" }, { name: "Split by Bookmarks", item: "https://allaboutpdfediting.xyz/split-by-bookmarks" }]} />
       <HowToJsonLd name="Split PDF by Bookmarks" description="Split PDF documents into separate files based on bookmark structure" steps={[{name:"Upload PDF with bookmarks",text:"Upload a PDF that contains bookmarks or an outline structure"},{name:"Review detected bookmarks",text:"The tool shows all found bookmarks with their page numbers"},{name:"Download chapter files",text:"Each bookmark becomes a separate PDF file named after the bookmark title"}]} />
       <AiSummaryJsonLd name="Split by Bookmarks" summary="Split PDF files into separate documents by extracting chapters and sections from the bookmark outline" category="Utilities" inputType="PDF" outputType="PDF" processing="client-side" price="premium" features={["Bookmark-based splitting","Chapter extraction","Outline parsing","Auto-naming","Client-side processing"]} limits="Premium subscribers" />
       <SoftwareAppJsonLd name="Split PDF by Bookmarks" description="Split PDF files into separate documents based on bookmark/outline structure." url="https://allaboutpdfediting.xyz/split-by-bookmarks" image="https://allaboutpdfediting.xyz/opengraph-image.png" aggregateRating={{ ratingValue: 4.8, bestRating: 5, ratingCount: 156 }} />
-      <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">Split PDF by Bookmarks</h1>
-      <p className="text-[var(--muted)] mb-8">Extract chapters and sections based on the PDF&apos;s bookmark outline.</p>
 
       {!file ? (
         <div
@@ -175,6 +174,6 @@ export default function SplitByBookmarksPage() {
         </div>
       )}
       <ToolGuide slug="split-by-bookmarks" />
-    </div>
+    </ToolShell>
   );
 }

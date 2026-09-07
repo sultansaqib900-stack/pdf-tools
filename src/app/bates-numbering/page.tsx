@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef } from "react";
+import ToolShell from "@/components/ui/ToolShell";
 import Icon from "@/components/ui/Icon";
 import ToolGuide from "@/components/ToolGuide";
 import { isPremium } from "@/lib/premium";
@@ -108,13 +109,11 @@ export default function BatesNumberingPage() {
   }
 
   return (
-    <div className="max-w-3xl mx-auto px-4 py-12">
+    <ToolShell icon="numbers" title={"Bates Numbering"} lead={"Add sequential page numbers, letters, or custom labels to every page."} premium>
       <BreadcrumbJsonLd items={[{ name: "Tools", item: "https://allaboutpdfediting.xyz/tools" }, { name: "Bates Numbering", item: "https://allaboutpdfediting.xyz/bates-numbering" }]} />
       <HowToJsonLd name="Bates Numbering for PDF" description="Add sequential page numbers and custom labels to every page of a PDF" steps={[{name:"Upload PDF",text:"Upload the PDF document to number"},{name:"Configure numbering",text:"Set prefix suffix start number digit padding and position"},{name:"Download numbered PDF",text:"Download the PDF with Bates numbers applied to every page"}]} />
       <AiSummaryJsonLd name="Bates Numbering" summary="Add sequential page numbers letters or custom labels to every page of PDF documents for legal and professional indexing" category="BusinessApplications" inputType="PDF" outputType="PDF" processing="client-side" price="premium" features={["Sequential numbering","Custom prefix suffix","Digit padding","Position selection","Legal document support"]} limits="Premium subscribers" />
       <SoftwareAppJsonLd name="Bates Numbering for PDF" description="Add sequential page numbers and labels to PDF documents." url="https://allaboutpdfediting.xyz/bates-numbering" image="https://allaboutpdfediting.xyz/opengraph-image.png" aggregateRating={{ ratingValue: 4.9, bestRating: 5, ratingCount: 98 }} />
-      <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">Bates Numbering</h1>
-      <p className="text-[var(--muted)] mb-8">Add sequential page numbers, letters, or custom labels to every page.</p>
 
       {!file ? (
         <div
@@ -186,6 +185,6 @@ export default function BatesNumberingPage() {
         </div>
       )}
       <ToolGuide slug="bates-numbering" />
-    </div>
+    </ToolShell>
   );
 }

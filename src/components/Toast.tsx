@@ -84,7 +84,7 @@ export default function ToastProvider() {
   const colors = {
     success: "bg-[var(--success)]",
     error: "bg-[var(--danger)]",
-    info: "bg-blue-500",
+    info: "bg-[var(--accent)]",
     warning: "bg-[var(--premium)]",
   };
 

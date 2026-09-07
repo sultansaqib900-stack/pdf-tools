@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useEffect, useRef } from "react";
+import ToolShell from "@/components/ui/ToolShell";
 import ToolGuide from "@/components/ToolGuide";
 import ToolInfo from "@/components/ToolInfo";
 import UsageBar from "@/components/UsageBar";
@@ -136,7 +137,7 @@ export default function BatchPage() {
   }, [operations]);
 
   return (
-    <div className="max-w-3xl mx-auto px-4 py-12">
+    <ToolShell icon="layers" title={"Batch Process PDF"} lead={"Process multiple PDFs at once \u2014 compress, protect, rotate, or watermark."}>
       <SoftwareAppJsonLd
         name="Batch Process PDF - Premium Tool"
         description="Process multiple PDF files at once. Batch compress merge convert PDFs. Premium feature."
@@ -146,10 +147,6 @@ export default function BatchPage() {
       <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Batch Process", item: "https://allaboutpdfediting.xyz/batch" }]} />
       <FaqPageJsonLd questions={rc?.faqs} />
       <AiSummaryJsonLd name="Batch Process" summary="Process multiple PDF files simultaneously applying the same operation to all" category="Utilities" inputType="PDF" outputType="PDF" processing="client-side" price="free" features={["Multi-file batch","Same operation","Compress merge split","ZIP download","Free tool"]} limits="Files up to 10MB" />
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">Batch Process PDF</h1>
-        <p className="text-[var(--muted)]">Process multiple PDFs at once — compress, protect, rotate, or watermark. <span className="text-[var(--accent)] font-semibold">Premium feature</span>.</p>
-      </div>
 
       <ToolInfo name="Batch Processing" description="Apply operations to multiple PDFs in one go. Each file is processed locally in your browser and downloaded individually. No uploads, no servers." />
 
@@ -243,6 +240,6 @@ export default function BatchPage() {
         message={upsell.state.message}
         onClose={upsell.hideUpsell}
       />
-    </div>
+    </ToolShell>
   );
 }

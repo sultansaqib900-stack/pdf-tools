@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useRef, useEffect } from "react";
+import ToolShell from "@/components/ui/ToolShell";
 import Icon from "@/components/ui/Icon";
 import ToolGuide from "@/components/ToolGuide";
 import ToolInfo from "@/components/ToolInfo";
@@ -356,7 +357,7 @@ export default function AnnotatePage() {
   const totalAnnotations = rects.flat().length;
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-12">
+    <ToolShell icon="annotate" width="4xl" title={"Annotate PDF"} lead={"Highlight, underline, or strikethrough text in your PDF documents."}>
       <SoftwareAppJsonLd
         name="Annotate PDF - Free Online Tool"
         description="Highlight, underline, and strikethrough text in PDF files. Free online PDF annotation tool."
@@ -366,10 +367,6 @@ export default function AnnotatePage() {
       <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Annotate PDF", item: "https://allaboutpdfediting.xyz/annotate" }]} />
       <FaqPageJsonLd questions={rc?.faqs} />
       <AiSummaryJsonLd name="Annotate PDF" summary="Add highlights underlines strikethroughs and comments to PDF documents" category="Graphics" inputType="PDF" outputType="PDF" processing="client-side" price="free" features={["Highlight text","Underline text","Strikethrough","Comment notes","Free browser tool"]} limits="Files up to 10MB" />
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">Annotate PDF</h1>
-        <p className="text-[var(--muted)]">Highlight, underline, or strikethrough text in your PDF documents.</p>
-      </div>
 
       <ToolInfo name="Annotate PDF" description="Your file stays completely private. All annotation happens locally — no uploads, no servers. Drag to draw highlights, underlines, or strikethroughs over text, then download the annotated PDF." />
 
@@ -518,6 +515,6 @@ export default function AnnotatePage() {
       <UseCaseLinks toolSlug="annotate" />
 
       <PremiumUpsell show={upsell.state.show} mode={upsell.state.mode} message={upsell.state.message} onClose={upsell.hideUpsell} />
-    </div>
+    </ToolShell>
   );
 }

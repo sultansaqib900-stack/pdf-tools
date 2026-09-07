@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useEffect, useRef } from "react";
+import ToolShell from "@/components/ui/ToolShell";
 import Icon from "@/components/ui/Icon";
 import ToolGuide from "@/components/ToolGuide";
 import ToolInfo from "@/components/ToolInfo";
@@ -123,7 +124,7 @@ export default function ExtractTextPage() {
   };
 
   return (
-    <div className="max-w-3xl mx-auto px-4 py-12">
+    <ToolShell icon="fileText" title={"Extract Text from PDF"} lead={"Extract all text content from any PDF file."}>
       <SoftwareAppJsonLd
         name="Extract Text from PDF - Free Online Tool"
         description="Extract text content from PDF files online for free. Copy text from PDF documents instantly in your browser."
@@ -133,10 +134,6 @@ export default function ExtractTextPage() {
       <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Extract Text", item: "https://allaboutpdfediting.xyz/extract-text" }]} />
       <FaqPageJsonLd questions={rc?.faqs} />
       <AiSummaryJsonLd name="Extract Text" summary="Extract and copy text content from scanned or digital PDF documents" category="Utilities" inputType="PDF" outputType="Text" processing="client-side" price="free" features={["Text extraction","OCR support","TXT export","Clipboard copy","Free tool"]} limits="Files up to 10MB" />
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">Extract Text from PDF</h1>
-        <p className="text-[var(--muted)]">Extract all text content from any PDF file.</p>
-      </div>
 
       <ToolInfo
         name="Extract Text"
@@ -180,7 +177,7 @@ export default function ExtractTextPage() {
               {processing ? (
                 <span className="flex flex-col items-center gap-1">
                   <span>Extracting text...</span>
-                  <div className="w-full bg-gray-700 rounded-full h-1.5 max-w-xs">
+                  <div className="w-full bg-[var(--surface-sunken)] rounded-full h-1.5 max-w-xs">
                     <div className="bg-[var(--accent)] h-1.5 rounded-full transition-all" style={{ width: `${progress}%` }} />
                   </div>
                 </span>
@@ -233,6 +230,6 @@ export default function ExtractTextPage() {
         message={upsell.state.message}
         onClose={upsell.hideUpsell}
       />
-    </div>
+    </ToolShell>
   );
 }

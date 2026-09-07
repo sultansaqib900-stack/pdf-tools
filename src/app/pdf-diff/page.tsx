@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef } from "react";
+import ToolShell from "@/components/ui/ToolShell";
 import Icon from "@/components/ui/Icon";
 import ToolGuide from "@/components/ToolGuide";
 import { isPremium } from "@/lib/premium";
@@ -103,18 +104,11 @@ export default function PdfDiffPage() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-12">
+    <ToolShell icon="diff" width="4xl" premium title="PDF Compare" lead={"Upload two PDFs and see exactly what changed \u2014 word by word, page by page."}>
       <SoftwareAppJsonLd name="PDF Diff - Compare PDF Files" description="Compare two PDF files and see highlighted differences side by side. Premium." url="https://allaboutpdfediting.xyz/pdf-diff" image="https://allaboutpdfediting.xyz/opengraph-image.png" aggregateRating={{ ratingValue: 4.9, bestRating: 5, ratingCount: 312 }} />
       <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "PDF Diff", item: "https://allaboutpdfediting.xyz/pdf-diff" }]} />
       <HowToJsonLd name="Compare PDF Files Online" description="Compare two PDF documents side by side and see highlighted differences" steps={[{name:"Upload original PDF",text:"Drag and drop or select the older version of your PDF document"},{name:"Upload revised PDF",text:"Select the newer version you want to compare against"},{name:"View differences",text:"The tool processes both files and shows highlighted changes green for added red for removed content"}]} />
       <AiSummaryJsonLd name="PDF Diff" summary="Compare two PDF files side by side with highlighted text differences" category="Multimedia" inputType="PDF" outputType="Diff" processing="client-side" price="premium" features={["Side-by-side comparison","Highlighted additions and deletions","Synchronized scrolling","Client-side processing","No file uploads"]} limits="Premium subscribers" />
-      <div className="mb-8">
-        <div className="flex items-center gap-3 mb-2">
-          <h1 className="text-3xl font-bold text-[var(--foreground)]">PDF Compare</h1>
-          <span className="text-xs font-semibold bg-[var(--premium)] text-white px-2.5 py-0.5 rounded-full">Premium</span>
-        </div>
-        <p className="text-[var(--muted)]">Upload two PDFs and see exactly what changed — word by word, page by page.</p>
-      </div>
 
 
       <div className="grid md:grid-cols-2 gap-4 mb-8">
@@ -220,6 +214,6 @@ export default function PdfDiffPage() {
       <div className="text-center mt-8">
         <a href="/premium" className="text-sm text-[var(--accent)] hover:underline font-medium">Explore all Premium features →</a>
       </div>
-    </div>
+    </ToolShell>
   );
 }

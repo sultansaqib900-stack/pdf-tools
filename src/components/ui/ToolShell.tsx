@@ -8,6 +8,12 @@ import Icon, { type IconName } from "@/components/ui/Icon";
  * lead, then the working area. Previously each page hand-rolled its own
  * heading block with slightly different sizes and spacing.
  */
+const WIDTHS = {
+  "3xl": "max-w-3xl",
+  "4xl": "max-w-4xl",
+  "5xl": "max-w-5xl",
+} as const;
+
 export default function ToolShell({
   icon,
   title,
@@ -15,6 +21,8 @@ export default function ToolShell({
   breadcrumb = "Tools",
   breadcrumbHref = "/tools",
   premium = false,
+  /** Editor-style tools need a wider canvas than the default reading width. */
+  width = "3xl",
   children,
   footer,
 }: {
@@ -24,11 +32,12 @@ export default function ToolShell({
   breadcrumb?: string;
   breadcrumbHref?: string;
   premium?: boolean;
+  width?: "3xl" | "4xl" | "5xl";
   children: React.ReactNode;
   footer?: React.ReactNode;
 }) {
   return (
-    <div className="max-w-3xl mx-auto px-4 py-10 sm:py-12">
+    <div className={`${WIDTHS[width]} mx-auto px-4 py-10 sm:py-12`}>
       <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 text-[0.8125rem] text-[var(--muted)] mb-6">
         <Link href="/" className="hover:text-[var(--foreground)] transition-colors">Home</Link>
         <Icon name="chevronRight" size={13} />

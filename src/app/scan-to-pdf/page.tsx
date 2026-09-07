@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useEffect, useRef } from "react";
+import ToolShell from "@/components/ui/ToolShell";
 import Icon from "@/components/ui/Icon";
 import ToolGuide from "@/components/ToolGuide";
 import ToolInfo from "@/components/ToolInfo";
@@ -137,7 +138,7 @@ export default function ScanToPdfPage() {
   }, []);
 
   return (
-    <div className="max-w-3xl mx-auto px-4 py-12">
+    <ToolShell icon="camera" title={"Scan to PDF"} lead={"Use your camera to scan documents and convert them to PDF instantly."}>
       <SoftwareAppJsonLd
         name="Scan to PDF - Free Online Scanner"
         description="Scan documents using your camera and convert to PDF instantly."
@@ -147,10 +148,6 @@ export default function ScanToPdfPage() {
       <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Scan to PDF", item: "https://allaboutpdfediting.xyz/scan-to-pdf" }]} />
       <FaqPageJsonLd questions={rc?.faqs} />
       <AiSummaryJsonLd name="Scan to PDF" summary="Use your device camera to scan documents and convert them to PDF instantly" category="Scanner" inputType="Camera" outputType="PDF" processing="client-side" price="free" features={["Camera scanning","Multi-page capture","Instant PDF conversion","Free online tool","Client-side only"]} limits="Files up to 10MB" />
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">Scan to PDF</h1>
-        <p className="text-[var(--muted)]">Use your camera to scan documents and convert them to PDF instantly.</p>
-      </div>
 
       <ToolInfo
         name="Scan to PDF"
@@ -263,6 +260,6 @@ export default function ScanToPdfPage() {
         message={upsell.state.message}
         onClose={upsell.hideUpsell}
       />
-    </div>
+    </ToolShell>
   );
 }
