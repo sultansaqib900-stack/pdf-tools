@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef } from "react";
+import ToolShell from "@/components/ui/ToolShell";
 import ToolGuide from "@/components/ToolGuide";
 import { isPremium } from "@/lib/premium";
 import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
@@ -78,18 +79,11 @@ export default function PdfInverterPage() {
   };
 
   return (
-    <div className="max-w-3xl mx-auto px-4 py-12">
+    <ToolShell icon="contrast" title={"PDF Color Inverter"} lead={"Transform PDF colors for dark mode reading, accessibility, or ink savings."} premium>
       <SoftwareAppJsonLd name="PDF Color Inverter" description="Invert colors, grayscale, or high-contrast for PDF accessibility." url="https://allaboutpdfediting.xyz/pdf-inverter" image="https://allaboutpdfediting.xyz/opengraph-image.png" aggregateRating={{ ratingValue: 4.4, bestRating: 5, ratingCount: 78 }} />
       <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "PDF Inverter", item: "https://allaboutpdfediting.xyz/pdf-inverter" }]} />
       <HowToJsonLd name="Invert PDF Colors" description="Transform PDF colors to dark mode grayscale or high-contrast" steps={[{name:"Upload PDF",text:"Upload the PDF you want to transform"},{name:"Choose color mode",text:"Select dark mode grayscale or high-contrast"},{name:"Download transformed PDF",text:"Download the PDF with new color scheme applied"}]} />
       <AiSummaryJsonLd name="Color Inverter" summary="Transform PDF color schemes to dark mode grayscale or high-contrast for accessibility" category="Graphics" inputType="PDF" outputType="PDF" processing="client-side" price="premium" features={["Dark mode conversion","Grayscale conversion","High-contrast mode","Accessibility features","Client-side rendering"]} limits="Premium subscribers" />
-      <div className="mb-8">
-        <div className="flex items-center gap-3 mb-2">
-          <h1 className="text-3xl font-bold text-[var(--foreground)]">PDF Color Inverter</h1>
-          <span className="text-xs font-semibold bg-[var(--premium)] text-white px-2.5 py-0.5 rounded-full">Premium</span>
-        </div>
-        <p className="text-[var(--muted)]">Transform PDF colors for dark mode reading, accessibility, or ink savings.</p>
-      </div>
 
 
       <div className="bg-[var(--surface)] border border-[var(--border)] rounded-[var(--r-lg)] p-6 space-y-5">
@@ -122,6 +116,6 @@ export default function PdfInverterPage() {
       <div className="text-center mt-8">
         <a href="/premium" className="text-sm text-[var(--accent)] hover:underline font-medium">Explore all Premium features →</a>
       </div>
-    </div>
+    </ToolShell>
   );
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback } from "react";
+import ToolShell from "@/components/ui/ToolShell";
 import ToolGuide from "@/components/ToolGuide";
 import { isPremium } from "@/lib/premium";
 import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
@@ -107,18 +108,11 @@ export default function QrStampPage() {
   };
 
   return (
-    <div className="max-w-3xl mx-auto px-4 py-12">
+    <ToolShell icon="qr" title={"QR Code Stamp"} lead={"Add QR codes to every page of your PDF. Link to websites, documents, or any text content."} premium>
       <SoftwareAppJsonLd name="QR Code PDF Stamping" description="Add QR codes and barcodes to any PDF page. Premium." url="https://allaboutpdfediting.xyz/qr-stamp" image="https://allaboutpdfediting.xyz/opengraph-image.png" aggregateRating={{ ratingValue: 4.6, bestRating: 5, ratingCount: 112 }} />
       <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "QR Stamp", item: "https://allaboutpdfediting.xyz/qr-stamp" }]} />
       <HowToJsonLd name="Add QR Code to PDF" description="Add QR codes to every page of a PDF document" steps={[{name:"Upload PDF",text:"Upload the PDF document to stamp with QR codes"},{name:"Enter URL or text",text:"Type the URL or text to encode in the QR code"},{name:"Download stamped PDF",text:"Download the PDF with QR codes added to each page"}]} />
       <AiSummaryJsonLd name="QR Code Stamp" summary="Add QR codes to every page of PDF documents with customizable position and size" category="Graphics" inputType="PDF+Text" outputType="PDF" processing="client-side" price="premium" features={["QR code generation","Position customization","Size adjustment","No external APIs"]} limits="Premium subscribers" />
-      <div className="mb-8">
-        <div className="flex items-center gap-3 mb-2">
-          <h1 className="text-3xl font-bold text-[var(--foreground)]">QR Code Stamp</h1>
-          <span className="text-xs font-semibold bg-[var(--premium)] text-white px-2.5 py-0.5 rounded-full">Premium</span>
-        </div>
-        <p className="text-[var(--muted)]">Add QR codes to every page of your PDF. Link to websites, documents, or any text content.</p>
-      </div>
 
 
       <div className="bg-[var(--surface)] border border-[var(--border)] rounded-[var(--r-lg)] p-6 space-y-5">
@@ -158,6 +152,6 @@ export default function QrStampPage() {
       <div className="text-center mt-8">
         <a href="/premium" className="text-sm text-[var(--accent)] hover:underline font-medium">Explore all Premium features →</a>
       </div>
-    </div>
+    </ToolShell>
   );
 }

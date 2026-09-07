@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import ToolShell from "@/components/ui/ToolShell";
 import Icon from "@/components/ui/Icon";
 import ToolGuide from "@/components/ToolGuide";
 import { isPremium } from "@/lib/premium";
@@ -130,16 +131,9 @@ export default function VaultPage() {
 
   if (!vaultUnlocked) {
     return (
-      <div className="max-w-3xl mx-auto px-4 py-12">
+      <ToolShell icon="vault" title={"Secure PDF Vault"} lead={"Enter your vault password to access documents stored in this browser."} premium>
         <SoftwareAppJsonLd name="Secure PDF Vault" description="Store PDFs in your browser on this device, with no server upload." url="https://allaboutpdfediting.xyz/vault" />
         <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Secure Vault", item: "https://allaboutpdfediting.xyz/vault" }]} />
-        <div className="mb-8">
-          <div className="flex items-center gap-3 mb-2">
-            <h1 className="text-3xl font-bold text-[var(--foreground)]">Secure PDF Vault</h1>
-            <span className="text-xs font-semibold bg-[var(--premium)] text-white px-2.5 py-0.5 rounded-full">Premium</span>
-          </div>
-          <p className="text-[var(--muted)]">Enter your vault password to access documents stored in this browser.</p>
-        </div>
         <div className="bg-[var(--surface)] border border-[var(--border)] rounded-[var(--r-lg)] p-6 text-center space-y-4">
           <div className="flex justify-center"><Icon name="shield" size={42} className="text-[var(--muted)]" /></div>
           <p className="text-sm text-[var(--muted)]">Your vault keeps PDFs in this browser&apos;s local storage on this device — nothing is uploaded to a server, and nothing is backed up. Keep your own copy of anything important. Create a new password to start fresh, or enter an existing one.</p>
@@ -148,7 +142,7 @@ export default function VaultPage() {
         </div>
         {error && <div className="mt-4 p-4 bg-[var(--danger-subtle)] border border-[var(--danger)]/25 rounded-[var(--r-lg)] text-[var(--danger)] text-sm">{error}</div>}
         <ToolGuide slug="vault" />
-      </div>
+      </ToolShell>
     );
   }
 

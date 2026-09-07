@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useEffect } from "react";
+import ToolShell from "@/components/ui/ToolShell";
 import Icon from "@/components/ui/Icon";
 import ToolGuide from "@/components/ToolGuide";
 import ToolInfo from "@/components/ToolInfo";
@@ -87,16 +88,12 @@ export default function PdfToPdfaPage() {
     }, [usage, upsell, runConvert])
 
   return (
-    <div className="max-w-3xl mx-auto px-4 py-12">
+    <ToolShell icon="archive" title={"PDF to PDF/A"} lead={"Convert PDF to PDF/A archive format for long-term preservation."}>
       <SoftwareAppJsonLd name="PDF to PDF/A - Free Online Converter" description="Convert PDF to PDF/A archive format for long-term preservation." url="https://allaboutpdfediting.xyz/pdf-to-pdfa" />
       <HowToJsonLd name="PDF to PDF/A" description="Convert PDFs to PDF/A archive format" steps={[{name:"Upload PDF",text:"Select a PDF file"},{name:"Convert",text:"Convert to PDF/A archive format"},{name:"Download",text:"Download your archived PDF"}]} />
       <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "PDF to PDF/A", item: "https://allaboutpdfediting.xyz/pdf-to-pdfa" }]} />
       <FaqPageJsonLd questions={rc?.faqs} />
       <AiSummaryJsonLd name="PDF to PDF/A" summary="Convert PDF documents to PDF/A format for long-term archival and preservation" category="Convert" inputType="PDF" outputType="PDF/A" processing="client-side" price="free" features={["PDF to PDF/A conversion","Archive format","Long-term preservation","Metadata embedding"]} limits="Files up to 10MB" />
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">PDF to PDF/A</h1>
-        <p className="text-[var(--muted)]">Convert PDF to PDF/A archive format for long-term preservation.</p>
-      </div>
       <ToolInfo name="PDF to PDF/A" description="Convert your PDFs to the PDF/A archival standard. Ideal for legal, government, and long-term document storage." />
       <div className="mb-4"><UsageBar remaining={usage.remaining} unlimited={usage.unlimited} /></div>
       <div className="bg-[var(--surface)] rounded-[var(--r-lg)] border border-[var(--border)] p-8 space-y-6">
@@ -126,6 +123,6 @@ export default function PdfToPdfaPage() {
 
       <RelatedContent slug="pdf-to-pdfa" />
       <PremiumUpsell show={upsell.state.show} mode={upsell.state.mode} message={upsell.state.message} onClose={upsell.hideUpsell} />
-    </div>
+    </ToolShell>
   );
 }

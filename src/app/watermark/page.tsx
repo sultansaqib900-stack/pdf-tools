@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useEffect, useRef } from "react";
+import ToolShell from "@/components/ui/ToolShell";
 import Icon from "@/components/ui/Icon";
 import ToolGuide from "@/components/ToolGuide";
 import ToolInfo from "@/components/ToolInfo";
@@ -118,7 +119,7 @@ export default function WatermarkPage() {
   }, [file]);
 
   return (
-    <div className="max-w-3xl mx-auto px-4 py-12">
+    <ToolShell icon="droplet" title={"Add Watermark to PDF"} lead={"Add text watermarks to every page of your PDF."}>
       <SoftwareAppJsonLd
         name="Watermark PDF - Free Online Tool"
         description="Add watermark to PDF files online for free. Add text watermarks to protect your documents."
@@ -128,10 +129,6 @@ export default function WatermarkPage() {
       <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Watermark PDF", item: "https://allaboutpdfediting.xyz/watermark" }]} />
       <FaqPageJsonLd questions={rc?.faqs} />
       <AiSummaryJsonLd name="Watermark PDF" summary="Add custom text watermarks to every page of PDF documents" category="Graphics" inputType="PDF" outputType="PDF" processing="client-side" price="free" features={["Text watermark","Opacity control","Position selection","Batch watermarking","Free tool"]} limits="Files up to 10MB" />
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">Add Watermark to PDF</h1>
-        <p className="text-[var(--muted)]">Add text watermarks to every page of your PDF.</p>
-      </div>
 
       <ToolInfo
         name="PDF Watermark"
@@ -245,6 +242,6 @@ export default function WatermarkPage() {
         message={upsell.state.message}
         onClose={upsell.hideUpsell}
       />
-    </div>
+    </ToolShell>
   );
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useEffect, useRef } from "react";
+import ToolShell from "@/components/ui/ToolShell";
 import Icon from "@/components/ui/Icon";
 import ToolGuide from "@/components/ToolGuide";
 import ToolInfo from "@/components/ToolInfo";
@@ -126,7 +127,7 @@ export default function OcrPdfPage() {
   }, [ocrResult, file]);
 
   return (
-    <div className="max-w-3xl mx-auto px-4 py-12">
+    <ToolShell icon="scan" title={"OCR PDF"} lead={"Extract text from scanned PDFs and images using OCR."}>
       <SoftwareAppJsonLd
         name="OCR PDF - Free Online OCR"
         description="Extract text from scanned PDFs and images using OCR."
@@ -136,10 +137,6 @@ export default function OcrPdfPage() {
       <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "OCR PDF", item: "https://allaboutpdfediting.xyz/ocr-pdf" }]} />
       <FaqPageJsonLd questions={rc?.faqs} />
       <AiSummaryJsonLd name="OCR PDF" summary="Extract text from scanned PDFs and images using optical character recognition" category="OCR" inputType="PDF/Image" outputType="Text" processing="client-side" price="free" features={["Scanned PDF OCR","Image text extraction","Multi-page support","Copy to clipboard","Download as TXT"]} limits="Files up to 10MB" />
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">OCR PDF</h1>
-        <p className="text-[var(--muted)]">Extract text from scanned PDFs and images using OCR.</p>
-      </div>
 
       <ToolInfo
         name="OCR PDF"
@@ -255,6 +252,6 @@ export default function OcrPdfPage() {
         message={upsell.state.message}
         onClose={upsell.hideUpsell}
       />
-    </div>
+    </ToolShell>
   );
 }

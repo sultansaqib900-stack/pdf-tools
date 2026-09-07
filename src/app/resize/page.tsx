@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useEffect, useRef } from "react";
+import ToolShell from "@/components/ui/ToolShell";
 import Icon from "@/components/ui/Icon";
 import ToolGuide from "@/components/ToolGuide";
 import ToolInfo from "@/components/ToolInfo";
@@ -136,7 +137,7 @@ export default function ResizePage() {
   }, [file]);
 
   return (
-    <div className="max-w-3xl mx-auto px-4 py-12">
+    <ToolShell icon="resize" title={"Resize PDF Pages"} lead={"Change the page size of your PDF document. Choose a preset or set custom dimensions."}>
       <SoftwareAppJsonLd
         name="Resize PDF - Free Online Tool"
         description="Change PDF page size online for free. Choose A4 Letter Legal or custom dimensions."
@@ -146,10 +147,6 @@ export default function ResizePage() {
       <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Resize PDF", item: "https://allaboutpdfediting.xyz/resize" }]} />
       <FaqPageJsonLd questions={rc?.faqs} />
       <AiSummaryJsonLd name="Resize PDF" summary="Change PDF page dimensions to standard sizes like A4 Letter Legal or custom" category="Utilities" inputType="PDF" outputType="PDF" processing="client-side" price="free" features={["Page resizing","A4 Letter Legal","Custom dimensions","Free browser tool","Client-side"]} limits="Files up to 10MB" />
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">Resize PDF Pages</h1>
-        <p className="text-[var(--muted)]">Change the page size of your PDF document. Choose a preset or set custom dimensions.</p>
-      </div>
 
       <ToolInfo name="Resize PDF" description="Your file stays private. All page resizing happens locally in your browser — no uploads, no servers. Change page dimensions in seconds." />
 
@@ -266,6 +263,6 @@ export default function ResizePage() {
         message={upsell.state.message}
         onClose={upsell.hideUpsell}
       />
-    </div>
+    </ToolShell>
   );
 }

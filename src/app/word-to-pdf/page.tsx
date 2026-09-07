@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useEffect } from "react";
+import ToolShell from "@/components/ui/ToolShell";
 import Icon from "@/components/ui/Icon";
 import ToolGuide from "@/components/ToolGuide";
 import ToolInfo from "@/components/ToolInfo";
@@ -98,16 +99,12 @@ export default function WordToPdfPage() {
     }, [usage, upsell, runConvert])
 
   return (
-    <div className="max-w-3xl mx-auto px-4 py-12">
+    <ToolShell icon="fileText" title={"Word to PDF"} lead={"Convert Word (DOCX) documents to PDF."}>
       <SoftwareAppJsonLd name="Word to PDF - Free Online Converter" description="Convert Word (DOCX) to PDF online for free." url="https://allaboutpdfediting.xyz/word-to-pdf" />
       <HowToJsonLd name="Word to PDF" description="Convert Word documents to PDF" steps={[{name:"Upload DOCX",text:"Select a Word document"},{name:"Convert",text:"Convert to PDF instantly"},{name:"Download",text:"Download your PDF"}]} />
       <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Word to PDF", item: "https://allaboutpdfediting.xyz/word-to-pdf" }]} />
       <FaqPageJsonLd questions={rc?.faqs} />
       <AiSummaryJsonLd name="Word to PDF" summary="Convert Word DOCX documents to PDF format" category="Convert" inputType="DOCX" outputType="PDF" processing="client-side" price="free" features={["DOCX to PDF conversion","Format preservation","Client-side processing"]} limits="Files up to 10MB" />
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">Word to PDF</h1>
-        <p className="text-[var(--muted)]">Convert Word (DOCX) documents to PDF.</p>
-      </div>
       <ToolInfo name="Word to PDF" description="Convert Word documents to PDF entirely in your browser. No uploads, no servers." />
       <div className="mb-4"><UsageBar remaining={usage.remaining} unlimited={usage.unlimited} /></div>
       <div className="bg-[var(--surface)] rounded-[var(--r-lg)] border border-[var(--border)] p-8 space-y-6">
@@ -136,6 +133,6 @@ export default function WordToPdfPage() {
 
       <RelatedContent slug="word-to-pdf" />
       <PremiumUpsell show={upsell.state.show} mode={upsell.state.mode} message={upsell.state.message} onClose={upsell.hideUpsell} />
-    </div>
+    </ToolShell>
   );
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef } from "react";
+import ToolShell from "@/components/ui/ToolShell";
 import Icon from "@/components/ui/Icon";
 import ToolGuide from "@/components/ToolGuide";
 import { isPremium } from "@/lib/premium";
@@ -115,18 +116,11 @@ export default function CertificateGeneratorPage() {
   };
 
   return (
-    <div className="max-w-3xl mx-auto px-4 py-12">
+    <ToolShell icon="award" title={"Certificate Generator"} lead={"Upload a certificate template and a CSV of names/dates to generate personalized PDFs in bulk."} premium>
       <SoftwareAppJsonLd name="PDF Certificate Generator" description="Generate personalized PDF certificates in bulk from a template and CSV. Premium." url="https://allaboutpdfediting.xyz/certificate-generator" image="https://allaboutpdfediting.xyz/opengraph-image.png" aggregateRating={{ ratingValue: 4.8, bestRating: 5, ratingCount: 189 }} />
       <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Certificate Generator", item: "https://allaboutpdfediting.xyz/certificate-generator" }]} />
       <HowToJsonLd name="Generate PDF Certificates in Bulk" description="Create personalized PDF certificates in bulk from a template and CSV data" steps={[{name:"Upload certificate template",text:"Upload your PDF certificate template with placeholder fields"},{name:"Upload CSV data",text:"Upload a CSV file with participant names and details"},{name:"Generate certificates",text:"The tool merges data into the template and generates individual PDF certificates"}]} />
       <AiSummaryJsonLd name="Certificate Generator" summary="Bulk-generate personalized PDF certificates from a template and CSV data" category="BusinessApplications" inputType="PDF+CSV" outputType="PDF" processing="client-side" price="premium" features={["Bulk certificate generation","CSV data merge","Customizable templates","Batch processing","Client-side rendering"]} limits="Premium subscribers" />
-      <div className="mb-8">
-        <div className="flex items-center gap-3 mb-2">
-          <h1 className="text-3xl font-bold text-[var(--foreground)]">Certificate Generator</h1>
-          <span className="text-xs font-semibold bg-[var(--premium)] text-white px-2.5 py-0.5 rounded-full">Premium</span>
-        </div>
-        <p className="text-[var(--muted)]">Upload a certificate template and a CSV of names/dates to generate personalized PDFs in bulk.</p>
-      </div>
 
 
       <div className="bg-[var(--surface)] border border-[var(--border)] rounded-[var(--r-lg)] p-6 space-y-6">
@@ -177,6 +171,6 @@ export default function CertificateGeneratorPage() {
       <div className="text-center mt-8">
         <a href="/premium" className="text-sm text-[var(--accent)] hover:underline font-medium">Explore all Premium features →</a>
       </div>
-    </div>
+    </ToolShell>
   );
 }

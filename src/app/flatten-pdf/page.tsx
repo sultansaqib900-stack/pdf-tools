@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useEffect, useRef } from "react";
+import ToolShell from "@/components/ui/ToolShell";
 import Icon from "@/components/ui/Icon";
 import ToolGuide from "@/components/ToolGuide";
 import ToolInfo from "@/components/ToolInfo";
@@ -96,7 +97,7 @@ export default function FlattenPDFPage() {
   }, [file]);
 
   return (
-    <div className="max-w-3xl mx-auto px-4 py-12">
+    <ToolShell icon="flatten" title={"Flatten PDF"} lead={"Merge form fields, annotations, and layers into the page content."}>
       <SoftwareAppJsonLd
         name="Flatten PDF - Free Online Tool"
         description="Flatten PDF files online for free. Merge form fields annotations and layers into permanent content."
@@ -106,10 +107,6 @@ export default function FlattenPDFPage() {
       <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Flatten PDF", item: "https://allaboutpdfediting.xyz/flatten-pdf" }]} />
       <FaqPageJsonLd questions={rc?.faqs} />
       <AiSummaryJsonLd name="Flatten PDF" summary="Merge form fields annotations and layers into permanent PDF page content" category="Utilities" inputType="PDF" outputType="PDF" processing="client-side" price="free" features={["Form flattening","Annotation merge","Layer flattening","Permanent content","Free tool"]} limits="Files up to 10MB" />
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">Flatten PDF</h1>
-        <p className="text-[var(--muted)]">Merge form fields, annotations, and layers into the page content.</p>
-      </div>
 
       <ToolInfo
         name="Flatten PDF"
@@ -192,6 +189,6 @@ export default function FlattenPDFPage() {
         message={upsell.state.message}
         onClose={upsell.hideUpsell}
       />
-    </div>
+    </ToolShell>
   );
 }

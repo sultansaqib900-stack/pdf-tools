@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useEffect, useRef } from "react";
+import ToolShell from "@/components/ui/ToolShell";
 import Icon from "@/components/ui/Icon";
 import ToolGuide from "@/components/ToolGuide";
 import ToolInfo from "@/components/ToolInfo";
@@ -123,7 +124,7 @@ export default function ImageToPdfPage() {
   }, [images]);
 
   return (
-    <div className="max-w-3xl mx-auto px-4 py-12">
+    <ToolShell icon="image" title={"Image to PDF"} lead={"Convert JPG, PNG, and other images into a single PDF."}>
       <SoftwareAppJsonLd
         name="Image to PDF - Free Online Converter"
         description="Convert images to PDF online for free. Turn JPG, PNG, and other image formats into PDF documents instantly."
@@ -133,10 +134,6 @@ export default function ImageToPdfPage() {
       <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Image to PDF", item: "https://allaboutpdfediting.xyz/image-to-pdf" }]} />
       <FaqPageJsonLd questions={rc?.faqs} />
       <AiSummaryJsonLd name="Image to PDF" summary="Convert images JPG PNG BMP to PDF documents with customizable page layout" category="Graphics" inputType="Image" outputType="PDF" processing="client-side" price="free" features={["Image to PDF conversion","Multi-image support","Page orientation","Free online tool","Client-side only"]} limits="Files up to 10MB" />
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">Image to PDF</h1>
-        <p className="text-[var(--muted)]">Convert JPG, PNG, and other images into a single PDF.</p>
-      </div>
 
       <ToolInfo
         name="Image to PDF"
@@ -241,6 +238,6 @@ export default function ImageToPdfPage() {
         message={upsell.state.message}
         onClose={upsell.hideUpsell}
       />
-    </div>
+    </ToolShell>
   );
 }

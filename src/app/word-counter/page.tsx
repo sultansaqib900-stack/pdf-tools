@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useEffect, useRef } from "react";
+import ToolShell from "@/components/ui/ToolShell";
 import Icon from "@/components/ui/Icon";
 import ToolGuide from "@/components/ToolGuide";
 import ToolInfo from "@/components/ToolInfo";
@@ -88,7 +89,7 @@ export default function WordCounterPage() {
     }, [usage, upsell, runCount])
 
   return (
-    <div className="max-w-3xl mx-auto px-4 py-12">
+    <ToolShell icon="hash" title={"PDF Word Counter"} lead={"Count words, characters, and pages in any PDF document."}>
       <SoftwareAppJsonLd
         name="PDF Word Counter - Free Online Tool"
         description="Count words, characters, and pages in any PDF file. Free online PDF word counter."
@@ -98,10 +99,6 @@ export default function WordCounterPage() {
       <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Word Counter", item: "https://allaboutpdfediting.xyz/word-counter" }]} />
       <FaqPageJsonLd questions={rc?.faqs} />
       <AiSummaryJsonLd name="Word Counter" summary="Count words characters pages and paragraphs in PDF documents" category="Utilities" inputType="PDF" outputType="Statistics" processing="client-side" price="free" features={["Word count","Character count","Page count","Paragraph count","Free tool"]} limits="Files up to 10MB" />
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">PDF Word Counter</h1>
-        <p className="text-[var(--muted)]">Count words, characters, and pages in any PDF document.</p>
-      </div>
 
       <ToolInfo
         name="PDF Word Counter"
@@ -210,6 +207,6 @@ export default function WordCounterPage() {
         message={upsell.state.message}
         onClose={upsell.hideUpsell}
       />
-    </div>
+    </ToolShell>
   );
 }

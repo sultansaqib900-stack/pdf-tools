@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useEffect, useRef } from "react";
+import ToolShell from "@/components/ui/ToolShell";
 import Icon from "@/components/ui/Icon";
 import ToolGuide from "@/components/ToolGuide";
 import ToolInfo from "@/components/ToolInfo";
@@ -119,7 +120,7 @@ export default function DeletePagesPage() {
   }, [file]);
 
   return (
-    <div className="max-w-3xl mx-auto px-4 py-12">
+    <ToolShell icon="delete" title={"Delete Pages from PDF"} lead={"Remove unwanted pages from your PDF document."}>
       <SoftwareAppJsonLd
         name="Delete Pages from PDF - Free Online Tool"
         description="Remove unwanted pages from PDF documents online for free. Delete specific pages instantly."
@@ -129,10 +130,6 @@ export default function DeletePagesPage() {
       <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Delete Pages", item: "https://allaboutpdfediting.xyz/delete-pages" }]} />
       <FaqPageJsonLd questions={rc?.faqs} />
       <AiSummaryJsonLd name="Delete Pages" summary="Remove unwanted specific pages or page ranges from PDF documents" category="Utilities" inputType="PDF" outputType="PDF" processing="client-side" price="free" features={["Page deletion","Range selection","Multiple page removal","Free tool","Client-side"]} limits="Files up to 10MB" />
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">Delete Pages from PDF</h1>
-        <p className="text-[var(--muted)]">Remove unwanted pages from your PDF document.</p>
-      </div>
 
       <ToolInfo name="Delete PDF Pages" description="Your file stays private. All processing happens locally in your browser using pdf-lib — no uploads, no servers. Select which pages to remove and download the result instantly." />
 
@@ -240,6 +237,6 @@ export default function DeletePagesPage() {
         message={upsell.state.message}
         onClose={upsell.hideUpsell}
       />
-    </div>
+    </ToolShell>
   );
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useEffect, useRef } from "react";
+import ToolShell from "@/components/ui/ToolShell";
 import Icon from "@/components/ui/Icon";
 import ToolGuide from "@/components/ToolGuide";
 import ToolInfo from "@/components/ToolInfo";
@@ -96,7 +97,7 @@ export default function UnlockPage() {
   }, [file]);
 
   return (
-    <div className="max-w-3xl mx-auto px-4 py-12">
+    <ToolShell icon="unlock" title={"Unlock PDF"} lead={"Remove password protection from a PDF file."}>
       <SoftwareAppJsonLd
         name="Unlock PDF - Free Online Tool"
         description="Remove password protection from PDF files online for free. Unlock protected PDFs instantly in your browser."
@@ -106,10 +107,6 @@ export default function UnlockPage() {
       <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Unlock PDF", item: "https://allaboutpdfediting.xyz/unlock" }]} />
       <FaqPageJsonLd questions={rc?.faqs} />
       <AiSummaryJsonLd name="Unlock PDF" summary="Remove password protection from PDF files to access and edit content freely" category="SecurityApplications" inputType="PDF" outputType="PDF" processing="client-side" price="free" features={["Password removal","Owner password unlock","User password unlock","Free tool","Client-side only"]} limits="Files up to 10MB" />
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">Unlock PDF</h1>
-        <p className="text-[var(--muted)]">Remove password protection from a PDF file.</p>
-      </div>
 
       <ToolInfo
         name="Unlock PDF"
@@ -207,6 +204,6 @@ export default function UnlockPage() {
         message={upsell.state.message}
         onClose={upsell.hideUpsell}
       />
-    </div>
+    </ToolShell>
   );
 }

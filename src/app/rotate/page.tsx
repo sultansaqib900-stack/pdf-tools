@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useEffect, useRef } from "react";
+import ToolShell from "@/components/ui/ToolShell";
 import Icon from "@/components/ui/Icon";
 import ToolGuide from "@/components/ToolGuide";
 import ToolInfo from "@/components/ToolInfo";
@@ -106,7 +107,7 @@ export default function RotatePage() {
   }, [file]);
 
   return (
-    <div className="max-w-3xl mx-auto px-4 py-12">
+    <ToolShell icon="rotate" title={"Rotate PDF"} lead={"Rotate all pages in a PDF by 90, 180, or 270 degrees."}>
       <SoftwareAppJsonLd
         name="Rotate PDF - Free Online Tool"
         description="Rotate PDF pages online for free. Change page orientation to portrait or landscape in your browser."
@@ -116,10 +117,6 @@ export default function RotatePage() {
       <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Rotate PDF", item: "https://allaboutpdfediting.xyz/rotate" }]} />
       <FaqPageJsonLd questions={rc?.faqs} />
       <AiSummaryJsonLd name="Rotate PDF" summary="Rotate PDF pages by 90 180 or 270 degrees to fix orientation issues" category="Utilities" inputType="PDF" outputType="PDF" processing="client-side" price="free" features={["Page rotation","90 180 270 degrees","Orientation fix","Free online tool","Client-side only"]} limits="Files up to 10MB" />
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">Rotate PDF</h1>
-        <p className="text-[var(--muted)]">Rotate all pages in a PDF by 90, 180, or 270 degrees.</p>
-      </div>
 
       <ToolInfo
         name="Rotate PDF"
@@ -226,6 +223,6 @@ export default function RotatePage() {
         message={upsell.state.message}
         onClose={upsell.hideUpsell}
       />
-    </div>
+    </ToolShell>
   );
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useEffect, useRef } from "react";
+import ToolShell from "@/components/ui/ToolShell";
 import Icon from "@/components/ui/Icon";
 import ToolGuide from "@/components/ToolGuide";
 import ToolInfo from "@/components/ToolInfo";
@@ -137,7 +138,7 @@ export default function PdfToExcelPage() {
   }, [csv, file]);
 
   return (
-    <div className="max-w-3xl mx-auto px-4 py-12">
+    <ToolShell icon="fileSheet" title={"PDF to Excel"} lead={"Extract tables from PDF documents as CSV data."}>
       <SoftwareAppJsonLd
         name="PDF to Excel - Free Online Table Extractor"
         description="Extract tables from PDF files and convert to CSV online for free. Uses AI to detect and extract tabular data from your documents."
@@ -149,10 +150,6 @@ export default function PdfToExcelPage() {
       <AiSummaryJsonLd name="PDF to Excel" summary="Extract table data from PDF files to Excel CSV format" category="BusinessApplications" inputType="PDF" outputType="CSV" processing="client-side" price="free" features={["Table extraction","CSV export","Data preview","Free tool","Client-side"]} limits="Files up to 10MB" />
       <canvas ref={canvasRef} className="hidden" />
 
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">PDF to Excel</h1>
-        <p className="text-[var(--muted)]">Extract tables from PDF documents as CSV data.</p>
-      </div>
 
       <ToolInfo
         name="PDF to Excel"
@@ -264,6 +261,6 @@ export default function PdfToExcelPage() {
         message={upsell.state.message}
         onClose={upsell.hideUpsell}
       />
-    </div>
+    </ToolShell>
   );
 }

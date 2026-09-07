@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useEffect, useRef } from "react";
+import ToolShell from "@/components/ui/ToolShell";
 import Icon from "@/components/ui/Icon";
 import ToolGuide from "@/components/ToolGuide";
 import ToolInfo from "@/components/ToolInfo";
@@ -142,7 +143,7 @@ export default function AddPageNumbersPage() {
   ];
 
   return (
-    <div className="max-w-3xl mx-auto px-4 py-12">
+    <ToolShell icon="numbers" title={"Add Page Numbers"} lead={"Insert page numbers into your PDF at any position."}>
       <SoftwareAppJsonLd
         name="Add Page Numbers to PDF - Free Online Tool"
         description="Add page numbers to PDF documents online for free. Customizable positioning and formatting."
@@ -152,10 +153,6 @@ export default function AddPageNumbersPage() {
       <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Add Page Numbers", item: "https://allaboutpdfediting.xyz/add-page-numbers" }]} />
       <FaqPageJsonLd questions={rc?.faqs} />
       <AiSummaryJsonLd name="Add Page Numbers" summary="Insert page numbers into PDF documents with customizable position and formatting" category="Utilities" inputType="PDF" outputType="PDF" processing="client-side" price="free" features={["Page numbering","Position selection","Custom start number","Style options","Free tool"]} limits="Files up to 10MB" />
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">Add Page Numbers</h1>
-        <p className="text-[var(--muted)]">Insert page numbers into your PDF at any position.</p>
-      </div>
 
       <ToolInfo
         name="Add Page Numbers"
@@ -263,6 +260,6 @@ export default function AddPageNumbersPage() {
         message={upsell.state.message}
         onClose={upsell.hideUpsell}
       />
-    </div>
+    </ToolShell>
   );
 }

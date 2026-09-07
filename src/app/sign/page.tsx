@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useRef, useEffect } from "react";
+import ToolShell from "@/components/ui/ToolShell";
 import Icon from "@/components/ui/Icon";
 import ToolGuide from "@/components/ToolGuide";
 import ToolInfo from "@/components/ToolInfo";
@@ -168,7 +169,7 @@ export default function SignPage() {
   }, [file]);
 
   return (
-    <div className="max-w-3xl mx-auto px-4 py-12">
+    <ToolShell icon="signature" title={"e-Sign PDF"} lead={"Draw your signature and place it on your PDF document."}>
       <SoftwareAppJsonLd
         name="Sign PDF - Free Online e-Sign Tool"
         description="Sign PDF documents online for free. Draw your signature and add it to any PDF in your browser."
@@ -178,10 +179,6 @@ export default function SignPage() {
       <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Sign PDF", item: "https://allaboutpdfediting.xyz/sign" }]} />
       <FaqPageJsonLd questions={rc?.faqs} />
       <AiSummaryJsonLd name="Sign PDF" summary="Add electronic signatures to PDF documents by drawing typing or uploading" category="BusinessApplications" inputType="PDF" outputType="PDF" processing="client-side" price="free" features={["Draw signature","Type signature","Upload signature","Position placement","Free e-sign tool"]} limits="Files up to 10MB" />
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">e-Sign PDF</h1>
-        <p className="text-[var(--muted)]">Draw your signature and place it on your PDF document.</p>
-      </div>
 
       <ToolInfo
         name="e-Sign PDF"
@@ -283,6 +280,6 @@ export default function SignPage() {
         message={upsell.state.message}
         onClose={upsell.hideUpsell}
       />
-    </div>
+    </ToolShell>
   );
 }

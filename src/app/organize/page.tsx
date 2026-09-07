@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useEffect, useRef } from "react";
+import ToolShell from "@/components/ui/ToolShell";
 import Icon from "@/components/ui/Icon";
 import ToolGuide from "@/components/ToolGuide";
 import ToolInfo from "@/components/ToolInfo";
@@ -147,7 +148,7 @@ export default function OrganizePage() {
   }, [file]);
 
   return (
-    <div className="max-w-3xl mx-auto px-4 py-12">
+    <ToolShell icon="organize" title={"Organize PDF Pages"} lead={"Reorder, sort, and rearrange pages in your PDF document."}>
       <SoftwareAppJsonLd
         name="Organize PDF - Free Online Tool"
         description="Reorder PDF pages online for free. Drag and drop to arrange pages. No uploads required."
@@ -157,10 +158,6 @@ export default function OrganizePage() {
       <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Organize PDF", item: "https://allaboutpdfediting.xyz/organize" }]} />
       <FaqPageJsonLd questions={rc?.faqs} />
       <AiSummaryJsonLd name="Organize PDF" summary="Reorder pages in PDF documents with drag-and-drop interface" category="Utilities" inputType="PDF" outputType="PDF" processing="client-side" price="free" features={["Page reordering","Drag-and-drop","Thumbnail preview","Free tool","Client-side"]} limits="Files up to 10MB" />
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">Organize PDF Pages</h1>
-        <p className="text-[var(--muted)]">Reorder, sort, and rearrange pages in your PDF document.</p>
-      </div>
 
       <ToolInfo name="Organize PDF" description="Your file stays private. All page reordering happens locally in your browser — no uploads, no servers. Drag pages to reorder and download instantly." />
 
@@ -281,6 +278,6 @@ export default function OrganizePage() {
         message={upsell.state.message}
         onClose={upsell.hideUpsell}
       />
-    </div>
+    </ToolShell>
   );
 }

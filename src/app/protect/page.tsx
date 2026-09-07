@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useEffect, useRef } from "react";
+import ToolShell from "@/components/ui/ToolShell";
 import Icon from "@/components/ui/Icon";
 import ToolGuide from "@/components/ToolGuide";
 import ToolInfo from "@/components/ToolInfo";
@@ -99,7 +100,7 @@ export default function ProtectPage() {
   }, [file]);
 
   return (
-    <div className="max-w-3xl mx-auto px-4 py-12">
+    <ToolShell icon="lock" title={"Password Protect PDF"} lead={"Encrypt your PDF with a password to prevent unauthorized access."}>
       <SoftwareAppJsonLd
         name="Protect PDF - Free Online Tool"
         description="Password protect PDF files online for free. Encrypt your PDF documents with a secure password."
@@ -109,10 +110,6 @@ export default function ProtectPage() {
       <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Protect PDF", item: "https://allaboutpdfediting.xyz/protect" }]} />
       <FaqPageJsonLd questions={rc?.faqs} />
       <AiSummaryJsonLd name="Password Protect PDF" summary="Encrypt PDF files with password protection to prevent unauthorized access" category="SecurityApplications" inputType="PDF" outputType="PDF" processing="client-side" price="free" features={["Password encryption","AES security","User password","Owner password","Client-side only"]} limits="Files up to 10MB" />
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">Password Protect PDF</h1>
-        <p className="text-[var(--muted)]">Encrypt your PDF with a password to prevent unauthorized access.</p>
-      </div>
 
       <ToolInfo
         name="Password Protect"
@@ -207,6 +204,6 @@ export default function ProtectPage() {
         message={upsell.state.message}
         onClose={upsell.hideUpsell}
       />
-    </div>
+    </ToolShell>
   );
 }

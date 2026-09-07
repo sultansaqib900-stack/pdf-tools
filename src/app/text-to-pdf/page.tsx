@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useEffect } from "react";
+import ToolShell from "@/components/ui/ToolShell";
 import ToolGuide from "@/components/ToolGuide";
 import ToolInfo from "@/components/ToolInfo";
 import FreeWaitTimer from "@/components/FreeWaitTimer";
@@ -110,7 +111,7 @@ export default function TextToPdfPage() {
     }, [usage, upsell, runConvert])
 
   return (
-    <div className="max-w-3xl mx-auto px-4 py-12">
+    <ToolShell icon="type" title={"Text to PDF"} lead={"Convert plain text into a downloadable PDF document instantly."}>
       <SoftwareAppJsonLd
         name="Text to PDF - Free Online Converter"
         description="Convert plain text to PDF online for free. Create PDF documents from text in your browser."
@@ -120,10 +121,6 @@ export default function TextToPdfPage() {
       <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Text to PDF", item: "https://allaboutpdfediting.xyz/text-to-pdf" }]} />
       <FaqPageJsonLd questions={rc?.faqs} />
       <AiSummaryJsonLd name="Text to PDF" summary="Convert plain text content into formatted PDF documents" category="Utilities" inputType="Text" outputType="PDF" processing="client-side" price="free" features={["Text conversion","Font selection","Page formatting","Free online tool","Client-side"]} limits="Files up to 10MB" />
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">Text to PDF</h1>
-        <p className="text-[var(--muted)]">Convert plain text into a downloadable PDF document instantly.</p>
-      </div>
 
       <ToolInfo name="Text to PDF" description="Your text stays private. Conversion happens locally in your browser — no uploads, no servers. Type or paste any text and download it as a formatted PDF." />
 
@@ -203,6 +200,6 @@ export default function TextToPdfPage() {
         message={upsell.state.message}
         onClose={upsell.hideUpsell}
       />
-    </div>
+    </ToolShell>
   );
 }

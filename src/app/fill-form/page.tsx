@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useEffect, useRef } from "react";
+import ToolShell from "@/components/ui/ToolShell";
 import Icon from "@/components/ui/Icon";
 import ToolGuide from "@/components/ToolGuide";
 import ToolInfo from "@/components/ToolInfo";
@@ -159,7 +160,7 @@ export default function FillFormPage() {
   }, [file]);
 
   return (
-    <div className="max-w-3xl mx-auto px-4 py-12">
+    <ToolShell icon="form" title={"Fill PDF Form"} lead={"Detect and fill PDF form fields, then download the completed form."}>
       <SoftwareAppJsonLd
         name="Fill PDF Form - Free Online Tool"
         description="Fill PDF forms online for free. Complete text fields checkboxes and dropdowns in your browser."
@@ -169,10 +170,6 @@ export default function FillFormPage() {
       <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Fill PDF Form", item: "https://allaboutpdfediting.xyz/fill-form" }]} />
       <FaqPageJsonLd questions={rc?.faqs} />
       <AiSummaryJsonLd name="Fill PDF Form" summary="Fill interactive PDF form fields including text checkboxes radio buttons and dropdowns" category="BusinessApplications" inputType="PDF" outputType="PDF" processing="client-side" price="free" features={["Form filling","Checkboxes","Dropdowns","Radio buttons","Free tool"]} limits="Files up to 10MB" />
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">Fill PDF Form</h1>
-        <p className="text-[var(--muted)]">Detect and fill PDF form fields, then download the completed form.</p>
-      </div>
 
       <ToolInfo
         name="Fill PDF Form"
@@ -330,6 +327,6 @@ export default function FillFormPage() {
         message={upsell.state.message}
         onClose={upsell.hideUpsell}
       />
-    </div>
+    </ToolShell>
   );
 }

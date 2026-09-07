@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useEffect, useRef } from "react";
+import ToolShell from "@/components/ui/ToolShell";
 import Icon from "@/components/ui/Icon";
 import ToolGuide from "@/components/ToolGuide";
 import ToolInfo from "@/components/ToolInfo";
@@ -163,7 +164,7 @@ export default function InsertBlankPage() {
   }, [file]);
 
   return (
-    <div className="max-w-3xl mx-auto px-4 py-12">
+    <ToolShell icon="insertPage" title={"Insert Blank Pages"} lead={"Add blank pages anywhere in your PDF document."}>
       <SoftwareAppJsonLd
         name="Insert Blank Pages - Free Online PDF Tool"
         description="Add blank pages to any PDF file. Insert empty pages at the end of your document for free."
@@ -173,10 +174,6 @@ export default function InsertBlankPage() {
       <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Insert Blank Pages", item: "https://allaboutpdfediting.xyz/insert-blank" }]} />
       <FaqPageJsonLd questions={rc?.faqs} />
       <AiSummaryJsonLd name="Insert Blank Pages" summary="Add empty blank pages to PDF documents at any position" category="Utilities" inputType="PDF" outputType="PDF" processing="client-side" price="free" features={["Blank page insertion","Position control","Multiple pages","Free online tool","Client-side"]} limits="Files up to 10MB" />
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">Insert Blank Pages</h1>
-        <p className="text-[var(--muted)]">Add blank pages anywhere in your PDF document.</p>
-      </div>
 
       <ToolInfo
         name="Insert Blank Pages"
@@ -311,6 +308,6 @@ export default function InsertBlankPage() {
         message={upsell.state.message}
         onClose={upsell.hideUpsell}
       />
-    </div>
+    </ToolShell>
   );
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useEffect, useRef } from "react";
+import ToolShell from "@/components/ui/ToolShell";
 import Icon from "@/components/ui/Icon";
 import ToolGuide from "@/components/ToolGuide";
 import ToolInfo from "@/components/ToolInfo";
@@ -96,16 +97,12 @@ export default function PdfToWordPage() {
     }, [usage, upsell, runConvert])
 
   return (
-    <div className="max-w-3xl mx-auto px-4 py-12">
+    <ToolShell icon="fileWord" title={"PDF to Word"} lead={"Convert PDF documents to editable Word (DOCX) files."}>
       <SoftwareAppJsonLd name="PDF to Word - Free Online Converter" description="Convert PDF to Word (DOCX) online for free." url="https://allaboutpdfediting.xyz/pdf-to-word" />
       <HowToJsonLd name="PDF to Word" description="Convert PDF documents to editable Word files" steps={[{name:"Upload PDF",text:"Select a PDF file to convert"},{name:"Convert",text:"Extract text and create a Word document"},{name:"Download",text:"Download your editable DOCX file"}]} />
       <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "PDF to Word", item: "https://allaboutpdfediting.xyz/pdf-to-word" }]} />
       <FaqPageJsonLd questions={rc?.faqs} />
       <AiSummaryJsonLd name="PDF to Word" summary="Convert PDF documents to editable Word DOCX files" category="Convert" inputType="PDF" outputType="DOCX" processing="client-side" price="free" features={["PDF to Word conversion","Editable DOCX output","Text extraction","Client-side processing"]} limits="Files up to 10MB" />
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">PDF to Word</h1>
-        <p className="text-[var(--muted)]">Convert PDF documents to editable Word (DOCX) files.</p>
-      </div>
       <ToolInfo name="PDF to Word" description="Convert PDFs to editable Word documents entirely in your browser. No uploads, no servers." />
       <div className="mb-4"><UsageBar remaining={usage.remaining} unlimited={usage.unlimited} /></div>
       <div className="bg-[var(--surface)] rounded-[var(--r-lg)] border border-[var(--border)] p-8 space-y-6">
@@ -137,6 +134,6 @@ export default function PdfToWordPage() {
       <UseCaseLinks toolSlug="pdf-to-word" />
 
       <PremiumUpsell show={upsell.state.show} mode={upsell.state.mode} message={upsell.state.message} onClose={upsell.hideUpsell} />
-    </div>
+    </ToolShell>
   );
 }
