@@ -11,7 +11,9 @@ import { isPremium, checkFileSize } from "@/lib/premium";
 import { useUsage } from "@/hooks/useUsage";
 import { useToolHistory } from "@/hooks/useToolHistory";
 import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
+import Link from "next/link";
 import ToolShell from "@/components/ui/ToolShell";
+import ToolGuide from "@/components/ToolGuide";
 import DropZone from "@/components/ui/DropZone";
 
 import HowToJsonLd from "@/components/HowToJsonLd";
@@ -219,12 +221,82 @@ export default function SplitPage() {
         <SuccessAnimation show={success} message="Split complete!" onRestore={restoreOriginal} />
       </div>
 
-      <section className="mt-10 pt-8 border-t border-[var(--border)]">
-        <h2 className="text-lg font-semibold text-[var(--foreground)] mb-3">About this tool</h2>
-        <div className="text-[0.875rem] leading-relaxed text-[var(--muted-strong)] space-y-3">
-          <p>Need to split PDF online free? Our tool lets you extract PDF pages or split every page into individual files, giving you complete flexibility over how you manage your documents. Choose between extracting a specific page range or splitting the entire document into separate pages — the choice is yours. This is ideal when you need only certain sections from a large report, want to share pages one at a time, or need to reorganize content by removing specific pages. Processing happens entirely client-side using pdf-lib, meaning your document never leaves your browser. To extract PDF pages, simply upload your file, select your range, and download. Each extracted page preserves original quality and formatting, so you get clean, accurate results every time.</p>
-        </div>
-      </section>
+      <ToolGuide
+        summary={
+          <p>
+            <strong>To split a PDF:</strong> add your file, then either extract a specific page range
+            or break the document into one file per page. Extracted pages keep their original quality
+            and formatting, because pages are copied rather than re-rendered.
+          </p>
+        }
+        steps={[
+          { title: "Add your PDF", body: "Drop the file above. The page count is shown once it loads, so you can confirm you have the right document." },
+          { title: "Choose how to split", body: "Use 'Page range' to pull out a specific section such as pages 12 to 40, or 'Every page' to produce a separate file for each page." },
+          { title: "Split and download", body: "A single range downloads as one PDF. Splitting every page produces a set of files, one per page." },
+        ]}
+        sections={[
+          {
+            heading: "Page ranges: getting the numbers right",
+            body: (
+              <>
+                <p>
+                  Ranges here are inclusive, so 5 to 10 gives you six pages, including both 5 and 10.
+                  Use the page numbers shown by your PDF reader, which are positions in the file — these
+                  often differ from the numbers printed on the page, because front matter and cover
+                  pages shift the sequence.
+                </p>
+                <p>
+                  If the printed numbering matters to whoever receives the extract, add fresh numbering
+                  afterwards with{" "}
+                  <Link href="/add-page-numbers" className="text-[var(--accent)] hover:underline">Add page numbers</Link>{" "}
+                  so the excerpt reads sensibly on its own.
+                </p>
+              </>
+            ),
+          },
+          {
+            heading: "Splitting by chapter instead of by number",
+            body: (
+              <>
+                <p>
+                  If your document has a bookmark outline — most ebooks, manuals and generated reports
+                  do —{" "}
+                  <Link href="/split-by-bookmarks" className="text-[var(--accent)] hover:underline">Split by bookmarks</Link>{" "}
+                  is far more reliable than counting pages. It uses the existing outline as the break
+                  points, so each output file is a complete chapter or section with a meaningful name.
+                </p>
+                <p>
+                  For removing a handful of unwanted pages rather than extracting a section,{" "}
+                  <Link href="/delete-pages" className="text-[var(--accent)] hover:underline">Delete pages</Link>{" "}
+                  is the more direct tool, and{" "}
+                  <Link href="/organize" className="text-[var(--accent)] hover:underline">Organize pages</Link>{" "}
+                  lets you reorder and rotate at the same time.
+                </p>
+              </>
+            ),
+          },
+          {
+            heading: "A caution about confidential extracts",
+            body: (
+              <>
+                <p>
+                  Splitting changes which pages are present; it does not remove information embedded in
+                  the document itself. Metadata such as the author, the original file name and revision
+                  timestamps travels with the extract, and so does any content hidden behind a drawn
+                  black box, which is not redaction.
+                </p>
+                <p>
+                  Before sending an extract outside your organisation, run{" "}
+                  <Link href="/metadata-sanitizer" className="text-[var(--accent)] hover:underline">the metadata sanitiser</Link>{" "}
+                  and, where sensitive content must be removed,{" "}
+                  <Link href="/redact" className="text-[var(--accent)] hover:underline">Redact PDF</Link>,
+                  which strips the underlying content rather than covering it.
+                </p>
+              </>
+            ),
+          },
+        ]}
+      />
 
       <RelatedContent slug="split" />
 

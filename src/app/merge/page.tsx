@@ -11,7 +11,9 @@ import { isPremium, checkFileSize, checkBatchCount } from "@/lib/premium";
 import { useUsage } from "@/hooks/useUsage";
 import { useToolHistory } from "@/hooks/useToolHistory";
 import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
+import Link from "next/link";
 import ToolShell from "@/components/ui/ToolShell";
+import ToolGuide from "@/components/ToolGuide";
 import DropZone from "@/components/ui/DropZone";
 import Icon from "@/components/ui/Icon";
 
@@ -224,12 +226,86 @@ export default function MergePage() {
         <SuccessAnimation show={success} message="PDFs merged!" onRestore={restoreOriginal} />
       </div>
 
-      <section className="mt-10 pt-8 border-t border-[var(--border)]">
-        <h2 className="text-lg font-semibold text-[var(--foreground)] mb-3">About this tool</h2>
-        <div className="text-[0.875rem] leading-relaxed text-[var(--muted-strong)] space-y-3">
-          <p>With our merge PDF tool, you can combine PDF documents into a single file effortlessly, making it perfect for consolidating reports, invoices, scanned contracts, or any collection of related pages. Simply upload your PDFs, drag to reorder them, and click merge — the intuitive interface gives you full control over the final page sequence. The tool processes everything locally in your browser using pdf-lib, so your sensitive documents never touch a server. To merge PDF files online free, just select multiple PDFs, arrange them in the desired order, and download the combined result in seconds. This feature is especially useful for merging scanned documents that arrive as separate files, unifying chapter drafts into a complete manuscript, or creating comprehensive portfolios from individual pages. Everything stays private and secure.</p>
-        </div>
-      </section>
+      <ToolGuide
+        summary={
+          <p>
+            <strong>To merge PDFs:</strong> add two or more files above, drag them into the order you
+            want, then click merge. Pages are copied without re-encoding, so the output keeps the
+            original quality of every source document.
+          </p>
+        }
+        steps={[
+          { title: "Add your files", body: "Select several PDFs at once, or add them in batches. They appear in a list in the order they were added." },
+          { title: "Put them in the right order", body: "Drag rows to reorder, or remove anything added by mistake. This order is exactly the order of the final document, so check it before merging." },
+          { title: "Merge and download", body: "The combined file is assembled in your browser and downloaded straight to your device." },
+        ]}
+        sections={[
+          {
+            heading: "Mixed page sizes and orientations",
+            body: (
+              <>
+                <p>
+                  Merging does not force pages to a common size. If you combine an A4 report with a
+                  Letter-sized invoice and a landscape spreadsheet export, each page keeps its own
+                  dimensions, which is usually what you want on screen but can look inconsistent when
+                  printed.
+                </p>
+                <p>
+                  If the merged file is going to a printer, normalise it first with{" "}
+                  <Link href="/resize" className="text-[var(--accent)] hover:underline">Resize PDF</Link>,
+                  and fix any sideways scans using{" "}
+                  <Link href="/rotate" className="text-[var(--accent)] hover:underline">Rotate</Link>{" "}
+                  before merging rather than after, since it is easier to spot the problem in a single
+                  short document than in a hundred-page combined one.
+                </p>
+              </>
+            ),
+          },
+          {
+            heading: "What happens to forms, signatures and bookmarks",
+            body: (
+              <>
+                <p>
+                  Interactive form fields can conflict when two documents use the same field names,
+                  and the merged result may behave unpredictably. If the forms are already filled in
+                  and you only need the values to appear, run{" "}
+                  <Link href="/flatten-pdf" className="text-[var(--accent)] hover:underline">Flatten PDF</Link>{" "}
+                  on each file first — that converts the entries to fixed page content and removes the
+                  conflict entirely.
+                </p>
+                <p>
+                  Note that a cryptographic digital signature covers the exact bytes of the document it
+                  signed. Merging produces a new file, so that signature will no longer validate. A
+                  drawn or image-based signature is just page content and is unaffected. If a signed
+                  document must stay verifiable, keep it as a separate attachment rather than merging it.
+                </p>
+              </>
+            ),
+          },
+          {
+            heading: "After merging",
+            body: (
+              <>
+                <p>
+                  A combined document is often much larger than any of its parts, which can push it over
+                  an email or portal limit — run{" "}
+                  <Link href="/compress" className="text-[var(--accent)] hover:underline">Compress PDF</Link>{" "}
+                  if so. For a long assembled pack,{" "}
+                  <Link href="/add-page-numbers" className="text-[var(--accent)] hover:underline">page numbers</Link>{" "}
+                  make it navigable, and{" "}
+                  <Link href="/organize" className="text-[var(--accent)] hover:underline">Organize pages</Link>{" "}
+                  lets you make final adjustments without starting over.
+                </p>
+                <p>
+                  Changed your mind about the order, or need to pull one section back out?{" "}
+                  <Link href="/split" className="text-[var(--accent)] hover:underline">Split PDF</Link>{" "}
+                  reverses the process by page range.
+                </p>
+              </>
+            ),
+          },
+        ]}
+      />
 
       <RelatedContent slug="merge" />
 

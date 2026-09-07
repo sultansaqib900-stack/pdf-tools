@@ -11,7 +11,9 @@ import { isPremium, checkFileSize } from "@/lib/premium";
 import { useUsage } from "@/hooks/useUsage";
 import { useToolHistory } from "@/hooks/useToolHistory";
 import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
+import Link from "next/link";
 import ToolShell from "@/components/ui/ToolShell";
+import ToolGuide from "@/components/ToolGuide";
 import DropZone from "@/components/ui/DropZone";
 import Icon from "@/components/ui/Icon";
 
@@ -210,16 +212,83 @@ export default function CompressPage() {
         />
       </div>
 
-      <section className="mt-10 pt-8 border-t border-[var(--border)]">
-        <h2 className="text-lg font-semibold text-[var(--foreground)] mb-3">About this tool</h2>
-        <p className="text-[0.875rem] leading-relaxed text-[var(--muted-strong)]">
-          This compressor reduces PDF size by removing redundant objects and optimising
-          object streams with pdf-lib. How much you save depends on the document —
-          image-heavy files shrink the most, while text-only PDFs are already compact.
-          Everything runs client-side, so your file is never uploaded and nothing is
-          stored on our servers.
-        </p>
-      </section>
+      <ToolGuide
+        summary={
+          <>
+            <p>
+              <strong>To compress a PDF:</strong> drop the file above, choose a compression level and
+              download the result. Typical savings run from 30% to 80%. Scanned and image-heavy
+              documents shrink the most; a text-only PDF is already compact and may barely change.
+            </p>
+          </>
+        }
+        steps={[
+          { title: "Add your PDF", body: "Drag the file onto the drop zone or click to browse. The file is read by your browser and is not uploaded." },
+          { title: "Pick a compression level", body: "Start with the balanced option. Use stronger compression only if you need to hit a specific size limit, since image quality drops as you push further." },
+          { title: "Compress and check the result", body: "You will see the size before and after, and the percentage saved. If a figure or scan now looks too soft, run the original again at a lighter setting." },
+          { title: "Download and keep the original", body: "Save the compressed copy for sending and archive the uncompressed original, in case someone later needs to zoom into a diagram." },
+        ]}
+        sections={[
+          {
+            heading: "Why your PDF is large in the first place",
+            body: (
+              <>
+                <p>
+                  Almost all PDF bulk is images. A page of text is a few kilobytes, while a single
+                  scanned page photographed at 300&nbsp;DPI can be several megabytes. If your file is
+                  20&nbsp;MB, it is very likely scans, screenshots or embedded photographs rather than
+                  the writing.
+                </p>
+                <p>
+                  The other common causes are embedded fonts, which add up when a document uses many
+                  typefaces, and accumulated revision data left behind by editing software. Compression
+                  addresses redundant objects and inefficient image encoding, which is why results vary
+                  so much between documents.
+                </p>
+              </>
+            ),
+          },
+          {
+            heading: "Hitting a specific size limit",
+            body: (
+              <>
+                <p>
+                  Most email systems cap attachments between 10&nbsp;MB and 25&nbsp;MB. Court e-filing
+                  portals are often stricter, commonly 10&nbsp;MB to 35&nbsp;MB per document, and
+                  university submission portals sit around 20&nbsp;MB to 40&nbsp;MB.
+                </p>
+                <p>
+                  If compression alone will not get you under the limit, splitting is usually better
+                  than compressing until the document becomes unreadable. Use{" "}
+                  <Link href="/split" className="text-[var(--accent)] hover:underline">Split PDF</Link>{" "}
+                  along a logical boundary such as a chapter or exhibit, so each part still makes sense
+                  on its own. Removing pages that are not needed with{" "}
+                  <Link href="/delete-pages" className="text-[var(--accent)] hover:underline">Delete pages</Link>{" "}
+                  is often the quickest win of all.
+                </p>
+              </>
+            ),
+          },
+          {
+            heading: "When compression will not help much",
+            body: (
+              <>
+                <p>
+                  A PDF that is mostly text is already close to optimal, and you may see only a few
+                  percent. A file that has been compressed once cannot usefully be compressed again —
+                  the redundancy has already been removed, and repeated passes mainly degrade images.
+                </p>
+                <p>
+                  If a scanned document needs to stay legible at high zoom, consider running{" "}
+                  <Link href="/ocr-pdf" className="text-[var(--accent)] hover:underline">OCR</Link>{" "}
+                  so the text is searchable, which often matters more than raw resolution for how
+                  usable the document actually is.
+                </p>
+              </>
+            ),
+          },
+        ]}
+      />
 
       <RelatedContent slug="compress" />
 
