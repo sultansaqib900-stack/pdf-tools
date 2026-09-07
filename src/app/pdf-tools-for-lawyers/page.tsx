@@ -1,212 +1,247 @@
-import Link from "next/link";
 import type { Metadata } from "next";
-import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
-import FaqPageJsonLd from "@/components/FaqPageJsonLd";
+import Link from "next/link";
+import AudiencePage from "@/components/AudiencePage";
 
 export const metadata: Metadata = {
   title: "PDF Tools for Lawyers — Redact & Protect Legal PDFs",
   description: "Free PDF tools for legal work: redact sensitive text, merge discovery, Bates number exhibits and protect client files. No uploads.",
   openGraph: {
     title: "Free PDF Tools for Lawyers — Secure Legal Document Processing",
-    description: "Redact, merge, protect, and Bates-number PDFs. All processing is local — client data never leaves your computer.",
+    description: "Redact, merge, protect and Bates-number PDFs. All processing is local — client data never leaves your computer.",
     url: "https://allaboutpdfediting.xyz/pdf-tools-for-lawyers",
   },
 };
 
-const legalTools = [
-  {
-    category: "🔒 Security & Compliance",
-    items: [
-      { href: "/redact", label: "Redact PDF", desc: "Permanently remove PII, SSNs, case details", link: "/for/redact-pdf-lawyers" },
-      { href: "/search-redact", label: "Search & Redact", desc: "Auto-find and redact specific terms across entire doc", link: "/for/redact-pdf-legal-professionals" },
-      { href: "/protect", label: "Protect PDF", desc: "Password-protect confidential case files" },
-      { href: "/unlock", label: "Unlock PDF", desc: "Remove passwords from received documents" },
-      { href: "/metadata-sanitizer", label: "Clean Metadata", desc: "Strip hidden author, dates, edits before sharing" },
-      { href: "/flatten-pdf", label: "Flatten PDF", desc: "Remove form fields and layers permanently" },
-    ],
-  },
-  {
-    category: "📂 Document Management",
-    items: [
-      { href: "/merge", label: "Merge Discovery", desc: "Combine exhibits and discovery into one PDF", link: "/for/merge-pdf-lawyers" },
-      { href: "/split", label: "Split PDF", desc: "Separate briefs by section or exhibit", link: "/for/split-pdf-lawyers" },
-      { href: "/bates-numbering", label: "Bates Numbering", desc: "Add sequential numbers to every page", link: "/for/bates-numbering-pdf-legal-professionals" },
-      { href: "/organize", label: "Organize Pages", desc: "Reorder, rotate, and arrange legal documents" },
-      { href: "/compress", label: "Compress PDF", desc: "Shrink large filings for e-filing portals", link: "/for/compress-pdf-lawyers" },
-      { href: "/add-page-numbers", label: "Page Numbers", desc: "Add page numbers to briefs and motions" },
-    ],
-  },
-  {
-    category: "🔄 Format & Conversion",
-    items: [
-      { href: "/pdf-to-word", label: "PDF to Word", desc: "Edit text from contracts and agreements" },
-      { href: "/word-to-pdf", label: "Word to PDF", desc: "Convert drafts to PDF for filing", link: "/for/word-to-pdf-lawyers" },
-      { href: "/image-to-pdf", label: "Image to PDF", desc: "Turn photos of signed docs into PDF" },
-      { href: "/scan-to-pdf", label: "Scan to PDF", desc: "Convert scanned documents to searchable PDF" },
-      { href: "/ocr-pdf", label: "OCR PDF", desc: "Extract text from scanned case law" },
-    ],
-  },
-];
-
 export default function PDFToolsForLawyersPage() {
   return (
-    <>
-      <BreadcrumbJsonLd
-        items={[
-          { name: "Home", item: "https://allaboutpdfediting.xyz" },
-          { name: "PDF Tools for Lawyers", item: "https://allaboutpdfediting.xyz/pdf-tools-for-lawyers" },
-        ]}
-      />
-      <FaqPageJsonLd
-        questions={[
-          { question: "Is this secure enough for client confidential information?", answer: "Absolutely. All processing happens locally in your browser. Files never reach our servers. Client data never leaves your computer. We cannot access, store, or see your documents." },
-          { question: "Can I permanently redact text from a PDF?", answer: "Yes. Our Redact PDF tool permanently removes selected text and images. For advanced workflows, Search & Redact (premium) automatically finds and redacts specific terms across entire documents." },
-          { question: "Do you support Bates numbering?", answer: "Yes, as a premium feature. Add sequential page numbers with custom prefix, suffix, padding, and positioning to every page in your document." },
-          { question: "Can I merge multiple discovery documents?", answer: "Yes. Merge unlimited PDFs with drag-and-drop reordering. Free tier supports up to 5 files; premium supports unlimited." },
-          { question: "How do I clean metadata before sharing?", answer: "Use our Metadata Sanitizer (premium). It strips author name, creation date, software, annotations, and embedded files — leaving a clean document for external sharing." },
-        ]}
-      />
-
-      <div className="max-w-5xl mx-auto px-4 py-12">
-        {/* Hero */}
-        <section className="text-center mb-12">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-gradient-to-r from-slate-600 to-slate-800 text-white text-sm font-semibold mb-4">
-            ⚖️ Trusted by Legal Professionals
-          </div>
-          <h1 className="text-4xl sm:text-5xl font-extrabold text-[var(--foreground)] leading-tight mb-4">
-            PDF Tools for<br />
-            <span className="text-slate-400">Lawyers & Legal Teams</span>
-          </h1>
-          <p className="text-lg text-[var(--muted)] max-w-2xl mx-auto mb-8">
-            Redact sensitive information, merge discovery documents, Bates-number exhibits, and
-            protect client files — all in your browser. Zero uploads, client data stays local.
+    <AudiencePage
+      audience="For lawyers"
+      slug="pdf-tools-for-lawyers"
+      h1="PDF Tools for Lawyers and Legal Teams"
+      intro={
+        <>
+          <p>
+            Legal document work has a constraint most PDF advice ignores: you often cannot upload
+            the file. Model Rule 1.6 and its state equivalents require reasonable efforts to prevent
+            disclosure of client information, and sending a privileged document to a third-party
+            server for processing is a decision you would rather not have to defend.
           </p>
-          <div className="flex flex-wrap justify-center gap-3 text-sm text-[var(--muted)]">
-            <span className="px-3 py-1.5 bg-[var(--card)] rounded-lg border border-[var(--card-border)]">✓ No Uploads to Server</span>
-            <span className="px-3 py-1.5 bg-[var(--card)] rounded-lg border border-[var(--card-border)]">✓ Client Data Stays Local</span>
-            <span className="px-3 py-1.5 bg-[var(--card)] rounded-lg border border-[var(--card-border)]">✓ No Account Required</span>
-            <span className="px-3 py-1.5 bg-[var(--card)] rounded-lg border border-[var(--card-border)]">✓ Works on Any Device</span>
-          </div>
-        </section>
-
-        {/* Stats */}
-        <section className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-12">
-          {[
-            { number: "17", label: "Legal-Ready Tools", desc: "Redact, Bates, merge, protect & more" },
-            { number: "0", label: "Uploads", desc: "Everything runs in your browser" },
-            { number: "100%", label: "Local Processing", desc: "Client data never reaches any server" },
-            { number: "⚡", label: "Bulk Ready", desc: "Process hundreds of pages at once" },
-          ].map((s) => (
-            <div key={s.label} className="p-4 rounded-xl border border-[var(--card-border)] bg-[var(--card)] text-center">
-              <div className="text-2xl font-bold text-slate-400">{s.number}</div>
-              <div className="text-sm font-semibold text-[var(--foreground)]">{s.label}</div>
-              <div className="text-xs text-[var(--muted)] mt-0.5">{s.desc}</div>
-            </div>
-          ))}
-        </section>
-
-        {/* Tools by Category */}
-        {legalTools.map((cat) => (
-          <section key={cat.category} className="mb-12">
-            <h2 className="text-xl font-bold text-[var(--foreground)] mb-4">{cat.category}</h2>
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
-              {cat.items.map((tool) => (
-                <Link
-                  key={tool.href}
-                  href={tool.href}
-                  className="block p-4 rounded-xl border border-[var(--card-border)] bg-[var(--card)] hover:border-slate-400/30 hover:shadow-md transition group"
-                >
-                  <h3 className="font-semibold text-sm text-[var(--foreground)] group-hover:text-slate-400 transition-colors mb-1">{tool.label}</h3>
-                  <p className="text-xs text-[var(--muted)]">{tool.desc}</p>
-                </Link>
-              ))}
-            </div>
-          </section>
-        ))}
-
-
-        {/* Premium Spotlight */}
-        <section className="mb-12 p-6 rounded-xl border-2 border-amber-400/30 bg-gradient-to-br from-amber-950/10 to-transparent">
-          <div className="flex items-center gap-2 mb-3">
-            <span className="text-3xl">🔢</span>
-            <div>
-              <h2 className="text-xl font-bold text-[var(--foreground)]">Bates Numbering</h2>
-              <p className="text-xs text-amber-500 font-semibold">Premium Feature</p>
-            </div>
-          </div>
-          <p className="text-sm text-[var(--muted)] mb-4">
-            Add sequential Bates numbers to every page of your legal documents. Custom prefix,
-            suffix, number padding, font, size, and position — all processed locally.
+          <p>
+            Every tool linked here runs inside your browser. The file is read by JavaScript and
+            WebAssembly on your own machine, and no copy is transmitted. That is not a policy
+            promise about deletion schedules — there is no server that receives the document in the
+            first place, which is a materially different thing when opposing counsel asks how a
+            production was prepared.
           </p>
-          <Link href="/bates-numbering" className="inline-block px-6 py-2.5 bg-amber-600 text-white font-semibold rounded-xl hover:bg-amber-700 transition text-sm">
-            Try Bates Numbering →
-          </Link>
-        </section>
-
-        {/* By Practice Area */}
-        <section className="mb-12">
-          <h2 className="text-xl font-bold text-[var(--foreground)] mb-6">By Practice Area</h2>
-          <div className="grid sm:grid-cols-3 gap-4">
-            {[
-              { title: "Litigation", desc: "Bates-number exhibits, merge discovery, redact privileged info, compress filings for e-filing", link: "/for/compress-pdf-lawyers" },
-              { title: "Corporate / Transactional", desc: "Redact confidential terms, merge contracts, clean metadata before sharing", link: "/for/redact-pdf-legal-professionals" },
-              { title: "Immigration", desc: "Compress green card applications, merge supporting docs, protect client records", link: "/for/merge-pdf-lawyers" },
-            ].map((item) => (
-              <div key={item.title} className="p-5 rounded-xl border border-[var(--card-border)] bg-[var(--card)]">
-                <h3 className="font-bold text-[var(--foreground)] mb-1">{item.title}</h3>
-                <p className="text-sm text-[var(--muted)] mb-3">{item.desc}</p>
-                <Link href={item.link} className="text-xs text-slate-400 font-medium hover:underline">See all {item.title.toLowerCase()} tools →</Link>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* Privacy Promise */}
-        <section className="mb-12 p-6 rounded-xl border-2 border-amber-500/20 bg-amber-950/5">
-          <h2 className="text-lg font-bold text-[var(--foreground)] mb-3">🔒 Privacy Guarantee for Legal Professionals</h2>
-          <div className="text-sm text-[var(--muted)] space-y-2">
-            <p>Unlike cloud-based PDF tools, <strong>we never receive your files</strong>. All processing uses WebAssembly in your browser:</p>
-            <ul className="list-disc pl-5 space-y-1">
-              <li>No upload to any server — files stay on your device</li>
-              <li>No cookies or tracking on tool pages</li>
-              <li>No account creation required</li>
-              <li>Fully functional offline after the initial page load</li>
-            </ul>
-            <p className="mt-3">This means client confidential information never leaves your computer. Compliant with ethical obligations to protect client data.</p>
-          </div>
-        </section>
-
-        {/* FAQ */}
-        <section className="mb-12">
-          <h2 className="text-xl font-bold text-[var(--foreground)] mb-4">Common Questions</h2>
-          <div className="space-y-2">
-            {[
-              { q: "Is this compliant with legal ethics rules on client confidentiality?", a: "Yes. Because all processing happens locally, no client data is transmitted. This aligns with ethical obligations to protect client confidences." },
-              { q: "Can I use this on a firm-issued laptop?", a: "Yes. Nothing to install — works in Chrome, Firefox, Edge, and Safari. No IT approval needed." },
-              { q: "Do you save or store any documents?", a: "No. Files are never uploaded. We have zero access to your documents." },
-              { q: "Can I redact multiple documents at once?", a: "The free Redact tool works on one file at a time. Premium Search & Redact can process multiple documents and auto-redact specified terms." },
-              { q: "What is the maximum file size?", a: "Free tier supports up to 10MB. Premium supports up to 100MB for large discovery productions." },
-            ].map((faq) => (
-              <details key={faq.q} className="group rounded-xl border border-[var(--card-border)] bg-[var(--card)] open:shadow-sm">
-                <summary className="flex items-center justify-between px-5 py-3.5 cursor-pointer text-sm font-medium text-[var(--foreground)] hover:text-slate-400 transition-colors">
-                  {faq.q}
-                  <svg className="w-4 h-4 text-[var(--muted)] group-open:rotate-180 transition-transform shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
-                </summary>
-                <div className="px-5 pb-4 text-sm text-[var(--muted)] leading-relaxed">{faq.a}</div>
-              </details>
-            ))}
-          </div>
-        </section>
-
-        {/* CTA */}
-        <section className="bg-gradient-to-r from-slate-800 to-slate-900 rounded-2xl p-8 text-center text-white">
-          <h2 className="text-2xl font-bold mb-2">Client-Side Security, Enterprise-Grade Tools</h2>
-          <p className="text-slate-300 mb-6 max-w-lg mx-auto">All free. No uploads. No signup. Your client data never leaves your computer.</p>
-          <Link href="/tools" className="inline-flex items-center gap-2 px-8 py-3 bg-white text-slate-900 font-bold rounded-xl hover:bg-slate-100 transition shadow-lg">
-            Browse All Legal PDF Tools →
-          </Link>
-        </section>
-      </div>
-    </>
+        </>
+      }
+      workflows={[
+        {
+          title: "Redaction: the black box is not redaction",
+          body: (
+            <>
+              <p>
+                This is the single most consequential mistake in legal PDF handling, and it keeps
+                producing sanctions and news stories. Drawing a black rectangle over text in a PDF
+                annotator or image editor does not remove the text. It draws an opaque shape on a
+                layer above it. The underlying characters remain in the content stream and can be
+                recovered by selecting the area and copying, by running text extraction, or by
+                deleting the annotation layer.
+              </p>
+              <p>
+                Real redaction removes the content itself.{" "}
+                <Link href="/redact" className="text-[var(--accent)] hover:underline">Redact PDF</Link>{" "}
+                strips the selected content rather than masking it. For a term that recurs throughout
+                a long production — a client name, an account number, a settlement figure —{" "}
+                <Link href="/search-redact" className="text-[var(--accent)] hover:underline">Search &amp; Redact</Link>{" "}
+                finds every instance across the document so you are not relying on visual inspection
+                of four hundred pages.
+              </p>
+              <p>
+                Always verify afterwards. Open the redacted output, attempt to select text in the
+                redacted region, and run{" "}
+                <Link href="/extract-text" className="text-[var(--accent)] hover:underline">text extraction</Link>{" "}
+                over the file to confirm the terms are absent. Verification takes a minute and is the
+                difference between a redaction and a rectangle.
+              </p>
+            </>
+          ),
+        },
+        {
+          title: "Metadata is the leak nobody checks",
+          body: (
+            <>
+              <p>
+                A PDF carries more than what renders on screen. Depending on how it was produced it
+                may include the author name and Windows username, the originating file path, the
+                software used, creation and revision timestamps, and in documents converted from
+                Word, remnants of tracked changes and comments.
+              </p>
+              <p>
+                Before a document goes to opposing counsel or into a public filing, run{" "}
+                <Link href="/metadata-sanitizer" className="text-[var(--accent)] hover:underline">the metadata sanitiser</Link>{" "}
+                to strip those fields, and consider{" "}
+                <Link href="/flatten-pdf" className="text-[var(--accent)] hover:underline">flattening</Link>{" "}
+                the file, which merges form fields, annotations and layers into static page content
+                so no interactive remnants survive.
+              </p>
+            </>
+          ),
+        },
+        {
+          title: "Bates numbering and assembling a production",
+          body: (
+            <>
+              <p>
+                A typical production sequence is: assemble the documents in order, apply sequential
+                identifiers, then reduce the file for the filing portal. Do it in that order —
+                numbering before assembly means renumbering after every insertion.
+              </p>
+              <p>
+                <Link href="/merge" className="text-[var(--accent)] hover:underline">Merge</Link>{" "}
+                the exhibits with drag-to-reorder,{" "}
+                <Link href="/organize" className="text-[var(--accent)] hover:underline">reorder or rotate</Link>{" "}
+                any pages that came in sideways from a scanner, then apply{" "}
+                <Link href="/bates-numbering" className="text-[var(--accent)] hover:underline">Bates numbering</Link>{" "}
+                with your prefix, padding and corner position. If a production needs to be broken
+                into per-exhibit files afterwards,{" "}
+                <Link href="/split" className="text-[var(--accent)] hover:underline">Split PDF</Link>{" "}
+                handles ranges, and{" "}
+                <Link href="/split-by-bookmarks" className="text-[var(--accent)] hover:underline">Split by bookmarks</Link>{" "}
+                will use an existing outline as the break points.
+              </p>
+            </>
+          ),
+        },
+        {
+          title: "E-filing size limits",
+          body: (
+            <>
+              <p>
+                Most e-filing systems impose a per-document ceiling, commonly in the range of 10&nbsp;MB
+                to 35&nbsp;MB, and scanned exhibits blow past it quickly because each page is an image.{" "}
+                <Link href="/compress" className="text-[var(--accent)] hover:underline">Compress PDF</Link>{" "}
+                will usually bring a scan-heavy filing under the limit without visibly degrading
+                legibility.
+              </p>
+              <p>
+                If compression alone is not enough, split the filing along a logical boundary rather
+                than an arbitrary page count, so each part remains a coherent document. For scanned
+                material that needs to be searchable — case law, deposition exhibits, discovery you
+                received as images —{" "}
+                <Link href="/ocr-pdf" className="text-[var(--accent)] hover:underline">OCR</Link>{" "}
+                adds a text layer so the pages can be searched and cited.
+              </p>
+            </>
+          ),
+        },
+        {
+          title: "Working on a firm-managed laptop",
+          body: (
+            <>
+              <p>
+                Firm IT policies frequently block software installation, and getting a new desktop
+                application approved can take weeks. Because these tools are a web page, there is
+                nothing to install and no administrator rights required — they run in Chrome,
+                Firefox, Edge and Safari.
+              </p>
+              <p>
+                They also keep working with the network disconnected once the page has loaded, which
+                is a useful property both for working on a train and for demonstrating to a security
+                reviewer that the document is not going anywhere.
+              </p>
+            </>
+          ),
+        },
+      ]}
+      groups={[
+        {
+          heading: "Confidentiality and compliance",
+          tools: [
+            { href: "/redact", label: "Redact PDF", desc: "Permanently remove privileged content", icon: "redact" },
+            { href: "/search-redact", label: "Search & Redact", desc: "Find and strip a term across a whole production", icon: "search" },
+            { href: "/metadata-sanitizer", label: "Clean metadata", desc: "Strip author, paths, timestamps and revisions", icon: "eraser" },
+            { href: "/flatten-pdf", label: "Flatten PDF", desc: "Merge annotations and form fields into the page", icon: "flatten" },
+            { href: "/protect", label: "Protect PDF", desc: "Password-protect confidential case files", icon: "lock" },
+            { href: "/unlock", label: "Unlock PDF", desc: "Remove a password you hold from a received file", icon: "unlock" },
+          ],
+        },
+        {
+          heading: "Assembling productions and filings",
+          tools: [
+            { href: "/merge", label: "Merge PDF", desc: "Combine exhibits and discovery in order", icon: "merge" },
+            { href: "/split", label: "Split PDF", desc: "Separate briefs by section or exhibit", icon: "split" },
+            { href: "/bates-numbering", label: "Bates numbering", desc: "Sequential identifiers with prefix and padding", icon: "numbers" },
+            { href: "/organize", label: "Organize pages", desc: "Reorder and rotate scanned pages", icon: "organize" },
+            { href: "/compress", label: "Compress PDF", desc: "Get filings under e-filing size limits", icon: "compress" },
+            { href: "/add-page-numbers", label: "Page numbers", desc: "Number briefs and motions", icon: "hash" },
+          ],
+        },
+        {
+          heading: "Converting and reading",
+          tools: [
+            { href: "/ocr-pdf", label: "OCR PDF", desc: "Make scanned case law searchable", icon: "scan" },
+            { href: "/pdf-to-word", label: "PDF to Word", desc: "Edit contract text in Word", icon: "fileWord" },
+            { href: "/word-to-pdf", label: "Word to PDF", desc: "Convert drafts for filing", icon: "fileText" },
+            { href: "/pdf-diff", label: "Compare two PDFs", desc: "Spot every change between contract drafts", icon: "diff" },
+            { href: "/extract-text", label: "Extract text", desc: "Verify a redaction actually removed the words", icon: "type" },
+            { href: "/image-to-pdf", label: "Image to PDF", desc: "Turn photos of signed documents into PDFs", icon: "image" },
+          ],
+        },
+      ]}
+      faqs={[
+        {
+          question: "Is browser-based PDF processing consistent with client confidentiality obligations?",
+          answer:
+            "Processing that happens entirely on your own device does not transmit client information to a third party, which is the disclosure risk that confidentiality rules are concerned with. Because no file is uploaded, there is no external processor to vet and no retention policy to rely on. You should still apply your firm's own judgement and any jurisdiction-specific requirements.",
+        },
+        {
+          question: "Does drawing a black box over text redact it?",
+          answer:
+            "No. A black rectangle is a shape drawn on top of the text; the characters remain in the file and can be recovered by copying the region or running text extraction. Use a redaction tool that removes the underlying content, then verify by attempting to select and extract text from the redacted area.",
+        },
+        {
+          question: "Can I redact the same term across an entire production?",
+          answer:
+            "Yes. Search and Redact locates every occurrence of a term across the document and removes it, which is far more reliable than visually scanning hundreds of pages. Always verify the output with text extraction before producing it.",
+        },
+        {
+          question: "What metadata should be removed before producing a document?",
+          answer:
+            "Author name and system username, original file paths, creation and modification timestamps, the producing software, and any residual comments or tracked changes carried over from Word. A metadata sanitiser strips these; flattening the document additionally removes interactive annotation and form layers.",
+        },
+        {
+          question: "How do I get a large scanned filing under an e-filing size limit?",
+          answer:
+            "Compress it first, since scanned pages are images and compress substantially with little visible quality loss. If it is still too large, split it along a logical boundary such as exhibit divisions rather than an arbitrary page count so each part stays coherent.",
+        },
+        {
+          question: "Can I use these tools on a firm-issued laptop without IT approval?",
+          answer:
+            "There is nothing to install. The tools are a web page that runs in Chrome, Firefox, Edge or Safari, so no administrator rights or software approval process is involved. They also continue working after the network is disconnected, once the page has loaded.",
+        },
+        {
+          question: "What is the file size limit?",
+          answer:
+            "The free tier is guided by a 10MB limit and Premium raises it to 100MB, which covers most discovery productions. Because files are processed locally rather than uploaded, the practical constraint is your computer's available memory rather than a network transfer.",
+        },
+      ]}
+      closing={
+        <>
+          <p>
+            The reason to prefer local processing for legal work is not that cloud tools are
+            careless. It is that privilege is difficult to un-waive, and &ldquo;the vendor deletes
+            files after an hour&rdquo; is a weaker position than &ldquo;the document never left the
+            machine&rdquo;.
+          </p>
+          <p>
+            You can confirm the claim rather than take it on faith: open your browser&apos;s
+            developer tools with F12, select the Network tab, and process a file. No request
+            containing the document body will appear. Disconnecting from the network after the page
+            loads makes the same point more bluntly — the tools keep working.
+          </p>
+        </>
+      }
+    />
   );
 }

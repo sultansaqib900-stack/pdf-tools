@@ -1,197 +1,237 @@
-import Link from "next/link";
 import type { Metadata } from "next";
-import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
-import FaqPageJsonLd from "@/components/FaqPageJsonLd";
+import Link from "next/link";
+import AudiencePage from "@/components/AudiencePage";
 
 export const metadata: Metadata = {
   title: "PDF Tools for Students — Compress, Merge & Annotate",
   description: "Free PDF tools for students: compress lecture slides, merge research papers, annotate readings and convert assignments. No signup.",
   openGraph: {
-    title: "Free PDF Tools for College Students — Save Time on Document Busywork",
-    description: "Compress, merge, split, and edit PDFs for free. No uploads, no signup, no student email required. Everything runs in your browser.",
+    title: "Free PDF Tools for College Students",
+    description: "Compress lecture slides, merge research papers, annotate readings and convert assignments. Free, no signup, nothing uploaded.",
     url: "https://allaboutpdfediting.xyz/pdf-tools-for-students",
   },
 };
 
-const studentTools = [
-  {
-    category: "📚 Study & Reading",
-    items: [
-      { href: "/compress", label: "Compress Lecture Slides", desc: "Shrink 20MB slides to under 5MB for email", link: "/for/compress-pdf-college-students" },
-      { href: "/merge", label: "Merge Research Papers", desc: "Combine readings into one document", link: "/for/merge-pdf-college-students" },
-      { href: "/split", label: "Split Textbook Chapters", desc: "Extract chapters from digital textbooks", link: "/for/split-pdf-college-students" },
-      { href: "/chat-pdf", label: "Chat with PDF (AI)", desc: "AI summarize long readings in seconds" },
-    ],
-  },
-  {
-    category: "✍️ Assignments & Submissions",
-    items: [
-      { href: "/word-to-pdf", label: "Word to PDF", desc: "Convert essays to PDF for submission" },
-      { href: "/image-to-pdf", label: "Image to PDF", desc: "Turn phone photos of notes into PDF" },
-      { href: "/edit-pdf", label: "Edit PDF", desc: "Add text, highlight key passages" },
-      { href: "/sign", label: "Sign PDF Forms", desc: "Sign permission slips & agreements" },
-    ],
-  },
-  {
-    category: "🔧 Format & Fix",
-    items: [
-      { href: "/ocr-pdf", label: "OCR Scanned Notes", desc: "Extract text from scanned textbooks" },
-      { href: "/pdf-to-word", label: "PDF to Word", desc: "Edit PDF text in Microsoft Word" },
-      { href: "/protect", label: "Protect PDF", desc: "Password-protect your assignments" },
-      { href: "/organize", label: "Organize Pages", desc: "Reorder, rotate, delete PDF pages" },
-    ],
-  },
-];
-
 export default function PDFToolsForStudentsPage() {
   return (
-    <>
-      <BreadcrumbJsonLd
-        items={[
-          { name: "Home", item: "https://allaboutpdfediting.xyz" },
-          { name: "PDF Tools for Students", item: "https://allaboutpdfediting.xyz/pdf-tools-for-students" },
-        ]}
-      />
-      <FaqPageJsonLd
-        questions={[
-          { question: "Are these PDF tools really free for students?", answer: "Yes, completely free. No student email required, no trial period, no credit card. All basic tools are free to use daily, and premium is available for unlimited access." },
-          { question: "Do I need to upload my files to a server?", answer: "No. All processing happens locally in your browser. Your files never leave your device, keeping your assignments and personal information private." },
-          { question: "Can I use these tools on my phone?", answer: "Yes. All tools work in any modern browser on phone, tablet, or laptop. No app download needed." },
-          { question: "What is the maximum file size for free?", answer: "Free tier supports files up to 10MB, which covers most student documents. Premium supports up to 100MB." },
-          { question: "How do I compress a PDF for email submission?", answer: "Use our Compress PDF tool. Upload your file, choose compression level, and download. Most PDFs shrink 40-80% with no visible quality loss." },
-        ]}
-      />
-
-      <div className="max-w-5xl mx-auto px-4 py-12">
-        {/* Hero */}
-        <section className="text-center mb-12">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-gradient-to-r from-indigo-500 to-purple-600 text-white text-sm font-semibold mb-4">
-            🎓 100% Free for Students
-          </div>
-          <h1 className="text-4xl sm:text-5xl font-extrabold text-[var(--foreground)] leading-tight mb-4">
-            Free PDF Tools for<br />
-            <span className="text-indigo-500">College Students</span>
-          </h1>
-          <p className="text-lg text-[var(--muted)] max-w-2xl mx-auto mb-8">
-            The only PDF tools you need through college. Compress lecture slides, merge research papers,
-            convert handwritten notes to PDF, and AI-summarize textbook chapters — all in your browser, all free.
+    <AudiencePage
+      audience="For students"
+      slug="pdf-tools-for-students"
+      h1="PDF Tools for Students"
+      intro={
+        <>
+          <p>
+            Almost every student PDF problem is one of four things: a file too large to submit, a
+            pile of documents that needs to become one document, a scanned reading you cannot search,
+            or an assignment in the wrong format an hour before the deadline.
           </p>
-          <div className="flex flex-wrap justify-center gap-3 text-sm text-[var(--muted)]">
-            <span className="px-3 py-1.5 bg-[var(--card)] rounded-lg border border-[var(--card-border)]">✓ No Signup</span>
-            <span className="px-3 py-1.5 bg-[var(--card)] rounded-lg border border-[var(--card-border)]">✓ No Uploads</span>
-            <span className="px-3 py-1.5 bg-[var(--card)] rounded-lg border border-[var(--card-border)]">✓ No Student Email Needed</span>
-            <span className="px-3 py-1.5 bg-[var(--card)] rounded-lg border border-[var(--card-border)]">✓ Works on Phone</span>
-          </div>
-        </section>
-
-        {/* Stats */}
-        <section className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-12">
-          {[
-            { number: "12", label: "Free Tools", desc: "Compress, merge, split, OCR, AI chat & more" },
-            { number: "40-80%", label: "Compression", desc: "Reduce PDF size without quality loss" },
-            { number: "0", label: "Uploads", desc: "Everything runs in your browser" },
-            { number: "451", label: "Pages Indexed", desc: "150+ tools & guides, 300+ use-case pages" },
-          ].map((s) => (
-            <div key={s.label} className="p-4 rounded-xl border border-[var(--card-border)] bg-[var(--card)] text-center">
-              <div className="text-2xl font-bold text-indigo-500">{s.number}</div>
-              <div className="text-sm font-semibold text-[var(--foreground)]">{s.label}</div>
-              <div className="text-xs text-[var(--muted)] mt-0.5">{s.desc}</div>
-            </div>
-          ))}
-        </section>
-
-        {/* Tools by Category */}
-        {studentTools.map((cat) => (
-          <section key={cat.category} className="mb-12">
-            <h2 className="text-xl font-bold text-[var(--foreground)] mb-4">{cat.category}</h2>
-            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
-              {cat.items.map((tool) => (
-                <Link
-                  key={tool.href}
-                  href={tool.href}
-                  className="block p-4 rounded-xl border border-[var(--card-border)] bg-[var(--card)] hover:border-indigo-400/30 hover:shadow-md transition group"
-                >
-                  <h3 className="font-semibold text-sm text-[var(--foreground)] group-hover:text-indigo-500 transition-colors mb-1">{tool.label}</h3>
-                  <p className="text-xs text-[var(--muted)]">{tool.desc}</p>
-                </Link>
-              ))}
-            </div>
-          </section>
-        ))}
-
-
-        {/* Student Use-Case Spotlight */}
-        <section className="mb-12">
-          <h2 className="text-xl font-bold text-[var(--foreground)] mb-6">By Student Type</h2>
-          <div className="grid sm:grid-cols-3 gap-4">
-            {[
-              { title: "High School", desc: "Compress project files, merge slides, convert images to PDF", link: "/for/compress-pdf-high-school-students" },
-              { title: "College / University", desc: "Split textbook chapters, OCR lecture notes, AI chat with readings", link: "/for/merge-pdf-college-students" },
-              { title: "International Students", desc: "Compress visa docs, merge application PDFs, protect transcripts", link: "/for/compress-pdf-students-abroad" },
-            ].map((item) => (
-              <div key={item.title} className="p-5 rounded-xl border border-[var(--card-border)] bg-[var(--card)]">
-                <h3 className="font-bold text-[var(--foreground)] mb-1">{item.title}</h3>
-                <p className="text-sm text-[var(--muted)] mb-3">{item.desc}</p>
-                <Link href={item.link} className="text-xs text-indigo-500 font-medium hover:underline">See all {item.title.toLowerCase()} tools →</Link>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* Why Students Choose PDFTools */}
-        <section className="mb-12 p-6 rounded-xl border border-[var(--card-border)] bg-[var(--card)]">
-          <h2 className="text-xl font-bold text-[var(--foreground)] mb-4">Why Students Use PDFTools</h2>
-          <div className="grid sm:grid-cols-2 gap-4">
-            {[
-              { emoji: "🔒", title: "Privacy First", desc: "Your essays and assignments never leave your computer. All processing is local." },
-              { emoji: "⚡", title: "No Waiting", desc: "No upload queues, no server delays. Results in seconds." },
-              { emoji: "📱", title: "Works on Any Device", desc: "Phone, tablet, laptop — all tools work in your browser." },
-              { emoji: "🆓", title: "Actually Free", desc: "No trial, no student email, no credit card. Just free PDF tools." },
-              { emoji: "🌐", title: "No Install", desc: "Nothing to download. Open your browser and go." },
-              { emoji: "🎯", title: "Built for Students", desc: "Every tool solves a real student problem, from semester 1 to graduation." },
-            ].map((item) => (
-              <div key={item.title} className="flex gap-3">
-                <span className="text-xl shrink-0">{item.emoji}</span>
-                <div>
-                  <h3 className="font-semibold text-sm text-[var(--foreground)]">{item.title}</h3>
-                  <p className="text-xs text-[var(--muted)]">{item.desc}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* FAQ */}
-        <section className="mb-12">
-          <h2 className="text-xl font-bold text-[var(--foreground)] mb-4">Common Questions</h2>
-          <div className="space-y-2">
-            {[
-              { q: "Can I use these tools on my phone?", a: "Yes. All tools work on any device with a modern browser — phone, tablet, or laptop." },
-              { q: "Do I need a .edu email?", a: "No. No account or email of any kind is required. Just upload and go." },
-              { q: "Is there a daily limit?", a: "Free tier allows 5 uses per day per tool. Premium removes all limits." },
-              { q: "What if my file is too large?", a: "Free tier handles up to 10MB. For larger files, use our Compress tool first, or upgrade to Premium (up to 100MB)." },
-              { q: "Can I edit text in a PDF?", a: "You can add new text, highlights, and shapes. For deep text edits, convert to Word first." },
-            ].map((faq) => (
-              <details key={faq.q} className="group rounded-xl border border-[var(--card-border)] bg-[var(--card)] open:shadow-sm">
-                <summary className="flex items-center justify-between px-5 py-3.5 cursor-pointer text-sm font-medium text-[var(--foreground)] hover:text-indigo-600 transition-colors">
-                  {faq.q}
-                  <svg className="w-4 h-4 text-[var(--muted)] group-open:rotate-180 transition-transform shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
-                </summary>
-                <div className="px-5 pb-4 text-sm text-[var(--muted)] leading-relaxed">{faq.a}</div>
-              </details>
-            ))}
-          </div>
-        </section>
-
-        {/* CTA */}
-        <section className="bg-gradient-to-r from-indigo-600 to-purple-700 rounded-2xl p-8 text-center text-white">
-          <h2 className="text-2xl font-bold mb-2">Stop Paying for PDF Tools</h2>
-          <p className="text-indigo-200 mb-6 max-w-lg mx-auto">Everything you need for free, forever. No subscriptions, no hidden charges.</p>
-          <Link href="/tools" className="inline-flex items-center gap-2 px-8 py-3 bg-white text-indigo-700 font-bold rounded-xl hover:bg-indigo-50 transition shadow-lg">
-            Browse All PDF Tools →
-          </Link>
-        </section>
-      </div>
-    </>
+          <p>
+            All of the tools below are free, need no account, and run in your browser rather than on
+            a server — which matters when campus wifi is slow, because there is no upload to wait
+            for, and it means they still work when the connection drops mid-submission.
+          </p>
+        </>
+      }
+      workflows={[
+        {
+          title: "The submission portal rejected your file for being too large",
+          body: (
+            <>
+              <p>
+                Canvas, Blackboard, Moodle and Turnitin all cap upload size, often around 20&nbsp;MB
+                to 40&nbsp;MB, and a dissertation full of figures or a scanned lab notebook exceeds it
+                easily.{" "}
+                <Link href="/compress" className="text-[var(--accent)] hover:underline">Compress PDF</Link>{" "}
+                is almost always enough, and the savings are largest exactly where you need them —
+                image-heavy and scanned documents.
+              </p>
+              <p>
+                Keep the original file. Compression is lossy for images, so if a marker needs to zoom
+                into a diagram you want the uncompressed version still on disk. Submit the compressed
+                copy, archive the original.
+              </p>
+            </>
+          ),
+        },
+        {
+          title: "Turning a stack of files into one submission",
+          body: (
+            <>
+              <p>
+                Coursework is often submitted as a single PDF: cover sheet, essay, appendices,
+                signed declaration, sometimes photographed handwritten work.{" "}
+                <Link href="/merge" className="text-[var(--accent)] hover:underline">Merge PDF</Link>{" "}
+                combines them with drag-to-reorder, so you can fix the sequence before exporting.
+              </p>
+              <p>
+                If part of the submission is a photo of handwritten work or a printed form, convert
+                it first with{" "}
+                <Link href="/image-to-pdf" className="text-[var(--accent)] hover:underline">Image to PDF</Link>{" "}
+                or{" "}
+                <Link href="/scan-to-pdf" className="text-[var(--accent)] hover:underline">Scan to PDF</Link>,
+                which straightens and sizes phone photos into something that looks deliberate rather
+                than like a snapshot. Pages that came out sideways can be fixed with{" "}
+                <Link href="/rotate" className="text-[var(--accent)] hover:underline">Rotate</Link>, and{" "}
+                <Link href="/add-page-numbers" className="text-[var(--accent)] hover:underline">page numbers</Link>{" "}
+                are worth adding if the rubric asks for them.
+              </p>
+            </>
+          ),
+        },
+        {
+          title: "You cannot search a scanned reading",
+          body: (
+            <>
+              <p>
+                Library scans and older journal PDFs are frequently images of pages rather than text,
+                so Ctrl+F finds nothing and you cannot quote without retyping.{" "}
+                <Link href="/ocr-pdf" className="text-[var(--accent)] hover:underline">OCR PDF</Link>{" "}
+                adds a text layer underneath the image, which makes the document searchable and lets
+                you copy quotations accurately.
+              </p>
+              <p>
+                Once it is searchable,{" "}
+                <Link href="/extract-text" className="text-[var(--accent)] hover:underline">Extract text</Link>{" "}
+                will pull the whole thing into plain text for note-taking, and{" "}
+                <Link href="/word-counter" className="text-[var(--accent)] hover:underline">the word counter</Link>{" "}
+                gives you a defensible number for a word-limited assignment — count the PDF you are
+                actually submitting, since a Word count and a PDF count can differ once footnotes
+                and captions are involved.
+              </p>
+            </>
+          ),
+        },
+        {
+          title: "Reading and annotating without buying software",
+          body: (
+            <>
+              <p>
+                For working through a set reading,{" "}
+                <Link href="/annotate" className="text-[var(--accent)] hover:underline">Annotate PDF</Link>{" "}
+                lets you highlight and add comments and export the marked-up copy. If a two-hundred
+                page PDF contains one forty-page chapter you actually need,{" "}
+                <Link href="/split" className="text-[var(--accent)] hover:underline">Split PDF</Link>{" "}
+                extracts that range so your tablet is not loading the whole book each time.
+              </p>
+              <p>
+                For dense material,{" "}
+                <Link href="/chat-pdf" className="text-[var(--accent)] hover:underline">Chat with PDF</Link>{" "}
+                can help you locate where a concept is discussed across a long document. Use it to
+                navigate and to check your understanding, not to generate submitted text — the
+                academic misconduct rules at every institution treat that as a serious offence, and
+                the point of the reading is that you can discuss it.
+              </p>
+            </>
+          ),
+        },
+        {
+          title: "Group projects and format problems",
+          body: (
+            <>
+              <p>
+                When four people contribute sections in different applications, the reliable fix is to
+                convert everything to PDF and merge, rather than fighting Word styles.{" "}
+                <Link href="/word-to-pdf" className="text-[var(--accent)] hover:underline">Word to PDF</Link>{" "}
+                keeps formatting stable across machines, which is what stops a document that looked
+                fine on one laptop from reflowing on another.
+              </p>
+              <p>
+                Going the other way,{" "}
+                <Link href="/pdf-to-word" className="text-[var(--accent)] hover:underline">PDF to Word</Link>{" "}
+                is useful when you are given a template as a PDF and need to edit it. If you are
+                submitting something confidential such as a mitigating-circumstances form, note that
+                nothing you open here is uploaded anywhere.
+              </p>
+            </>
+          ),
+        },
+      ]}
+      groups={[
+        {
+          heading: "Getting an assignment submitted",
+          tools: [
+            { href: "/compress", label: "Compress PDF", desc: "Get under the portal's upload limit", icon: "compress" },
+            { href: "/merge", label: "Merge PDF", desc: "Combine everything into one submission", icon: "merge" },
+            { href: "/image-to-pdf", label: "Image to PDF", desc: "Photos of handwritten work into a PDF", icon: "image" },
+            { href: "/scan-to-pdf", label: "Scan to PDF", desc: "Clean scans from phone photos", icon: "scan" },
+            { href: "/rotate", label: "Rotate PDF", desc: "Fix sideways scanned pages", icon: "rotate" },
+            { href: "/add-page-numbers", label: "Page numbers", desc: "Number pages as the rubric requires", icon: "hash" },
+          ],
+        },
+        {
+          heading: "Reading, research and note-taking",
+          tools: [
+            { href: "/ocr-pdf", label: "OCR PDF", desc: "Make a scanned reading searchable", icon: "scan" },
+            { href: "/annotate", label: "Annotate PDF", desc: "Highlight and comment on readings", icon: "annotate" },
+            { href: "/split", label: "Split PDF", desc: "Pull one chapter out of a huge file", icon: "split" },
+            { href: "/extract-text", label: "Extract text", desc: "Pull quotations out accurately", icon: "type" },
+            { href: "/word-counter", label: "Word counter", desc: "Check against a word limit", icon: "hash" },
+            { href: "/chat-pdf", label: "Chat with PDF", desc: "Find where a topic is discussed", icon: "sparkles" },
+          ],
+        },
+        {
+          heading: "Format conversions",
+          tools: [
+            { href: "/word-to-pdf", label: "Word to PDF", desc: "Lock formatting before submitting", icon: "fileText" },
+            { href: "/pdf-to-word", label: "PDF to Word", desc: "Edit a template you were given", icon: "fileWord" },
+            { href: "/pdf-to-images", label: "PDF to images", desc: "Pull figures out for a presentation", icon: "image" },
+            { href: "/pdf-to-excel", label: "PDF to Excel", desc: "Get a data table into a spreadsheet", icon: "fileSheet" },
+            { href: "/delete-pages", label: "Delete pages", desc: "Remove blank or draft pages", icon: "delete" },
+            { href: "/protect", label: "Protect PDF", desc: "Password-protect a shared draft", icon: "lock" },
+          ],
+        },
+      ]}
+      faqs={[
+        {
+          question: "How do I make a PDF small enough to submit to Canvas or Turnitin?",
+          answer:
+            "Run it through a compressor. Submission portals typically cap uploads around 20MB to 40MB, and image-heavy or scanned documents compress substantially with little visible quality loss. Keep the uncompressed original in case a marker needs to zoom into a figure.",
+        },
+        {
+          question: "How do I combine several files into one PDF for submission?",
+          answer:
+            "Convert anything that is not already a PDF, then merge. Photos of handwritten work can be converted with an image-to-PDF tool first, and the merge tool lets you drag pages into the right order before exporting a single file.",
+        },
+        {
+          question: "Why can't I search or copy text in a PDF from the library?",
+          answer:
+            "The document is a scanned image rather than text, so there are no characters to find. Running OCR adds an invisible text layer beneath the page image, after which search, copy and quotation all work normally.",
+        },
+        {
+          question: "Are these tools really free for students?",
+          answer:
+            "Yes. There is no signup, no student email verification and no trial period. Files are processed in your browser rather than on a server, so there is no per-use hosting cost to recover. An optional Premium plan raises the file size limit but is not needed for typical coursework.",
+        },
+        {
+          question: "Is it safe to use these for confidential university documents?",
+          answer:
+            "Your file is never uploaded. Processing happens locally in your browser, which you can verify by opening developer tools with F12 and watching the Network tab while you use a tool, or by disconnecting from the internet after the page loads and continuing to work.",
+        },
+        {
+          question: "Can I use the AI PDF chat for my assignment?",
+          answer:
+            "Use it to navigate long documents and check your understanding, not to produce text you submit. Every institution's academic misconduct policy treats submitting AI-generated work as a serious offence, and the purpose of the reading is that you can discuss it yourself.",
+        },
+        {
+          question: "How do I count words in a PDF for a word-limited essay?",
+          answer:
+            "Use a word counter on the PDF you are actually submitting rather than the source document. Counts can diverge once footnotes, captions and reference lists are rendered, and the submitted file is what gets marked.",
+        },
+      ]}
+      closing={
+        <>
+          <p>
+            The practical advantage for student work is that nothing waits on an upload. On congested
+            campus wifi, compressing a 60&nbsp;MB dissertation locally finishes while a cloud tool is
+            still receiving the file — which matters at 23:50 on a deadline.
+          </p>
+          <p>
+            It also means a mitigating-circumstances form, a medical note or an unpublished
+            dissertation is not sitting on a third party&apos;s server. Nothing you open here is
+            transmitted anywhere.
+          </p>
+        </>
+      }
+    />
   );
 }
