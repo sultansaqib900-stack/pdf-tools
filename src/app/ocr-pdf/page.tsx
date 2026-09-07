@@ -206,7 +206,7 @@ export default function OcrPdfPage() {
               <div className="flex gap-2">
                 <button
                   onClick={() => navigator.clipboard.writeText(ocrResult.fullText)}
-                  className="px-3 py-1.5 text-xs bg-[var(--surface)] border border-[var(--border)] rounded-lg hover:bg-[var(--card-hover)] transition"
+                  className="px-3 py-1.5 text-xs bg-[var(--surface)] border border-[var(--border)] rounded-lg hover:bg-[var(--surface-hover)] transition"
                 >
                   Copy
                 </button>

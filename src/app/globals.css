@@ -53,10 +53,6 @@
   --border:          var(--n-200);
   --border-strong:   var(--n-300);
 
-  /* Back-compat alias: a lot of existing pages reference --card/--card-border */
-  --card:            var(--surface);
-  --card-border:     var(--border);
-
   --accent:          var(--a-600);
   --accent-hover:    var(--a-700);
   --accent-subtle:   var(--a-50);
@@ -107,9 +103,6 @@
 
   --border:          #1e2d45;
   --border-strong:   #2a3d5a;
-
-  --card:            var(--surface);
-  --card-border:     var(--border);
 
   --accent:          var(--a-400);
   --accent-hover:    var(--a-300);
@@ -244,18 +237,6 @@ p { text-wrap: pretty; }
   transform: translateY(-1px);
 }
 .card-interactive:active { transform: translateY(0); }
-
-/* Back-compat for pages still using .card-hover */
-.card-hover {
-  transition: border-color var(--dur) var(--ease),
-              box-shadow var(--dur) var(--ease),
-              transform var(--dur) var(--ease);
-}
-.card-hover:hover {
-  border-color: var(--border-strong);
-  box-shadow: var(--shadow-md);
-  transform: translateY(-1px);
-}
 
 .btn {
   display: inline-flex;
