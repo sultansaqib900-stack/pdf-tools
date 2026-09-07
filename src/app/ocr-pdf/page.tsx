@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useEffect, useRef } from "react";
+import Icon from "@/components/ui/Icon";
 import ToolGuide from "@/components/ToolGuide";
 import ToolInfo from "@/components/ToolInfo";
 import FreeWaitTimer from "@/components/FreeWaitTimer";
@@ -150,13 +151,13 @@ export default function OcrPdfPage() {
         <UsageBar remaining={usage.remaining} unlimited={usage.unlimited} />
       </div>
 
-      <div className="bg-[var(--card)] rounded-xl border border-[var(--card-border)] p-8 space-y-6">
+      <div className="bg-[var(--surface)] rounded-[var(--r-lg)] border border-[var(--border)] p-8 space-y-6">
         <div
           onDrop={onDrop}
           onDragOver={(e) => { e.preventDefault(); setDragging(true); }}
           onDragLeave={() => setDragging(false)}
-          className={`border-2 border-dashed rounded-xl p-10 text-center transition ${
-            dragging ? "border-indigo-500 bg-indigo-50 dark:bg-indigo-950/30" : "border-[var(--card-border)] bg-[var(--background)]"
+          className={`border-2 border-dashed rounded-[var(--r-lg)] p-10 text-center transition ${
+            dragging ? "border-[var(--accent-border)] bg-[var(--accent-subtle)]" : "border-[var(--border)] bg-[var(--background)]"
           }`}
         >
           <input
@@ -168,8 +169,8 @@ export default function OcrPdfPage() {
             ref={fileRef}
           />
           <label htmlFor="fileInput" className="cursor-pointer flex flex-col items-center gap-3">
-            <span className="text-5xl">🔍</span>
-            <span className="text-indigo-500 font-medium hover:underline">
+            <Icon name="search" size={36} className="text-[var(--muted)]" />
+            <span className="text-[var(--accent)] font-medium hover:underline">
               {file ? file.name : "Click to select a PDF or image"}
             </span>
             <span className="text-xs text-[var(--muted)]">Supports PDF, JPG, PNG, BMP, TIFF</span>
@@ -186,14 +187,14 @@ export default function OcrPdfPage() {
             <button
               onClick={convert}
               disabled={showTimer}
-              className="w-full py-3 bg-indigo-600 text-white font-medium rounded-xl hover:bg-indigo-700 disabled:opacity-40 disabled:cursor-not-allowed transition shadow-sm"
+              className="w-full py-3 bg-[var(--accent)] text-white font-medium rounded-[var(--r-lg)] hover:bg-[var(--accent-hover)] disabled:opacity-40 disabled:cursor-not-allowed transition shadow-sm"
             >
               Recognize Text
             </button>
             {!isPremium() && (
               <p className="text-center text-xs text-[var(--muted)]">
                 Free users limited to 3 pages.{ " " }
-                <a href="/premium" className="text-indigo-500 font-medium hover:underline">Upgrade for unlimited pages & larger files</a>
+                <a href="/premium" className="text-[var(--accent)] font-medium hover:underline">Upgrade for unlimited pages & larger files</a>
               </p>
             )}
           </>
@@ -208,19 +209,19 @@ export default function OcrPdfPage() {
               <div className="flex gap-2">
                 <button
                   onClick={() => navigator.clipboard.writeText(ocrResult.fullText)}
-                  className="px-3 py-1.5 text-xs bg-[var(--card)] border border-[var(--card-border)] rounded-lg hover:bg-[var(--card-hover)] transition"
+                  className="px-3 py-1.5 text-xs bg-[var(--surface)] border border-[var(--border)] rounded-lg hover:bg-[var(--card-hover)] transition"
                 >
                   Copy
                 </button>
                 <button
                   onClick={downloadText}
-                  className="px-3 py-1.5 text-xs bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition"
+                  className="px-3 py-1.5 text-xs bg-[var(--accent)] text-white rounded-lg hover:bg-[var(--accent-hover)] transition"
                 >
                   Download TXT
                 </button>
               </div>
             </div>
-            <div className="bg-[var(--background)] border border-[var(--card-border)] rounded-lg p-4 max-h-96 overflow-y-auto">
+            <div className="bg-[var(--background)] border border-[var(--border)] rounded-lg p-4 max-h-96 overflow-y-auto">
               <pre className="text-sm text-[var(--foreground)] whitespace-pre-wrap font-sans">{ocrResult.fullText}</pre>
             </div>
             <button
@@ -235,7 +236,7 @@ export default function OcrPdfPage() {
         {error && <ErrorBanner message={error} onRetry={runOcr} onDismiss={() => setError(null)} />}
       </div>
 
-      <div className="max-w-3xl mx-auto mt-12 pt-8 border-t border-[var(--card-border)]">
+      <div className="max-w-3xl mx-auto mt-12 pt-8 border-t border-[var(--border)]">
         <h2 className="text-xl font-bold text-[var(--foreground)] mb-3">About OCR PDF</h2>
         <div className="text-sm text-[var(--muted)] space-y-3 leading-relaxed">
           <p>OCR (Optical Character Recognition) extracts text from scanned documents and images, making it searchable and editable. Upload a scanned PDF or photo of a document, and our OCR engine recognizes the text — all in your browser with zero server uploads.</p>

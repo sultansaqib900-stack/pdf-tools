@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef } from "react";
+import Icon from "@/components/ui/Icon";
 import ToolGuide from "@/components/ToolGuide";
 import { isPremium } from "@/lib/premium";
 import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
@@ -28,13 +29,13 @@ export default function CertificateGeneratorPage() {
       <div className="max-w-3xl mx-auto px-4 py-12">
         <SoftwareAppJsonLd name="Certificate Generator" description="Generate personalized PDF certificates in bulk. Premium." url="https://allaboutpdfediting.xyz/certificate-generator" image="https://allaboutpdfediting.xyz/opengraph-image.png" aggregateRating={{ ratingValue: 4.8, bestRating: 5, ratingCount: 189 }} />
         <div className="text-center py-20">
-          <div className="text-6xl mb-6">🏆</div>
+          <div className="flex justify-center mb-6"><Icon name="award" size={42} className="text-[var(--muted)]" /></div>
           <h1 className="text-3xl font-bold mb-3">Certificate Generator</h1>
           <p className="text-[var(--muted)] mb-8 max-w-md mx-auto">Create personalized certificates for your students, attendees, or team members in bulk.</p>
-          <div className="inline-block bg-gradient-to-r from-amber-500 to-orange-600 text-white px-8 py-4 rounded-2xl shadow-lg">
+          <div className="inline-block bg-[var(--premium)] text-white px-8 py-4 rounded-[var(--r-xl)] shadow-lg">
             <p className="text-lg font-bold mb-1">Premium Feature</p>
             <p className="text-sm opacity-90 mb-4">Only premium subscribers can generate certificates</p>
-            <a href="/premium" className="inline-block bg-white text-orange-600 px-6 py-2 rounded-xl font-semibold text-sm hover:bg-orange-50 transition">Upgrade to Premium</a>
+            <a href="/premium" className="inline-block bg-white text-[var(--premium)] px-6 py-2 rounded-[var(--r-lg)] font-semibold text-sm hover:bg-[var(--premium-subtle)] transition">Upgrade to Premium</a>
           </div>
         </div>
       </div>
@@ -122,29 +123,29 @@ export default function CertificateGeneratorPage() {
       <div className="mb-8">
         <div className="flex items-center gap-3 mb-2">
           <h1 className="text-3xl font-bold text-[var(--foreground)]">Certificate Generator</h1>
-          <span className="text-xs font-semibold bg-gradient-to-r from-amber-500 to-orange-600 text-white px-2.5 py-0.5 rounded-full">Premium</span>
+          <span className="text-xs font-semibold bg-[var(--premium)] text-white px-2.5 py-0.5 rounded-full">Premium</span>
         </div>
         <p className="text-[var(--muted)]">Upload a certificate template and a CSV of names/dates to generate personalized PDFs in bulk.</p>
       </div>
 
 
-      <div className="bg-[var(--card)] border border-[var(--card-border)] rounded-xl p-6 space-y-6">
+      <div className="bg-[var(--surface)] border border-[var(--border)] rounded-[var(--r-lg)] p-6 space-y-6">
         <div>
           <label className="block text-sm font-medium text-[var(--foreground)] mb-2">1. Certificate Template (PDF)</label>
           <p className="text-xs text-[var(--muted)] mb-2">Create a PDF with placeholders like <code className="bg-[var(--background)] px-1 rounded">[NAME]</code>, <code className="bg-[var(--background)] px-1 rounded">[DATE]</code>, <code className="bg-[var(--background)] px-1 rounded">[COURSE]</code></p>
           <div className="flex items-center gap-3">
-            <input type="file" accept=".pdf" onChange={(e) => handleTemplate(e.target.files?.[0] || null)} className="text-sm file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:bg-indigo-100 dark:file:bg-indigo-900 file:text-indigo-700 dark:file:text-indigo-300 file:text-xs file:font-medium" />
-            {template && <span className="text-xs text-emerald-600">Loaded: {template.name}</span>}
+            <input type="file" accept=".pdf" onChange={(e) => handleTemplate(e.target.files?.[0] || null)} className="text-sm file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:bg-[var(--accent-subtle)] file:text-[var(--accent)] file:text-xs file:font-medium" />
+            {template && <span className="text-xs text-[var(--success)]">Loaded: {template.name}</span>}
           </div>
         </div>
 
         <div>
           <label className="block text-sm font-medium text-[var(--foreground)] mb-2">2. Data File (CSV)</label>
           <p className="text-xs text-[var(--muted)] mb-2">First row should match your placeholders: <code className="bg-[var(--background)] px-1 rounded">NAME,DATE,COURSE</code></p>
-          <input type="file" accept=".csv" onChange={(e) => handleCsv(e.target.files?.[0] || null)} className="text-sm file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:bg-indigo-100 dark:file:bg-indigo-900 file:text-indigo-700 dark:file:text-indigo-300 file:text-xs file:font-medium" />
+          <input type="file" accept=".csv" onChange={(e) => handleCsv(e.target.files?.[0] || null)} className="text-sm file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:bg-[var(--accent-subtle)] file:text-[var(--accent)] file:text-xs file:font-medium" />
           {placeholders.length > 0 && (
-            <div className="mt-2 p-3 bg-indigo-50/50 dark:bg-indigo-950/20 rounded-lg">
-              <p className="text-xs font-medium text-[var(--foreground)]">Detected placeholders: <code className="text-indigo-600">{placeholders.map(p => `[${p.toUpperCase()}]`).join(", ")}</code></p>
+            <div className="mt-2 p-3 bg-[var(--accent-subtle)] rounded-lg">
+              <p className="text-xs font-medium text-[var(--foreground)]">Detected placeholders: <code className="text-[var(--accent)]">{placeholders.map(p => `[${p.toUpperCase()}]`).join(", ")}</code></p>
               <p className="text-xs text-[var(--muted)] mt-1">Make sure your PDF template contains these markers</p>
             </div>
           )}
@@ -153,28 +154,28 @@ export default function CertificateGeneratorPage() {
         <button
           onClick={generate}
           disabled={!template || !csvData || generating}
-          className="w-full py-3 bg-gradient-to-r from-amber-500 to-orange-600 text-white font-bold rounded-xl hover:from-amber-600 hover:to-orange-700 disabled:opacity-40 transition"
+          className="w-full py-3 bg-[var(--premium)] text-white font-bold rounded-[var(--r-lg)] hover:opacity-90 disabled:opacity-40 transition"
         >
           {generating ? "Generating..." : "Generate Certificates"}
         </button>
       </div>
 
       {success && (
-        <div className="mt-6 p-5 bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-200 dark:border-emerald-800 rounded-xl text-center">
-          <div className="text-4xl mb-2">🎉</div>
-          <p className="font-semibold text-emerald-700 dark:text-emerald-300">{generatedCount} certificate(s) generated and downloading</p>
+        <div className="mt-6 p-5 bg-[var(--success-subtle)] border border-[var(--success)]/25 rounded-[var(--r-lg)] text-center">
+          <div className="flex justify-center mb-2"><Icon name="check" size={30} className="text-[var(--muted)]" /></div>
+          <p className="font-semibold text-[var(--success)]">{generatedCount} certificate(s) generated and downloading</p>
         </div>
       )}
 
       {error && (
-        <div className="mt-6 p-4 bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-800 rounded-xl text-red-600 dark:text-red-400 text-sm">{error}</div>
+        <div className="mt-6 p-4 bg-[var(--danger-subtle)] border border-[var(--danger)]/25 rounded-[var(--r-lg)] text-[var(--danger)] dark:text-[var(--danger)] text-sm">{error}</div>
       )}
 
 
       <ToolGuide slug="certificate-generator" />
 
       <div className="text-center mt-8">
-        <a href="/premium" className="text-sm text-indigo-500 hover:underline font-medium">Explore all Premium features →</a>
+        <a href="/premium" className="text-sm text-[var(--accent)] hover:underline font-medium">Explore all Premium features →</a>
       </div>
     </div>
   );

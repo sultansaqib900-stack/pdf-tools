@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Icon from "@/components/ui/Icon";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { seoPages } from "@/lib/programmatic-seo";
@@ -88,7 +89,7 @@ export default async function SeoPage({ params }: { params: Promise<{ slug: stri
           {toolUrl && (
             <Link
               href={toolUrl}
-              className="inline-flex items-center gap-2 px-8 py-3.5 bg-indigo-600 text-white font-semibold rounded-2xl hover:bg-indigo-700 transition shadow-lg shadow-indigo-600/25 text-lg"
+              className="inline-flex items-center gap-2 px-8 py-3.5 bg-[var(--accent)] text-white font-semibold rounded-[var(--r-xl)] hover:bg-[var(--accent-hover)] transition shadow-lg shadow-indigo-600/25 text-lg"
             >
               Try {page.toolName} Free →
             </Link>
@@ -97,8 +98,8 @@ export default async function SeoPage({ params }: { params: Promise<{ slug: stri
 
         {/* Pain point + benefit */}
         <section className="grid sm:grid-cols-2 gap-6 mb-12">
-          <div className="p-6 rounded-xl border border-red-200/50 dark:border-red-900/30 bg-red-50/50 dark:bg-red-950/10">
-            <div className="text-2xl mb-2">😫</div>
+          <div className="p-6 rounded-[var(--r-lg)] border border-[var(--danger)]/25/50 border-[var(--danger)]/25/30 bg-[var(--danger-subtle)]">
+            <div className="flex justify-center mb-2"><Icon name="close" size={22} className="text-[var(--muted)]" /></div>
             <h2 className="font-semibold text-[var(--foreground)] mb-2">The Problem</h2>
             <ul className="text-sm text-[var(--muted)] space-y-1.5 list-disc list-inside">
               {page.painPoints.map((pp) => (
@@ -106,8 +107,8 @@ export default async function SeoPage({ params }: { params: Promise<{ slug: stri
               ))}
             </ul>
           </div>
-          <div className="p-6 rounded-xl border border-emerald-200/50 dark:border-emerald-900/30 bg-emerald-50/50 dark:bg-emerald-950/10">
-            <div className="text-2xl mb-2">✅</div>
+          <div className="p-6 rounded-[var(--r-lg)] border border-[var(--success)]/25/50 dark:border-[var(--success)]/25/30 bg-[var(--success-subtle)]">
+            <div className="flex justify-center mb-2"><Icon name="check" size={22} className="text-[var(--muted)]" /></div>
             <h2 className="font-semibold text-[var(--foreground)] mb-2">The Solution</h2>
             <p className="text-sm text-[var(--muted)]">{page.benefit}</p>
           </div>
@@ -132,27 +133,27 @@ export default async function SeoPage({ params }: { params: Promise<{ slug: stri
         </section>
 
         {/* Tool features */}
-        <section className="mb-12 p-6 rounded-xl border border-[var(--card-border)] bg-[var(--card)]">
+        <section className="mb-12 p-6 rounded-[var(--r-lg)] border border-[var(--border)] bg-[var(--surface)]">
           <h2 className="text-xl font-bold text-[var(--foreground)] mb-4">Key Features</h2>
           <ul className="space-y-3">
             <li className="flex items-start gap-3">
-              <span className="text-emerald-500 mt-0.5 shrink-0">✓</span>
+              <span className="text-[var(--success)] mt-0.5 shrink-0">✓</span>
               <span className="text-sm text-[var(--muted)]">100% free — no hidden charges or trial periods</span>
             </li>
             <li className="flex items-start gap-3">
-              <span className="text-emerald-500 mt-0.5 shrink-0">✓</span>
+              <span className="text-[var(--success)] mt-0.5 shrink-0">✓</span>
               <span className="text-sm text-[var(--muted)]">Works in your browser — no downloads or installations</span>
             </li>
             <li className="flex items-start gap-3">
-              <span className="text-emerald-500 mt-0.5 shrink-0">✓</span>
+              <span className="text-[var(--success)] mt-0.5 shrink-0">✓</span>
               <span className="text-sm text-[var(--muted)]">Privacy first — files never leave your device</span>
             </li>
             <li className="flex items-start gap-3">
-              <span className="text-emerald-500 mt-0.5 shrink-0">✓</span>
+              <span className="text-[var(--success)] mt-0.5 shrink-0">✓</span>
               <span className="text-sm text-[var(--muted)]">Fast processing — results in seconds, not minutes</span>
             </li>
             <li className="flex items-start gap-3">
-              <span className="text-emerald-500 mt-0.5 shrink-0">✓</span>
+              <span className="text-[var(--success)] mt-0.5 shrink-0">✓</span>
               <span className="text-sm text-[var(--muted)]">No account required — just upload and go</span>
             </li>
           </ul>
@@ -163,8 +164,8 @@ export default async function SeoPage({ params }: { params: Promise<{ slug: stri
           <h2 className="text-2xl font-bold text-[var(--foreground)] mb-6">Frequently Asked Questions</h2>
           <div className="space-y-3">
             {page.faqs.map((faq, i) => (
-              <details key={i} className="group rounded-xl border border-[var(--card-border)] bg-[var(--card)] open:shadow-sm transition-all">
-                <summary className="flex items-center justify-between px-5 py-4 cursor-pointer text-sm font-semibold text-[var(--foreground)] hover:text-indigo-600 transition-colors">
+              <details key={i} className="group rounded-[var(--r-lg)] border border-[var(--border)] bg-[var(--surface)] open:shadow-sm transition-all">
+                <summary className="flex items-center justify-between px-5 py-4 cursor-pointer text-sm font-semibold text-[var(--foreground)] hover:text-[var(--accent)] transition-colors">
                   {faq.question}
                   <svg className="w-4 h-4 text-[var(--muted)] group-open:rotate-180 transition-transform shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
                 </summary>
@@ -190,7 +191,7 @@ export default async function SeoPage({ params }: { params: Promise<{ slug: stri
                   <Link
                     key={p.slug}
                     href={`/for/${p.slug}`}
-                    className="px-3 py-2 rounded-lg border border-[var(--card-border)] bg-[var(--card)] text-xs font-medium text-[var(--muted)] hover:text-indigo-500 hover:border-indigo-400/30 transition text-center"
+                    className="px-3 py-2 rounded-lg border border-[var(--border)] bg-[var(--surface)] text-xs font-medium text-[var(--muted)] hover:text-[var(--accent)] hover:border-[var(--accent-border)]/30 transition text-center"
                   >
                     {p.audience.replace("for ", "")}
                   </Link>
@@ -208,7 +209,7 @@ export default async function SeoPage({ params }: { params: Promise<{ slug: stri
               <Link
                 key={t.href}
                 href={t.href}
-                className="block p-4 rounded-xl border border-[var(--card-border)] bg-[var(--card)] hover:border-indigo-400/30 hover:shadow transition text-center"
+                className="block p-4 rounded-[var(--r-lg)] border border-[var(--border)] bg-[var(--surface)] hover:border-[var(--accent-border)]/30 hover:shadow transition text-center"
               >
                 <div className="text-2xl mb-1">{t.icon}</div>
                 <p className="text-xs font-medium text-[var(--foreground)]">{t.name}</p>

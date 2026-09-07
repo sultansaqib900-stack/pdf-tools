@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useEffect, useRef } from "react";
+import Icon from "@/components/ui/Icon";
 import ToolGuide from "@/components/ToolGuide";
 import ToolInfo from "@/components/ToolInfo";
 import FreeWaitTimer from "@/components/FreeWaitTimer";
@@ -139,19 +140,19 @@ export default function DeletePagesPage() {
         <UsageBar remaining={usage.remaining} unlimited={usage.unlimited} />
       </div>
 
-      <div className="bg-[var(--card)] rounded-xl border border-[var(--card-border)] p-8">
+      <div className="bg-[var(--surface)] rounded-[var(--r-lg)] border border-[var(--border)] p-8">
         <div
           onDrop={(e) => { e.preventDefault(); setDragging(false); handleFile(e.dataTransfer.files[0]); }}
           onDragOver={(e) => { e.preventDefault(); setDragging(true); }}
           onDragLeave={() => setDragging(false)}
-          className={`border-2 border-dashed rounded-xl p-10 text-center transition ${
-            dragging ? "border-indigo-500 bg-indigo-50 dark:bg-indigo-950/30" : "border-[var(--card-border)] bg-[var(--background)]"
+          className={`border-2 border-dashed rounded-[var(--r-lg)] p-10 text-center transition ${
+            dragging ? "border-[var(--accent-border)] bg-[var(--accent-subtle)]" : "border-[var(--border)] bg-[var(--background)]"
           }`}
         >
           <input type="file" accept="application/pdf" onChange={(e) => handleFile(e.target.files?.[0] ?? null)} className="hidden" id="fileInput" />
           <label htmlFor="fileInput" className="cursor-pointer flex flex-col items-center gap-3">
-            <span className="text-5xl">🗑️</span>
-            <span className="text-indigo-500 font-medium hover:underline">
+            <Icon name="delete" size={36} className="text-[var(--muted)]" />
+            <span className="text-[var(--accent)] font-medium hover:underline">
               {file ? file.name : "Click to select or drag & drop a PDF"}
             </span>
             {file && <span className="text-sm text-[var(--muted)]">{(file.size / 1024).toFixed(1)} KB &middot; {pages.length} pages</span>}
@@ -163,7 +164,7 @@ export default function DeletePagesPage() {
           <div className="mt-6">
             <div className="flex items-center justify-between mb-3">
               <span className="text-sm font-medium text-[var(--foreground)]">Select pages to keep ({pages.filter((p) => p.checked).length} of {pages.length})</span>
-              <button onClick={toggleAll} className="text-xs text-indigo-500 hover:underline">
+              <button onClick={toggleAll} className="text-xs text-[var(--accent)] hover:underline">
                 {pages.every((p) => p.checked) ? "Deselect all" : "Select all"}
               </button>
             </div>
@@ -172,10 +173,10 @@ export default function DeletePagesPage() {
                 <button
                   key={p.index}
                   onClick={() => togglePage(p.index)}
-                  className={`aspect-square rounded-xl text-sm font-medium border transition ${
+                  className={`aspect-square rounded-[var(--r-lg)] text-sm font-medium border transition ${
                     p.checked
-                      ? "bg-indigo-600 text-white border-indigo-600"
-                      : "border-[var(--card-border)] text-[var(--muted)] hover:border-red-400 hover:text-red-500"
+                      ? "bg-[var(--accent)] text-white border-[var(--accent-border)]"
+                      : "border-[var(--border)] text-[var(--muted)] hover:border-[var(--danger)]/25 hover:text-[var(--danger)]"
                   }`}
                 >
                   {p.index + 1}
@@ -194,7 +195,7 @@ export default function DeletePagesPage() {
             <button
               onClick={process}
               disabled={processing || pages.filter((p) => p.checked).length === pages.length || showTimer}
-              className="mt-6 w-full py-3 bg-indigo-600 text-white font-medium rounded-xl hover:bg-indigo-700 disabled:opacity-40 disabled:cursor-not-allowed transition shadow-sm"
+              className="mt-6 w-full py-3 bg-[var(--accent)] text-white font-medium rounded-[var(--r-lg)] hover:bg-[var(--accent-hover)] disabled:opacity-40 disabled:cursor-not-allowed transition shadow-sm"
             >
               {processing ? (
                 <span className="flex items-center justify-center gap-2">
@@ -207,7 +208,7 @@ export default function DeletePagesPage() {
             {!isPremium() && (
               <p className="mt-3 text-center text-xs text-[var(--muted)]">
                 Free users limited to 10MB &amp; 5s wait.{ " " }
-                <a href="/premium" className="text-indigo-500 font-medium hover:underline">Upgrade for no limits</a>
+                <a href="/premium" className="text-[var(--accent)] font-medium hover:underline">Upgrade for no limits</a>
               </p>
             )}
           </>
@@ -219,7 +220,7 @@ export default function DeletePagesPage() {
       </div>
 
 
-      <div className="max-w-3xl mx-auto mt-12 pt-8 border-t border-[var(--card-border)]">
+      <div className="max-w-3xl mx-auto mt-12 pt-8 border-t border-[var(--border)]">
         <h2 className="text-xl font-bold text-[var(--foreground)] mb-3">About Delete PDF Pages</h2>
         <div className="text-sm text-[var(--muted)] space-y-3 leading-relaxed">
           <p>Remove unwanted pages from PDF files online for free. Select the pages you want to keep, and the tool creates a new PDF with only those pages. Perfect for removing blank pages, covers, or sections you don't need.</p>

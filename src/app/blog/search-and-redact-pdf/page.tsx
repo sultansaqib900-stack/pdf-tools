@@ -14,7 +14,7 @@ export default function BlogPost() {
       />
       <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Blog", item: "https://allaboutpdfediting.xyz/blog" }, { name: "How to Search and Redact Words in PDF Online Free", item: "https://allaboutpdfediting.xyz/blog/search-and-redact-pdf" }]} />
       <HowToJsonLd name="How to Search and Redact Words in PDF Online Free" description="Automatically find and redact specific words or phrases across your entire PDF document." steps={[{name:"Upload your PDF — Select the document containing sensitive information.",text:"Upload your PDF — Select the document containing sensitive information."},{name:"Enter search terms — Type the words, phrases, or patterns you want to find an...",text:"Enter search terms — Type the words, phrases, or patterns you want to find and redact. The tool supports multiple terms at once."},{name:"Apply redaction — Review the matches and apply permanent black-box redaction....",text:"Apply redaction — Review the matches and apply permanent black-box redaction. Download the cleaned document."}]} />
-      <a href="/blog" className="text-sm text-indigo-500 hover:underline mb-6 inline-block">&larr; Back to blog</a>
+      <a href="/blog" className="text-sm text-[var(--accent)] hover:underline mb-6 inline-block">&larr; Back to blog</a>
       <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">How to Search and Redact Words in PDF Online Free</h1>
       <p className="text-sm text-[var(--muted)] mb-8">5 min read · Updated June 2026</p>
 
@@ -49,10 +49,10 @@ export default function BlogPost() {
         <h2 className="text-xl font-bold text-[var(--foreground)] pt-4">Redaction vs. Black Highlighting</h2>
         <p>Simply drawing a black shape over text is not secure — the text underneath can often be selected, copied, or extracted. True redaction permanently removes the underlying text data so it cannot be recovered. Always use a dedicated redaction tool for sensitive documents.</p>
 
-        <div className="bg-[var(--card)] border border-[var(--card-border)] rounded-xl p-6 mt-6">
+        <div className="bg-[var(--surface)] border border-[var(--border)] rounded-[var(--r-lg)] p-6 mt-6">
           <p className="font-semibold text-[var(--foreground)] mb-1">Premium Feature</p>
           <p className="text-sm text-[var(--muted)] mb-3">Search and redact is a premium tool with automatic text detection across your entire document. Upgrade for permanent, automated redaction.</p>
-          <a href="/premium" className="inline-block px-5 py-2.5 bg-amber-600 text-white font-medium rounded-xl text-sm hover:bg-amber-700 transition">Upgrade to Premium →</a>
+          <a href="/premium" className="inline-block px-5 py-2.5 bg-[var(--premium)] text-white font-medium rounded-[var(--r-lg)] text-sm hover:opacity-90 transition">Upgrade to Premium →</a>
         </div>
       </div>
     </article>

@@ -13,7 +13,7 @@ export default function AboutPage() {
           your data never leaves your device.
         </p>
 
-        <div className="bg-[var(--card)] border border-[var(--card-border)] rounded-xl p-5">
+        <div className="bg-[var(--surface)] border border-[var(--border)] rounded-[var(--r-lg)] p-5">
           <p className="font-semibold text-[var(--foreground)] mb-2">The Mission</p>
           <p>
             Make professional PDF editing free and private for everyone. <strong>more than sixty tools</strong>,
@@ -50,7 +50,7 @@ export default function AboutPage() {
         <h2 className="text-lg font-semibold text-[var(--foreground)] pt-2">Tech Stack</h2>
         <p className="flex flex-wrap gap-2">
           {["Next.js", "TypeScript", "Tailwind CSS", "pdf-lib", "pdfjs-dist", "Gemini API", "WebAssembly", "Vercel", "Upstash Redis", "Lemon Squeezy", "Buttondown"].map((tech) => (
-            <span key={tech} className="px-3 py-1 rounded-full bg-[var(--card)] border border-[var(--card-border)] text-xs font-medium text-[var(--foreground)]">
+            <span key={tech} className="px-3 py-1 rounded-full bg-[var(--surface)] border border-[var(--border)] text-xs font-medium text-[var(--foreground)]">
               {tech}
             </span>
           ))}

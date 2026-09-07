@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef } from "react";
+import Icon from "@/components/ui/Icon";
 import ToolGuide from "@/components/ToolGuide";
 import { isPremium } from "@/lib/premium";
 import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
@@ -33,13 +34,13 @@ export default function PdfDiffPage() {
       <div className="max-w-3xl mx-auto px-4 py-12">
         <SoftwareAppJsonLd name="PDF Diff - Compare PDF Files" description="Compare two PDF files and see highlighted differences. Premium feature." url="https://allaboutpdfediting.xyz/pdf-diff" image="https://allaboutpdfediting.xyz/opengraph-image.png" aggregateRating={{ ratingValue: 4.9, bestRating: 5, ratingCount: 312 }} />
         <div className="text-center py-20">
-          <div className="text-6xl mb-6">🔍</div>
+          <div className="flex justify-center mb-6"><Icon name="search" size={42} className="text-[var(--muted)]" /></div>
           <h1 className="text-3xl font-bold mb-3">Compare PDF Files</h1>
           <p className="text-[var(--muted)] mb-8 max-w-md mx-auto">See exactly what changed between two PDF versions — side by side, highlighted.</p>
-          <div className="inline-block bg-gradient-to-r from-amber-500 to-orange-600 text-white px-8 py-4 rounded-2xl shadow-lg">
+          <div className="inline-block bg-[var(--premium)] text-white px-8 py-4 rounded-[var(--r-xl)] shadow-lg">
             <p className="text-lg font-bold mb-1">Premium Feature</p>
             <p className="text-sm opacity-90 mb-4">Only premium subscribers can compare PDFs</p>
-            <a href="/premium" className="inline-block bg-white text-orange-600 px-6 py-2 rounded-xl font-semibold text-sm hover:bg-orange-50 transition">Upgrade to Premium</a>
+            <a href="/premium" className="inline-block bg-white text-[var(--premium)] px-6 py-2 rounded-[var(--r-lg)] font-semibold text-sm hover:bg-[var(--premium-subtle)] transition">Upgrade to Premium</a>
           </div>
         </div>
       </div>
@@ -110,7 +111,7 @@ export default function PdfDiffPage() {
       <div className="mb-8">
         <div className="flex items-center gap-3 mb-2">
           <h1 className="text-3xl font-bold text-[var(--foreground)]">PDF Compare</h1>
-          <span className="text-xs font-semibold bg-gradient-to-r from-amber-500 to-orange-600 text-white px-2.5 py-0.5 rounded-full">Premium</span>
+          <span className="text-xs font-semibold bg-[var(--premium)] text-white px-2.5 py-0.5 rounded-full">Premium</span>
         </div>
         <p className="text-[var(--muted)]">Upload two PDFs and see exactly what changed — word by word, page by page.</p>
       </div>
@@ -118,48 +119,48 @@ export default function PdfDiffPage() {
 
       <div className="grid md:grid-cols-2 gap-4 mb-8">
         <div
-          className={`border-2 border-dashed rounded-xl p-8 text-center transition ${draggingA ? "border-indigo-500 bg-indigo-50/50" : "border-[var(--card-border)]"} ${docA ? "bg-emerald-50/50 border-emerald-400" : ""}`}
+          className={`border-2 border-dashed rounded-[var(--r-lg)] p-8 text-center transition ${draggingA ? "border-[var(--accent-border)] bg-[var(--accent-subtle)]" : "border-[var(--border)]"} ${docA ? "bg-[var(--success-subtle)] border-[var(--success)]/25" : ""}`}
           onDragOver={(e) => { e.preventDefault(); setDraggingA(true); }}
           onDragLeave={() => setDraggingA(false)}
           onDrop={(e) => { e.preventDefault(); setDraggingA(false); const f = e.dataTransfer.files[0]; if (f?.type === "application/pdf") setDocA(f); }}
         >
           {docA ? (
             <div>
-              <div className="text-4xl mb-2">✅</div>
-              <p className="font-medium text-sm text-emerald-700 truncate max-w-full">{docA.name}</p>
+              <div className="flex justify-center mb-2"><Icon name="check" size={30} className="text-[var(--muted)]" /></div>
+              <p className="font-medium text-sm text-[var(--success)] truncate max-w-full">{docA.name}</p>
               <p className="text-xs text-[var(--muted)] mt-1">{(docA.size / 1024).toFixed(0)} KB</p>
-              <button onClick={() => setDocA(null)} className="mt-2 text-xs text-red-500 hover:underline">Remove</button>
+              <button onClick={() => setDocA(null)} className="mt-2 text-xs text-[var(--danger)] hover:underline">Remove</button>
             </div>
           ) : (
             <>
-              <div className="text-4xl mb-2">📄</div>
+              <div className="flex justify-center mb-2"><Icon name="fileText" size={30} className="text-[var(--muted)]" /></div>
               <p className="font-medium text-sm mb-1">Original Document</p>
               <p className="text-xs text-[var(--muted)]">Drag & drop or click to browse</p>
               <input type="file" accept=".pdf" className="hidden" id="diffA" onChange={(e) => setDocA(e.target.files?.[0] || null)} />
-              <button onClick={() => document.getElementById("diffA")?.click()} className="mt-3 text-xs text-indigo-500 hover:underline">Browse files</button>
+              <button onClick={() => document.getElementById("diffA")?.click()} className="mt-3 text-xs text-[var(--accent)] hover:underline">Browse files</button>
             </>
           )}
         </div>
         <div
-          className={`border-2 border-dashed rounded-xl p-8 text-center transition ${draggingB ? "border-indigo-500 bg-indigo-50/50" : "border-[var(--card-border)]"} ${docB ? "bg-emerald-50/50 border-emerald-400" : ""}`}
+          className={`border-2 border-dashed rounded-[var(--r-lg)] p-8 text-center transition ${draggingB ? "border-[var(--accent-border)] bg-[var(--accent-subtle)]" : "border-[var(--border)]"} ${docB ? "bg-[var(--success-subtle)] border-[var(--success)]/25" : ""}`}
           onDragOver={(e) => { e.preventDefault(); setDraggingB(true); }}
           onDragLeave={() => setDraggingB(false)}
           onDrop={(e) => { e.preventDefault(); setDraggingB(false); const f = e.dataTransfer.files[0]; if (f?.type === "application/pdf") setDocB(f); }}
         >
           {docB ? (
             <div>
-              <div className="text-4xl mb-2">✅</div>
-              <p className="font-medium text-sm text-emerald-700 truncate max-w-full">{docB.name}</p>
+              <div className="flex justify-center mb-2"><Icon name="check" size={30} className="text-[var(--muted)]" /></div>
+              <p className="font-medium text-sm text-[var(--success)] truncate max-w-full">{docB.name}</p>
               <p className="text-xs text-[var(--muted)] mt-1">{(docB.size / 1024).toFixed(0)} KB</p>
-              <button onClick={() => setDocB(null)} className="mt-2 text-xs text-red-500 hover:underline">Remove</button>
+              <button onClick={() => setDocB(null)} className="mt-2 text-xs text-[var(--danger)] hover:underline">Remove</button>
             </div>
           ) : (
             <>
-              <div className="text-4xl mb-2">📄</div>
+              <div className="flex justify-center mb-2"><Icon name="fileText" size={30} className="text-[var(--muted)]" /></div>
               <p className="font-medium text-sm mb-1">Modified Document</p>
               <p className="text-xs text-[var(--muted)]">Drag & drop or click to browse</p>
               <input type="file" accept=".pdf" className="hidden" id="diffB" onChange={(e) => setDocB(e.target.files?.[0] || null)} />
-              <button onClick={() => document.getElementById("diffB")?.click()} className="mt-3 text-xs text-indigo-500 hover:underline">Browse files</button>
+              <button onClick={() => document.getElementById("diffB")?.click()} className="mt-3 text-xs text-[var(--accent)] hover:underline">Browse files</button>
             </>
           )}
         </div>
@@ -168,13 +169,13 @@ export default function PdfDiffPage() {
       <button
         onClick={runDiff}
         disabled={!docA || !docB || processing}
-        className="w-full py-3 bg-gradient-to-r from-amber-500 to-orange-600 text-white font-bold rounded-xl hover:from-amber-600 hover:to-orange-700 disabled:opacity-40 transition text-lg mb-8"
+        className="w-full py-3 bg-[var(--premium)] text-white font-bold rounded-[var(--r-lg)] hover:opacity-90 disabled:opacity-40 transition text-lg mb-8"
       >
         {processing ? "Comparing..." : "Compare Documents"}
       </button>
 
       {error && (
-        <div className="p-4 bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-800 rounded-xl text-red-600 dark:text-red-400 text-sm mb-8">
+        <div className="p-4 bg-[var(--danger-subtle)] border border-[var(--danger)]/25 rounded-[var(--r-lg)] text-[var(--danger)] dark:text-[var(--danger)] text-sm mb-8">
           {error}
         </div>
       )}
@@ -183,26 +184,26 @@ export default function PdfDiffPage() {
         <div className="space-y-3 mb-8">
           <h2 className="text-xl font-bold text-[var(--foreground)] mb-4">Comparison Results</h2>
           {diffs.filter(d => d.type !== "same").length === 0 && (
-            <div className="p-6 bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-200 dark:border-emerald-800 rounded-xl text-center">
-              <div className="text-4xl mb-2">✅</div>
-              <p className="font-semibold text-emerald-700 dark:text-emerald-300">No differences found — the documents are identical</p>
+            <div className="p-6 bg-[var(--success-subtle)] border border-[var(--success)]/25 rounded-[var(--r-lg)] text-center">
+              <div className="flex justify-center mb-2"><Icon name="check" size={30} className="text-[var(--muted)]" /></div>
+              <p className="font-semibold text-[var(--success)]">No differences found — the documents are identical</p>
             </div>
           )}
           {diffs.filter(d => d.type !== "same").map((d, i) => (
-            <div key={i} className={`p-4 rounded-xl border text-sm ${
+            <div key={i} className={`p-4 rounded-[var(--r-lg)] border text-sm ${
               d.type === "added"
-                ? "bg-emerald-50/50 dark:bg-emerald-950/10 border-emerald-200 dark:border-emerald-800"
-                : "bg-red-50/50 dark:bg-red-950/10 border-red-200 dark:border-red-800"
+                ? "bg-[var(--success-subtle)] bg-[var(--success-subtle)] border-[var(--success)]/25 dark:border-[var(--success)]/25"
+                : "bg-[var(--danger-subtle)] bg-[var(--danger-subtle)] border-[var(--danger)]/25 dark:border-[var(--danger)]/25"
             }`}>
               <span className={`inline-block text-xs font-bold px-2 py-0.5 rounded-full mb-2 ${
-                d.type === "added" ? "bg-emerald-500 text-white" : "bg-red-500 text-white"
+                d.type === "added" ? "bg-[var(--success)] text-white" : "bg-[var(--danger)] text-white"
               }`}>
                 {d.type === "added" ? "+ Added" : "- Removed"} (Page {d.page})
               </span>
               <p className="text-[var(--foreground)]">{d.text}</p>
             </div>
           ))}
-          <details className="border border-[var(--card-border)] rounded-xl overflow-hidden">
+          <details className="border border-[var(--border)] rounded-[var(--r-lg)] overflow-hidden">
             <summary className="px-5 py-3 font-medium text-sm cursor-pointer hover:bg-[var(--background)]">Show identical pages ({diffs.filter(d => d.type === "same").length})</summary>
             <div className="px-5 pb-4 space-y-2">
               {diffs.filter(d => d.type === "same").map((d, i) => (
@@ -217,7 +218,7 @@ export default function PdfDiffPage() {
       <ToolGuide slug="pdf-diff" />
 
       <div className="text-center mt-8">
-        <a href="/premium" className="text-sm text-indigo-500 hover:underline font-medium">Explore all Premium features →</a>
+        <a href="/premium" className="text-sm text-[var(--accent)] hover:underline font-medium">Explore all Premium features →</a>
       </div>
     </div>
   );

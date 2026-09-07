@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef } from "react";
+import Icon from "@/components/ui/Icon";
 import ToolGuide from "@/components/ToolGuide";
 import { isPremium } from "@/lib/premium";
 import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
@@ -32,13 +33,13 @@ export default function BatesNumberingPage() {
       <div className="max-w-3xl mx-auto px-4 py-12">
         <SoftwareAppJsonLd name="Bates Numbering for PDF" description="Add sequential Bates numbers to PDF pages. Premium feature for legal and professional documents." url="https://allaboutpdfediting.xyz/bates-numbering" image="https://allaboutpdfediting.xyz/opengraph-image.png" aggregateRating={{ ratingValue: 4.9, bestRating: 5, ratingCount: 98 }} />
         <div className="text-center py-20">
-          <div className="text-6xl mb-6">🔢</div>
+          <div className="flex justify-center mb-6"><Icon name="numbers" size={42} className="text-[var(--muted)]" /></div>
           <h1 className="text-3xl font-bold mb-3">Bates Numbering</h1>
           <p className="text-[var(--muted)] mb-8 max-w-md mx-auto">Add sequential numbers, letters, or custom labels to every page of your PDF documents.</p>
-          <div className="inline-block bg-gradient-to-r from-amber-500 to-orange-600 text-white px-8 py-4 rounded-2xl shadow-lg">
+          <div className="inline-block bg-[var(--premium)] text-white px-8 py-4 rounded-[var(--r-xl)] shadow-lg">
             <p className="text-lg font-bold mb-1">Premium Feature</p>
             <p className="text-sm opacity-90 mb-4">Only premium subscribers can add Bates numbering</p>
-            <a href="/premium" className="inline-block bg-white text-orange-600 px-6 py-2 rounded-xl font-semibold text-sm hover:bg-orange-50 transition">Upgrade to Premium</a>
+            <a href="/premium" className="inline-block bg-white text-[var(--premium)] px-6 py-2 rounded-[var(--r-lg)] font-semibold text-sm hover:bg-[var(--premium-subtle)] transition">Upgrade to Premium</a>
           </div>
         </div>
       </div>
@@ -120,34 +121,34 @@ export default function BatesNumberingPage() {
           onDrop={handleDrop}
           onDragOver={(e) => { e.preventDefault(); setDragging(true); }}
           onDragLeave={() => setDragging(false)}
-          className={`border-2 border-dashed rounded-2xl p-12 text-center cursor-pointer transition ${dragging ? "border-indigo-500 bg-indigo-50/50 dark:bg-indigo-950/20" : "border-[var(--card-border)] hover:border-indigo-500/50"}`}
+          className={`border-2 border-dashed rounded-[var(--r-xl)] p-12 text-center cursor-pointer transition ${dragging ? "border-[var(--accent-border)] bg-[var(--accent-subtle)] bg-[var(--accent-subtle)]" : "border-[var(--border)] hover:border-[var(--accent-border)]"}`}
           onClick={() => fileRef.current?.click()}
         >
-          <div className="text-5xl mb-4">🔢</div>
+          <div className="flex justify-center mb-4"><Icon name="numbers" size={36} className="text-[var(--muted)]" /></div>
           <p className="font-medium text-[var(--foreground)] mb-1">Drop a PDF here or click to browse</p>
           <p className="text-sm text-[var(--muted)]">Add Bates numbers to every page</p>
           <input ref={fileRef} type="file" accept="application/pdf" className="hidden" onChange={(e) => { const f = e.target.files?.[0]; if (f) setFile(f); }} />
         </div>
       ) : (
         <div>
-          <div className="bg-[var(--card)] border border-[var(--card-border)] rounded-xl p-6 mb-6">
+          <div className="bg-[var(--surface)] border border-[var(--border)] rounded-[var(--r-lg)] p-6 mb-6">
             <p className="text-sm text-[var(--muted)] mb-4">File: <span className="text-[var(--foreground)]">{file.name}</span> ({file.size < 1024 * 1024 ? Math.round(file.size / 1024) + " KB" : (file.size / (1024 * 1024)).toFixed(1) + " MB"})</p>
             <div className="grid sm:grid-cols-2 gap-4 mb-4">
               <div>
                 <label className="block text-xs font-medium text-[var(--muted)] mb-1">Prefix</label>
-                <input type="text" value={prefix} onChange={(e) => setPrefix(e.target.value)} placeholder="e.g. DEF-" className="w-full px-3 py-2 text-sm rounded-lg bg-[var(--background)] border border-[var(--card-border)] text-[var(--foreground)]" />
+                <input type="text" value={prefix} onChange={(e) => setPrefix(e.target.value)} placeholder="e.g. DEF-" className="w-full px-3 py-2 text-sm rounded-lg bg-[var(--background)] border border-[var(--border)] text-[var(--foreground)]" />
               </div>
               <div>
                 <label className="block text-xs font-medium text-[var(--muted)] mb-1">Suffix</label>
-                <input type="text" value={suffix} onChange={(e) => setSuffix(e.target.value)} placeholder="e.g. -v1" className="w-full px-3 py-2 text-sm rounded-lg bg-[var(--background)] border border-[var(--card-border)] text-[var(--foreground)]" />
+                <input type="text" value={suffix} onChange={(e) => setSuffix(e.target.value)} placeholder="e.g. -v1" className="w-full px-3 py-2 text-sm rounded-lg bg-[var(--background)] border border-[var(--border)] text-[var(--foreground)]" />
               </div>
               <div>
                 <label className="block text-xs font-medium text-[var(--muted)] mb-1">Start Number</label>
-                <input type="number" value={startNum} onChange={(e) => setStartNum(Math.max(1, parseInt(e.target.value) || 1))} className="w-full px-3 py-2 text-sm rounded-lg bg-[var(--background)] border border-[var(--card-border)] text-[var(--foreground)]" />
+                <input type="number" value={startNum} onChange={(e) => setStartNum(Math.max(1, parseInt(e.target.value) || 1))} className="w-full px-3 py-2 text-sm rounded-lg bg-[var(--background)] border border-[var(--border)] text-[var(--foreground)]" />
               </div>
               <div>
                 <label className="block text-xs font-medium text-[var(--muted)] mb-1">Digit Padding</label>
-                <select value={digits} onChange={(e) => setDigits(parseInt(e.target.value))} className="w-full px-3 py-2 text-sm rounded-lg bg-[var(--background)] border border-[var(--card-border)] text-[var(--foreground)]">
+                <select value={digits} onChange={(e) => setDigits(parseInt(e.target.value))} className="w-full px-3 py-2 text-sm rounded-lg bg-[var(--background)] border border-[var(--border)] text-[var(--foreground)]">
                   <option value={3}>000</option>
                   <option value={4}>0000</option>
                   <option value={5}>00000</option>
@@ -157,7 +158,7 @@ export default function BatesNumberingPage() {
             </div>
             <div className="mb-4">
               <label className="block text-xs font-medium text-[var(--muted)] mb-1">Position</label>
-              <select value={position} onChange={(e) => setPosition(e.target.value as any)} className="w-full px-3 py-2 text-sm rounded-lg bg-[var(--background)] border border-[var(--card-border)] text-[var(--foreground)]">
+              <select value={position} onChange={(e) => setPosition(e.target.value as any)} className="w-full px-3 py-2 text-sm rounded-lg bg-[var(--background)] border border-[var(--border)] text-[var(--foreground)]">
                 <option value="bottom-right">Bottom Right</option>
                 <option value="bottom-left">Bottom Left</option>
                 <option value="bottom-center">Bottom Center</option>
@@ -169,17 +170,17 @@ export default function BatesNumberingPage() {
               Preview: <code className="bg-[var(--background)] px-1 rounded">{prefix}{startNum.toString().padStart(digits, "0")}{suffix}</code>, <code className="bg-[var(--background)] px-1 rounded">{prefix}{(startNum + 1).toString().padStart(digits, "0")}{suffix}</code>, <code className="bg-[var(--background)] px-1 rounded">{prefix}{(startNum + 2).toString().padStart(digits, "0")}{suffix}</code>...
             </div>
             <div className="flex gap-3">
-              <button onClick={handleProcess} disabled={processing} className="px-6 py-2.5 bg-indigo-600 text-white rounded-xl text-sm hover:bg-indigo-700 disabled:opacity-50 transition">
+              <button onClick={handleProcess} disabled={processing} className="px-6 py-2.5 bg-[var(--accent)] text-white rounded-[var(--r-lg)] text-sm hover:bg-[var(--accent-hover)] disabled:opacity-50 transition">
                 {processing ? "Processing..." : "Apply Numbering"}
               </button>
-              <button onClick={() => { setFile(null); setDownloadUrl(null); }} className="px-4 py-2.5 border border-[var(--card-border)] text-[var(--muted)] rounded-xl text-sm hover:text-[var(--foreground)] transition">Cancel</button>
+              <button onClick={() => { setFile(null); setDownloadUrl(null); }} className="px-4 py-2.5 border border-[var(--border)] text-[var(--muted)] rounded-[var(--r-lg)] text-sm hover:text-[var(--foreground)] transition">Cancel</button>
             </div>
           </div>
-          {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
+          {error && <p className="text-[var(--danger)] text-sm mb-4">{error}</p>}
           {downloadUrl && (
-            <div className="bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-200 dark:border-emerald-900 rounded-xl p-6 text-center">
+            <div className="bg-[var(--success-subtle)] border border-[var(--success)]/25 rounded-[var(--r-lg)] p-6 text-center">
               <p className="text-lg mb-2">✅ Numbering applied!</p>
-              <a href={downloadUrl} download={`numbered-${file.name}`} className="inline-block px-6 py-3 bg-emerald-600 text-white rounded-xl text-sm font-medium hover:bg-emerald-700 transition">Download Numbered PDF</a>
+              <a href={downloadUrl} download={`numbered-${file.name}`} className="inline-block px-6 py-3 bg-[var(--success)] text-white rounded-[var(--r-lg)] text-sm font-medium hover:opacity-90 transition">Download Numbered PDF</a>
             </div>
           )}
         </div>

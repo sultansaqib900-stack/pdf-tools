@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useEffect, useRef } from "react";
+import Icon from "@/components/ui/Icon";
 import ToolInfo from "@/components/ToolInfo";
 import FreeWaitTimer from "@/components/FreeWaitTimer";
 import UsageBar from "@/components/UsageBar";
@@ -147,13 +148,13 @@ export default function EsMergePage() {
         <UsageBar remaining={usage.remaining} unlimited={usage.unlimited} />
       </div>
 
-      <div className="bg-[var(--card)] rounded-xl border border-[var(--card-border)] p-8">
+      <div className="bg-[var(--surface)] rounded-[var(--r-lg)] border border-[var(--border)] p-8">
         <div
           onDrop={onDrop}
           onDragOver={(e) => { e.preventDefault(); setDragging(true); }}
           onDragLeave={() => setDragging(false)}
-          className={`border-2 border-dashed rounded-xl p-10 text-center transition ${
-            dragging ? "border-indigo-500 bg-indigo-50 dark:bg-indigo-950/30" : "border-[var(--card-border)] bg-[var(--background)]"
+          className={`border-2 border-dashed rounded-[var(--r-lg)] p-10 text-center transition ${
+            dragging ? "border-[var(--accent-border)] bg-[var(--accent-subtle)]" : "border-[var(--border)] bg-[var(--background)]"
           }`}
         >
           <input
@@ -165,8 +166,8 @@ export default function EsMergePage() {
             id="fileInput"
           />
           <label htmlFor="fileInput" className="cursor-pointer flex flex-col items-center gap-3">
-            <span className="text-5xl">📄</span>
-            <span className="text-indigo-500 font-medium hover:underline">Haz clic para seleccionar o arrastra PDFs</span>
+            <Icon name="fileText" size={36} className="text-[var(--muted)]" />
+            <span className="text-[var(--accent)] font-medium hover:underline">Haz clic para seleccionar o arrastra PDFs</span>
             <span className="text-xs text-[var(--muted)]">Selecciona varios archivos a la vez</span>
           </label>
         </div>
@@ -175,10 +176,10 @@ export default function EsMergePage() {
           <div className="mt-5 space-y-2">
             <p className="text-sm font-medium text-[var(--muted)] mb-2">
               {files.length} archivo{files.length > 1 ? "s" : ""} seleccionado{files.length > 1 ? "s" : ""} — arrastra para reordenar
-              <button onClick={() => setFiles([])} className="ml-3 text-red-500 hover:text-red-600 text-xs">Limpiar todo</button>
+              <button onClick={() => setFiles([])} className="ml-3 text-[var(--danger)] hover:text-[var(--danger)] text-xs">Limpiar todo</button>
             </p>
             {files.map((file, i) => (
-              <div key={i} className="flex items-center justify-between p-3 bg-[var(--background)] border border-[var(--card-border)] rounded-lg">
+              <div key={i} className="flex items-center justify-between p-3 bg-[var(--background)] border border-[var(--border)] rounded-lg">
                 <div className="flex items-center gap-3 min-w-0">
                   <span className="text-xs text-[var(--muted)] w-6">{i + 1}.</span>
                   <span className="text-sm font-medium text-[var(--foreground)] truncate">{file.name}</span>
@@ -191,7 +192,7 @@ export default function EsMergePage() {
                   <button onClick={() => moveDown(i)} disabled={i === files.length - 1} className="p-1 text-[var(--muted)] hover:text-[var(--foreground)] disabled:opacity-30" title="Bajar">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="m6 9 6 6 6-6"/></svg>
                   </button>
-                  <button onClick={() => removeFile(i)} className="p-1 text-red-500 hover:text-red-600" title="Eliminar">
+                  <button onClick={() => removeFile(i)} className="p-1 text-[var(--danger)] hover:text-[var(--danger)]" title="Eliminar">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M3 6h18M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
                   </button>
                 </div>
@@ -207,7 +208,7 @@ export default function EsMergePage() {
         <button
           onClick={merge}
           disabled={files.length < 2 || processing || showTimer}
-          className="mt-6 w-full py-3 bg-indigo-600 text-white font-medium rounded-xl hover:bg-indigo-700 disabled:opacity-40 disabled:cursor-not-allowed transition shadow-sm"
+          className="mt-6 w-full py-3 bg-[var(--accent)] text-white font-medium rounded-[var(--r-lg)] hover:bg-[var(--accent-hover)] disabled:opacity-40 disabled:cursor-not-allowed transition shadow-sm"
         >
           {processing ? (
             <span className="flex items-center justify-center gap-2">
@@ -220,12 +221,12 @@ export default function EsMergePage() {
         {!isPremium() && (
           <p className="mt-3 text-center text-xs text-[var(--muted)]">
             Usuarios gratuitos limitados a 10MB.{ " " }
-            <a href="/premium" className="text-indigo-500 font-medium hover:underline">Actualiza para 100MB, lotes y sin espera</a>
+            <a href="/premium" className="text-[var(--accent)] font-medium hover:underline">Actualiza para 100MB, lotes y sin espera</a>
           </p>
         )}
 
         {files.length > 0 && files.length < 2 && (
-          <p className="text-xs text-amber-500 mt-2 text-center">Selecciona al menos 2 archivos PDF para unir.</p>
+          <p className="text-xs text-[var(--premium)] mt-2 text-center">Selecciona al menos 2 archivos PDF para unir.</p>
         )}
 
         {error && <ErrorBanner message={error} onRetry={runMerge} onDismiss={() => setError(null)} />}
@@ -233,7 +234,7 @@ export default function EsMergePage() {
         <SuccessAnimation show={success} message="¡PDFs unidos!" onRestore={restoreOriginal} />
       </div>
 
-      <div className="max-w-3xl mx-auto mt-12 pt-8 border-t border-[var(--card-border)]">
+      <div className="max-w-3xl mx-auto mt-12 pt-8 border-t border-[var(--border)]">
         <h2 className="text-xl font-bold text-[var(--foreground)] mb-3">Acerca de Unir PDF</h2>
         <div className="text-sm text-[var(--muted)] space-y-3 leading-relaxed">
           <p>Con nuestra herramienta para unir PDF, puedes combinar documentos PDF en un solo archivo sin esfuerzo, perfecto para consolidar informes, facturas, contratos escaneados o cualquier colección de páginas relacionadas. Simplemente sube tus PDFs, arrastra para reordenarlos y haz clic en unir — la interfaz intuitiva te da control total sobre la secuencia final de páginas. La herramienta procesa todo localmente en tu navegador usando pdf-lib, por lo que tus documentos sensibles nunca tocan un servidor. Para unir PDF online gratis, solo selecciona varios PDFs, ordénalos en el orden deseado y descarga el resultado combinado en segundos. Todo se mantiene privado y seguro.</p>

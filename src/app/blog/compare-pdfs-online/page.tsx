@@ -14,7 +14,7 @@ export default function BlogPost() {
       />
       <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Blog", item: "https://allaboutpdfediting.xyz/blog" }, { name: "How to Compare Two PDF Files Online Free", item: "https://allaboutpdfediting.xyz/blog/compare-pdfs-online" }]} />
       <HowToJsonLd name="How to Compare Two PDF Files Online Free" description="Compare two PDF files side by side and spot text differences instantly." steps={[{name:"Upload the original PDF — Drag and drop or select the older version of your d...",text:"Upload the original PDF — Drag and drop or select the older version of your document."},{name:"Upload the revised PDF — Select the newer version you want to compare against.",text:"Upload the revised PDF — Select the newer version you want to compare against."},{name:"View the differences — The tool processes both files instantly and shows high...",text:"View the differences — The tool processes both files instantly and shows highlighted changes."}]} />
-      <a href="/blog" className="text-sm text-indigo-500 hover:underline mb-6 inline-block">&larr; Back to blog</a>
+      <a href="/blog" className="text-sm text-[var(--accent)] hover:underline mb-6 inline-block">&larr; Back to blog</a>
       <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">How to Compare Two PDF Files Online Free</h1>
       <p className="text-sm text-[var(--muted)] mb-8">5 min read · Updated June 2026</p>
 
@@ -33,8 +33,8 @@ export default function BlogPost() {
         <h2 className="text-xl font-bold text-[var(--foreground)] pt-4">How PDF Diff Works</h2>
         <p>The comparison engine extracts text from both documents and performs a line-by-line diff. It highlights:</p>
         <ul className="list-disc pl-5 space-y-2">
-          <li><span className="text-emerald-500 font-medium">Green</span> — Text that was added in the new version</li>
-          <li><span className="text-red-500 font-medium">Red</span> — Text that was removed from the original</li>
+          <li><span className="text-[var(--success)] font-medium">Green</span> — Text that was added in the new version</li>
+          <li><span className="text-[var(--danger)] font-medium">Red</span> — Text that was removed from the original</li>
           <li><strong>White</strong> — Identical text (no changes)</li>
         </ul>
         <p>You see both documents side by side with synchronized scrolling, making it easy to trace exactly what changed and where.</p>
@@ -66,10 +66,10 @@ export default function BlogPost() {
           <li><strong>Compliance officers</strong> — Ensure policy documents match approved versions</li>
         </ul>
 
-        <div className="bg-[var(--card)] border border-[var(--card-border)] rounded-xl p-6 mt-6">
+        <div className="bg-[var(--surface)] border border-[var(--border)] rounded-[var(--r-lg)] p-6 mt-6">
           <p className="font-semibold text-[var(--foreground)] mb-1">Premium Feature</p>
           <p className="text-sm text-[var(--muted)] mb-3">PDF comparison is available to premium subscribers. Upgrade to access this and 10 other advanced PDF tools.</p>
-          <a href="/premium" className="inline-block px-5 py-2.5 bg-amber-600 text-white font-medium rounded-xl text-sm hover:bg-amber-700 transition">Upgrade to Premium →</a>
+          <a href="/premium" className="inline-block px-5 py-2.5 bg-[var(--premium)] text-white font-medium rounded-[var(--r-lg)] text-sm hover:opacity-90 transition">Upgrade to Premium →</a>
         </div>
       </div>
     </article>

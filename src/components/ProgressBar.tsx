@@ -56,7 +56,7 @@ export default function ProgressBar({
   return (
     <div className="w-full my-4">
       {done ? (
-        <div className="flex items-center gap-2 text-emerald-600 dark:text-emerald-400 text-sm font-medium animate-fadeIn">
+        <div className="flex items-center gap-2 text-[var(--success)] dark:text-[var(--success)] text-sm font-medium animate-fadeIn">
           <svg className="w-5 h-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
             <path d="M20 6L9 17l-5-5" className="animate-drawCheck" />
           </svg>
@@ -68,9 +68,9 @@ export default function ProgressBar({
             <span>{label}</span>
             <span>{Math.round(progress)}%</span>
           </div>
-          <div className="w-full h-2 bg-[var(--card-border)] rounded-full overflow-hidden">
+          <div className="w-full h-2 bg-[var(--border)] rounded-full overflow-hidden">
             <div
-              className="h-full bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full transition-all duration-200 ease-out"
+              className="h-full bg-[var(--accent)] rounded-full transition-all duration-200 ease-out"
               style={{ width: `${progress}%` }}
             />
           </div>

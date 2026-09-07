@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useEffect, useRef } from "react";
+import Icon from "@/components/ui/Icon";
 import ToolGuide from "@/components/ToolGuide";
 import ToolInfo from "@/components/ToolInfo";
 import FreeWaitTimer from "@/components/FreeWaitTimer";
@@ -122,19 +123,19 @@ export default function ProtectPage() {
         <UsageBar remaining={usage.remaining} unlimited={usage.unlimited} />
       </div>
 
-      <div className="bg-[var(--card)] rounded-xl border border-[var(--card-border)] p-8">
+      <div className="bg-[var(--surface)] rounded-[var(--r-lg)] border border-[var(--border)] p-8">
         <div
           onDrop={(e) => { e.preventDefault(); setDragging(false); handleFile(e.dataTransfer.files[0]); }}
           onDragOver={(e) => { e.preventDefault(); setDragging(true); }}
           onDragLeave={() => setDragging(false)}
-          className={`border-2 border-dashed rounded-xl p-10 text-center transition ${
-            dragging ? "border-indigo-500 bg-indigo-50 dark:bg-indigo-950/30" : "border-[var(--card-border)] bg-[var(--background)]"
+          className={`border-2 border-dashed rounded-[var(--r-lg)] p-10 text-center transition ${
+            dragging ? "border-[var(--accent-border)] bg-[var(--accent-subtle)]" : "border-[var(--border)] bg-[var(--background)]"
           }`}
         >
           <input type="file" accept="application/pdf" onChange={(e) => handleFile(e.target.files?.[0] ?? null)} className="hidden" id="fileInput" />
           <label htmlFor="fileInput" className="cursor-pointer flex flex-col items-center gap-3">
-            <span className="text-5xl">🔒</span>
-            <span className="text-indigo-500 font-medium hover:underline">
+            <Icon name="lock" size={36} className="text-[var(--muted)]" />
+            <span className="text-[var(--accent)] font-medium hover:underline">
               {file ? file.name : "Click to select or drag & drop a PDF"}
             </span>
             {file && <span className="text-sm text-[var(--muted)]">{(file.size / 1024).toFixed(1)} KB</span>}
@@ -152,7 +153,7 @@ export default function ProtectPage() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Enter a password to protect the PDF"
-              className="w-full px-4 py-2.5 rounded-xl border border-[var(--card-border)] bg-[var(--background)] text-[var(--foreground)] text-sm outline-none focus:border-indigo-500 transition"
+              className="w-full px-4 py-2.5 rounded-[var(--r-lg)] border border-[var(--border)] bg-[var(--background)] text-[var(--foreground)] text-sm outline-none focus:border-[var(--accent-border)] transition"
             />
           </div>
         )}
@@ -164,7 +165,7 @@ export default function ProtectPage() {
             <button
               onClick={protect}
               disabled={!password || processing || showTimer}
-              className="mt-6 w-full py-3 bg-indigo-600 text-white font-medium rounded-xl hover:bg-indigo-700 disabled:opacity-40 disabled:cursor-not-allowed transition shadow-sm"
+              className="mt-6 w-full py-3 bg-[var(--accent)] text-white font-medium rounded-[var(--r-lg)] hover:bg-[var(--accent-hover)] disabled:opacity-40 disabled:cursor-not-allowed transition shadow-sm"
             >
               {processing ? (
                 <span className="flex items-center justify-center gap-2">
@@ -177,7 +178,7 @@ export default function ProtectPage() {
             {!isPremium() && (
               <p className="mt-3 text-center text-xs text-[var(--muted)]">
                 Free users limited to 10MB files.{ " " }
-                <a href="/premium" className="text-indigo-500 font-medium hover:underline">Upgrade for 100MB, batch & no wait</a>
+                <a href="/premium" className="text-[var(--accent)] font-medium hover:underline">Upgrade for 100MB, batch & no wait</a>
               </p>
             )}
           </>
@@ -188,7 +189,7 @@ export default function ProtectPage() {
         <SuccessAnimation show={success} message="Password added!" onRestore={restoreOriginal} />
       </div>
 
-      <div className="max-w-3xl mx-auto mt-12 pt-8 border-t border-[var(--card-border)]">
+      <div className="max-w-3xl mx-auto mt-12 pt-8 border-t border-[var(--border)]">
         <h2 className="text-xl font-bold text-[var(--foreground)] mb-3">About Password Protect</h2>
         <div className="text-sm text-[var(--muted)] space-y-3 leading-relaxed">
           <p>Secure your sensitive documents by adding a password with our protect tool, keeping your files safe from unauthorized access. To password protect PDF online free, upload your file, enter a strong password, and download the encrypted version instantly. The encryption is applied entirely in your browser using pdf-lib, so your document never leaves your device and no data is transmitted over the network. This is essential for protecting confidential business reports, personal financial documents, legal contracts, or any PDF that contains sensitive information. Once protected, the password must be entered to open the file, giving you full control over who can view it. Encrypt PDF file securely with our fully client-side tool — no data transmission, no server storage, complete privacy guaranteed.</p>

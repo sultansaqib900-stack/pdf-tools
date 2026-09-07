@@ -243,14 +243,14 @@ export default function ChatPDFPage() {
           onDrop={(e) => { e.preventDefault(); setDragging(false); handleFile(e.dataTransfer.files[0]); }}
           onDragOver={(e) => { e.preventDefault(); setDragging(true); }}
           onDragLeave={() => setDragging(false)}
-          className={`border-2 border-dashed rounded-xl p-10 text-center transition mb-6 ${
-            dragging ? "border-indigo-500 bg-indigo-50 dark:bg-indigo-950/30" : "border-[var(--card-border)] bg-[var(--card)]"
+          className={`border-2 border-dashed rounded-[var(--r-lg)] p-10 text-center transition mb-6 ${
+            dragging ? "border-[var(--accent-border)] bg-[var(--accent-subtle)]" : "border-[var(--border)] bg-[var(--surface)]"
           }`}
         >
           <input type="file" accept="application/pdf" onChange={(e) => handleFile(e.target.files?.[0] ?? null)} className="hidden" id="fileInput" />
             <label htmlFor="fileInput" className="cursor-pointer flex flex-col items-center gap-3">
-            <span className="text-indigo-500"><RobotIcon /></span>
-            <span className="text-indigo-500 font-medium hover:underline">
+            <span className="text-[var(--accent)]"><RobotIcon /></span>
+            <span className="text-[var(--accent)] font-medium hover:underline">
               {file ? file.name : "Upload a PDF to start chatting"}
             </span>
             {file && <span className="text-sm text-[var(--muted)]">{(file.size / 1024).toFixed(1)} KB</span>}
@@ -267,10 +267,10 @@ export default function ChatPDFPage() {
       )}
 
       {pdfText && (
-        <div className="bg-[var(--card)] border border-[var(--card-border)] rounded-xl overflow-hidden">
-          <div className="px-5 py-3 border-b border-[var(--card-border)] flex items-center justify-between">
+        <div className="bg-[var(--surface)] border border-[var(--border)] rounded-[var(--r-lg)] overflow-hidden">
+          <div className="px-5 py-3 border-b border-[var(--border)] flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <span className="text-indigo-500"><ChatIcon /></span>
+              <span className="text-[var(--accent)]"><ChatIcon /></span>
               <span className="font-medium text-sm text-[var(--foreground)]">{file?.name}</span>
             </div>
             <div className="flex items-center gap-3">
@@ -279,7 +279,7 @@ export default function ChatPDFPage() {
               )}
               <button
                 onClick={() => { setPdfText(""); setMessages([]); setFile(null); }}
-                className="text-xs text-[var(--muted)] hover:text-red-500 transition"
+                className="text-xs text-[var(--muted)] hover:text-[var(--danger)] transition"
               >
                 New PDF
               </button>
@@ -289,10 +289,10 @@ export default function ChatPDFPage() {
           <div className="h-96 overflow-y-auto p-5 space-y-4 bg-[var(--background)]">
             {messages.map((msg, i) => (
               <div key={i} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
-                <div className={`max-w-[80%] rounded-xl px-4 py-2.5 text-sm leading-relaxed ${
+                <div className={`max-w-[80%] rounded-[var(--r-lg)] px-4 py-2.5 text-sm leading-relaxed ${
                   msg.role === "user"
-                    ? "bg-indigo-600 text-white"
-                    : "bg-[var(--card)] border border-[var(--card-border)] text-[var(--foreground)]"
+                    ? "bg-[var(--accent)] text-white"
+                    : "bg-[var(--surface)] border border-[var(--border)] text-[var(--foreground)]"
                 }`}>
                   <div className="whitespace-pre-wrap">{msg.text}</div>
                 </div>
@@ -300,7 +300,7 @@ export default function ChatPDFPage() {
             ))}
             {answering && (
               <div className="flex justify-start">
-                <div className="bg-[var(--card)] border border-[var(--card-border)] rounded-xl px-4 py-2.5 text-sm text-[var(--muted)]">
+                <div className="bg-[var(--surface)] border border-[var(--border)] rounded-[var(--r-lg)] px-4 py-2.5 text-sm text-[var(--muted)]">
                   <span className="flex items-center gap-1">
                     <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none"/><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
                     Thinking...
@@ -312,15 +312,15 @@ export default function ChatPDFPage() {
           </div>
 
           {extractError && (
-            <div className="mx-4 mb-3 p-4 bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800 rounded-lg">
-              <div className="flex items-center gap-2 text-xs text-amber-700 dark:text-amber-300 mb-3">
+            <div className="mx-4 mb-3 p-4 bg-[var(--premium-subtle)] border border-[var(--premium-border)] dark:border-[var(--premium-border)] rounded-lg">
+              <div className="flex items-center gap-2 text-xs text-[var(--premium)] mb-3">
                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
                 {extractError}
               </div>
               <button
                 onClick={runOcr}
                 disabled={ocrRunning}
-                className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white text-xs font-medium rounded-lg hover:bg-indigo-700 disabled:opacity-40 disabled:cursor-not-allowed transition"
+                className="flex items-center gap-2 px-4 py-2 bg-[var(--accent)] text-white text-xs font-medium rounded-lg hover:bg-[var(--accent-hover)] disabled:opacity-40 disabled:cursor-not-allowed transition"
               >
                 {ocrRunning ? (
                   <><svg className="animate-spin h-4 w-4" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none"/><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>Running OCR...</>
@@ -331,7 +331,7 @@ export default function ChatPDFPage() {
             </div>
           )}
 
-          <div className="border-t border-[var(--card-border)] p-4 space-y-3">
+          <div className="border-t border-[var(--border)] p-4 space-y-3">
             <div className="flex gap-1.5 flex-wrap">
               {[
                 { key: "qna", label: "Q&A", icon: "💬" },
@@ -348,8 +348,8 @@ export default function ChatPDFPage() {
                   disabled={answering}
                   className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition border ${
                     aiMode === m.key
-                      ? "bg-indigo-100 dark:bg-indigo-900/30 border-indigo-300 dark:border-indigo-700 text-indigo-700 dark:text-indigo-300"
-                      : "border-[var(--card-border)] text-[var(--muted)] hover:text-[var(--foreground)] hover:border-indigo-300"
+                      ? "bg-[var(--accent-subtle)] dark:bg-[var(--accent-subtle)]/30 border-[var(--accent-border)] dark:border-[var(--accent-border)] text-[var(--accent)] dark:text-[var(--accent)]"
+                      : "border-[var(--border)] text-[var(--muted)] hover:text-[var(--foreground)] hover:border-[var(--accent-border)]"
                   }`}
                 >
                   <span>{m.icon}</span>
@@ -372,12 +372,12 @@ export default function ChatPDFPage() {
                   }
                   disabled={!!extractError || (chatRemaining !== null && chatRemaining <= 0 && !isPremium())}
                   rows={2}
-                  className="flex-1 px-4 py-2.5 rounded-xl border border-[var(--card-border)] bg-[var(--background)] text-[var(--foreground)] text-sm outline-none focus:border-indigo-500 transition resize-none"
+                  className="flex-1 px-4 py-2.5 rounded-[var(--r-lg)] border border-[var(--border)] bg-[var(--background)] text-[var(--foreground)] text-sm outline-none focus:border-[var(--accent-border)] transition resize-none"
                 />
                 <button
                   onClick={() => askQuestion()}
                   disabled={!question.trim() || answering || !!extractError || (chatRemaining !== null && chatRemaining <= 0 && !isPremium())}
-                  className="px-5 py-2.5 bg-indigo-600 text-white font-medium rounded-xl hover:bg-indigo-700 disabled:opacity-40 disabled:cursor-not-allowed transition shrink-0 self-end"
+                  className="px-5 py-2.5 bg-[var(--accent)] text-white font-medium rounded-[var(--r-lg)] hover:bg-[var(--accent-hover)] disabled:opacity-40 disabled:cursor-not-allowed transition shrink-0 self-end"
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 2 11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
                 </button>
@@ -391,7 +391,7 @@ export default function ChatPDFPage() {
             {!isPremium() && chatRemaining !== null && chatRemaining <= 0 && (
               <p className="text-center text-xs text-[var(--muted)]">
                 Free limit reached.{ " " }
-                <a href="/premium" className="text-indigo-500 font-medium hover:underline">Upgrade for unlimited AI</a>
+                <a href="/premium" className="text-[var(--accent)] font-medium hover:underline">Upgrade for unlimited AI</a>
               </p>
             )}
           </div>
@@ -399,11 +399,11 @@ export default function ChatPDFPage() {
       )}
 
 
-      <div className="max-w-3xl mx-auto mt-12 pt-8 border-t border-[var(--card-border)]">
+      <div className="max-w-3xl mx-auto mt-12 pt-8 border-t border-[var(--border)]">
         <h2 className="text-xl font-bold text-[var(--foreground)] mb-3">About Chat with PDF</h2>
         <div className="text-sm text-[var(--muted)] space-y-3 leading-relaxed">
           <p>Chat with any PDF document using AI. Upload a PDF — a research paper, contract, book, report — and ask questions about its content. The AI reads the document and answers based only on what's in the file.</p>
-          <p>Free users get 3 questions per day. <a href="/premium" className="text-indigo-500 underline">Premium subscribers</a> get unlimited questions, larger PDF support, and priority processing.</p>
+          <p>Free users get 3 questions per day. <a href="/premium" className="text-[var(--accent)] underline">Premium subscribers</a> get unlimited questions, larger PDF support, and priority processing.</p>
           <p>Keywords: chat with PDF, AI PDF assistant, ask PDF questions, PDF chatbot, AI document reader, PDF analyzer.</p>
         </div>
       </div>

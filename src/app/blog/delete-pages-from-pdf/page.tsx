@@ -14,7 +14,7 @@ export default function BlogPost() {
       />
       <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Blog", item: "https://allaboutpdfediting.xyz/blog" }, { name: "How to Delete Pages from a PDF Online Free (No Signup)", item: "https://allaboutpdfediting.xyz/blog/delete-pages-from-pdf" }]} />
       <HowToJsonLd name="How to Delete Pages from a PDF Online Free (No Signup)" description="Remove unwanted pages from a PDF document online for free..." steps={[{name:"Go to the Delete Pages tool",text:"Go to the Delete Pages tool"},{name:"Upload your PDF by dragging and dropping or clicking to select",text:"Upload your PDF by dragging and dropping or clicking to select"},{name:"All pages appear as numbered buttons. Uncheck the pages you want to remove",text:"All pages appear as numbered buttons. Uncheck the pages you want to remove"},{name:"Click &quot;Delete Pages&quot; and the new PDF downloads automatically",text:"Click &quot;Delete Pages&quot; and the new PDF downloads automatically"}]} />
-      <Link href="/blog" className="text-sm text-indigo-500 hover:underline mb-6 inline-block">&larr; Back to blog</Link>
+      <Link href="/blog" className="text-sm text-[var(--accent)] hover:underline mb-6 inline-block">&larr; Back to blog</Link>
       <h1 className="text-3xl font-bold text-[var(--foreground)] mb-3">How to Delete Pages from a PDF Online Free (No Signup)</h1>
       <p className="text-sm text-[var(--muted)] mb-8">June 24, 2026 &middot; 3 min read</p>
 
@@ -31,9 +31,9 @@ export default function BlogPost() {
         </ul>
 
         <h2 className="text-xl font-semibold text-[var(--foreground)] pt-4">How to Delete Pages from a PDF</h2>
-        <p>Using <Link href="/delete-pages" className="text-indigo-500 hover:underline">PDFTools Delete Pages</Link> tool:</p>
+        <p>Using <Link href="/delete-pages" className="text-[var(--accent)] hover:underline">PDFTools Delete Pages</Link> tool:</p>
         <ol className="list-decimal list-inside space-y-2">
-          <li>Go to the <Link href="/delete-pages" className="text-indigo-500 hover:underline">Delete Pages tool</Link></li>
+          <li>Go to the <Link href="/delete-pages" className="text-[var(--accent)] hover:underline">Delete Pages tool</Link></li>
           <li>Upload your PDF by dragging and dropping or clicking to select</li>
           <li>All pages appear as numbered buttons. Uncheck the pages you want to remove</li>
           <li>Click &quot;Delete Pages&quot; and the new PDF downloads automatically</li>
@@ -44,14 +44,14 @@ export default function BlogPost() {
 
         <h2 className="text-xl font-semibold text-[var(--foreground)] pt-4">Tips for Deleting PDF Pages</h2>
         <ul className="list-disc list-inside space-y-2">
-          <li>Use the <Link href="/organize" className="text-indigo-500 hover:underline">Organize Pages</Link> tool if you also need to reorder pages</li>
-          <li>For extracting a specific range, use the <Link href="/split" className="text-indigo-500 hover:underline">Split PDF</Link> tool instead</li>
+          <li>Use the <Link href="/organize" className="text-[var(--accent)] hover:underline">Organize Pages</Link> tool if you also need to reorder pages</li>
+          <li>For extracting a specific range, use the <Link href="/split" className="text-[var(--accent)] hover:underline">Split PDF</Link> tool instead</li>
           <li>Always check the preview before downloading to ensure the right pages remain</li>
         </ul>
 
-        <p className="pt-4">Ready to clean up your PDF? Try the <Link href="/delete-pages" className="text-indigo-500 font-medium hover:underline">free online PDF page remover</Link> now.</p>
+        <p className="pt-4">Ready to clean up your PDF? Try the <Link href="/delete-pages" className="text-[var(--accent)] font-medium hover:underline">free online PDF page remover</Link> now.</p>
 
-        <p className="pt-4">After removing pages, you may want to <Link href="/blog/organize-pdf-pages" className="text-indigo-500 font-medium hover:underline">reorder and organize the remaining pages</Link> for a polished final document.</p>
+        <p className="pt-4">After removing pages, you may want to <Link href="/blog/organize-pdf-pages" className="text-[var(--accent)] font-medium hover:underline">reorder and organize the remaining pages</Link> for a polished final document.</p>
       </div>
     </article>
   );

@@ -9,16 +9,16 @@ export default function BlogPost() {
       <ArticleJsonLd title="OCR PDF Online Free — Extract Text from Scanned PDFs" description="Extract text from scanned PDFs and images using free online OCR. Make scanned documents searchable and editable." url="https://allaboutpdfediting.xyz/blog/ocr-pdf-online" datePublished="2026-06-27" />
       <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Blog", item: "https://allaboutpdfediting.xyz/blog" }, { name: "OCR PDF Online Free — Extract Text from Scanned PDFs", item: "https://allaboutpdfediting.xyz/blog/ocr-pdf-online" }]} />
       <HowToJsonLd name="OCR PDF Online Free — Extract Text from Scanned PDFs" description="Extract text from scanned PDFs and images using free online OCR. Make scanned documents searchable and editable." steps={[{name:"Upload — Go to our OCR PDF tool and select a scanned PDF or image.",text:"Upload — Go to our OCR PDF tool and select a scanned PDF or image."},{name:"Recognize — The OCR engine processes each page and extracts text.",text:"Recognize — The OCR engine processes each page and extracts text."},{name:"Copy or download — Copy the recognized text to your clipboard or download it ...",text:"Copy or download — Copy the recognized text to your clipboard or download it as a TXT file."}]} />
-      <a href="/blog" className="text-sm text-indigo-500 hover:underline mb-6 inline-block">&larr; Back to blog</a>
+      <a href="/blog" className="text-sm text-[var(--accent)] hover:underline mb-6 inline-block">&larr; Back to blog</a>
       <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">OCR PDF Online Free — Extract Text from Scanned PDFs</h1>
       <p className="text-sm text-[var(--muted)] mb-8">5 min read · Updated June 2026</p>
       <div className="text-sm text-[var(--muted)] space-y-5 leading-relaxed">
-        <p>OCR (Optical Character Recognition) extracts text from scanned documents and images, turning static PDFs into searchable, editable content. Our <a href="/ocr-pdf" className="text-indigo-500 underline">free online OCR PDF tool</a> lets you recognize text from any scanned document — all in your browser with zero uploads.</p>
+        <p>OCR (Optical Character Recognition) extracts text from scanned documents and images, turning static PDFs into searchable, editable content. Our <a href="/ocr-pdf" className="text-[var(--accent)] underline">free online OCR PDF tool</a> lets you recognize text from any scanned document — all in your browser with zero uploads.</p>
         <h2 className="text-xl font-bold text-[var(--foreground)] pt-4">Why Use OCR on PDFs?</h2>
         <p>Scanned PDFs are essentially images of pages — you cannot search, copy, or edit the text. OCR adds a text layer, making the document searchable and the text extractable. This is essential for digitizing printed archives, extracting quotes from books, or converting paper forms into editable data.</p>
         <h2 className="text-xl font-bold text-[var(--foreground)] pt-4">How to OCR a PDF in 3 Steps</h2>
         <ol className="list-decimal pl-5 space-y-3">
-          <li><strong>Upload</strong> — Go to our <a href="/ocr-pdf" className="text-indigo-500 underline">OCR PDF tool</a> and select a scanned PDF or image.</li>
+          <li><strong>Upload</strong> — Go to our <a href="/ocr-pdf" className="text-[var(--accent)] underline">OCR PDF tool</a> and select a scanned PDF or image.</li>
           <li><strong>Recognize</strong> — The OCR engine processes each page and extracts text.</li>
           <li><strong>Copy or download</strong> — Copy the recognized text to your clipboard or download it as a TXT file.</li>
         </ol>

@@ -75,7 +75,7 @@ export default function TermsPage() {
           For questions about these terms, email <strong>saqibbostan83@gmail.com</strong>.
         </p>
 
-        <p className="text-xs text-[var(--muted)] pt-4 border-t border-[var(--card-border)]">
+        <p className="text-xs text-[var(--muted)] pt-4 border-t border-[var(--border)]">
           Last updated: June 2026
         </p>
       </div>

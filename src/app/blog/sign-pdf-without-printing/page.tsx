@@ -25,7 +25,7 @@ export default function BlogPost() {
       />
       <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Blog", item: "https://allaboutpdfediting.xyz/blog" }, { name: "How to Sign a PDF Without Printing", item: "https://allaboutpdfediting.xyz/blog/sign-pdf-without-printing" }]} />
       <HowToJsonLd name="How to Sign a PDF Without Printing" description="Learn how to sign a PDF online free without printing or scanning..." steps={[{name:"Open the e-sign tool — Go to our free e-Sign PDF tool.",text:"Open the e-sign tool — Go to our free e-Sign PDF tool."},{name:"Draw your signature — Use your mouse, trackpad, or touchscreen to draw your s...",text:"Draw your signature — Use your mouse, trackpad, or touchscreen to draw your signature in the pad."},{name:"Upload and download — Select your PDF, click Sign, and download the signed do...",text:"Upload and download — Select your PDF, click Sign, and download the signed document immediately."}]} />
-      <a href="/blog" className="text-sm text-indigo-500 hover:underline mb-6 inline-block">&larr; Back to blog</a>
+      <a href="/blog" className="text-sm text-[var(--accent)] hover:underline mb-6 inline-block">&larr; Back to blog</a>
       <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">How to Sign a PDF Without Printing</h1>
       <p className="text-sm text-[var(--muted)] mb-8">5 min read · Updated June 2026</p>
 
@@ -37,7 +37,7 @@ export default function BlogPost() {
 
         <h2 className="text-xl font-bold text-[var(--foreground)] pt-4">How to e-Sign a PDF (3 Simple Steps)</h2>
         <ol className="list-decimal pl-5 space-y-3">
-          <li><strong>Open the e-sign tool</strong> — Go to our <a href="/sign" className="text-indigo-500 underline">free e-Sign PDF tool</a>.</li>
+          <li><strong>Open the e-sign tool</strong> — Go to our <a href="/sign" className="text-[var(--accent)] underline">free e-Sign PDF tool</a>.</li>
           <li><strong>Draw your signature</strong> — Use your mouse, trackpad, or touchscreen to draw your signature in the pad.</li>
           <li><strong>Upload and download</strong> — Select your PDF, click Sign, and download the signed document immediately.</li>
         </ol>
@@ -65,9 +65,9 @@ export default function BlogPost() {
           <li>Free for basic use</li>
         </ul>
 
-        <div className="bg-[var(--card)] border border-[var(--card-border)] rounded-xl p-6 mt-6">
+        <div className="bg-[var(--surface)] border border-[var(--border)] rounded-[var(--r-lg)] p-6 mt-6">
           <p className="font-semibold text-[var(--foreground)] mb-2">Ready to sign?</p>
-          <a href="/sign" className="inline-block px-5 py-2.5 bg-indigo-600 text-white font-medium rounded-xl text-sm hover:bg-indigo-700 transition">e-Sign Your PDF Now →</a>
+          <a href="/sign" className="inline-block px-5 py-2.5 bg-[var(--accent)] text-white font-medium rounded-[var(--r-lg)] text-sm hover:bg-[var(--accent-hover)] transition">e-Sign Your PDF Now →</a>
         </div>
       </div>
     </article>

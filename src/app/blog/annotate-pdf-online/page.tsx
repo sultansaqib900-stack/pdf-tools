@@ -9,7 +9,7 @@ export default function BlogPost() {
       <ArticleJsonLd title="How to Annotate PDF Online Free — Highlight, Comment & Markup" description="Annotate PDF documents online for free. Highlight text, add comments, draw shapes, and markup PDFs instantly in your browser." url="https://allaboutpdfediting.xyz/blog/annotate-pdf-online" datePublished="2026-06-25" />
       <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Blog", item: "https://allaboutpdfediting.xyz/blog" }, { name: "How to Annotate PDF Online Free — Highlight, Comment &amp; Markup", item: "https://allaboutpdfediting.xyz/blog/annotate-pdf-online" }]} />
       <HowToJsonLd name="How to Annotate PDF Online Free — Highlight, Comment &amp; Markup" description="Annotate PDF documents online for free. Highlight text, add comments, draw shapes, and markup PDFs instantly in your browser." steps={[{name:"Open the annotator — Go to our free PDF annotator tool.",text:"Open the annotator — Go to our free PDF annotator tool."},{name:"Upload your PDF — Drag and drop or click to select your document.",text:"Upload your PDF — Drag and drop or click to select your document."},{name:"Start annotating — Use the toolbar to highlight text, add comments, or draw s...",text:"Start annotating — Use the toolbar to highlight text, add comments, or draw shapes. Download your annotated PDF when done."}]} />
-      <a href="/blog" className="text-sm text-indigo-500 hover:underline mb-6 inline-block">&larr; Back to blog</a>
+      <a href="/blog" className="text-sm text-[var(--accent)] hover:underline mb-6 inline-block">&larr; Back to blog</a>
       <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">How to Annotate PDF Online Free — Highlight, Comment & Markup</h1>
       <p className="text-sm text-[var(--muted)] mb-8">5 min read · Updated June 2026</p>
       <div className="text-sm text-[var(--muted)] space-y-5 leading-relaxed">
@@ -26,7 +26,7 @@ export default function BlogPost() {
 
         <h2 className="text-xl font-bold text-[var(--foreground)] pt-4">How to Annotate a PDF in 3 Steps</h2>
         <ol className="list-decimal pl-5 space-y-3">
-          <li><strong>Open the annotator</strong> — Go to our <a href="/annotate" className="text-indigo-500 underline">free PDF annotator tool</a>.</li>
+          <li><strong>Open the annotator</strong> — Go to our <a href="/annotate" className="text-[var(--accent)] underline">free PDF annotator tool</a>.</li>
           <li><strong>Upload your PDF</strong> — Drag and drop or click to select your document.</li>
           <li><strong>Start annotating</strong> — Use the toolbar to highlight text, add comments, or draw shapes. Download your annotated PDF when done.</li>
         </ol>
@@ -37,9 +37,9 @@ export default function BlogPost() {
         <h2 className="text-xl font-bold text-[var(--foreground)] pt-4">Tips for Effective PDF Markup</h2>
         <p>Use different highlight colors to categorize information — for example, yellow for definitions, green for important dates, and blue for action items. When commenting, be specific and reference the exact text you are addressing. For group projects, consider using a consistent color scheme so team members can quickly identify different types of feedback.</p>
 
-        <div className="bg-[var(--card)] border border-[var(--card-border)] rounded-xl p-6 mt-6">
+        <div className="bg-[var(--surface)] border border-[var(--border)] rounded-[var(--r-lg)] p-6 mt-6">
           <p className="font-semibold text-[var(--foreground)] mb-2">Ready to annotate your PDF?</p>
-          <a href="/annotate" className="inline-block px-5 py-2.5 bg-indigo-600 text-white font-medium rounded-xl text-sm hover:bg-indigo-700 transition">Annotate PDF Now →</a>
+          <a href="/annotate" className="inline-block px-5 py-2.5 bg-[var(--accent)] text-white font-medium rounded-[var(--r-lg)] text-sm hover:bg-[var(--accent-hover)] transition">Annotate PDF Now →</a>
         </div>
       </div>
     </article>

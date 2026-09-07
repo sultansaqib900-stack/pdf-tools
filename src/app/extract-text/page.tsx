@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useEffect, useRef } from "react";
+import Icon from "@/components/ui/Icon";
 import ToolGuide from "@/components/ToolGuide";
 import ToolInfo from "@/components/ToolInfo";
 import FreeWaitTimer from "@/components/FreeWaitTimer";
@@ -147,19 +148,19 @@ export default function ExtractTextPage() {
         <UsageBar remaining={usage.remaining} unlimited={usage.unlimited} />
       </div>
 
-      <div className="bg-[var(--card)] rounded-xl border border-[var(--card-border)] p-8 mt-8">
+      <div className="bg-[var(--surface)] rounded-[var(--r-lg)] border border-[var(--border)] p-8 mt-8">
         <div
           onDrop={(e) => { e.preventDefault(); setDragging(false); handleFile(e.dataTransfer.files[0]); }}
           onDragOver={(e) => { e.preventDefault(); setDragging(true); }}
           onDragLeave={() => setDragging(false)}
-          className={`border-2 border-dashed rounded-xl p-10 text-center transition ${
-            dragging ? "border-indigo-500 bg-indigo-50 dark:bg-indigo-950/30" : "border-[var(--card-border)] bg-[var(--background)]"
+          className={`border-2 border-dashed rounded-[var(--r-lg)] p-10 text-center transition ${
+            dragging ? "border-[var(--accent-border)] bg-[var(--accent-subtle)]" : "border-[var(--border)] bg-[var(--background)]"
           }`}
         >
           <input type="file" accept="application/pdf" onChange={(e) => handleFile(e.target.files?.[0] ?? null)} className="hidden" id="fileInput" />
           <label htmlFor="fileInput" className="cursor-pointer flex flex-col items-center gap-3">
-            <span className="text-5xl">📝</span>
-            <span className="text-indigo-500 font-medium hover:underline">
+            <Icon name="edit" size={36} className="text-[var(--muted)]" />
+            <span className="text-[var(--accent)] font-medium hover:underline">
               {file ? file.name : "Click to select or drag & drop a PDF"}
             </span>
           </label>
@@ -174,13 +175,13 @@ export default function ExtractTextPage() {
             <button
               onClick={extract}
               disabled={processing || showTimer}
-              className="mt-6 w-full py-3 bg-indigo-600 text-white font-medium rounded-xl hover:bg-indigo-700 disabled:opacity-40 disabled:cursor-not-allowed transition shadow-sm"
+              className="mt-6 w-full py-3 bg-[var(--accent)] text-white font-medium rounded-[var(--r-lg)] hover:bg-[var(--accent-hover)] disabled:opacity-40 disabled:cursor-not-allowed transition shadow-sm"
             >
               {processing ? (
                 <span className="flex flex-col items-center gap-1">
                   <span>Extracting text...</span>
                   <div className="w-full bg-gray-700 rounded-full h-1.5 max-w-xs">
-                    <div className="bg-indigo-400 h-1.5 rounded-full transition-all" style={{ width: `${progress}%` }} />
+                    <div className="bg-[var(--accent)] h-1.5 rounded-full transition-all" style={{ width: `${progress}%` }} />
                   </div>
                 </span>
               ) : "Extract Text"}
@@ -189,7 +190,7 @@ export default function ExtractTextPage() {
             {!isPremium() && (
               <p className="mt-3 text-center text-xs text-[var(--muted)]">
                 Free users limited to 10MB files.{ " " }
-                <a href="/premium" className="text-indigo-500 font-medium hover:underline">Upgrade for 100MB, batch & no wait</a>
+                <a href="/premium" className="text-[var(--accent)] font-medium hover:underline">Upgrade for 100MB, batch & no wait</a>
               </p>
             )}
           </>
@@ -202,18 +203,18 @@ export default function ExtractTextPage() {
             <div className="flex items-center justify-between mb-3">
               <span className="text-sm font-medium text-[var(--foreground)]">{text.split("\n").length} lines extracted</span>
               <div className="flex gap-2">
-                <button onClick={copyText} className="text-xs px-3 py-1.5 bg-[var(--background)] border border-[var(--card-border)] rounded-lg text-[var(--muted)] hover:text-[var(--foreground)]">Copy</button>
-                <button onClick={downloadText} className="text-xs px-3 py-1.5 bg-[var(--background)] border border-[var(--card-border)] rounded-lg text-[var(--muted)] hover:text-[var(--foreground)]">Download .txt</button>
+                <button onClick={copyText} className="text-xs px-3 py-1.5 bg-[var(--background)] border border-[var(--border)] rounded-lg text-[var(--muted)] hover:text-[var(--foreground)]">Copy</button>
+                <button onClick={downloadText} className="text-xs px-3 py-1.5 bg-[var(--background)] border border-[var(--border)] rounded-lg text-[var(--muted)] hover:text-[var(--foreground)]">Download .txt</button>
               </div>
             </div>
-            <pre className="bg-[var(--background)] border border-[var(--card-border)] rounded-lg p-4 text-sm whitespace-pre-wrap max-h-96 overflow-y-auto text-[var(--foreground)]">{text}</pre>
+            <pre className="bg-[var(--background)] border border-[var(--border)] rounded-lg p-4 text-sm whitespace-pre-wrap max-h-96 overflow-y-auto text-[var(--foreground)]">{text}</pre>
           </div>
         )}
 
         <SuccessAnimation show={success} message="Text extracted!" onRestore={restoreOriginal} />
       </div>
 
-      <div className="max-w-3xl mx-auto mt-12 pt-8 border-t border-[var(--card-border)]">
+      <div className="max-w-3xl mx-auto mt-12 pt-8 border-t border-[var(--border)]">
         <h2 className="text-xl font-bold text-[var(--foreground)] mb-3">About Extract Text</h2>
         <div className="text-sm text-[var(--muted)] space-y-3 leading-relaxed">
           <p>Our free PDF text extractor lets you extract text from PDF documents quickly and privately, making it an essential tool for researchers, students, and professionals. Whether you need to copy quotes for academic work, analyze document content for data processing, or repurpose text from a scanned PDF, this tool handles it all with ease. The extraction runs entirely in your browser using PDF.js, so your documents never leave your device — complete privacy guaranteed. To extract text from PDF online free, just upload your file and click extract. The tool reads every page and presents the text in a clean, copyable format with page markers. You can copy to clipboard or download as a .txt file for further editing.</p>

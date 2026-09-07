@@ -14,7 +14,7 @@ export default function BlogPost() {
       />
       <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Blog", item: "https://allaboutpdfediting.xyz/blog" }, { name: "How to Convert PDF to Audio Online Free", item: "https://allaboutpdfediting.xyz/blog/convert-pdf-to-audio" }]} />
       <HowToJsonLd name="How to Convert PDF to Audio Online Free" description="Convert PDF documents to audio files with natural-sounding text-to-speech." steps={[{name:"Upload your PDF — Select any PDF document with selectable text.",text:"Upload your PDF — Select any PDF document with selectable text."},{name:"Choose voice and speed — Pick from available system voices and adjust playbac...",text:"Choose voice and speed — Pick from available system voices and adjust playback speed."},{name:"Listen or download — Play the audio directly in your browser with pause, resu...",text:"Listen or download — Play the audio directly in your browser with pause, resume, and skip controls."}]} />
-      <a href="/blog" className="text-sm text-indigo-500 hover:underline mb-6 inline-block">&larr; Back to blog</a>
+      <a href="/blog" className="text-sm text-[var(--accent)] hover:underline mb-6 inline-block">&larr; Back to blog</a>
       <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">How to Convert PDF to Audio Online Free</h1>
       <p className="text-sm text-[var(--muted)] mb-8">5 min read · Updated June 2026</p>
 
@@ -56,10 +56,10 @@ export default function BlogPost() {
         </ul>
         <p>Scanned PDFs (image-based without selectable text) are not supported — the document must contain extractable text.</p>
 
-        <div className="bg-[var(--card)] border border-[var(--card-border)] rounded-xl p-6 mt-6">
+        <div className="bg-[var(--surface)] border border-[var(--border)] rounded-[var(--r-lg)] p-6 mt-6">
           <p className="font-semibold text-[var(--foreground)] mb-1">Premium Feature</p>
           <p className="text-sm text-[var(--muted)] mb-3">PDF to audio conversion is a premium feature with advanced voice controls. Upgrade to listen to your documents hands-free.</p>
-          <a href="/premium" className="inline-block px-5 py-2.5 bg-amber-600 text-white font-medium rounded-xl text-sm hover:bg-amber-700 transition">Upgrade to Premium →</a>
+          <a href="/premium" className="inline-block px-5 py-2.5 bg-[var(--premium)] text-white font-medium rounded-[var(--r-lg)] text-sm hover:opacity-90 transition">Upgrade to Premium →</a>
         </div>
       </div>
     </article>

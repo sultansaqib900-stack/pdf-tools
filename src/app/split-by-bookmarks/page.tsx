@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef } from "react";
+import Icon from "@/components/ui/Icon";
 import ToolGuide from "@/components/ToolGuide";
 import { isPremium } from "@/lib/premium";
 import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
@@ -28,13 +29,13 @@ export default function SplitByBookmarksPage() {
       <div className="max-w-3xl mx-auto px-4 py-12">
         <SoftwareAppJsonLd name="Split PDF by Bookmarks" description="Split PDF files into separate documents based on bookmarks. Premium feature." url="https://allaboutpdfediting.xyz/split-by-bookmarks" image="https://allaboutpdfediting.xyz/opengraph-image.png" aggregateRating={{ ratingValue: 4.8, bestRating: 5, ratingCount: 156 }} />
         <div className="text-center py-20">
-          <div className="text-6xl mb-6">📑</div>
+          <div className="flex justify-center mb-6"><Icon name="layers" size={42} className="text-[var(--muted)]" /></div>
           <h1 className="text-3xl font-bold mb-3">Split PDF by Bookmarks</h1>
           <p className="text-[var(--muted)] mb-8 max-w-md mx-auto">Extract chapters, sections, and parts from your PDF based on its bookmark structure.</p>
-          <div className="inline-block bg-gradient-to-r from-amber-500 to-orange-600 text-white px-8 py-4 rounded-2xl shadow-lg">
+          <div className="inline-block bg-[var(--premium)] text-white px-8 py-4 rounded-[var(--r-xl)] shadow-lg">
             <p className="text-lg font-bold mb-1">Premium Feature</p>
             <p className="text-sm opacity-90 mb-4">Only premium subscribers can split PDFs by bookmarks</p>
-            <a href="/premium" className="inline-block bg-white text-orange-600 px-6 py-2 rounded-xl font-semibold text-sm hover:bg-orange-50 transition">Upgrade to Premium</a>
+            <a href="/premium" className="inline-block bg-white text-[var(--premium)] px-6 py-2 rounded-[var(--r-lg)] font-semibold text-sm hover:bg-[var(--premium-subtle)] transition">Upgrade to Premium</a>
           </div>
         </div>
       </div>
@@ -130,10 +131,10 @@ export default function SplitByBookmarksPage() {
           onDrop={handleDrop}
           onDragOver={(e) => { e.preventDefault(); setDragging(true); }}
           onDragLeave={() => setDragging(false)}
-          className={`border-2 border-dashed rounded-2xl p-12 text-center cursor-pointer transition ${dragging ? "border-indigo-500 bg-indigo-50/50 dark:bg-indigo-950/20" : "border-[var(--card-border)] hover:border-indigo-500/50"}`}
+          className={`border-2 border-dashed rounded-[var(--r-xl)] p-12 text-center cursor-pointer transition ${dragging ? "border-[var(--accent-border)] bg-[var(--accent-subtle)] bg-[var(--accent-subtle)]" : "border-[var(--border)] hover:border-[var(--accent-border)]"}`}
           onClick={() => fileRef.current?.click()}
         >
-          <div className="text-5xl mb-4">📑</div>
+          <div className="flex justify-center mb-4"><Icon name="layers" size={36} className="text-[var(--muted)]" /></div>
           <p className="font-medium text-[var(--foreground)] mb-1">Drop a PDF here or click to browse</p>
           <p className="text-sm text-[var(--muted)]">File must contain bookmarks (outline)</p>
           <input ref={fileRef} type="file" accept="application/pdf" className="hidden" onChange={(e) => { const f = e.target.files?.[0]; if (f) handleFile(f); }} />
@@ -145,18 +146,18 @@ export default function SplitByBookmarksPage() {
         </div>
       ) : error ? (
         <div className="text-center py-12">
-          <p className="text-red-500 mb-4">{error}</p>
-          <button onClick={() => { setFile(null); setError(null); }} className="px-5 py-2.5 bg-indigo-600 text-white rounded-xl text-sm hover:bg-indigo-700 transition">Try Another File</button>
+          <p className="text-[var(--danger)] mb-4">{error}</p>
+          <button onClick={() => { setFile(null); setError(null); }} className="px-5 py-2.5 bg-[var(--accent)] text-white rounded-[var(--r-lg)] text-sm hover:bg-[var(--accent-hover)] transition">Try Another File</button>
         </div>
       ) : (
         <div>
-          <div className="bg-[var(--card)] border border-[var(--card-border)] rounded-xl p-6 mb-6">
+          <div className="bg-[var(--surface)] border border-[var(--border)] rounded-[var(--r-lg)] p-6 mb-6">
             <p className="text-sm text-[var(--foreground)] font-medium mb-3">
               Found {splits.length} bookmark(s) in &quot;{file?.name}&quot;:
             </p>
             <div className="space-y-2 max-h-60 overflow-y-auto">
               {splits.map((s, i) => (
-                <div key={i} className="flex items-center justify-between text-sm bg-[var(--background)] rounded-lg px-3 py-2 border border-[var(--card-border)]">
+                <div key={i} className="flex items-center justify-between text-sm bg-[var(--background)] rounded-lg px-3 py-2 border border-[var(--border)]">
                   <span className="text-[var(--foreground)] truncate mr-4">{s.name}</span>
                   <span className="text-[var(--muted)] shrink-0">p. {s.pageStart}–{s.pageEnd}</span>
                 </div>
@@ -165,12 +166,12 @@ export default function SplitByBookmarksPage() {
           </div>
           <div className="flex flex-wrap gap-3">
             {downloadUrls.map((url, i) => (
-              <a key={i} href={url} download={`${splits[i]?.name || `chapter-${i + 1}`}.pdf`} className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-xl text-sm hover:bg-indigo-700 transition">
+              <a key={i} href={url} download={`${splits[i]?.name || `chapter-${i + 1}`}.pdf`} className="inline-flex items-center gap-2 px-4 py-2 bg-[var(--accent)] text-white rounded-[var(--r-lg)] text-sm hover:bg-[var(--accent-hover)] transition">
                 ⬇ {splits[i]?.name?.slice(0, 30) || `Part ${i + 1}`}
               </a>
             ))}
           </div>
-          <button onClick={() => { setFile(null); setSplits([]); setDownloadUrls([]); }} className="mt-6 text-sm text-indigo-500 hover:underline">Start Over</button>
+          <button onClick={() => { setFile(null); setSplits([]); setDownloadUrls([]); }} className="mt-6 text-sm text-[var(--accent)] hover:underline">Start Over</button>
         </div>
       )}
       <ToolGuide slug="split-by-bookmarks" />

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useEffect, useRef } from "react";
+import Icon from "@/components/ui/Icon";
 import ToolGuide from "@/components/ToolGuide";
 import ToolInfo from "@/components/ToolInfo";
 import FreeWaitTimer from "@/components/FreeWaitTimer";
@@ -168,19 +169,19 @@ export default function OrganizePage() {
         <UsageBar remaining={usage.remaining} unlimited={usage.unlimited} />
       </div>
 
-      <div className="bg-[var(--card)] rounded-xl border border-[var(--card-border)] p-8">
+      <div className="bg-[var(--surface)] rounded-[var(--r-lg)] border border-[var(--border)] p-8">
         <div
           onDrop={(e) => { e.preventDefault(); setDragging(false); handleFile(e.dataTransfer.files[0]); }}
           onDragOver={(e) => { e.preventDefault(); setDragging(true); }}
           onDragLeave={() => setDragging(false)}
-          className={`border-2 border-dashed rounded-xl p-10 text-center transition ${
-            dragging ? "border-indigo-500 bg-indigo-50 dark:bg-indigo-950/30" : "border-[var(--card-border)] bg-[var(--background)]"
+          className={`border-2 border-dashed rounded-[var(--r-lg)] p-10 text-center transition ${
+            dragging ? "border-[var(--accent-border)] bg-[var(--accent-subtle)]" : "border-[var(--border)] bg-[var(--background)]"
           }`}
         >
           <input type="file" accept="application/pdf" onChange={(e) => handleFile(e.target.files?.[0] ?? null)} className="hidden" id="fileInput" />
           <label htmlFor="fileInput" className="cursor-pointer flex flex-col items-center gap-3">
-            <span className="text-5xl">📑</span>
-            <span className="text-indigo-500 font-medium hover:underline">
+            <Icon name="layers" size={36} className="text-[var(--muted)]" />
+            <span className="text-[var(--accent)] font-medium hover:underline">
               {file ? file.name : "Click to select or drag & drop a PDF"}
             </span>
             {file && <span className="text-sm text-[var(--muted)]">{(file.size / 1024).toFixed(1)} KB &middot; {pageCount} pages</span>}
@@ -207,15 +208,15 @@ export default function OrganizePage() {
                     onDragOver={(e) => handleDragOver(e, displayIdx)}
                     onDrop={(e) => handleDrop(e, displayIdx)}
                     onDragEnd={handleDragEnd}
-                    className={`relative rounded-xl border-2 flex flex-col items-center justify-center text-sm font-bold cursor-grab active:cursor-grabbing transition-all select-none aspect-[3/4] ${
+                    className={`relative rounded-[var(--r-lg)] border-2 flex flex-col items-center justify-center text-sm font-bold cursor-grab active:cursor-grabbing transition-all select-none aspect-[3/4] ${
                       isDragging
-                        ? "opacity-40 border-indigo-500 scale-95"
+                        ? "opacity-40 border-[var(--accent-border)] scale-95"
                         : isOver
-                        ? "border-indigo-500 bg-indigo-50 dark:bg-indigo-950/30 scale-105 shadow-lg"
-                        : "border-[var(--card-border)] bg-[var(--background)] hover:border-indigo-300 hover:shadow"
+                        ? "border-[var(--accent-border)] bg-[var(--accent-subtle)] scale-105 shadow-lg"
+                        : "border-[var(--border)] bg-[var(--background)] hover:border-[var(--accent-border)] hover:shadow"
                     }`}
                   >
-                    <div className="text-2xl mb-1">📄</div>
+                    <div className="flex justify-center mb-1"><Icon name="fileText" size={22} className="text-[var(--muted)]" /></div>
                     <div className="text-xs text-[var(--muted)] font-mono">p.{pageIdx + 1}</div>
                     <div className="absolute top-1 left-1.5 text-[10px] text-[var(--muted)] font-mono">#{displayIdx + 1}</div>
                   </div>
@@ -234,7 +235,7 @@ export default function OrganizePage() {
             <button
               onClick={process}
               disabled={processing || order.every((v, i) => v === i) || showTimer}
-              className="mt-6 w-full py-3 bg-indigo-600 text-white font-medium rounded-xl hover:bg-indigo-700 disabled:opacity-40 disabled:cursor-not-allowed transition shadow-sm"
+              className="mt-6 w-full py-3 bg-[var(--accent)] text-white font-medium rounded-[var(--r-lg)] hover:bg-[var(--accent-hover)] disabled:opacity-40 disabled:cursor-not-allowed transition shadow-sm"
             >
               {processing ? (
                 <span className="flex items-center justify-center gap-2">
@@ -247,7 +248,7 @@ export default function OrganizePage() {
             {!isPremium() && (
               <p className="mt-3 text-center text-xs text-[var(--muted)]">
                 Free users limited to 10MB &amp; 5s wait.{ " " }
-                <a href="/premium" className="text-indigo-500 font-medium hover:underline">Upgrade for no limits</a>
+                <a href="/premium" className="text-[var(--accent)] font-medium hover:underline">Upgrade for no limits</a>
               </p>
             )}
           </>
@@ -259,7 +260,7 @@ export default function OrganizePage() {
       </div>
 
 
-      <div className="max-w-3xl mx-auto mt-12 pt-8 border-t border-[var(--card-border)]">
+      <div className="max-w-3xl mx-auto mt-12 pt-8 border-t border-[var(--border)]">
         <h2 className="text-xl font-bold text-[var(--foreground)] mb-3">About Organize PDF Pages</h2>
         <div className="text-sm text-[var(--muted)] space-y-3 leading-relaxed">
           <p>Rearrange pages in your PDF document online for free. Drag and drop pages into any order you want. Perfect for fixing scanned documents where pages are out of order, rearranging sections in a report, or organizing a multi-page presentation.</p>

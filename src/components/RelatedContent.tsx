@@ -82,7 +82,7 @@ export default function RelatedContent({ slug }: Props) {
   if (!data) return null;
 
   return (
-    <div className="max-w-3xl mx-auto mt-12 pt-8 border-t border-[var(--card-border)] space-y-10">
+    <div className="max-w-3xl mx-auto mt-12 pt-8 border-t border-[var(--border)] space-y-10">
       {data.relatedTools.length > 0 && <RelatedToolsSection data={data} />}
       {data.relatedBlogs.length > 0 && <RelatedBlogsSection data={data} />}
       <FaqSection data={data} />

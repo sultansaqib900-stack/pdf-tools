@@ -120,20 +120,20 @@ export default function HtmlToPdfPage() {
         <UsageBar remaining={usage.remaining} unlimited={usage.unlimited} />
       </div>
 
-      <div className="bg-[var(--card)] rounded-xl border border-[var(--card-border)] p-8">
+      <div className="bg-[var(--surface)] rounded-[var(--r-lg)] border border-[var(--border)] p-8">
         <label className="block text-sm font-medium text-[var(--foreground)] mb-2">Paste your HTML</label>
         <textarea
           value={html}
           onChange={(e) => setHtml(e.target.value)}
           rows={8}
-          className="w-full px-4 py-3 rounded-xl border border-[var(--card-border)] bg-[var(--background)] text-[var(--foreground)] text-sm font-mono outline-none focus:border-indigo-500 transition resize-y"
+          className="w-full px-4 py-3 rounded-[var(--r-lg)] border border-[var(--border)] bg-[var(--background)] text-[var(--foreground)] text-sm font-mono outline-none focus:border-[var(--accent-border)] transition resize-y"
         />
 
         <div className="mt-4 mb-4">
           <label className="block text-sm font-medium text-[var(--foreground)] mb-2">Preview</label>
           <div
             ref={previewRef}
-            className="p-4 rounded-xl border border-[var(--card-border)] bg-white min-h-[120px] overflow-auto text-black text-sm leading-relaxed [&_h1]:text-2xl [&_h1]:font-bold [&_h2]:text-xl [&_h2]:font-bold [&_h3]:text-lg [&_h3]:font-bold [&_p]:mb-2 [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:list-decimal [&_ol]:pl-5 [&_table]:w-full [&_th]:border [&_th]:border-gray-300 [&_th]:p-2 [&_th]:bg-gray-100 [&_td]:border [&_td]:border-gray-300 [&_td]:p-2 [&_img]:max-w-full [&_a]:text-blue-600 [&_a]:underline"
+            className="p-4 rounded-[var(--r-lg)] border border-[var(--border)] bg-white min-h-[120px] overflow-auto text-black text-sm leading-relaxed [&_h1]:text-2xl [&_h1]:font-bold [&_h2]:text-xl [&_h2]:font-bold [&_h3]:text-lg [&_h3]:font-bold [&_p]:mb-2 [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:list-decimal [&_ol]:pl-5 [&_table]:w-full [&_th]:border [&_th]:border-gray-300 [&_th]:p-2 [&_th]:bg-gray-100 [&_td]:border [&_td]:border-gray-300 [&_td]:p-2 [&_img]:max-w-full [&_a]:text-blue-600 [&_a]:underline"
             dangerouslySetInnerHTML={{ __html: html }}
           />
         </div>
@@ -145,7 +145,7 @@ export default function HtmlToPdfPage() {
         <button
           onClick={convert}
           disabled={!html.trim() || processing || showTimer}
-          className="mt-6 w-full py-3 bg-indigo-600 text-white font-medium rounded-xl hover:bg-indigo-700 disabled:opacity-40 disabled:cursor-not-allowed transition shadow-sm"
+          className="mt-6 w-full py-3 bg-[var(--accent)] text-white font-medium rounded-[var(--r-lg)] hover:bg-[var(--accent-hover)] disabled:opacity-40 disabled:cursor-not-allowed transition shadow-sm"
         >
           {processing ? (
             <span className="flex items-center justify-center gap-2">
@@ -158,7 +158,7 @@ export default function HtmlToPdfPage() {
         {!isPremium() && (
           <p className="mt-3 text-center text-xs text-[var(--muted)]">
             Free users see a 5s wait.{ " " }
-            <a href="/premium" className="text-indigo-500 font-medium hover:underline">Upgrade for instant processing</a>
+            <a href="/premium" className="text-[var(--accent)] font-medium hover:underline">Upgrade for instant processing</a>
           </p>
         )}
 
@@ -167,14 +167,14 @@ export default function HtmlToPdfPage() {
         <SuccessAnimation show={success} message="PDF downloaded!" onRestore={undefined} />
 
         {success && (
-          <div className="mt-4 p-3 bg-green-50 dark:bg-green-950/20 border border-green-200 dark:border-green-800 rounded-xl text-center">
+          <div className="mt-4 p-3 bg-green-50 dark:bg-green-950/20 border border-green-200 dark:border-green-800 rounded-[var(--r-lg)] text-center">
             <p className="text-sm text-green-700 dark:text-green-400">PDF downloaded successfully!</p>
           </div>
         )}
 
-        <div className="mt-6 p-4 bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800 rounded-xl">
-          <p className="text-xs text-amber-700 dark:text-amber-400 font-medium mb-1">Tips:</p>
-          <ul className="text-xs text-amber-600 dark:text-amber-500 space-y-1 list-disc list-inside">
+        <div className="mt-6 p-4 bg-[var(--premium-subtle)] border border-[var(--premium-border)] dark:border-[var(--premium-border)] rounded-[var(--r-lg)]">
+          <p className="text-xs text-[var(--premium)] dark:text-[var(--premium)] font-medium mb-1">Tips:</p>
+          <ul className="text-xs text-[var(--premium)] dark:text-[var(--premium)] space-y-1 list-disc list-inside">
             <li>Use standard HTML tags — h1-h6, p, ul, table, img, div</li>
             <li>External images may not render — use data URIs or inline SVGs</li>
             <li>CSS styles are supported through inline or style tags</li>
@@ -183,7 +183,7 @@ export default function HtmlToPdfPage() {
         </div>
       </div>
 
-      <div className="max-w-3xl mx-auto mt-12 pt-8 border-t border-[var(--card-border)]">
+      <div className="max-w-3xl mx-auto mt-12 pt-8 border-t border-[var(--border)]">
         <h2 className="text-xl font-bold text-[var(--foreground)] mb-3">About HTML to PDF</h2>
         <div className="text-sm text-[var(--muted)] space-y-3 leading-relaxed">
           <p>Convert your HTML markup to a polished PDF document with our free tool, ideal for developers, content creators, and documentation authors. Whether you need to save a web page for offline reading, create printable documentation from HTML templates, or generate reports dynamically, our HTML to PDF converter makes it straightforward. To convert HTML to PDF online free, paste your HTML code into the editor and click download — the conversion uses html2canvas and jsPDF in your browser, so everything stays client-side with no data uploaded to any server. Just paste your markup, preview the result, and download your PDF instantly.</p>

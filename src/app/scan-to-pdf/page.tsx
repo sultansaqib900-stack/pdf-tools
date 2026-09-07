@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useEffect, useRef } from "react";
+import Icon from "@/components/ui/Icon";
 import ToolGuide from "@/components/ToolGuide";
 import ToolInfo from "@/components/ToolInfo";
 import FreeWaitTimer from "@/components/FreeWaitTimer";
@@ -161,22 +162,22 @@ export default function ScanToPdfPage() {
         <UsageBar remaining={usage.remaining} unlimited={usage.unlimited} />
       </div>
 
-      <div className="bg-[var(--card)] rounded-xl border border-[var(--card-border)] p-8 space-y-6">
+      <div className="bg-[var(--surface)] rounded-[var(--r-lg)] border border-[var(--border)] p-8 space-y-6">
         <canvas ref={canvasRef} className="hidden" />
 
         {!cameraActive ? (
           <div className="text-center py-10">
-            <span className="text-5xl block mb-4">📷</span>
+            <Icon name="camera" size={36} className="block mb-4 text-[var(--muted)]" />
             <p className="text-[var(--muted)] mb-4">Open your camera to start scanning documents</p>
             <button
               onClick={startCamera}
-              className="px-8 py-3 bg-indigo-600 text-white font-medium rounded-xl hover:bg-indigo-700 transition shadow-sm"
+              className="px-8 py-3 bg-[var(--accent)] text-white font-medium rounded-[var(--r-lg)] hover:bg-[var(--accent-hover)] transition shadow-sm"
             >
               Open Camera
             </button>
           </div>
         ) : (
-          <div className={`relative rounded-xl overflow-hidden bg-black ${flash ? "opacity-90" : ""}`}>
+          <div className={`relative rounded-[var(--r-lg)] overflow-hidden bg-black ${flash ? "opacity-90" : ""}`}>
             <video ref={videoRef} autoPlay playsInline className="w-full max-h-96 object-contain" />
             <div className="absolute inset-0 border-2 border-dashed border-white/30 m-4 rounded-lg pointer-events-none" />
             <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-3">
@@ -184,11 +185,11 @@ export default function ScanToPdfPage() {
                 onClick={capture}
                 className="w-14 h-14 bg-white rounded-full flex items-center justify-center shadow-lg hover:scale-105 transition"
               >
-                <div className="w-10 h-10 bg-red-500 rounded-full" />
+                <div className="w-10 h-10 bg-[var(--danger)] rounded-full" />
               </button>
               <button
                 onClick={stopCamera}
-                className="px-4 py-2 bg-red-600 text-white text-sm font-medium rounded-lg hover:bg-red-700 transition"
+                className="px-4 py-2 bg-[var(--danger)] text-white text-sm font-medium rounded-lg hover:opacity-90 transition"
               >
                 Stop
               </button>
@@ -200,13 +201,13 @@ export default function ScanToPdfPage() {
           <div>
             <div className="flex items-center justify-between mb-3">
               <span className="text-sm font-medium text-[var(--muted)]">{captured.length} page{captured.length > 1 ? "s" : ""} captured</span>
-              <button onClick={() => setCaptured([])} className="text-red-500 hover:text-red-600 text-xs">Clear all</button>
+              <button onClick={() => setCaptured([])} className="text-[var(--danger)] hover:text-[var(--danger)] text-xs">Clear all</button>
             </div>
             <div className="grid grid-cols-4 sm:grid-cols-6 gap-3">
               {captured.map((dataUrl, i) => (
                 <div key={i} className="relative group">
-                  <img src={dataUrl} alt="" className="w-full h-24 object-cover rounded-lg border border-[var(--card-border)]" />
-                  <button onClick={() => removeCapture(i)} className="absolute -top-2 -right-2 w-5 h-5 bg-red-500 text-white rounded-full text-xs opacity-0 group-hover:opacity-100 transition flex items-center justify-center">
+                  <img src={dataUrl} alt="" className="w-full h-24 object-cover rounded-lg border border-[var(--border)]" />
+                  <button onClick={() => removeCapture(i)} className="absolute -top-2 -right-2 w-5 h-5 bg-[var(--danger)] text-white rounded-full text-xs opacity-0 group-hover:opacity-100 transition flex items-center justify-center">
                     x
                   </button>
                   <p className="text-[10px] text-[var(--muted)] text-center mt-1">Page {i + 1}</p>
@@ -223,7 +224,7 @@ export default function ScanToPdfPage() {
         <button
           onClick={convert}
           disabled={captured.length === 0 || processing || showTimer}
-          className="w-full py-3 bg-indigo-600 text-white font-medium rounded-xl hover:bg-indigo-700 disabled:opacity-40 disabled:cursor-not-allowed transition shadow-sm"
+          className="w-full py-3 bg-[var(--accent)] text-white font-medium rounded-[var(--r-lg)] hover:bg-[var(--accent-hover)] disabled:opacity-40 disabled:cursor-not-allowed transition shadow-sm"
         >
           {processing ? (
             <span className="flex items-center justify-center gap-2">
@@ -236,7 +237,7 @@ export default function ScanToPdfPage() {
         {!isPremium() && (
           <p className="text-center text-xs text-[var(--muted)]">
             Free users limited to 10 pages.{ " " }
-            <a href="/premium" className="text-indigo-500 font-medium hover:underline">Upgrade for unlimited pages, batch & no wait</a>
+            <a href="/premium" className="text-[var(--accent)] font-medium hover:underline">Upgrade for unlimited pages, batch & no wait</a>
           </p>
         )}
 
@@ -245,7 +246,7 @@ export default function ScanToPdfPage() {
         <SuccessAnimation show={success} message="PDF created!" onRestore={restoreOriginal} />
       </div>
 
-      <div className="max-w-3xl mx-auto mt-12 pt-8 border-t border-[var(--card-border)]">
+      <div className="max-w-3xl mx-auto mt-12 pt-8 border-t border-[var(--border)]">
         <h2 className="text-xl font-bold text-[var(--foreground)] mb-3">About Scan to PDF</h2>
         <div className="text-sm text-[var(--muted)] space-y-3 leading-relaxed">
           <p>Turn your device camera into a portable document scanner with Scan to PDF. Capture receipts, contracts, handwritten notes, whiteboards, or any physical document and convert them instantly to PDF — all within your browser with zero uploads.</p>

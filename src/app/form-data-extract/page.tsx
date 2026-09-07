@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef } from "react";
+import Icon from "@/components/ui/Icon";
 import ToolGuide from "@/components/ToolGuide";
 import { isPremium } from "@/lib/premium";
 import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
@@ -26,13 +27,13 @@ export default function FormDataExtractPage() {
       <div className="max-w-3xl mx-auto px-4 py-12">
         <SoftwareAppJsonLd name="PDF Form Data Extractor" description="Extract filled form field data from PDFs to CSV. Premium." url="https://allaboutpdfediting.xyz/form-data-extract" image="https://allaboutpdfediting.xyz/opengraph-image.png" aggregateRating={{ ratingValue: 4.6, bestRating: 5, ratingCount: 143 }} />
         <div className="text-center py-20">
-          <div className="text-6xl mb-6">📊</div>
+          <div className="flex justify-center mb-6"><Icon name="fileSheet" size={42} className="text-[var(--muted)]" /></div>
           <h1 className="text-3xl font-bold mb-3">Form Data Extraction</h1>
           <p className="text-[var(--muted)] mb-8 max-w-md mx-auto">Extract filled form data from PDF documents into CSV files for analysis in Excel.</p>
-          <div className="inline-block bg-gradient-to-r from-amber-500 to-orange-600 text-white px-8 py-4 rounded-2xl shadow-lg">
+          <div className="inline-block bg-[var(--premium)] text-white px-8 py-4 rounded-[var(--r-xl)] shadow-lg">
             <p className="text-lg font-bold mb-1">Premium Feature</p>
             <p className="text-sm opacity-90 mb-4">Only premium subscribers can extract form data</p>
-            <a href="/premium" className="inline-block bg-white text-orange-600 px-6 py-2 rounded-xl font-semibold text-sm hover:bg-orange-50 transition">Upgrade to Premium</a>
+            <a href="/premium" className="inline-block bg-white text-[var(--premium)] px-6 py-2 rounded-[var(--r-lg)] font-semibold text-sm hover:bg-[var(--premium-subtle)] transition">Upgrade to Premium</a>
           </div>
         </div>
       </div>
@@ -109,23 +110,23 @@ export default function FormDataExtractPage() {
       <div className="mb-8">
         <div className="flex items-center gap-3 mb-2">
           <h1 className="text-3xl font-bold text-[var(--foreground)]">Form Data Extraction</h1>
-          <span className="text-xs font-semibold bg-gradient-to-r from-amber-500 to-orange-600 text-white px-2.5 py-0.5 rounded-full">Premium</span>
+          <span className="text-xs font-semibold bg-[var(--premium)] text-white px-2.5 py-0.5 rounded-full">Premium</span>
         </div>
         <p className="text-[var(--muted)]">Extract filled AcroForm field data from PDFs into a CSV file for Excel, Google Sheets, or analysis.</p>
       </div>
 
 
-      <div className="bg-[var(--card)] border border-[var(--card-border)] rounded-xl p-6 space-y-5">
+      <div className="bg-[var(--surface)] border border-[var(--border)] rounded-[var(--r-lg)] p-6 space-y-5">
         <div>
           <label className="block text-sm font-medium text-[var(--foreground)] mb-2">Upload filled PDF forms</label>
-          <input type="file" accept=".pdf" multiple onChange={(e) => setFiles(Array.from(e.target.files || []))} className="text-sm file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:bg-indigo-100 dark:file:bg-indigo-900 file:text-indigo-700 dark:file:text-indigo-300 file:text-xs file:font-medium w-full" />
+          <input type="file" accept=".pdf" multiple onChange={(e) => setFiles(Array.from(e.target.files || []))} className="text-sm file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:bg-[var(--accent-subtle)] file:text-[var(--accent)] file:text-xs file:font-medium w-full" />
           {files.length > 0 && <p className="text-xs text-[var(--muted)] mt-1">{files.length} file(s) selected</p>}
         </div>
 
         <button
           onClick={extract}
           disabled={files.length === 0 || extracting}
-          className="w-full py-3 bg-gradient-to-r from-amber-500 to-orange-600 text-white font-bold rounded-xl hover:from-amber-600 hover:to-orange-700 disabled:opacity-40 transition"
+          className="w-full py-3 bg-[var(--premium)] text-white font-bold rounded-[var(--r-lg)] hover:opacity-90 disabled:opacity-40 transition"
         >
           {extracting ? "Extracting..." : `Extract Data from ${files.length} File(s)`}
         </button>
@@ -133,29 +134,29 @@ export default function FormDataExtractPage() {
         {csvResult && (
           <div className="space-y-3">
             <div className="flex gap-3">
-              <button onClick={downloadCsv} className="flex-1 py-2.5 bg-emerald-600 text-white font-medium rounded-xl hover:bg-emerald-700 transition text-sm">⬇ Download CSV</button>
-              <button onClick={() => { navigator.clipboard.writeText(csvResult); }} className="flex-1 py-2.5 bg-indigo-600 text-white font-medium rounded-xl hover:bg-indigo-700 transition text-sm">📋 Copy to Clipboard</button>
+              <button onClick={downloadCsv} className="flex-1 py-2.5 bg-[var(--success)] text-white font-medium rounded-[var(--r-lg)] hover:opacity-90 transition text-sm">⬇ Download CSV</button>
+              <button onClick={() => { navigator.clipboard.writeText(csvResult); }} className="flex-1 py-2.5 bg-[var(--accent)] text-white font-medium rounded-[var(--r-lg)] hover:bg-[var(--accent-hover)] transition text-sm">📋 Copy to Clipboard</button>
             </div>
-            <textarea readOnly value={csvResult} className="w-full h-48 p-4 rounded-xl border border-[var(--card-border)] bg-[var(--background)] text-xs font-mono text-[var(--foreground)]" />
+            <textarea readOnly value={csvResult} className="w-full h-48 p-4 rounded-[var(--r-lg)] border border-[var(--border)] bg-[var(--background)] text-xs font-mono text-[var(--foreground)]" />
           </div>
         )}
       </div>
 
       {success && (
-        <div className="mt-4 p-4 bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-200 dark:border-emerald-800 rounded-xl text-center">
-          <p className="text-sm text-emerald-700 dark:text-emerald-300">✅ Data extracted! Download the CSV or copy it to your clipboard.</p>
+        <div className="mt-4 p-4 bg-[var(--success-subtle)] border border-[var(--success)]/25 rounded-[var(--r-lg)] text-center">
+          <p className="text-sm text-[var(--success)]">✅ Data extracted! Download the CSV or copy it to your clipboard.</p>
         </div>
       )}
 
       {error && (
-        <div className="mt-6 p-4 bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-800 rounded-xl text-red-600 dark:text-red-400 text-sm">{error}</div>
+        <div className="mt-6 p-4 bg-[var(--danger-subtle)] border border-[var(--danger)]/25 rounded-[var(--r-lg)] text-[var(--danger)] dark:text-[var(--danger)] text-sm">{error}</div>
       )}
 
 
       <ToolGuide slug="form-data-extract" />
 
       <div className="text-center mt-8">
-        <a href="/premium" className="text-sm text-indigo-500 hover:underline font-medium">Explore all Premium features →</a>
+        <a href="/premium" className="text-sm text-[var(--accent)] hover:underline font-medium">Explore all Premium features →</a>
       </div>
     </div>
   );

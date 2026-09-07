@@ -25,12 +25,12 @@ export default function BlogPost() {
       />
       <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Blog", item: "https://allaboutpdfediting.xyz/blog" }, { name: "How to Flatten a PDF Online Free", item: "https://allaboutpdfediting.xyz/blog/flatten-pdf-online" }]} />
       <HowToJsonLd name="How to Flatten a PDF Online Free" description="Flatten PDF files online for free..." steps={[{name:"Go to the flatten tool — Open our free PDF flatten tool.",text:"Go to the flatten tool — Open our free PDF flatten tool."},{name:"Upload your PDF — Drag and drop or click to select your file.",text:"Upload your PDF — Drag and drop or click to select your file."},{name:"Click Flatten — The tool processes your file instantly. Download the flattene...",text:"Click Flatten — The tool processes your file instantly. Download the flattened version."}]} />
-      <a href="/blog" className="text-sm text-indigo-500 hover:underline mb-6 inline-block">&larr; Back to blog</a>
+      <a href="/blog" className="text-sm text-[var(--accent)] hover:underline mb-6 inline-block">&larr; Back to blog</a>
       <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">How to Flatten a PDF Online Free</h1>
       <p className="text-sm text-[var(--muted)] mb-8">4 min read · Updated June 2026</p>
 
       <div className="text-sm text-[var(--muted)] space-y-5 leading-relaxed">
-        <p>Flattening a PDF makes form fields, annotations, signatures, and layers permanent by merging them into the page content. Once flattened, the content cannot be edited. Our <a href="/flatten-pdf" className="text-indigo-500 underline">free PDF flatten tool</a> lets you <strong>flatten a PDF online</strong> instantly — all in your browser, no uploads, no signup.</p>
+        <p>Flattening a PDF makes form fields, annotations, signatures, and layers permanent by merging them into the page content. Once flattened, the content cannot be edited. Our <a href="/flatten-pdf" className="text-[var(--accent)] underline">free PDF flatten tool</a> lets you <strong>flatten a PDF online</strong> instantly — all in your browser, no uploads, no signup.</p>
 
         <h2 className="text-xl font-bold text-[var(--foreground)] pt-4">What Does Flattening a PDF Do?</h2>
         <p>When you flatten a PDF:</p>
@@ -44,7 +44,7 @@ export default function BlogPost() {
 
         <h2 className="text-xl font-bold text-[var(--foreground)] pt-4">How to Flatten a PDF in 3 Steps</h2>
         <ol className="list-decimal pl-5 space-y-3">
-          <li><strong>Go to the flatten tool</strong> — Open our <a href="/flatten-pdf" className="text-indigo-500 underline">free PDF flatten tool</a>.</li>
+          <li><strong>Go to the flatten tool</strong> — Open our <a href="/flatten-pdf" className="text-[var(--accent)] underline">free PDF flatten tool</a>.</li>
           <li><strong>Upload your PDF</strong> — Drag and drop or click to select your file.</li>
           <li><strong>Click Flatten</strong> — The tool processes your file instantly. Download the flattened version.</li>
         </ol>
@@ -60,14 +60,14 @@ export default function BlogPost() {
         </ul>
 
         <h2 className="text-xl font-bold text-[var(--foreground)] pt-4">Flatten vs. Password Protect</h2>
-        <p>Flattening is different from password protection. A password-protected PDF can still be unlocked and edited with the correct password. A flattened PDF has its layers and fields permanently merged — there&apos;s no way to "unflatten" it. For maximum security, you can <a href="/flatten-pdf" className="text-indigo-500 underline">flatten your PDF</a> first and then <a href="/protect" className="text-indigo-500 underline">add password protection</a> for an extra layer.</p>
+        <p>Flattening is different from password protection. A password-protected PDF can still be unlocked and edited with the correct password. A flattened PDF has its layers and fields permanently merged — there&apos;s no way to "unflatten" it. For maximum security, you can <a href="/flatten-pdf" className="text-[var(--accent)] underline">flatten your PDF</a> first and then <a href="/protect" className="text-[var(--accent)] underline">add password protection</a> for an extra layer.</p>
 
         <h2 className="text-xl font-bold text-[var(--foreground)] pt-4">Client-Side Processing = Complete Privacy</h2>
         <p>When you use our flatten tool, the file is processed entirely on your device using pdf-lib. Your PDF never reaches our server or any third party. This is especially important for sensitive documents — legal contracts, financial records, or personal files you don&apos;t want uploaded anywhere.</p>
 
-        <div className="bg-[var(--card)] border border-[var(--card-border)] rounded-xl p-6 mt-6">
+        <div className="bg-[var(--surface)] border border-[var(--border)] rounded-[var(--r-lg)] p-6 mt-6">
           <p className="font-semibold text-[var(--foreground)] mb-2">Need to flatten a PDF?</p>
-          <a href="/flatten-pdf" className="inline-block px-5 py-2.5 bg-indigo-600 text-white font-medium rounded-xl text-sm hover:bg-indigo-700 transition">Flatten Your PDF Now →</a>
+          <a href="/flatten-pdf" className="inline-block px-5 py-2.5 bg-[var(--accent)] text-white font-medium rounded-[var(--r-lg)] text-sm hover:bg-[var(--accent-hover)] transition">Flatten Your PDF Now →</a>
         </div>
       </div>
     </article>

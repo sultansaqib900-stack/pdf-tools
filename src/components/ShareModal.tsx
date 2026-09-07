@@ -153,12 +153,12 @@ export default function ShareModal({ open, onClose }: ShareModalProps) {
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4"
       onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
     >
-      <div className="bg-[var(--card)] border border-[var(--card-border)] rounded-2xl w-full max-w-sm overflow-hidden shadow-2xl">
+      <div className="bg-[var(--surface)] border border-[var(--border)] rounded-[var(--r-xl)] w-full max-w-sm overflow-hidden shadow-2xl">
         <div className="flex items-center justify-between px-5 pt-5 pb-3">
           <h3 className="text-lg font-bold text-[var(--foreground)]">Share</h3>
           <button
             onClick={onClose}
-            className="p-1.5 rounded-lg hover:bg-[var(--card-border)] text-[var(--muted)] transition"
+            className="p-1.5 rounded-lg hover:bg-[var(--border)] text-[var(--muted)] transition"
           >
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
           </button>
@@ -172,7 +172,7 @@ export default function ShareModal({ open, onClose }: ShareModalProps) {
               width={1200}
               height={630}
               loading="lazy"
-              className="w-full aspect-[1200/630] rounded-xl object-cover border border-[var(--card-border)]"
+              className="w-full aspect-[1200/630] rounded-[var(--r-lg)] object-cover border border-[var(--border)]"
             />
           </div>
         )}
@@ -190,7 +190,7 @@ export default function ShareModal({ open, onClose }: ShareModalProps) {
               href={shareUrl(p.id)}
               target="_blank"
               rel="noopener noreferrer"
-              className={`${p.color} text-white rounded-xl p-3 flex items-center justify-center transition`}
+              className={`${p.color} text-white rounded-[var(--r-lg)] p-3 flex items-center justify-center transition`}
             >
               {p.icon}
             </a>
@@ -201,14 +201,14 @@ export default function ShareModal({ open, onClose }: ShareModalProps) {
           {canNativeShare && (
             <button
               onClick={handleNativeShare}
-              className="flex-1 py-2.5 rounded-xl bg-indigo-600 text-white text-sm font-medium hover:bg-indigo-700 transition"
+              className="flex-1 py-2.5 rounded-[var(--r-lg)] bg-[var(--accent)] text-white text-sm font-medium hover:bg-[var(--accent-hover)] transition"
             >
               Share via...
             </button>
           )}
           <button
             onClick={handleCopy}
-            className="flex-1 py-2.5 rounded-xl border border-[var(--card-border)] text-[var(--foreground)] text-sm font-medium hover:bg-[var(--card-border)] transition"
+            className="flex-1 py-2.5 rounded-[var(--r-lg)] border border-[var(--border)] text-[var(--foreground)] text-sm font-medium hover:bg-[var(--border)] transition"
           >
             {copied ? "Copied!" : "Copy Link"}
           </button>

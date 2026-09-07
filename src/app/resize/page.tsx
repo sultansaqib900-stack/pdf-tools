@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useEffect, useRef } from "react";
+import Icon from "@/components/ui/Icon";
 import ToolGuide from "@/components/ToolGuide";
 import ToolInfo from "@/components/ToolInfo";
 import FreeWaitTimer from "@/components/FreeWaitTimer";
@@ -157,19 +158,19 @@ export default function ResizePage() {
         <UsageBar remaining={usage.remaining} unlimited={usage.unlimited} />
       </div>
 
-      <div className="bg-[var(--card)] rounded-xl border border-[var(--card-border)] p-8">
+      <div className="bg-[var(--surface)] rounded-[var(--r-lg)] border border-[var(--border)] p-8">
         <div
           onDrop={(e) => { e.preventDefault(); setDragging(false); handleFile(e.dataTransfer.files[0]); }}
           onDragOver={(e) => { e.preventDefault(); setDragging(true); }}
           onDragLeave={() => setDragging(false)}
-          className={`border-2 border-dashed rounded-xl p-10 text-center transition ${
-            dragging ? "border-indigo-500 bg-indigo-50 dark:bg-indigo-950/30" : "border-[var(--card-border)] bg-[var(--background)]"
+          className={`border-2 border-dashed rounded-[var(--r-lg)] p-10 text-center transition ${
+            dragging ? "border-[var(--accent-border)] bg-[var(--accent-subtle)]" : "border-[var(--border)] bg-[var(--background)]"
           }`}
         >
           <input type="file" accept="application/pdf" onChange={(e) => handleFile(e.target.files?.[0] ?? null)} className="hidden" id="fileInput" />
           <label htmlFor="fileInput" className="cursor-pointer flex flex-col items-center gap-3">
-            <span className="text-5xl">📐</span>
-            <span className="text-indigo-500 font-medium hover:underline">
+            <Icon name="crop" size={36} className="text-[var(--muted)]" />
+            <span className="text-[var(--accent)] font-medium hover:underline">
               {file ? file.name : "Click to select or drag & drop a PDF"}
             </span>
             {file && <span className="text-sm text-[var(--muted)]">{(file.size / 1024).toFixed(1)} KB &middot; {pageCount} pages</span>}
@@ -180,15 +181,15 @@ export default function ResizePage() {
         {file && (
           <div className="mt-6 space-y-5">
             <div className="flex gap-3">
-              <button onClick={() => setMode("preset")} className={`px-5 py-2 rounded-xl text-sm font-medium transition ${mode === "preset" ? "bg-indigo-600 text-white" : "border border-[var(--card-border)] text-[var(--muted)] hover:text-[var(--foreground)]"}`}>Preset Sizes</button>
-              <button onClick={() => setMode("custom")} className={`px-5 py-2 rounded-xl text-sm font-medium transition ${mode === "custom" ? "bg-indigo-600 text-white" : "border border-[var(--card-border)] text-[var(--muted)] hover:text-[var(--foreground)]"}`}>Custom Size</button>
+              <button onClick={() => setMode("preset")} className={`px-5 py-2 rounded-[var(--r-lg)] text-sm font-medium transition ${mode === "preset" ? "bg-[var(--accent)] text-white" : "border border-[var(--border)] text-[var(--muted)] hover:text-[var(--foreground)]"}`}>Preset Sizes</button>
+              <button onClick={() => setMode("custom")} className={`px-5 py-2 rounded-[var(--r-lg)] text-sm font-medium transition ${mode === "custom" ? "bg-[var(--accent)] text-white" : "border border-[var(--border)] text-[var(--muted)] hover:text-[var(--foreground)]"}`}>Custom Size</button>
             </div>
 
             {mode === "preset" ? (
               <div className="grid grid-cols-2 gap-3">
                 {sizes.map((s) => (
                   <button key={s.label} onClick={() => setSelectedSize(s.label)}
-                    className={`px-4 py-3 rounded-xl text-sm text-left border transition ${selectedSize === s.label ? "border-indigo-500 bg-indigo-50 dark:bg-indigo-950/30 text-indigo-700 dark:text-indigo-300" : "border-[var(--card-border)] text-[var(--muted)] hover:text-[var(--foreground)] hover:border-indigo-300"}`}
+                    className={`px-4 py-3 rounded-[var(--r-lg)] text-sm text-left border transition ${selectedSize === s.label ? "border-[var(--accent-border)] bg-[var(--accent-subtle)] text-[var(--accent)] dark:text-[var(--accent)]" : "border-[var(--border)] text-[var(--muted)] hover:text-[var(--foreground)] hover:border-[var(--accent-border)]"}`}
                   >
                     <div className="font-medium">{s.label}</div>
                     <div className="text-xs opacity-70">{s.w.toFixed(0)} × {s.h.toFixed(0)} pt</div>
@@ -199,11 +200,11 @@ export default function ResizePage() {
               <div className="flex gap-4">
                 <div className="flex-1">
                   <label className="block text-sm font-medium text-[var(--foreground)] mb-2">Width (points)</label>
-                  <input type="number" min={50} value={customW} onChange={(e) => setCustomW(e.target.value)} placeholder="612" className="w-full px-4 py-2.5 rounded-xl border border-[var(--card-border)] bg-[var(--background)] text-[var(--foreground)] text-sm outline-none focus:border-indigo-500 transition" />
+                  <input type="number" min={50} value={customW} onChange={(e) => setCustomW(e.target.value)} placeholder="612" className="w-full px-4 py-2.5 rounded-[var(--r-lg)] border border-[var(--border)] bg-[var(--background)] text-[var(--foreground)] text-sm outline-none focus:border-[var(--accent-border)] transition" />
                 </div>
                 <div className="flex-1">
                   <label className="block text-sm font-medium text-[var(--foreground)] mb-2">Height (points)</label>
-                  <input type="number" min={50} value={customH} onChange={(e) => setCustomH(e.target.value)} placeholder="792" className="w-full px-4 py-2.5 rounded-xl border border-[var(--card-border)] bg-[var(--background)] text-[var(--foreground)] text-sm outline-none focus:border-indigo-500 transition" />
+                  <input type="number" min={50} value={customH} onChange={(e) => setCustomH(e.target.value)} placeholder="792" className="w-full px-4 py-2.5 rounded-[var(--r-lg)] border border-[var(--border)] bg-[var(--background)] text-[var(--foreground)] text-sm outline-none focus:border-[var(--accent-border)] transition" />
                 </div>
               </div>
             )}
@@ -221,7 +222,7 @@ export default function ResizePage() {
             <button
               onClick={process}
               disabled={processing || (mode === "custom" && (!customW || !customH)) || showTimer}
-              className="mt-6 w-full py-3 bg-indigo-600 text-white font-medium rounded-xl hover:bg-indigo-700 disabled:opacity-40 disabled:cursor-not-allowed transition shadow-sm"
+              className="mt-6 w-full py-3 bg-[var(--accent)] text-white font-medium rounded-[var(--r-lg)] hover:bg-[var(--accent-hover)] disabled:opacity-40 disabled:cursor-not-allowed transition shadow-sm"
             >
               {processing ? (
                 <span className="flex items-center justify-center gap-2">
@@ -234,7 +235,7 @@ export default function ResizePage() {
             {!isPremium() && (
               <p className="mt-3 text-center text-xs text-[var(--muted)]">
                 Free users limited to 10MB &amp; 5s wait.{ " " }
-                <a href="/premium" className="text-indigo-500 font-medium hover:underline">Upgrade for no limits</a>
+                <a href="/premium" className="text-[var(--accent)] font-medium hover:underline">Upgrade for no limits</a>
               </p>
             )}
           </>
@@ -246,7 +247,7 @@ export default function ResizePage() {
       </div>
 
 
-      <div className="max-w-3xl mx-auto mt-12 pt-8 border-t border-[var(--card-border)]">
+      <div className="max-w-3xl mx-auto mt-12 pt-8 border-t border-[var(--border)]">
         <h2 className="text-xl font-bold text-[var(--foreground)] mb-3">About Resize PDF</h2>
         <div className="text-sm text-[var(--muted)] space-y-3 leading-relaxed">
           <p>Change the page size of PDF documents online for free. Choose from standard formats like A4, Letter, Legal, A3, or set custom dimensions. Perfect for resizing documents to meet submission requirements, printing standards, or formatting needs.</p>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useEffect, useRef } from "react";
+import Icon from "@/components/ui/Icon";
 import ToolGuide from "@/components/ToolGuide";
 import ToolInfo from "@/components/ToolInfo";
 import FreeWaitTimer from "@/components/FreeWaitTimer";
@@ -163,15 +164,15 @@ export default function PdfToExcelPage() {
         <UsageBar remaining={usage.remaining} unlimited={usage.unlimited} />
       </div>
 
-      <div className="bg-[var(--card)] rounded-xl border border-[var(--card-border)] p-8">
+      <div className="bg-[var(--surface)] rounded-[var(--r-lg)] border border-[var(--border)] p-8">
         <div
           onDrop={onDrop}
           onDragOver={onDragOver}
           onDragLeave={onDragLeave}
-          className={`border-2 border-dashed rounded-xl p-10 text-center transition ${
+          className={`border-2 border-dashed rounded-[var(--r-lg)] p-10 text-center transition ${
             dragging
-              ? "border-indigo-500 bg-indigo-50 dark:bg-indigo-950/30"
-              : "border-[var(--card-border)] bg-[var(--background)]"
+              ? "border-[var(--accent-border)] bg-[var(--accent-subtle)]"
+              : "border-[var(--border)] bg-[var(--background)]"
           }`}
         >
           <input
@@ -182,8 +183,8 @@ export default function PdfToExcelPage() {
             id="fileInput"
           />
           <label htmlFor="fileInput" className="cursor-pointer flex flex-col items-center gap-3">
-            <span className="text-5xl">📊</span>
-            <span className="text-indigo-500 font-medium hover:underline">
+            <Icon name="fileSheet" size={36} className="text-[var(--muted)]" />
+            <span className="text-[var(--accent)] font-medium hover:underline">
               {file ? file.name : "Click to select or drag & drop a PDF"}
             </span>
             {file && <span className="text-sm text-[var(--muted)]">{(file.size / 1024 / 1024).toFixed(1)} MB</span>}
@@ -198,7 +199,7 @@ export default function PdfToExcelPage() {
         <button
           onClick={extract}
           disabled={!file || processing || showTimer}
-          className="mt-6 w-full py-3 bg-indigo-600 text-white font-medium rounded-xl hover:bg-indigo-700 disabled:opacity-40 disabled:cursor-not-allowed transition shadow-sm"
+          className="mt-6 w-full py-3 bg-[var(--accent)] text-white font-medium rounded-[var(--r-lg)] hover:bg-[var(--accent-hover)] disabled:opacity-40 disabled:cursor-not-allowed transition shadow-sm"
         >
           {processing ? (
             <span className="flex items-center justify-center gap-2">
@@ -211,7 +212,7 @@ export default function PdfToExcelPage() {
         {!isPremium() && (
           <p className="mt-3 text-center text-xs text-[var(--muted)]">
             Free users limited to 10MB files.{ " " }
-            <a href="/premium" className="text-indigo-500 font-medium hover:underline">Upgrade for 100MB, batch & no wait</a>
+            <a href="/premium" className="text-[var(--accent)] font-medium hover:underline">Upgrade for 100MB, batch & no wait</a>
           </p>
         )}
 
@@ -225,7 +226,7 @@ export default function PdfToExcelPage() {
               </span>
               <button
                 onClick={downloadCsv}
-                className="flex items-center gap-1.5 px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-xl hover:bg-indigo-700 transition shadow-sm"
+                className="flex items-center gap-1.5 px-4 py-2 bg-[var(--accent)] text-white text-sm font-medium rounded-[var(--r-lg)] hover:bg-[var(--accent-hover)] transition shadow-sm"
               >
                 <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
@@ -238,7 +239,7 @@ export default function PdfToExcelPage() {
             <textarea
               readOnly
               value={csv}
-              className="w-full h-64 p-4 text-xs font-mono bg-[var(--background)] border border-[var(--card-border)] rounded-xl resize-y focus:outline-none focus:ring-2 focus:ring-indigo-500 text-[var(--foreground)]"
+              className="w-full h-64 p-4 text-xs font-mono bg-[var(--background)] border border-[var(--border)] rounded-[var(--r-lg)] resize-y focus:outline-none focus:ring-2 focus:ring-[var(--accent)] text-[var(--foreground)]"
             />
             <p className="text-xs text-[var(--muted)]">Select all (Ctrl+A) and copy, or download the CSV file above.</p>
           </div>
@@ -247,7 +248,7 @@ export default function PdfToExcelPage() {
         <SuccessAnimation show={success} message="Tables extracted!" details={`${tableCount} table${tableCount !== 1 ? "s" : ""} found`} />
       </div>
 
-      <div className="max-w-3xl mx-auto mt-12 pt-8 border-t border-[var(--card-border)]">
+      <div className="max-w-3xl mx-auto mt-12 pt-8 border-t border-[var(--border)]">
         <h2 className="text-xl font-bold text-[var(--foreground)] mb-3">About PDF to Excel</h2>
         <div className="text-sm text-[var(--muted)] space-y-3 leading-relaxed">
           <p>Convert PDF tables to CSV online for free with our AI-powered PDF to Excel tool. Upload a PDF containing tabular data — invoices, financial statements, reports, or spreadsheets — and our tool extracts all tables into clean CSV format using Google Gemini vision AI. Unlike traditional PDF table extractors that rely on text parsing, our approach uses vision AI to understand the layout and structure of every table on each page. This means it works even with scanned PDFs, image-based tables, and complex multi-column layouts. Each table is separated by a blank line in the output, and headers are preserved exactly as they appear. You can copy the CSV directly from the textarea or download it as a .csv file for use in Excel, Google Sheets, or any spreadsheet application. Your data is processed securely — pages are rendered locally in your browser and only the anonymized page images are sent to Gemini for extraction. No files are stored on our servers.</p>

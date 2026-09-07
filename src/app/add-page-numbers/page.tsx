@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useEffect, useRef } from "react";
+import Icon from "@/components/ui/Icon";
 import ToolGuide from "@/components/ToolGuide";
 import ToolInfo from "@/components/ToolInfo";
 import FreeWaitTimer from "@/components/FreeWaitTimer";
@@ -166,19 +167,19 @@ export default function AddPageNumbersPage() {
         <UsageBar remaining={usage.remaining} unlimited={usage.unlimited} />
       </div>
 
-      <div className="bg-[var(--card)] rounded-xl border border-[var(--card-border)] p-8 mt-8">
+      <div className="bg-[var(--surface)] rounded-[var(--r-lg)] border border-[var(--border)] p-8 mt-8">
         <div
           onDrop={(e) => { e.preventDefault(); setDragging(false); handleFile(e.dataTransfer.files[0]); }}
           onDragOver={(e) => { e.preventDefault(); setDragging(true); }}
           onDragLeave={() => setDragging(false)}
-          className={`border-2 border-dashed rounded-xl p-10 text-center transition ${
-            dragging ? "border-indigo-500 bg-indigo-50 dark:bg-indigo-950/30" : "border-[var(--card-border)] bg-[var(--background)]"
+          className={`border-2 border-dashed rounded-[var(--r-lg)] p-10 text-center transition ${
+            dragging ? "border-[var(--accent-border)] bg-[var(--accent-subtle)]" : "border-[var(--border)] bg-[var(--background)]"
           }`}
         >
           <input type="file" accept="application/pdf" onChange={(e) => handleFile(e.target.files?.[0] ?? null)} className="hidden" id="fileInput" />
           <label htmlFor="fileInput" className="cursor-pointer flex flex-col items-center gap-3">
-            <span className="text-5xl">🔢</span>
-            <span className="text-indigo-500 font-medium hover:underline">
+            <Icon name="numbers" size={36} className="text-[var(--muted)]" />
+            <span className="text-[var(--accent)] font-medium hover:underline">
               {file ? file.name : "Click to select or drag & drop a PDF"}
             </span>
             {pageCount > 0 && <span className="text-sm text-[var(--muted)]">{pageCount} pages</span>}
@@ -198,8 +199,8 @@ export default function AddPageNumbersPage() {
                     onClick={() => setPosition(p.value as typeof position)}
                     className={`py-2 rounded-lg border text-xs font-medium transition ${
                       position === p.value
-                        ? "border-indigo-500 bg-indigo-50 dark:bg-indigo-950/30 text-indigo-600 dark:text-indigo-400"
-                        : "border-[var(--card-border)] text-[var(--muted)] hover:border-[var(--card-border)]"
+                        ? "border-[var(--accent-border)] bg-[var(--accent-subtle)] text-[var(--accent)] dark:text-[var(--accent)]"
+                        : "border-[var(--border)] text-[var(--muted)] hover:border-[var(--border)]"
                     }`}
                   >
                     {p.label}
@@ -215,7 +216,7 @@ export default function AddPageNumbersPage() {
                 min={1}
                 value={startNumber}
                 onChange={(e) => setStartNumber(Math.max(1, Number(e.target.value)))}
-                className="w-20 px-3 py-2 border border-[var(--card-border)] rounded-lg bg-[var(--background)] text-[var(--foreground)] text-sm"
+                className="w-20 px-3 py-2 border border-[var(--border)] rounded-lg bg-[var(--background)] text-[var(--foreground)] text-sm"
               />
             </div>
 
@@ -224,7 +225,7 @@ export default function AddPageNumbersPage() {
             <button
               onClick={addNumbers}
               disabled={processing || showTimer}
-              className="w-full py-3 bg-indigo-600 text-white font-medium rounded-xl hover:bg-indigo-700 disabled:opacity-40 disabled:cursor-not-allowed transition shadow-sm"
+              className="w-full py-3 bg-[var(--accent)] text-white font-medium rounded-[var(--r-lg)] hover:bg-[var(--accent-hover)] disabled:opacity-40 disabled:cursor-not-allowed transition shadow-sm"
             >
               {processing ? "Adding page numbers..." : `Add page numbers (${pageCount} pages)`}
             </button>
@@ -232,7 +233,7 @@ export default function AddPageNumbersPage() {
             {!isPremium() && (
               <p className="mt-3 text-center text-xs text-[var(--muted)]">
                 Free users limited to 10MB files.{ " " }
-                <a href="/premium" className="text-indigo-500 font-medium hover:underline">Upgrade for 100MB, batch & no wait</a>
+                <a href="/premium" className="text-[var(--accent)] font-medium hover:underline">Upgrade for 100MB, batch & no wait</a>
               </p>
             )}
 
@@ -244,7 +245,7 @@ export default function AddPageNumbersPage() {
         <SuccessAnimation show={success} message="Page numbers added!" onRestore={restoreOriginal} />
       </div>
 
-      <div className="max-w-3xl mx-auto mt-12 pt-8 border-t border-[var(--card-border)]">
+      <div className="max-w-3xl mx-auto mt-12 pt-8 border-t border-[var(--border)]">
         <h2 className="text-xl font-bold text-[var(--foreground)] mb-3">About Add Page Numbers</h2>
         <div className="text-sm text-[var(--muted)] space-y-3 leading-relaxed">
           <p>Number your PDF pages easily with our free tool, designed for authors, office workers, and anyone preparing professional documents. Whether you are laying out a book, organizing a multi-section report, or creating an instruction manual, adding sequential page numbers helps readers navigate your content with confidence. Our tool lets you choose from six positions — top or bottom, aligned left, center, or right — and set any starting number. To add page numbers to PDF online free, just upload your file, pick your settings, and download instantly. The numbering is applied client-side using pdf-lib, so your files remain private and secure. The clean Helvetica font and balanced size blend seamlessly with your document's layout.</p>

@@ -47,10 +47,10 @@ export default function PdfToAudioPage() {
           <div className="text-6xl mb-6">🎧</div>
           <h1 className="text-3xl font-bold mb-3">PDF to Audio</h1>
           <p className="text-[var(--muted)] mb-8 max-w-md mx-auto">Convert any PDF to spoken audio. Listen to documents while commuting, exercising, or multitasking.</p>
-          <div className="inline-block bg-gradient-to-r from-amber-500 to-orange-600 text-white px-8 py-4 rounded-2xl shadow-lg">
+          <div className="inline-block bg-[var(--premium)] text-white px-8 py-4 rounded-[var(--r-xl)] shadow-lg">
             <p className="text-lg font-bold mb-1">Premium Feature</p>
             <p className="text-sm opacity-90 mb-4">Only premium subscribers can convert PDFs to audio</p>
-            <a href="/premium" className="inline-block bg-white text-orange-600 px-6 py-2 rounded-xl font-semibold text-sm hover:bg-orange-50 transition">Upgrade to Premium</a>
+            <a href="/premium" className="inline-block bg-white text-[var(--premium)] px-6 py-2 rounded-[var(--r-lg)] font-semibold text-sm hover:bg-[var(--premium-subtle)] transition">Upgrade to Premium</a>
           </div>
         </div>
       </div>
@@ -125,29 +125,29 @@ export default function PdfToAudioPage() {
       <div className="mb-8">
         <div className="flex items-center gap-3 mb-2">
           <h1 className="text-3xl font-bold text-[var(--foreground)]">PDF to Audio</h1>
-          <span className="text-xs font-semibold bg-gradient-to-r from-amber-500 to-orange-600 text-white px-2.5 py-0.5 rounded-full">Premium</span>
+          <span className="text-xs font-semibold bg-[var(--premium)] text-white px-2.5 py-0.5 rounded-full">Premium</span>
         </div>
         <p className="text-[var(--muted)]">Extract text from any PDF and listen to it through natural-sounding voices.</p>
       </div>
 
 
-      <div className="bg-[var(--card)] border border-[var(--card-border)] rounded-xl p-6 space-y-5">
-        <input type="file" accept=".pdf" onChange={(e) => setFile(e.target.files?.[0] || null)} className="text-sm file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:bg-indigo-100 dark:file:bg-indigo-900 file:text-indigo-700 dark:file:text-indigo-300 file:text-xs file:font-medium" />
+      <div className="bg-[var(--surface)] border border-[var(--border)] rounded-[var(--r-lg)] p-6 space-y-5">
+        <input type="file" accept=".pdf" onChange={(e) => setFile(e.target.files?.[0] || null)} className="text-sm file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:bg-[var(--accent-subtle)] file:text-[var(--accent)] file:text-xs file:font-medium" />
 
         <button
           onClick={extractAndSpeak}
           disabled={!file || generating}
-          className="w-full py-3 bg-gradient-to-r from-amber-500 to-orange-600 text-white font-bold rounded-xl hover:from-amber-600 hover:to-orange-700 disabled:opacity-40 transition"
+          className="w-full py-3 bg-[var(--premium)] text-white font-bold rounded-[var(--r-lg)] hover:opacity-90 disabled:opacity-40 transition"
         >
           {generating ? `Extracting text... ${progress}%` : "Extract & Listen"}
         </button>
 
         {text && (
           <>
-            <div className="flex flex-wrap items-center gap-3 p-4 bg-indigo-50/50 dark:bg-indigo-950/20 rounded-xl">
+            <div className="flex flex-wrap items-center gap-3 p-4 bg-[var(--accent-subtle)] rounded-[var(--r-lg)]">
               <div className="flex-1 min-w-[150px]">
                 <label className="block text-xs font-medium text-[var(--muted)] mb-1">Voice</label>
-                <select value={voice} onChange={(e) => setVoice(e.target.value)} className="w-full px-3 py-2 rounded-lg border border-[var(--card-border)] bg-[var(--background)] text-sm">
+                <select value={voice} onChange={(e) => setVoice(e.target.value)} className="w-full px-3 py-2 rounded-lg border border-[var(--border)] bg-[var(--background)] text-sm">
                   {voices.map(v => <option key={v.name} value={v.name}>{v.name}</option>)}
                 </select>
               </div>
@@ -159,38 +159,38 @@ export default function PdfToAudioPage() {
 
             <div className="flex gap-3">
               {!playing ? (
-                <button onClick={speak} className="flex-1 py-2.5 bg-emerald-600 text-white font-medium rounded-xl hover:bg-emerald-700 transition">
+                <button onClick={speak} className="flex-1 py-2.5 bg-[var(--success)] text-white font-medium rounded-[var(--r-lg)] hover:opacity-90 transition">
                   {paused ? "▶ Resume" : "▶ Play"}
                 </button>
               ) : (
-                <button onClick={pause} className="flex-1 py-2.5 bg-amber-500 text-white font-medium rounded-xl hover:bg-amber-600 transition">⏸ Pause</button>
+                <button onClick={pause} className="flex-1 py-2.5 bg-[var(--premium)] text-white font-medium rounded-[var(--r-lg)] hover:opacity-90 transition">⏸ Pause</button>
               )}
-              <button onClick={stop} className="flex-1 py-2.5 bg-red-500 text-white font-medium rounded-xl hover:bg-red-600 transition">⏹ Stop</button>
+              <button onClick={stop} className="flex-1 py-2.5 bg-[var(--danger)] text-white font-medium rounded-[var(--r-lg)] hover:opacity-90 transition">⏹ Stop</button>
             </div>
 
             <details>
               <summary className="text-sm font-medium text-[var(--muted)] cursor-pointer hover:text-[var(--foreground)]">Show extracted text ({text.split(" ").length} words)</summary>
-              <div className="mt-2 p-4 bg-[var(--background)] border border-[var(--card-border)] rounded-xl max-h-60 overflow-y-auto text-xs text-[var(--muted)] whitespace-pre-wrap">{text}</div>
+              <div className="mt-2 p-4 bg-[var(--background)] border border-[var(--border)] rounded-[var(--r-lg)] max-h-60 overflow-y-auto text-xs text-[var(--muted)] whitespace-pre-wrap">{text}</div>
             </details>
           </>
         )}
       </div>
 
       {success && text && (
-        <div className="mt-4 p-4 bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-200 dark:border-emerald-800 rounded-xl text-center">
-          <p className="text-sm text-emerald-700 dark:text-emerald-300">✅ {text.split(" ").length} words extracted — ready to listen</p>
+        <div className="mt-4 p-4 bg-[var(--success-subtle)] border border-[var(--success)]/25 rounded-[var(--r-lg)] text-center">
+          <p className="text-sm text-[var(--success)]">✅ {text.split(" ").length} words extracted — ready to listen</p>
         </div>
       )}
 
       {error && (
-        <div className="mt-6 p-4 bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-800 rounded-xl text-red-600 dark:text-red-400 text-sm">{error}</div>
+        <div className="mt-6 p-4 bg-[var(--danger-subtle)] border border-[var(--danger)]/25 rounded-[var(--r-lg)] text-[var(--danger)] dark:text-[var(--danger)] text-sm">{error}</div>
       )}
 
 
       <ToolGuide slug="pdf-to-audio" />
 
       <div className="text-center mt-8">
-        <a href="/premium" className="text-sm text-indigo-500 hover:underline font-medium">Explore all Premium features →</a>
+        <a href="/premium" className="text-sm text-[var(--accent)] hover:underline font-medium">Explore all Premium features →</a>
       </div>
     </div>
   );

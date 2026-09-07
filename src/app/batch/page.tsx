@@ -148,7 +148,7 @@ export default function BatchPage() {
       <AiSummaryJsonLd name="Batch Process" summary="Process multiple PDF files simultaneously applying the same operation to all" category="Utilities" inputType="PDF" outputType="PDF" processing="client-side" price="free" features={["Multi-file batch","Same operation","Compress merge split","ZIP download","Free tool"]} limits="Files up to 10MB" />
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">Batch Process PDF</h1>
-        <p className="text-[var(--muted)]">Process multiple PDFs at once — compress, protect, rotate, or watermark. <span className="text-indigo-500 font-semibold">Premium feature</span>.</p>
+        <p className="text-[var(--muted)]">Process multiple PDFs at once — compress, protect, rotate, or watermark. <span className="text-[var(--accent)] font-semibold">Premium feature</span>.</p>
       </div>
 
       <ToolInfo name="Batch Processing" description="Apply operations to multiple PDFs in one go. Each file is processed locally in your browser and downloaded individually. No uploads, no servers." />
@@ -158,34 +158,34 @@ export default function BatchPage() {
         <UsageBar remaining={usage.remaining} unlimited={usage.unlimited} />
       </div>
 
-      <div className="bg-[var(--card)] rounded-xl border border-[var(--card-border)] p-8">
+      <div className="bg-[var(--surface)] rounded-[var(--r-lg)] border border-[var(--border)] p-8">
         {operations.map((op, i) => (
-          <div key={op.id} className={`flex flex-wrap items-end gap-4 p-4 rounded-lg border border-[var(--card-border)] mb-4 ${i > 0 ? "mt-4" : ""}`}>
+          <div key={op.id} className={`flex flex-wrap items-end gap-4 p-4 rounded-lg border border-[var(--border)] mb-4 ${i > 0 ? "mt-4" : ""}`}>
             <div className="flex-1 min-w-[200px]">
               <label className="block text-xs font-medium text-[var(--muted)] mb-1">Operation</label>
-              <select value={op.type} onChange={(e) => update(op.id, { type: e.target.value as any })} className="w-full px-3 py-2 rounded-lg border border-[var(--card-border)] bg-[var(--background)] text-[var(--foreground)] text-sm outline-none focus:border-indigo-500">
+              <select value={op.type} onChange={(e) => update(op.id, { type: e.target.value as any })} className="w-full px-3 py-2 rounded-lg border border-[var(--border)] bg-[var(--background)] text-[var(--foreground)] text-sm outline-none focus:border-[var(--accent-border)]">
                 {ops.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
               </select>
             </div>
             <div className="flex-1 min-w-[200px]">
               <label className="block text-xs font-medium text-[var(--muted)] mb-1">PDF File</label>
-              <input type="file" accept="application/pdf" onChange={handleFileFor(op.id)} className="w-full text-sm text-[var(--foreground)] file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:bg-indigo-100 dark:file:bg-indigo-900 file:text-indigo-700 dark:file:text-indigo-300 file:text-xs file:font-medium" />
+              <input type="file" accept="application/pdf" onChange={handleFileFor(op.id)} className="w-full text-sm text-[var(--foreground)] file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:bg-[var(--accent-subtle)] file:text-[var(--accent)] file:text-xs file:font-medium" />
             </div>
-            <button onClick={() => remove(op.id)} className="shrink-0 text-red-500 hover:text-red-700 text-lg mb-1">&times;</button>
+            <button onClick={() => remove(op.id)} className="shrink-0 text-[var(--danger)] hover:text-[var(--danger)] text-lg mb-1">&times;</button>
           </div>
         ))}
 
-        <button onClick={addOp} className="w-full py-2.5 border-2 border-dashed border-[var(--card-border)] rounded-xl text-[var(--muted)] hover:text-indigo-500 hover:border-indigo-500 transition text-sm font-medium">
+        <button onClick={addOp} className="w-full py-2.5 border-2 border-dashed border-[var(--border)] rounded-[var(--r-lg)] text-[var(--muted)] hover:text-[var(--accent)] hover:border-[var(--accent-border)] transition text-sm font-medium">
           + Add Operation
         </button>
 
         <ProgressBar processing={processing} label="Processing batch..." />
 
         {!isPremium() && (
-          <div className="mt-6 p-5 bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800 rounded-xl text-center">
-            <p className="text-amber-800 dark:text-amber-300 font-semibold mb-2">Premium Feature</p>
-            <p className="text-sm text-amber-600 dark:text-amber-400">Batch processing requires a Premium plan.</p>
-            <a href="/premium" className="mt-3 inline-block px-5 py-2 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-700 transition">Upgrade Now</a>
+          <div className="mt-6 p-5 bg-[var(--premium-subtle)] border border-[var(--premium-border)] dark:border-[var(--premium-border)] rounded-[var(--r-lg)] text-center">
+            <p className="text-[var(--premium)] font-semibold mb-2">Premium Feature</p>
+            <p className="text-sm text-[var(--premium)] dark:text-[var(--premium)]">Batch processing requires a Premium plan.</p>
+            <a href="/premium" className="mt-3 inline-block px-5 py-2 bg-[var(--accent)] text-white text-sm font-medium rounded-lg hover:bg-[var(--accent-hover)] transition">Upgrade Now</a>
           </div>
         )}
 
@@ -193,7 +193,7 @@ export default function BatchPage() {
           <button
             onClick={runBatch}
             disabled={processing || operations.some((op) => !op.file)}
-            className="mt-6 w-full py-3 bg-indigo-600 text-white font-medium rounded-xl hover:bg-indigo-700 disabled:opacity-40 disabled:cursor-not-allowed transition shadow-sm"
+            className="mt-6 w-full py-3 bg-[var(--accent)] text-white font-medium rounded-[var(--r-lg)] hover:bg-[var(--accent-hover)] disabled:opacity-40 disabled:cursor-not-allowed transition shadow-sm"
           >
             {processing ? (
               <span className="flex items-center justify-center gap-2">
@@ -205,11 +205,11 @@ export default function BatchPage() {
         )}
 
         {results.length > 0 && (
-          <div className="mt-6 p-5 rounded-xl border border-[var(--card-border)]">
+          <div className="mt-6 p-5 rounded-[var(--r-lg)] border border-[var(--border)]">
             <h3 className="font-semibold text-[var(--foreground)] mb-3">Results</h3>
             <div className="space-y-2">
               {results.map((r) => (
-                <div key={r.id} className={`flex items-center gap-3 text-sm ${r.status === "ok" ? "text-emerald-600 dark:text-emerald-400" : "text-red-500"}`}>
+                <div key={r.id} className={`flex items-center gap-3 text-sm ${r.status === "ok" ? "text-[var(--success)] dark:text-[var(--success)]" : "text-[var(--danger)]"}`}>
                   <span>{r.status === "ok" ? "✓" : "✗"}</span>
                   <span>{r.name}</span>
                 </div>
@@ -224,7 +224,7 @@ export default function BatchPage() {
       </div>
 
 
-      <div className="max-w-3xl mx-auto mt-12 pt-8 border-t border-[var(--card-border)]">
+      <div className="max-w-3xl mx-auto mt-12 pt-8 border-t border-[var(--border)]">
         <h2 className="text-xl font-bold text-[var(--foreground)] mb-3">About Batch Processing</h2>
         <div className="text-sm text-[var(--muted)] space-y-3 leading-relaxed">
           <p>Process multiple PDFs at once with our Batch Processing tool. Select the operation for each file — compress, password protect, rotate, or add a watermark — and run them all simultaneously.</p>

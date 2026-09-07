@@ -9,7 +9,7 @@ export default function RootError({
 }) {
   return (
     <div className="flex flex-col items-center justify-center py-32 px-4 text-center">
-      <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-red-500 mb-4">
+      <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-[var(--danger)] mb-4">
         <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
       </svg>
       <h1 className="text-2xl font-bold text-[var(--foreground)] mb-2">Something went wrong</h1>
@@ -19,13 +19,13 @@ export default function RootError({
       <div className="flex gap-3">
         <button
           onClick={() => reset()}
-          className="px-5 py-2.5 bg-indigo-600 text-white font-medium rounded-xl hover:bg-indigo-700 transition text-sm"
+          className="px-5 py-2.5 bg-[var(--accent)] text-white font-medium rounded-[var(--r-lg)] hover:bg-[var(--accent-hover)] transition text-sm"
         >
           Try Again
         </button>
         <a
           href="/"
-          className="px-5 py-2.5 border border-[var(--card-border)] text-[var(--foreground)] font-medium rounded-xl hover:bg-[var(--card)] transition text-sm"
+          className="px-5 py-2.5 border border-[var(--border)] text-[var(--foreground)] font-medium rounded-[var(--r-lg)] hover:bg-[var(--surface)] transition text-sm"
         >
           Go Home
         </a>

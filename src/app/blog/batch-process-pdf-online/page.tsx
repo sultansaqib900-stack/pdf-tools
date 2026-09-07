@@ -9,11 +9,11 @@ export default function BlogPost() {
       <ArticleJsonLd title="How to Batch Process PDF Files Online Free" description="Batch process multiple PDF files online for free. Apply the same operation to many PDFs at once." url="https://allaboutpdfediting.xyz/blog/batch-process-pdf-online" datePublished="2026-06-25" />
       <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Blog", item: "https://allaboutpdfediting.xyz/blog" }, { name: "How to Batch Process PDF Files Online Free", item: "https://allaboutpdfediting.xyz/blog/batch-process-pdf-online" }]} />
       <HowToJsonLd name="How to Batch Process PDF Files Online Free" description="Batch process multiple PDF files online for free. Apply the same operation to many PDFs at once." steps={[{name:"Go to the batch tool — Open our batch PDF processor.",text:"Go to the batch tool — Open our batch PDF processor."},{name:"Select your files — Choose multiple PDFs at once using the file picker or dra...",text:"Select your files — Choose multiple PDFs at once using the file picker or drag and drop."},{name:"Choose the operation — Select what you want to do: compress all, merge all, o...",text:"Choose the operation — Select what you want to do: compress all, merge all, or convert all."},{name:"Process and download — Click go and each file is processed individually. Down...",text:"Process and download — Click go and each file is processed individually. Download results as a zip or individually."}]} />
-      <a href="/blog" className="text-sm text-indigo-500 hover:underline mb-6 inline-block">&larr; Back to blog</a>
+      <a href="/blog" className="text-sm text-[var(--accent)] hover:underline mb-6 inline-block">&larr; Back to blog</a>
       <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">How to Batch Process PDF Files Online Free</h1>
       <p className="text-sm text-[var(--muted)] mb-8">4 min read · Updated June 2026</p>
       <div className="text-sm text-[var(--muted)] space-y-5 leading-relaxed">
-        <p>If you work with PDFs regularly, you know how tedious it can be to apply the same operation to multiple files one at a time. Batch processing lets you compress, merge, convert, or split many PDF files simultaneously, saving hours of manual work. Our <a href="/batch" className="text-indigo-500 underline">free batch PDF tool</a> handles multiple files at once entirely in your browser.</p>
+        <p>If you work with PDFs regularly, you know how tedious it can be to apply the same operation to multiple files one at a time. Batch processing lets you compress, merge, convert, or split many PDF files simultaneously, saving hours of manual work. Our <a href="/batch" className="text-[var(--accent)] underline">free batch PDF tool</a> handles multiple files at once entirely in your browser.</p>
 
         <h2 className="text-xl font-bold text-[var(--foreground)] pt-4">What Can You Batch Process?</h2>
         <ul className="list-disc pl-5 space-y-2">
@@ -25,7 +25,7 @@ export default function BlogPost() {
 
         <h2 className="text-xl font-bold text-[var(--foreground)] pt-4">How to Batch Process PDFs</h2>
         <ol className="list-decimal pl-5 space-y-3">
-          <li><strong>Go to the batch tool</strong> — Open our <a href="/batch" className="text-indigo-500 underline">batch PDF processor</a>.</li>
+          <li><strong>Go to the batch tool</strong> — Open our <a href="/batch" className="text-[var(--accent)] underline">batch PDF processor</a>.</li>
           <li><strong>Select your files</strong> — Choose multiple PDFs at once using the file picker or drag and drop.</li>
           <li><strong>Choose the operation</strong> — Select what you want to do: compress all, merge all, or convert all.</li>
           <li><strong>Process and download</strong> — Click go and each file is processed individually. Download results as a zip or individually.</li>
@@ -34,9 +34,9 @@ export default function BlogPost() {
         <h2 className="text-xl font-bold text-[var(--foreground)] pt-4">Who Needs Batch Processing?</h2>
         <p>Batch PDF processing is invaluable for administrative staff handling dozens of invoices, photographers preparing portfolios, teachers managing class assignments, and legal professionals processing case documents. Instead of repeating the same clicks 50 times, you select all files once and let the tool do the rest. Premium users can process up to 20 files simultaneously with larger file size limits, making batch processing even more powerful for high-volume workflows.</p>
 
-        <div className="bg-[var(--card)] border border-[var(--card-border)] rounded-xl p-6 mt-6">
+        <div className="bg-[var(--surface)] border border-[var(--border)] rounded-[var(--r-lg)] p-6 mt-6">
           <p className="font-semibold text-[var(--foreground)] mb-2">Ready to batch process?</p>
-          <a href="/batch" className="inline-block px-5 py-2.5 bg-indigo-600 text-white font-medium rounded-xl text-sm hover:bg-indigo-700 transition">Batch Process Now →</a>
+          <a href="/batch" className="inline-block px-5 py-2.5 bg-[var(--accent)] text-white font-medium rounded-[var(--r-lg)] text-sm hover:bg-[var(--accent-hover)] transition">Batch Process Now →</a>
         </div>
       </div>
     </article>

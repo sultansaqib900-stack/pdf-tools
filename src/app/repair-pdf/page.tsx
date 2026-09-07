@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useEffect } from "react";
+import Icon from "@/components/ui/Icon";
 import ToolGuide from "@/components/ToolGuide";
 import ToolInfo from "@/components/ToolInfo";
 import FreeWaitTimer from "@/components/FreeWaitTimer";
@@ -105,24 +106,24 @@ export default function RepairPdfPage() {
       </div>
       <ToolInfo name="Repair PDF" description="Fix corrupted PDF files by rebuilding their internal structure. All processing happens in your browser." />
       <div className="mb-4"><UsageBar remaining={usage.remaining} unlimited={usage.unlimited} /></div>
-      <div className="bg-[var(--card)] rounded-xl border border-[var(--card-border)] p-8 space-y-6">
+      <div className="bg-[var(--surface)] rounded-[var(--r-lg)] border border-[var(--border)] p-8 space-y-6">
         <div onDrop={onDrop} onDragOver={(e) => { e.preventDefault(); setDragging(true); }} onDragLeave={() => setDragging(false)}
-          className={`border-2 border-dashed rounded-xl p-10 text-center transition ${dragging ? "border-indigo-500 bg-indigo-50/30" : "border-[var(--card-border)] bg-[var(--background)]"}`}>
+          className={`border-2 border-dashed rounded-[var(--r-lg)] p-10 text-center transition ${dragging ? "border-[var(--accent-border)] bg-[var(--accent-subtle)]" : "border-[var(--border)] bg-[var(--background)]"}`}>
           <input type="file" accept=".pdf" onChange={(e) => handleFile(e.target.files?.[0] || null)} className="hidden" id="fileInput" />
           <label htmlFor="fileInput" className="cursor-pointer flex flex-col items-center gap-3">
-            <span className="text-5xl">🔧</span>
-            <span className="text-indigo-500 font-medium hover:underline">{file ? file.name : "Click to select a PDF"}</span>
+            <Icon name="settings" size={36} className="text-[var(--muted)]" />
+            <span className="text-[var(--accent)] font-medium hover:underline">{file ? file.name : "Click to select a PDF"}</span>
           </label>
         </div>
         <ProgressBar processing={processing} fileSize={file?.size || 0} label={progress} />
         {showTimer && <FreeWaitTimer onDone={() => { setShowTimer(false); runRepair(); }} />}
         <button onClick={convert} disabled={!file || processing || showTimer}
-          className="w-full py-3 bg-indigo-600 text-white font-medium rounded-xl hover:bg-indigo-700 disabled:opacity-40 transition shadow-sm">
+          className="w-full py-3 bg-[var(--accent)] text-white font-medium rounded-[var(--r-lg)] hover:bg-[var(--accent-hover)] disabled:opacity-40 transition shadow-sm">
           {processing ? "Repairing..." : "Repair PDF"}
         </button>
         {!isPremium() && (
           <p className="text-center text-xs text-[var(--muted)]">
-            Free users limited to 10MB files.<a href="/premium" className="text-indigo-500 font-medium hover:underline ml-1">Upgrade for 100MB</a>
+            Free users limited to 10MB files.<a href="/premium" className="text-[var(--accent)] font-medium hover:underline ml-1">Upgrade for 100MB</a>
           </p>
         )}
         {error && <ErrorBanner message={error} onRetry={runRepair} onDismiss={() => setError(null)} />}

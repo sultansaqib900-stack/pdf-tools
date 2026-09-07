@@ -67,7 +67,7 @@ export default function BeforeAfterPreview({
     return (
       <div className="flex gap-4">
         {[1, 2].map((i) => (
-          <div key={i} className="flex-1 h-48 bg-[var(--card-border)] rounded-xl animate-pulse" />
+          <div key={i} className="flex-1 h-48 bg-[var(--border)] rounded-[var(--r-lg)] animate-pulse" />
         ))}
       </div>
     );
@@ -79,7 +79,7 @@ export default function BeforeAfterPreview({
         <p className="text-xs font-medium text-[var(--muted)] mb-1.5">{labelBefore}</p>
         <canvas
           ref={beforeRef}
-          className="w-full border border-[var(--card-border)] rounded-xl bg-white"
+          className="w-full border border-[var(--border)] rounded-[var(--r-lg)] bg-white"
           style={{ maxHeight: 300, objectFit: "contain" }}
         />
       </div>
@@ -87,7 +87,7 @@ export default function BeforeAfterPreview({
         <p className="text-xs font-medium text-[var(--muted)] mb-1.5">{labelAfter}</p>
         <canvas
           ref={afterRef}
-          className="w-full border border-[var(--card-border)] rounded-xl bg-white"
+          className="w-full border border-[var(--border)] rounded-[var(--r-lg)] bg-white"
           style={{ maxHeight: 300, objectFit: "contain" }}
         />
       </div>

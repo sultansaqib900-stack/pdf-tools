@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useEffect, useRef } from "react";
+import Icon from "@/components/ui/Icon";
 import ToolGuide from "@/components/ToolGuide";
 import ToolInfo from "@/components/ToolInfo";
 import FreeWaitTimer from "@/components/FreeWaitTimer";
@@ -112,19 +113,19 @@ export default function WordCounterPage() {
         <UsageBar remaining={usage.remaining} unlimited={usage.unlimited} />
       </div>
 
-      <div className="bg-[var(--card)] rounded-xl border border-[var(--card-border)] p-8">
+      <div className="bg-[var(--surface)] rounded-[var(--r-lg)] border border-[var(--border)] p-8">
         <div
           onDrop={(e) => { e.preventDefault(); setDragging(false); handleFile(e.dataTransfer.files[0]); }}
           onDragOver={(e) => { e.preventDefault(); setDragging(true); }}
           onDragLeave={() => setDragging(false)}
-          className={`border-2 border-dashed rounded-xl p-10 text-center transition ${
-            dragging ? "border-indigo-500 bg-indigo-50 dark:bg-indigo-950/30" : "border-[var(--card-border)] bg-[var(--background)]"
+          className={`border-2 border-dashed rounded-[var(--r-lg)] p-10 text-center transition ${
+            dragging ? "border-[var(--accent-border)] bg-[var(--accent-subtle)]" : "border-[var(--border)] bg-[var(--background)]"
           }`}
         >
           <input type="file" accept="application/pdf" onChange={(e) => handleFile(e.target.files?.[0] ?? null)} className="hidden" id="fileInput" />
           <label htmlFor="fileInput" className="cursor-pointer flex flex-col items-center gap-3">
-            <span className="text-5xl">🔤</span>
-            <span className="text-indigo-500 font-medium hover:underline">
+            <Icon name="type" size={36} className="text-[var(--muted)]" />
+            <span className="text-[var(--accent)] font-medium hover:underline">
               {file ? file.name : "Click to select or drag & drop a PDF"}
             </span>
             {!file && <span className="text-xs text-[var(--muted)]">Any PDF up to 10MB</span>}
@@ -140,7 +141,7 @@ export default function WordCounterPage() {
             <button
               onClick={count}
               disabled={processing || showTimer || !!result}
-              className="mt-6 w-full py-3 bg-indigo-600 text-white font-medium rounded-xl hover:bg-indigo-700 disabled:opacity-40 disabled:cursor-not-allowed transition shadow-sm"
+              className="mt-6 w-full py-3 bg-[var(--accent)] text-white font-medium rounded-[var(--r-lg)] hover:bg-[var(--accent-hover)] disabled:opacity-40 disabled:cursor-not-allowed transition shadow-sm"
             >
               {processing ? (
                 <span className="flex items-center justify-center gap-2">
@@ -153,7 +154,7 @@ export default function WordCounterPage() {
             {!isPremium() && (
               <p className="mt-3 text-center text-xs text-[var(--muted)]">
                 Free users limited to 10MB files.{ " " }
-                <a href="/premium" className="text-indigo-500 font-medium hover:underline">Upgrade for 100MB, batch & no wait</a>
+                <a href="/premium" className="text-[var(--accent)] font-medium hover:underline">Upgrade for 100MB, batch & no wait</a>
               </p>
             )}
           </>
@@ -163,23 +164,23 @@ export default function WordCounterPage() {
 
         {result && !processing && (
           <div className="mt-6 grid grid-cols-2 gap-3">
-            <div className="p-4 bg-[var(--background)] rounded-xl border border-[var(--card-border)]">
+            <div className="p-4 bg-[var(--background)] rounded-[var(--r-lg)] border border-[var(--border)]">
               <p className="text-xs text-[var(--muted)] mb-1">Total Words</p>
               <p className="text-2xl font-bold text-[var(--foreground)]">{result.words.toLocaleString()}</p>
             </div>
-            <div className="p-4 bg-[var(--background)] rounded-xl border border-[var(--card-border)]">
+            <div className="p-4 bg-[var(--background)] rounded-[var(--r-lg)] border border-[var(--border)]">
               <p className="text-xs text-[var(--muted)] mb-1">Characters</p>
               <p className="text-2xl font-bold text-[var(--foreground)]">{result.chars.toLocaleString()}</p>
             </div>
-            <div className="p-4 bg-[var(--background)] rounded-xl border border-[var(--card-border)]">
+            <div className="p-4 bg-[var(--background)] rounded-[var(--r-lg)] border border-[var(--border)]">
               <p className="text-xs text-[var(--muted)] mb-1">Characters (no spaces)</p>
               <p className="text-2xl font-bold text-[var(--foreground)]">{result.charsNoSpace.toLocaleString()}</p>
             </div>
-            <div className="p-4 bg-[var(--background)] rounded-xl border border-[var(--card-border)]">
+            <div className="p-4 bg-[var(--background)] rounded-[var(--r-lg)] border border-[var(--border)]">
               <p className="text-xs text-[var(--muted)] mb-1">Pages</p>
               <p className="text-2xl font-bold text-[var(--foreground)]">{result.pages.toLocaleString()}</p>
             </div>
-            <div className="p-4 bg-[var(--background)] rounded-xl border border-[var(--card-border)] col-span-2">
+            <div className="p-4 bg-[var(--background)] rounded-[var(--r-lg)] border border-[var(--border)] col-span-2">
               <p className="text-xs text-[var(--muted)] mb-1">Estimated Reading Time</p>
               <p className="text-2xl font-bold text-[var(--foreground)]">{result.readingTime} min{result.readingTime !== 1 ? "s" : ""}</p>
             </div>
@@ -190,7 +191,7 @@ export default function WordCounterPage() {
       </div>
 
 
-      <div className="max-w-3xl mx-auto mt-12 pt-8 border-t border-[var(--card-border)]">
+      <div className="max-w-3xl mx-auto mt-12 pt-8 border-t border-[var(--border)]">
         <h2 className="text-xl font-bold text-[var(--foreground)] mb-3">About PDF Word Counter</h2>
         <div className="text-sm text-[var(--muted)] space-y-3 leading-relaxed">
           <p>Our free PDF word counter lets you count words, characters, and pages in any PDF document instantly. Whether you are a student checking an essay, a professional preparing a report with specific length requirements, or a writer tracking your progress, this tool gives you accurate statistics with zero effort.</p>

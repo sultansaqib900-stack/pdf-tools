@@ -131,7 +131,7 @@ export default function TextToPdfPage() {
         <UsageBar remaining={usage.remaining} unlimited={usage.unlimited} />
       </div>
 
-      <div className="bg-[var(--card)] rounded-xl border border-[var(--card-border)] p-8">
+      <div className="bg-[var(--surface)] rounded-[var(--r-lg)] border border-[var(--border)] p-8">
         <div className="mb-4">
           <label className="block text-sm font-medium text-[var(--foreground)] mb-2">Document Title (optional)</label>
           <input
@@ -139,7 +139,7 @@ export default function TextToPdfPage() {
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             placeholder="My Document"
-            className="w-full px-4 py-2.5 rounded-xl border border-[var(--card-border)] bg-[var(--background)] text-[var(--foreground)] text-sm outline-none focus:border-indigo-500 transition"
+            className="w-full px-4 py-2.5 rounded-[var(--r-lg)] border border-[var(--border)] bg-[var(--background)] text-[var(--foreground)] text-sm outline-none focus:border-[var(--accent-border)] transition"
           />
         </div>
 
@@ -150,7 +150,7 @@ export default function TextToPdfPage() {
             onChange={(e) => setText(e.target.value)}
             placeholder="Type or paste your text here..."
             rows={12}
-            className="w-full px-4 py-3 rounded-xl border border-[var(--card-border)] bg-[var(--background)] text-[var(--foreground)] text-sm outline-none focus:border-indigo-500 transition resize-y"
+            className="w-full px-4 py-3 rounded-[var(--r-lg)] border border-[var(--border)] bg-[var(--background)] text-[var(--foreground)] text-sm outline-none focus:border-[var(--accent-border)] transition resize-y"
           />
           <p className="text-xs text-[var(--muted)] mt-1">{text.length.toLocaleString()} characters</p>
         </div>
@@ -162,7 +162,7 @@ export default function TextToPdfPage() {
         <button
           onClick={process}
           disabled={!text.trim() || processing || showTimer}
-          className="mt-6 w-full py-3 bg-indigo-600 text-white font-medium rounded-xl hover:bg-indigo-700 disabled:opacity-40 disabled:cursor-not-allowed transition shadow-sm"
+          className="mt-6 w-full py-3 bg-[var(--accent)] text-white font-medium rounded-[var(--r-lg)] hover:bg-[var(--accent-hover)] disabled:opacity-40 disabled:cursor-not-allowed transition shadow-sm"
         >
           {processing ? (
             <span className="flex items-center justify-center gap-2">
@@ -175,7 +175,7 @@ export default function TextToPdfPage() {
         {!isPremium() && (
           <p className="mt-3 text-center text-xs text-[var(--muted)]">
             Free users have a 5s wait.{ " " }
-            <a href="/premium" className="text-indigo-500 font-medium hover:underline">Upgrade for instant processing</a>
+            <a href="/premium" className="text-[var(--accent)] font-medium hover:underline">Upgrade for instant processing</a>
           </p>
         )}
 
@@ -185,7 +185,7 @@ export default function TextToPdfPage() {
       </div>
 
 
-      <div className="max-w-3xl mx-auto mt-12 pt-8 border-t border-[var(--card-border)]">
+      <div className="max-w-3xl mx-auto mt-12 pt-8 border-t border-[var(--border)]">
         <h2 className="text-xl font-bold text-[var(--foreground)] mb-3">About Text to PDF Converter</h2>
         <div className="text-sm text-[var(--muted)] space-y-3 leading-relaxed">
           <p>Convert plain text to PDF documents online for free. Type or paste your content, add an optional title, and download a formatted PDF. Perfect for creating quick notes, saving chat conversations, or turning text files into a professional document format.</p>

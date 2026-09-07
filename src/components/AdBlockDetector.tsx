@@ -22,14 +22,14 @@ export default function AdBlockDetector() {
   if (!blocked || dismissed) return null;
 
   return (
-    <div className="fixed bottom-20 left-1/2 -translate-x-1/2 z-50 w-[90vw] max-w-md bg-[var(--card)] border border-amber-500/40 rounded-xl p-4 shadow-2xl">
+    <div className="fixed bottom-20 left-1/2 -translate-x-1/2 z-50 w-[90vw] max-w-md bg-[var(--surface)] border border-[var(--premium-border)]/40 rounded-[var(--r-lg)] p-4 shadow-2xl">
       <div className="flex items-start gap-3">
         <span className="text-xl shrink-0 mt-0.5">🛡️</span>
         <div className="min-w-0">
           <p className="text-sm font-semibold text-[var(--foreground)]">Ad blocker detected</p>
           <p className="text-xs text-[var(--muted)] mt-1">
             Ads keep PDFTools free. Please whitelist this site or consider{" "}
-            <Link href="/premium" className="text-indigo-500 underline font-medium" onClick={() => setDismissed(true)}>
+            <Link href="/premium" className="text-[var(--accent)] underline font-medium" onClick={() => setDismissed(true)}>
               going Premium
             </Link>{" "}
             to support us.

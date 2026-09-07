@@ -14,7 +14,7 @@ export default function BlogPost() {
       />
       <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Blog", item: "https://allaboutpdfediting.xyz/blog" }, { name: "How to Split a PDF by Bookmarks", item: "https://allaboutpdfediting.xyz/blog/split-pdf-by-bookmarks" }]} />
       <HowToJsonLd name="How to Split a PDF by Bookmarks" description="Learn how to split a PDF into separate files using bookmarks and outline structure. Extract chapters, sections, and parts automatically." steps={[{name:"Upload your PDF — The file must contain bookmarks (also called an outline or ...",text:"Upload your PDF — The file must contain bookmarks (also called an outline or table of contents)."},{name:"Review the detected bookmarks — The tool shows every bookmark found with its ...",text:"Review the detected bookmarks — The tool shows every bookmark found with its starting page number."},{name:"Download each chapter — Each bookmark becomes a separate PDF file, named afte...",text:"Download each chapter — Each bookmark becomes a separate PDF file, named after the bookmark title."}]} />
-      <a href="/blog" className="text-sm text-indigo-500 hover:underline mb-6 inline-block">&larr; Back to blog</a>
+      <a href="/blog" className="text-sm text-[var(--accent)] hover:underline mb-6 inline-block">&larr; Back to blog</a>
       <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">How to Split a PDF by Bookmarks</h1>
       <p className="text-sm text-[var(--muted)] mb-8">6 min read · Updated June 2026</p>
 
@@ -41,15 +41,15 @@ export default function BlogPost() {
         </ol>
 
         <h2 className="text-xl font-bold text-[var(--foreground)] pt-4">When Bookmarks Are Missing</h2>
-        <p>Not all PDFs have bookmarks. Scanned documents, image-only PDFs, and files exported without an outline structure won&apos;t work. In those cases, consider using a <a href="/split" className="text-indigo-500 hover:underline">manual page range splitter</a> instead. If your document has bookmarks but the tool reports none, the PDF may have a damaged or non-standard outline — try re-saving from your PDF editor first.</p>
+        <p>Not all PDFs have bookmarks. Scanned documents, image-only PDFs, and files exported without an outline structure won&apos;t work. In those cases, consider using a <a href="/split" className="text-[var(--accent)] hover:underline">manual page range splitter</a> instead. If your document has bookmarks but the tool reports none, the PDF may have a damaged or non-standard outline — try re-saving from your PDF editor first.</p>
 
         <h2 className="text-xl font-bold text-[var(--foreground)] pt-4">Premium Feature</h2>
-        <p>Split by bookmarks is a <strong>premium feature</strong> available to PDFTools Premium subscribers. Premium also unlocks document comparison, bulk certificate generation, PDF-to-audio conversion, and more. <a href="/premium" className="text-indigo-500 hover:underline font-medium">Learn more about Premium →</a></p>
+        <p>Split by bookmarks is a <strong>premium feature</strong> available to PDFTools Premium subscribers. Premium also unlocks document comparison, bulk certificate generation, PDF-to-audio conversion, and more. <a href="/premium" className="text-[var(--accent)] hover:underline font-medium">Learn more about Premium →</a></p>
 
-        <div className="bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-950/20 dark:to-orange-950/20 border border-amber-200/50 dark:border-amber-800/30 rounded-xl p-6 mt-6">
+        <div className="bg-[var(--premium-subtle)] border border-[var(--premium-border)]/50 dark:border-[var(--premium-border)]/30 rounded-[var(--r-lg)] p-6 mt-6">
           <p className="font-bold text-[var(--foreground)] mb-1">Ready to split your PDF?</p>
           <p className="text-xs mb-3">Extract chapters and sections automatically from the bookmark outline.</p>
-          <a href="/split-by-bookmarks" className="inline-block px-5 py-2 bg-gradient-to-r from-amber-500 to-orange-600 text-white text-sm font-medium rounded-lg hover:from-amber-600 hover:to-orange-700 transition">Split by Bookmarks →</a>
+          <a href="/split-by-bookmarks" className="inline-block px-5 py-2 bg-[var(--premium)] text-white text-sm font-medium rounded-lg hover:opacity-90 transition">Split by Bookmarks →</a>
         </div>
       </div>
     </article>

@@ -25,7 +25,7 @@ export default function BlogPost() {
       />
       <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Blog", item: "https://allaboutpdfediting.xyz/blog" }, { name: "How to Compress PDF Without Losing Quality", item: "https://allaboutpdfediting.xyz/blog/compress-pdf-without-losing-quality" }]} />
       <HowToJsonLd name="How to Compress PDF Without Losing Quality" description="Compress PDF files without losing quality using our free online tool..." steps={[{name:"Go to the compressor — Open our free PDF compress tool.",text:"Go to the compressor — Open our free PDF compress tool."},{name:"Upload your PDF — Drag and drop or click to select your file.",text:"Upload your PDF — Drag and drop or click to select your file."},{name:"Click Compress — The tool processes your file instantly. Download the smaller...",text:"Click Compress — The tool processes your file instantly. Download the smaller version."}]} />
-      <a href="/blog" className="text-sm text-indigo-500 hover:underline mb-6 inline-block">&larr; Back to blog</a>
+      <a href="/blog" className="text-sm text-[var(--accent)] hover:underline mb-6 inline-block">&larr; Back to blog</a>
       <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">How to Compress PDF Without Losing Quality</h1>
       <p className="text-sm text-[var(--muted)] mb-8">5 min read · Updated June 2026</p>
 
@@ -40,7 +40,7 @@ export default function BlogPost() {
           <li><strong>Font subsetting</strong> — Embeds only the characters actually used (lossless)</li>
           <li><strong>Image recompression</strong> — May reduce image quality slightly (lossy if you choose aggressive compression)</li>
         </ul>
-        <p>Our <a href="/compress" className="text-indigo-500 underline">free PDF compressor</a> uses lossless optimization by default — text stays sharp, layout is preserved, and only redundant data is removed.</p>
+        <p>Our <a href="/compress" className="text-[var(--accent)] underline">free PDF compressor</a> uses lossless optimization by default — text stays sharp, layout is preserved, and only redundant data is removed.</p>
 
         <h2 className="text-xl font-bold text-[var(--foreground)] pt-4">How Much Can You Compress?</h2>
         <p>Compression results vary by file type:</p>
@@ -53,7 +53,7 @@ export default function BlogPost() {
 
         <h2 className="text-xl font-bold text-[var(--foreground)] pt-4">How to Compress PDF in 3 Steps</h2>
         <ol className="list-decimal pl-5 space-y-3">
-          <li><strong>Go to the compressor</strong> — Open our <a href="/compress" className="text-indigo-500 underline">free PDF compress tool</a>.</li>
+          <li><strong>Go to the compressor</strong> — Open our <a href="/compress" className="text-[var(--accent)] underline">free PDF compress tool</a>.</li>
           <li><strong>Upload your PDF</strong> — Drag and drop or click to select your file.</li>
           <li><strong>Click Compress</strong> — The tool processes your file instantly. Download the smaller version.</li>
         </ol>
@@ -69,11 +69,11 @@ export default function BlogPost() {
         </ul>
 
         <h2 className="text-xl font-bold text-[var(--foreground)] pt-4">Alternative: Resize or Optimize Images First</h2>
-        <p>If your PDF contains large images, you can reduce the file size more significantly by resizing images before creating the PDF. Check our <a href="/resize" className="text-indigo-500 underline">PDF Resize tool</a> if you need to change page dimensions, or use <a href="/compress" className="text-indigo-500 underline">Compress PDF</a> for quick optimization.</p>
+        <p>If your PDF contains large images, you can reduce the file size more significantly by resizing images before creating the PDF. Check our <a href="/resize" className="text-[var(--accent)] underline">PDF Resize tool</a> if you need to change page dimensions, or use <a href="/compress" className="text-[var(--accent)] underline">Compress PDF</a> for quick optimization.</p>
 
-        <div className="bg-[var(--card)] border border-[var(--card-border)] rounded-xl p-6 mt-6">
+        <div className="bg-[var(--surface)] border border-[var(--border)] rounded-[var(--r-lg)] p-6 mt-6">
           <p className="font-semibold text-[var(--foreground)] mb-2">Ready to compress?</p>
-          <a href="/compress" className="inline-block px-5 py-2.5 bg-indigo-600 text-white font-medium rounded-xl text-sm hover:bg-indigo-700 transition">Compress Your PDF Now →</a>
+          <a href="/compress" className="inline-block px-5 py-2.5 bg-[var(--accent)] text-white font-medium rounded-[var(--r-lg)] text-sm hover:bg-[var(--accent-hover)] transition">Compress Your PDF Now →</a>
         </div>
       </div>
     </article>

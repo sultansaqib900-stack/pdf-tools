@@ -24,12 +24,12 @@ export default function BlogPost() {
         datePublished="2026-06-24"
       />
       <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Blog", item: "https://allaboutpdfediting.xyz/blog" }, { name: "PDF vs Image: When to Use Each Format", item: "https://allaboutpdfediting.xyz/blog/pdf-vs-image" }]} />
-      <a href="/blog" className="text-sm text-indigo-500 hover:underline mb-6 inline-block">&larr; Back to blog</a>
+      <a href="/blog" className="text-sm text-[var(--accent)] hover:underline mb-6 inline-block">&larr; Back to blog</a>
       <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">PDF vs Image: When to Use Each Format</h1>
       <p className="text-sm text-[var(--muted)] mb-8">6 min read · Updated June 2026</p>
 
       <div className="text-sm text-[var(--muted)] space-y-5 leading-relaxed">
-        <p>One of the most common questions we hear is: "Should I use PDF or JPG/PNG for this document?" The answer depends on what you're trying to do. Each format has strengths, and knowing the difference helps you choose the right one — and our free <a href="/image-to-pdf" className="text-indigo-500 underline">Image to PDF</a> and <a href="/pdf-to-images" className="text-indigo-500 underline">PDF to Images</a> tools let you switch between them instantly.</p>
+        <p>One of the most common questions we hear is: "Should I use PDF or JPG/PNG for this document?" The answer depends on what you're trying to do. Each format has strengths, and knowing the difference helps you choose the right one — and our free <a href="/image-to-pdf" className="text-[var(--accent)] underline">Image to PDF</a> and <a href="/pdf-to-images" className="text-[var(--accent)] underline">PDF to Images</a> tools let you switch between them instantly.</p>
 
         <h2 className="text-xl font-bold text-[var(--foreground)] pt-4">PDF: Best for Documents</h2>
         <p>PDF (Portable Document Format) is designed for documents that need to preserve their layout across devices. A PDF looks the same on Windows, Mac, phone, or tablet. Key advantages:</p>
@@ -56,7 +56,7 @@ export default function BlogPost() {
           <li>Sending a portfolio — keep all designs in a single, organized file</li>
           <li>Creating an eBook or photo book from individual images</li>
         </ul>
-        <p>Use our <a href="/image-to-pdf" className="text-indigo-500 underline">Image to PDF tool</a> to combine multiple JPG, PNG, or WebP images into a single PDF in seconds.</p>
+        <p>Use our <a href="/image-to-pdf" className="text-[var(--accent)] underline">Image to PDF tool</a> to combine multiple JPG, PNG, or WebP images into a single PDF in seconds.</p>
 
         <h2 className="text-xl font-bold text-[var(--foreground)] pt-4">When to Convert PDF to Images</h2>
         <p>Going the other direction — PDF to images — is helpful when:</p>
@@ -66,33 +66,33 @@ export default function BlogPost() {
           <li>You want to share specific pages without sharing the full PDF</li>
           <li>Extracting pages for use in design software like Canva or Photoshop</li>
         </ul>
-        <p>Try our <a href="/pdf-to-images" className="text-indigo-500 underline">PDF to Images tool</a> to extract every page as a high-quality PNG or JPG.</p>
+        <p>Try our <a href="/pdf-to-images" className="text-[var(--accent)] underline">PDF to Images tool</a> to extract every page as a high-quality PNG or JPG.</p>
 
         <h2 className="text-xl font-bold text-[var(--foreground)] pt-4">Quick Decision Guide</h2>
-        <div className="border border-[var(--card-border)] rounded-xl overflow-hidden">
+        <div className="border border-[var(--border)] rounded-[var(--r-lg)] overflow-hidden">
           <table className="w-full text-sm">
             <thead>
-              <tr className="bg-[var(--card)]">
+              <tr className="bg-[var(--surface)]">
                 <th className="p-3 text-left font-semibold text-[var(--foreground)]">You Need To</th>
                 <th className="p-3 text-left font-semibold text-[var(--foreground)]">Use This Format</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-[var(--card-border)]">
-              <tr><td className="p-3">Send a contract or invoice</td><td className="p-3 text-indigo-500 font-medium">PDF</td></tr>
-              <tr><td className="p-3">Share photos on social media</td><td className="p-3 text-indigo-500 font-medium">JPG</td></tr>
-              <tr><td className="p-3">Post a screenshot with text</td><td className="p-3 text-indigo-500 font-medium">PNG</td></tr>
-              <tr><td className="p-3">Combine scanned pages</td><td className="p-3 text-indigo-500 font-medium">Image → PDF</td></tr>
-              <tr><td className="p-3">Use a document page in a presentation</td><td className="p-3 text-indigo-500 font-medium">PDF → Image</td></tr>
-              <tr><td className="p-3">Archive multiple photos</td><td className="p-3 text-indigo-500 font-medium">PDF (single file)</td></tr>
+            <tbody className="divide-y divide-[var(--border)]">
+              <tr><td className="p-3">Send a contract or invoice</td><td className="p-3 text-[var(--accent)] font-medium">PDF</td></tr>
+              <tr><td className="p-3">Share photos on social media</td><td className="p-3 text-[var(--accent)] font-medium">JPG</td></tr>
+              <tr><td className="p-3">Post a screenshot with text</td><td className="p-3 text-[var(--accent)] font-medium">PNG</td></tr>
+              <tr><td className="p-3">Combine scanned pages</td><td className="p-3 text-[var(--accent)] font-medium">Image → PDF</td></tr>
+              <tr><td className="p-3">Use a document page in a presentation</td><td className="p-3 text-[var(--accent)] font-medium">PDF → Image</td></tr>
+              <tr><td className="p-3">Archive multiple photos</td><td className="p-3 text-[var(--accent)] font-medium">PDF (single file)</td></tr>
             </tbody>
           </table>
         </div>
 
-        <div className="bg-[var(--card)] border border-[var(--card-border)] rounded-xl p-6 mt-6">
+        <div className="bg-[var(--surface)] border border-[var(--border)] rounded-[var(--r-lg)] p-6 mt-6">
           <p className="font-semibold text-[var(--foreground)] mb-2">Need to convert between formats?</p>
           <div className="flex gap-3">
-            <a href="/image-to-pdf" className="px-5 py-2.5 bg-indigo-600 text-white font-medium rounded-xl text-sm hover:bg-indigo-700 transition">Image → PDF</a>
-            <a href="/pdf-to-images" className="px-5 py-2.5 bg-[var(--background)] text-[var(--foreground)] font-medium rounded-xl text-sm border border-[var(--card-border)] hover:bg-[var(--card)] transition">PDF → Images</a>
+            <a href="/image-to-pdf" className="px-5 py-2.5 bg-[var(--accent)] text-white font-medium rounded-[var(--r-lg)] text-sm hover:bg-[var(--accent-hover)] transition">Image → PDF</a>
+            <a href="/pdf-to-images" className="px-5 py-2.5 bg-[var(--background)] text-[var(--foreground)] font-medium rounded-[var(--r-lg)] text-sm border border-[var(--border)] hover:bg-[var(--surface)] transition">PDF → Images</a>
           </div>
         </div>
       </div>

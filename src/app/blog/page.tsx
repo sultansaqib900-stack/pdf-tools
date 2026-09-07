@@ -406,9 +406,9 @@ export default function BlogPage() {
           <Link
             key={post.slug}
             href={`/blog/${post.slug}`}
-            className="block border border-[var(--card-border)] rounded-xl p-6 bg-[var(--card)] hover:border-indigo-500/30 hover:shadow-lg transition"
+            className="block border border-[var(--border)] rounded-[var(--r-lg)] p-6 bg-[var(--surface)] hover:border-[var(--accent-border)] hover:shadow-lg transition"
           >
-            <h2 className="text-lg font-semibold text-[var(--foreground)] group-hover:text-indigo-500">{post.title}</h2>
+            <h2 className="text-lg font-semibold text-[var(--foreground)] group-hover:text-[var(--accent)]">{post.title}</h2>
             <p className="text-sm text-[var(--muted)] mt-2">{post.excerpt}</p>
             <div className="flex items-center gap-3 mt-4 text-xs text-[var(--muted)]">
               <span>{post.date}</span>

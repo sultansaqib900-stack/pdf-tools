@@ -38,7 +38,7 @@ export default function PrivacyPage() {
         <p>
           We use <strong>Google AdSense</strong> to serve ads. AdSense may use cookies for
           personalized advertising based on your browsing history. You can manage ad preferences
-          at <a href="https://adssettings.google.com" className="text-indigo-500 underline" target="_blank" rel="noopener noreferrer">Google&apos;s Ad Settings</a>.
+          at <a href="https://adssettings.google.com" className="text-[var(--accent)] underline" target="_blank" rel="noopener noreferrer">Google&apos;s Ad Settings</a>.
         </p>
         <p>
           We also use <strong>Google Analytics (GA4)</strong> for anonymous usage analytics
@@ -93,7 +93,7 @@ export default function PrivacyPage() {
           For privacy questions or concerns, email <strong>saqibbostan83@gmail.com</strong>.
         </p>
 
-        <p className="text-xs text-[var(--muted)] pt-4 border-t border-[var(--card-border)]">
+        <p className="text-xs text-[var(--muted)] pt-4 border-t border-[var(--border)]">
           Last updated: June 2026
         </p>
       </div>

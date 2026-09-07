@@ -14,7 +14,7 @@ export default function BlogPost() {
       />
       <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Blog", item: "https://allaboutpdfediting.xyz/blog" }, { name: "How to Reorder and Organize PDF Pages Online Free", item: "https://allaboutpdfediting.xyz/blog/organize-pdf-pages" }]} />
       <HowToJsonLd name="How to Reorder and Organize PDF Pages Online Free" description="Drag and drop to reorder pages in your PDF document..." steps={[{name:"Go to the Organize Pages tool",text:"Go to the Organize Pages tool"},{name:"Upload your PDF by dragging and dropping",text:"Upload your PDF by dragging and dropping"},{name:"Drag page thumbnails into the correct order",text:"Drag page thumbnails into the correct order"},{name:"Click &quot;Save New Order&quot; and download your reorganized PDF",text:"Click &quot;Save New Order&quot; and download your reorganized PDF"}]} />
-      <Link href="/blog" className="text-sm text-indigo-500 hover:underline mb-6 inline-block">&larr; Back to blog</Link>
+      <Link href="/blog" className="text-sm text-[var(--accent)] hover:underline mb-6 inline-block">&larr; Back to blog</Link>
       <h1 className="text-3xl font-bold text-[var(--foreground)] mb-3">How to Reorder and Organize PDF Pages Online Free</h1>
       <p className="text-sm text-[var(--muted)] mb-8">June 24, 2026 &middot; 3 min read</p>
 
@@ -30,9 +30,9 @@ export default function BlogPost() {
         </ul>
 
         <h2 className="text-xl font-semibold text-[var(--foreground)] pt-4">How to Reorder PDF Pages Online</h2>
-        <p>Using <Link href="/organize" className="text-indigo-500 hover:underline">PDFTools Organize Pages</Link> tool:</p>
+        <p>Using <Link href="/organize" className="text-[var(--accent)] hover:underline">PDFTools Organize Pages</Link> tool:</p>
         <ol className="list-decimal list-inside space-y-2">
-          <li>Go to the <Link href="/organize" className="text-indigo-500 hover:underline">Organize Pages tool</Link></li>
+          <li>Go to the <Link href="/organize" className="text-[var(--accent)] hover:underline">Organize Pages tool</Link></li>
           <li>Upload your PDF by dragging and dropping</li>
           <li>Drag page thumbnails into the correct order</li>
           <li>Click &quot;Save New Order&quot; and download your reorganized PDF</li>
@@ -41,14 +41,14 @@ export default function BlogPost() {
         <h2 className="text-xl font-semibold text-[var(--foreground)] pt-4">Combine with Other Tools</h2>
         <p>PDFTools has everything you need to manage your documents:</p>
         <ul className="list-disc list-inside space-y-2">
-          <li>Use <Link href="/delete-pages" className="text-indigo-500 hover:underline">Delete Pages</Link> to remove unwanted pages</li>
-          <li>Use <Link href="/merge" className="text-indigo-500 hover:underline">Merge PDF</Link> to combine documents before organizing</li>
-          <li>Use <Link href="/split" className="text-indigo-500 hover:underline">Split PDF</Link> to extract a range of pages</li>
+          <li>Use <Link href="/delete-pages" className="text-[var(--accent)] hover:underline">Delete Pages</Link> to remove unwanted pages</li>
+          <li>Use <Link href="/merge" className="text-[var(--accent)] hover:underline">Merge PDF</Link> to combine documents before organizing</li>
+          <li>Use <Link href="/split" className="text-[var(--accent)] hover:underline">Split PDF</Link> to extract a range of pages</li>
         </ul>
 
-        <p className="pt-4">Ready to organize your PDF? Try the <Link href="/organize" className="text-indigo-500 font-medium hover:underline">free online PDF page organizer</Link> now.</p>
+        <p className="pt-4">Ready to organize your PDF? Try the <Link href="/organize" className="text-[var(--accent)] font-medium hover:underline">free online PDF page organizer</Link> now.</p>
 
-        <p className="pt-4">Need to remove pages instead? See our guide on <Link href="/blog/delete-pages-from-pdf" className="text-indigo-500 font-medium hover:underline">how to delete pages from a PDF</Link> to trim unwanted content.</p>
+        <p className="pt-4">Need to remove pages instead? See our guide on <Link href="/blog/delete-pages-from-pdf" className="text-[var(--accent)] font-medium hover:underline">how to delete pages from a PDF</Link> to trim unwanted content.</p>
       </div>
     </article>
   );

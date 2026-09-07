@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useRef, useEffect } from "react";
+import Icon from "@/components/ui/Icon";
 import ToolGuide from "@/components/ToolGuide";
 import ToolInfo from "@/components/ToolInfo";
 import FreeWaitTimer from "@/components/FreeWaitTimer";
@@ -314,40 +315,40 @@ export default function EditPdfPage() {
 
       {!file ? (
         <div onDrop={onDrop} onDragOver={(e) => { e.preventDefault(); setDragging(true); }} onDragLeave={() => setDragging(false)}
-          className={`border-2 border-dashed rounded-xl p-10 text-center transition ${dragging ? "border-indigo-500 bg-indigo-50/30" : "border-[var(--card-border)] bg-[var(--card)]"}`}>
+          className={`border-2 border-dashed rounded-[var(--r-lg)] p-10 text-center transition ${dragging ? "border-[var(--accent-border)] bg-[var(--accent-subtle)]" : "border-[var(--border)] bg-[var(--surface)]"}`}>
           <input type="file" accept=".pdf" onChange={(e) => handleFile(e.target.files?.[0] || null)} className="hidden" id="fileInput" />
           <label htmlFor="fileInput" className="cursor-pointer flex flex-col items-center gap-3">
-            <span className="text-5xl">✏️</span>
-            <span className="text-indigo-500 font-medium hover:underline">Click to select a PDF or drag & drop</span>
+            <Icon name="edit" size={36} className="text-[var(--muted)]" />
+            <span className="text-[var(--accent)] font-medium hover:underline">Click to select a PDF or drag & drop</span>
           </label>
         </div>
       ) : (
-        <div className="bg-[var(--card)] rounded-xl border border-[var(--card-border)] p-4">
-          <div className="flex flex-wrap items-center gap-2 mb-4 pb-4 border-b border-[var(--card-border)]">
+        <div className="bg-[var(--surface)] rounded-[var(--r-lg)] border border-[var(--border)] p-4">
+          <div className="flex flex-wrap items-center gap-2 mb-4 pb-4 border-b border-[var(--border)]">
             {(["select", "text", "rect", "circle", "line"] as Tool[]).map((t) => (
               <button key={t} onClick={() => { setTool(t); setSelectedId(null); }}
-                className={`px-3 py-1.5 text-xs font-medium rounded-lg transition ${tool === t ? "bg-indigo-600 text-white" : "bg-[var(--background)] text-[var(--muted)] border border-[var(--card-border)]"}`}>
+                className={`px-3 py-1.5 text-xs font-medium rounded-lg transition ${tool === t ? "bg-[var(--accent)] text-white" : "bg-[var(--background)] text-[var(--muted)] border border-[var(--border)]"}`}>
                 {t === "select" ? "↖ Select" : t === "text" ? "T Text" : t === "rect" ? "▭ Rect" : t === "circle" ? "○ Circle" : "╱ Line"}
               </button>
             ))}
-            <div className="w-px h-6 bg-[var(--card-border)] mx-1" />
+            <div className="w-px h-6 bg-[var(--border)] mx-1" />
             <input type="color" value={currentColor} onChange={(e) => setCurrentColor(e.target.value)} className="w-8 h-8 rounded cursor-pointer" title="Stroke color" />
             <input type="color" value={currentFill} onChange={(e) => setCurrentFill(e.target.value)} className="w-8 h-8 rounded cursor-pointer" title="Fill color" />
-            <select value={currentFontSize} onChange={(e) => setCurrentFontSize(Number(e.target.value))} className="text-xs bg-[var(--background)] border border-[var(--card-border)] rounded px-2 py-1">
+            <select value={currentFontSize} onChange={(e) => setCurrentFontSize(Number(e.target.value))} className="text-xs bg-[var(--background)] border border-[var(--border)] rounded px-2 py-1">
               {[12, 14, 16, 18, 20, 24, 28, 32, 36, 48].map((s) => <option key={s} value={s}>{s}px</option>)}
             </select>
-            {selectedId && <button onClick={deleteSelected} className="ml-auto px-3 py-1.5 text-xs bg-red-500 text-white rounded-lg hover:bg-red-600">Delete</button>}
+            {selectedId && <button onClick={deleteSelected} className="ml-auto px-3 py-1.5 text-xs bg-[var(--danger)] text-white rounded-lg hover:opacity-90">Delete</button>}
           </div>
 
           <div className="flex items-center gap-2 mb-3 text-sm">
             <span className="text-[var(--muted)]">Page {currentPage + 1} of {numPages}</span>
             <div className="flex gap-1 ml-auto">
-              <button onClick={() => setCurrentPage((p) => Math.max(0, p - 1))} disabled={currentPage === 0} className="px-2 py-1 text-xs bg-[var(--background)] border border-[var(--card-border)] rounded disabled:opacity-40">Prev</button>
-              <button onClick={() => setCurrentPage((p) => Math.min(numPages - 1, p + 1))} disabled={currentPage >= numPages - 1} className="px-2 py-1 text-xs bg-[var(--background)] border border-[var(--card-border)] rounded disabled:opacity-40">Next</button>
+              <button onClick={() => setCurrentPage((p) => Math.max(0, p - 1))} disabled={currentPage === 0} className="px-2 py-1 text-xs bg-[var(--background)] border border-[var(--border)] rounded disabled:opacity-40">Prev</button>
+              <button onClick={() => setCurrentPage((p) => Math.min(numPages - 1, p + 1))} disabled={currentPage >= numPages - 1} className="px-2 py-1 text-xs bg-[var(--background)] border border-[var(--border)] rounded disabled:opacity-40">Next</button>
             </div>
           </div>
 
-          <div ref={editorRef} className="relative overflow-auto border border-[var(--card-border)] rounded-lg bg-white">
+          <div ref={editorRef} className="relative overflow-auto border border-[var(--border)] rounded-lg bg-white">
             {pageImages[currentPage] && (
               <img src={pageImages[currentPage]} alt="" className="w-full" draggable={false} />
             )}
@@ -365,13 +366,13 @@ export default function EditPdfPage() {
           {showTimer && <FreeWaitTimer onDone={() => { setShowTimer(false); runConvert(); }} />}
 
           <button onClick={convert} disabled={processing || showTimer || saving}
-            className="mt-4 w-full py-3 bg-indigo-600 text-white font-medium rounded-xl hover:bg-indigo-700 disabled:opacity-40 transition shadow-sm">
+            className="mt-4 w-full py-3 bg-[var(--accent)] text-white font-medium rounded-[var(--r-lg)] hover:bg-[var(--accent-hover)] disabled:opacity-40 transition shadow-sm">
             {processing ? "Saving..." : "Download Edited PDF"}
           </button>
 
           {!isPremium() && (
             <p className="mt-2 text-center text-xs text-[var(--muted)]">
-              Free users limited to 10MB files.<a href="/premium" className="text-indigo-500 font-medium hover:underline ml-1">Upgrade for 100MB & no wait</a>
+              Free users limited to 10MB files.<a href="/premium" className="text-[var(--accent)] font-medium hover:underline ml-1">Upgrade for 100MB & no wait</a>
             </p>
           )}
 
@@ -380,7 +381,7 @@ export default function EditPdfPage() {
         </div>
       )}
 
-      <div className="max-w-3xl mx-auto mt-12 pt-8 border-t border-[var(--card-border)]">
+      <div className="max-w-3xl mx-auto mt-12 pt-8 border-t border-[var(--border)]">
         <h2 className="text-xl font-bold text-[var(--foreground)] mb-3">About Edit PDF</h2>
         <div className="text-sm text-[var(--muted)] space-y-3 leading-relaxed">
           <p>Edit PDF files online with our free PDF editor. Add text boxes, rectangles, circles, and lines to any page. Perfect for filling forms, adding notes, marking up documents, or creating diagrams — all in your browser with zero server uploads.</p>

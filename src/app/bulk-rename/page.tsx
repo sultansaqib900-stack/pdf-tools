@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Icon from "@/components/ui/Icon";
 import ToolGuide from "@/components/ToolGuide";
 import { isPremium } from "@/lib/premium";
 import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
@@ -33,13 +34,13 @@ export default function BulkRenamePage() {
       <div className="max-w-3xl mx-auto px-4 py-12">
         <SoftwareAppJsonLd name="Bulk PDF Renamer" description="Rename multiple PDF files by metadata automatically. Premium." url="https://allaboutpdfediting.xyz/bulk-rename" image="https://allaboutpdfediting.xyz/opengraph-image.png" aggregateRating={{ ratingValue: 4.5, bestRating: 5, ratingCount: 98 }} />
         <div className="text-center py-20">
-          <div className="text-6xl mb-6">🏷️</div>
+          <div className="flex justify-center mb-6"><Icon name="tag" size={42} className="text-[var(--muted)]" /></div>
           <h1 className="text-3xl font-bold mb-3">Bulk PDF Renamer</h1>
           <p className="text-[var(--muted)] mb-8 max-w-md mx-auto">Rename dozens of PDF files instantly based on their document title, author, or page count.</p>
-          <div className="inline-block bg-gradient-to-r from-amber-500 to-orange-600 text-white px-8 py-4 rounded-2xl shadow-lg">
+          <div className="inline-block bg-[var(--premium)] text-white px-8 py-4 rounded-[var(--r-xl)] shadow-lg">
             <p className="text-lg font-bold mb-1">Premium Feature</p>
             <p className="text-sm opacity-90 mb-4">Only premium subscribers can bulk rename PDFs</p>
-            <a href="/premium" className="inline-block bg-white text-orange-600 px-6 py-2 rounded-xl font-semibold text-sm hover:bg-orange-50 transition">Upgrade to Premium</a>
+            <a href="/premium" className="inline-block bg-white text-[var(--premium)] px-6 py-2 rounded-[var(--r-lg)] font-semibold text-sm hover:bg-[var(--premium-subtle)] transition">Upgrade to Premium</a>
           </div>
         </div>
       </div>
@@ -113,44 +114,44 @@ export default function BulkRenamePage() {
       <div className="mb-8">
         <div className="flex items-center gap-3 mb-2">
           <h1 className="text-3xl font-bold text-[var(--foreground)]">Bulk PDF Renamer</h1>
-          <span className="text-xs font-semibold bg-gradient-to-r from-amber-500 to-orange-600 text-white px-2.5 py-0.5 rounded-full">Premium</span>
+          <span className="text-xs font-semibold bg-[var(--premium)] text-white px-2.5 py-0.5 rounded-full">Premium</span>
         </div>
         <p className="text-[var(--muted)]">Rename dozens of PDFs at once using their metadata — title, author, or page count.</p>
       </div>
 
 
-      <div className="bg-[var(--card)] border border-[var(--card-border)] rounded-xl p-6 space-y-5">
-        <input type="file" accept=".pdf" multiple onChange={(e) => handleFiles(e.target.files)} className="text-sm file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:bg-indigo-100 dark:file:bg-indigo-900 file:text-indigo-700 dark:file:text-indigo-300 file:text-xs file:font-medium w-full" />
+      <div className="bg-[var(--surface)] border border-[var(--border)] rounded-[var(--r-lg)] p-6 space-y-5">
+        <input type="file" accept=".pdf" multiple onChange={(e) => handleFiles(e.target.files)} className="text-sm file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:bg-[var(--accent-subtle)] file:text-[var(--accent)] file:text-xs file:font-medium w-full" />
 
         {files.length > 0 && (
           <>
             <div>
               <label className="block text-sm font-medium text-[var(--foreground)] mb-2">Naming Pattern</label>
               <div className="flex gap-2">
-                <input value={pattern} onChange={(e) => setPattern(e.target.value)} className="flex-1 px-4 py-2 rounded-xl border border-[var(--card-border)] bg-[var(--background)] text-sm font-mono" />
-                <button onClick={applyPattern} className="px-4 py-2 bg-indigo-600 text-white font-medium rounded-xl hover:bg-indigo-700 transition text-sm">Apply</button>
+                <input value={pattern} onChange={(e) => setPattern(e.target.value)} className="flex-1 px-4 py-2 rounded-[var(--r-lg)] border border-[var(--border)] bg-[var(--background)] text-sm font-mono" />
+                <button onClick={applyPattern} className="px-4 py-2 bg-[var(--accent)] text-white font-medium rounded-[var(--r-lg)] hover:bg-[var(--accent-hover)] transition text-sm">Apply</button>
               </div>
               <div className="flex flex-wrap gap-2 mt-2">
                 {["{title}", "{author}", "{pages}", "{filename}"].map(p => (
-                  <button key={p} onClick={() => setPattern(prev => prev + p)} className="px-2 py-1 text-xs bg-[var(--background)] border border-[var(--card-border)] rounded-lg hover:border-indigo-500 font-mono">{p}</button>
+                  <button key={p} onClick={() => setPattern(prev => prev + p)} className="px-2 py-1 text-xs bg-[var(--background)] border border-[var(--border)] rounded-lg hover:border-[var(--accent-border)] font-mono">{p}</button>
                 ))}
               </div>
             </div>
 
             <div className="max-h-48 overflow-y-auto space-y-2">
               {files.map((f, i) => (
-                <div key={i} className="flex items-center gap-3 p-2 rounded-lg bg-[var(--background)] border border-[var(--card-border)]">
+                <div key={i} className="flex items-center gap-3 p-2 rounded-lg bg-[var(--background)] border border-[var(--border)]">
                   <span className="text-xs text-[var(--muted)] w-6">{i + 1}.</span>
                   <div className="flex-1 min-w-0">
                     <p className="text-xs font-medium truncate">{f.file.name}</p>
                     <p className="text-[10px] text-[var(--muted)]">Title: {f.title} · Author: {f.author} · {f.pages}p</p>
                   </div>
-                  <span className="text-[10px] text-emerald-600 truncate max-w-[200px]">→ {f.newName}</span>
+                  <span className="text-[10px] text-[var(--success)] truncate max-w-[200px]">→ {f.newName}</span>
                 </div>
               ))}
             </div>
 
-            <button onClick={downloadAll} className="w-full py-3 bg-gradient-to-r from-amber-500 to-orange-600 text-white font-bold rounded-xl hover:from-amber-600 hover:to-orange-700 transition">
+            <button onClick={downloadAll} className="w-full py-3 bg-[var(--premium)] text-white font-bold rounded-[var(--r-lg)] hover:opacity-90 transition">
               Rename & Download All ({files.length} files)
             </button>
           </>
@@ -158,13 +159,13 @@ export default function BulkRenamePage() {
       </div>
 
       {processing && <p className="text-center text-sm text-[var(--muted)] mt-4">Reading PDF metadata...</p>}
-      {success && <div className="mt-4 p-4 bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-200 dark:border-emerald-800 rounded-xl text-center text-sm text-emerald-700">✅ Files renamed and downloaded!</div>}
-      {error && <div className="mt-6 p-4 bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-800 rounded-xl text-red-600 text-sm">{error}</div>}
+      {success && <div className="mt-4 p-4 bg-[var(--success-subtle)] border border-[var(--success)]/25 rounded-[var(--r-lg)] text-center text-sm text-[var(--success)]">✅ Files renamed and downloaded!</div>}
+      {error && <div className="mt-6 p-4 bg-[var(--danger-subtle)] border border-[var(--danger)]/25 rounded-[var(--r-lg)] text-[var(--danger)] text-sm">{error}</div>}
 
 
       <ToolGuide slug="bulk-rename" />
       <div className="text-center mt-8">
-        <a href="/premium" className="text-sm text-indigo-500 hover:underline font-medium">Explore all Premium features →</a>
+        <a href="/premium" className="text-sm text-[var(--accent)] hover:underline font-medium">Explore all Premium features →</a>
       </div>
     </div>
   );

@@ -25,12 +25,12 @@ export default function BlogPost() {
       />
       <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Blog", item: "https://allaboutpdfediting.xyz/blog" }, { name: "How to Fill PDF Forms Online Free", item: "https://allaboutpdfediting.xyz/blog/fill-pdf-forms-online" }]} />
       <HowToJsonLd name="How to Fill PDF Forms Online Free" description="Fill PDF forms online for free without Adobe Acrobat..." steps={[{name:"Go to the form filler — Open our free PDF form fill tool.",text:"Go to the form filler — Open our free PDF form fill tool."},{name:"Upload your PDF — Drag and drop or click to select a PDF with fillable form f...",text:"Upload your PDF — Drag and drop or click to select a PDF with fillable form fields."},{name:"Fill and download — Complete the fields that appear, then click Fill &amp; Downlo...",text:"Fill and download — Complete the fields that appear, then click Fill &amp; Download. The completed form with flattened fields is saved instantly."}]} />
-      <a href="/blog" className="text-sm text-indigo-500 hover:underline mb-6 inline-block">&larr; Back to blog</a>
+      <a href="/blog" className="text-sm text-[var(--accent)] hover:underline mb-6 inline-block">&larr; Back to blog</a>
       <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">How to Fill PDF Forms Online Free</h1>
       <p className="text-sm text-[var(--muted)] mb-8">5 min read · Updated June 2026</p>
 
       <div className="text-sm text-[var(--muted)] space-y-5 leading-relaxed">
-        <p>PDF forms are everywhere — job applications, tax documents, registration forms, contracts. But filling them often requires expensive software like Adobe Acrobat. Our <a href="/fill-form" className="text-indigo-500 underline">free PDF form filler</a> lets you <strong>fill PDF forms online</strong> completely free, with no software installation and no file uploads.</p>
+        <p>PDF forms are everywhere — job applications, tax documents, registration forms, contracts. But filling them often requires expensive software like Adobe Acrobat. Our <a href="/fill-form" className="text-[var(--accent)] underline">free PDF form filler</a> lets you <strong>fill PDF forms online</strong> completely free, with no software installation and no file uploads.</p>
 
         <h2 className="text-xl font-bold text-[var(--foreground)] pt-4">What Types of Form Fields Are Supported?</h2>
         <p>Our tool detects every type of form field in your PDF and provides the appropriate input control:</p>
@@ -44,7 +44,7 @@ export default function BlogPost() {
 
         <h2 className="text-xl font-bold text-[var(--foreground)] pt-4">How to Fill a PDF Form in 3 Steps</h2>
         <ol className="list-decimal pl-5 space-y-3">
-          <li><strong>Go to the form filler</strong> — Open our <a href="/fill-form" className="text-indigo-500 underline">free PDF form fill tool</a>.</li>
+          <li><strong>Go to the form filler</strong> — Open our <a href="/fill-form" className="text-[var(--accent)] underline">free PDF form fill tool</a>.</li>
           <li><strong>Upload your PDF</strong> — Drag and drop or click to select a PDF with fillable form fields.</li>
           <li><strong>Fill and download</strong> — Complete the fields that appear, then click Fill & Download. The completed form with flattened fields is saved instantly.</li>
         </ol>
@@ -70,11 +70,11 @@ export default function BlogPost() {
         </ul>
 
         <h2 className="text-xl font-bold text-[var(--foreground)] pt-4">Flattening: Why It Matters</h2>
-        <p>After filling a form, our tool <strong>flattens</strong> the PDF. Flattening merges the form fields into the page content so the values become permanent. This prevents accidental edits and ensures the form looks correct when printed or shared. If you need to flatten an existing PDF without filling new fields, try our <a href="/flatten-pdf" className="text-indigo-500 underline">dedicated flatten tool</a>.</p>
+        <p>After filling a form, our tool <strong>flattens</strong> the PDF. Flattening merges the form fields into the page content so the values become permanent. This prevents accidental edits and ensures the form looks correct when printed or shared. If you need to flatten an existing PDF without filling new fields, try our <a href="/flatten-pdf" className="text-[var(--accent)] underline">dedicated flatten tool</a>.</p>
 
-        <div className="bg-[var(--card)] border border-[var(--card-border)] rounded-xl p-6 mt-6">
+        <div className="bg-[var(--surface)] border border-[var(--border)] rounded-[var(--r-lg)] p-6 mt-6">
           <p className="font-semibold text-[var(--foreground)] mb-2">Need to fill a PDF form?</p>
-          <a href="/fill-form" className="inline-block px-5 py-2.5 bg-indigo-600 text-white font-medium rounded-xl text-sm hover:bg-indigo-700 transition">Fill Your PDF Form Now →</a>
+          <a href="/fill-form" className="inline-block px-5 py-2.5 bg-[var(--accent)] text-white font-medium rounded-[var(--r-lg)] text-sm hover:bg-[var(--accent-hover)] transition">Fill Your PDF Form Now →</a>
         </div>
       </div>
     </article>

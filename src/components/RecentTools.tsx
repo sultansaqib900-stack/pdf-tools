@@ -10,7 +10,7 @@ export default function RecentTools() {
 
   return (
     <div className="max-w-6xl mx-auto px-4 pb-8 -mt-4">
-      <div className="bg-[var(--card)] border border-[var(--card-border)] rounded-xl p-5">
+      <div className="bg-[var(--surface)] border border-[var(--border)] rounded-[var(--r-lg)] p-5">
         <h3 className="text-sm font-semibold text-[var(--foreground)] mb-3 flex items-center gap-2">
           <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>

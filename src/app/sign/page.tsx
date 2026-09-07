@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useRef, useEffect } from "react";
+import Icon from "@/components/ui/Icon";
 import ToolGuide from "@/components/ToolGuide";
 import ToolInfo from "@/components/ToolInfo";
 import FreeWaitTimer from "@/components/FreeWaitTimer";
@@ -191,14 +192,14 @@ export default function SignPage() {
         <UsageBar remaining={usage.remaining} unlimited={usage.unlimited} />
       </div>
 
-      <div className="bg-[var(--card)] rounded-xl border border-[var(--card-border)] p-8 space-y-5">
+      <div className="bg-[var(--surface)] rounded-[var(--r-lg)] border border-[var(--border)] p-8 space-y-5">
         <div>
           <label className="block text-sm font-medium text-[var(--foreground)] mb-2">Draw your signature</label>
           <canvas
             ref={canvasRef}
             width={300}
             height={100}
-            className="w-full border border-[var(--card-border)] rounded-xl cursor-crosshair touch-none"
+            className="w-full border border-[var(--border)] rounded-[var(--r-lg)] cursor-crosshair touch-none"
             style={{ background: "#fff" }}
             onMouseDown={startDraw}
             onMouseMove={draw}
@@ -208,7 +209,7 @@ export default function SignPage() {
             onTouchMove={draw}
             onTouchEnd={stopDraw}
           />
-          <button onClick={clearCanvas} className="mt-2 text-xs text-red-500 hover:text-red-600 font-medium">
+          <button onClick={clearCanvas} className="mt-2 text-xs text-[var(--danger)] hover:text-[var(--danger)] font-medium">
             Clear signature
           </button>
         </div>
@@ -217,14 +218,14 @@ export default function SignPage() {
           onDrop={(e) => { e.preventDefault(); setDragging(false); handleFile(e.dataTransfer.files[0]); }}
           onDragOver={(e) => { e.preventDefault(); setDragging(true); }}
           onDragLeave={() => setDragging(false)}
-          className={`border-2 border-dashed rounded-xl p-8 text-center transition ${
-            dragging ? "border-indigo-500 bg-indigo-50 dark:bg-indigo-950/30" : "border-[var(--card-border)] bg-[var(--background)]"
+          className={`border-2 border-dashed rounded-[var(--r-lg)] p-8 text-center transition ${
+            dragging ? "border-[var(--accent-border)] bg-[var(--accent-subtle)]" : "border-[var(--border)] bg-[var(--background)]"
           }`}
         >
           <input type="file" accept="application/pdf" onChange={(e) => handleFile(e.target.files?.[0] ?? null)} className="hidden" id="fileInput" />
           <label htmlFor="fileInput" className="cursor-pointer flex flex-col items-center gap-2">
-            <span className="text-3xl">📄</span>
-            <span className="text-indigo-500 font-medium text-sm hover:underline">
+            <Icon name="fileText" size={36} className="text-[var(--muted)]" />
+            <span className="text-[var(--accent)] font-medium text-sm hover:underline">
               {file ? file.name : "Click to select a PDF"}
             </span>
             {file && <span className="text-xs text-[var(--muted)]">Signature will be placed on the last page</span>}
@@ -240,7 +241,7 @@ export default function SignPage() {
             <button
               onClick={sign}
               disabled={processing || showTimer}
-              className="w-full py-3 bg-indigo-600 text-white font-medium rounded-xl hover:bg-indigo-700 disabled:opacity-40 disabled:cursor-not-allowed transition shadow-sm"
+              className="w-full py-3 bg-[var(--accent)] text-white font-medium rounded-[var(--r-lg)] hover:bg-[var(--accent-hover)] disabled:opacity-40 disabled:cursor-not-allowed transition shadow-sm"
             >
               {processing ? (
                 <span className="flex items-center justify-center gap-2">
@@ -253,7 +254,7 @@ export default function SignPage() {
             {!isPremium() && (
               <p className="text-center text-xs text-[var(--muted)]">
                 Free users limited to 10MB files.{ " " }
-                <a href="/premium" className="text-indigo-500 font-medium hover:underline">Upgrade for no wait</a>
+                <a href="/premium" className="text-[var(--accent)] font-medium hover:underline">Upgrade for no wait</a>
               </p>
             )}
           </>
@@ -264,7 +265,7 @@ export default function SignPage() {
         <SuccessAnimation show={success} message="PDF signed!" onRestore={restoreOriginal} />
       </div>
 
-      <div className="max-w-3xl mx-auto mt-12 pt-8 border-t border-[var(--card-border)]">
+      <div className="max-w-3xl mx-auto mt-12 pt-8 border-t border-[var(--border)]">
         <h2 className="text-xl font-bold text-[var(--foreground)] mb-3">About e-Sign PDF</h2>
         <div className="text-sm text-[var(--muted)] space-y-3 leading-relaxed">
           <p>Add your signature to PDF documents digitally with our e-sign tool, designed for quick and secure document signing without printing or scanning. Draw your signature using your mouse or touchscreen, upload a PDF, and your signature is placed neatly on the last page. To sign PDF online free, simply draw in the signature pad, select your document, and download the signed file immediately. Everything runs entirely in your browser — drawing, embedding, and downloading — so your data never reaches a server. This is ideal for contracts, rental agreements, consent forms, approval workflows, and any document that requires a personal touch. Our e-sign PDF document tool gives you a simple, private way to sign.</p>

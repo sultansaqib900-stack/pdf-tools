@@ -14,7 +14,7 @@ export default function BlogPost() {
       />
       <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Blog", item: "https://allaboutpdfediting.xyz/blog" }, { name: "How to Convert Text to PDF Online Free (No Software Needed)", item: "https://allaboutpdfediting.xyz/blog/text-to-pdf-converter" }]} />
       <HowToJsonLd name="How to Convert Text to PDF Online Free (No Software Needed)" description="Convert plain text to PDF documents online for free..." steps={[{name:"Open the Text to PDF tool",text:"Open the Text to PDF tool"},{name:"Type or paste your text into the text area",text:"Type or paste your text into the text area"},{name:"Optionally add a document title",text:"Optionally add a document title"},{name:"Click &quot;Convert to PDF&quot; and your new file downloads instantly",text:"Click &quot;Convert to PDF&quot; and your new file downloads instantly"}]} />
-      <Link href="/blog" className="text-sm text-indigo-500 hover:underline mb-6 inline-block">&larr; Back to blog</Link>
+      <Link href="/blog" className="text-sm text-[var(--accent)] hover:underline mb-6 inline-block">&larr; Back to blog</Link>
       <h1 className="text-3xl font-bold text-[var(--foreground)] mb-3">How to Convert Text to PDF Online Free (No Software Needed)</h1>
       <p className="text-sm text-[var(--muted)] mb-8">June 24, 2026 &middot; 3 min read</p>
 
@@ -30,9 +30,9 @@ export default function BlogPost() {
         </ul>
 
         <h2 className="text-xl font-semibold text-[var(--foreground)] pt-4">How to Convert Text to PDF Online Free</h2>
-        <p>Using <Link href="/text-to-pdf" className="text-indigo-500 hover:underline">PDFTools Text to PDF</Link> converter:</p>
+        <p>Using <Link href="/text-to-pdf" className="text-[var(--accent)] hover:underline">PDFTools Text to PDF</Link> converter:</p>
         <ol className="list-decimal list-inside space-y-2">
-          <li>Open the <Link href="/text-to-pdf" className="text-indigo-500 hover:underline">Text to PDF tool</Link></li>
+          <li>Open the <Link href="/text-to-pdf" className="text-[var(--accent)] hover:underline">Text to PDF tool</Link></li>
           <li>Type or paste your text into the text area</li>
           <li>Optionally add a document title</li>
           <li>Click &quot;Convert to PDF&quot; and your new file downloads instantly</li>
@@ -46,7 +46,7 @@ export default function BlogPost() {
           <li>Plain text documents converted for professional sharing</li>
         </ul>
 
-        <p className="pt-4">Try the <Link href="/text-to-pdf" className="text-indigo-500 font-medium hover:underline">free online text to PDF converter</Link> now.</p>
+        <p className="pt-4">Try the <Link href="/text-to-pdf" className="text-[var(--accent)] font-medium hover:underline">free online text to PDF converter</Link> now.</p>
       </div>
     </article>
   );

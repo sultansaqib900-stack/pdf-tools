@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useEffect, useRef } from "react";
+import Icon from "@/components/ui/Icon";
 import ToolInfo from "@/components/ToolInfo";
 import FreeWaitTimer from "@/components/FreeWaitTimer";
 import UsageBar from "@/components/UsageBar";
@@ -149,13 +150,13 @@ export default function EsSplitPage() {
         <UsageBar remaining={usage.remaining} unlimited={usage.unlimited} />
       </div>
 
-      <div className="bg-[var(--card)] rounded-xl border border-[var(--card-border)] p-8">
+      <div className="bg-[var(--surface)] rounded-[var(--r-lg)] border border-[var(--border)] p-8">
         <div
           onDrop={(e) => { e.preventDefault(); setDragging(false); handleFile(e.dataTransfer.files[0]); }}
           onDragOver={(e) => { e.preventDefault(); setDragging(true); }}
           onDragLeave={() => setDragging(false)}
-          className={`border-2 border-dashed rounded-xl p-10 text-center transition ${
-            dragging ? "border-indigo-500 bg-indigo-50 dark:bg-indigo-950/30" : "border-[var(--card-border)] bg-[var(--background)]"
+          className={`border-2 border-dashed rounded-[var(--r-lg)] p-10 text-center transition ${
+            dragging ? "border-[var(--accent-border)] bg-[var(--accent-subtle)]" : "border-[var(--border)] bg-[var(--background)]"
           }`}
         >
           <input
@@ -166,8 +167,8 @@ export default function EsSplitPage() {
             id="fileInput"
           />
           <label htmlFor="fileInput" className="cursor-pointer flex flex-col items-center gap-3">
-            <span className="text-5xl">📄</span>
-            <span className="text-indigo-500 font-medium hover:underline">
+            <Icon name="fileText" size={36} className="text-[var(--muted)]" />
+            <span className="text-[var(--accent)] font-medium hover:underline">
               {file ? file.name : "Haz clic para seleccionar o arrastra un PDF"}
             </span>
             {pageCount > 0 && <span className="text-sm text-[var(--muted)]">{pageCount} página{pageCount > 1 ? "s" : ""}</span>}
@@ -190,11 +191,11 @@ export default function EsSplitPage() {
             </div>
 
             {mode === "range" && (
-              <div className="flex flex-wrap items-center gap-3 p-4 bg-[var(--background)] border border-[var(--card-border)] rounded-lg">
+              <div className="flex flex-wrap items-center gap-3 p-4 bg-[var(--background)] border border-[var(--border)] rounded-lg">
                 <label className="text-sm text-[var(--muted)]">Desde:</label>
-                <input type="number" min={1} max={pageCount} value={startPage} onChange={(e) => setStartPage(Math.max(1, Math.min(pageCount, Number(e.target.value))))} className="w-20 px-3 py-1.5 border border-[var(--card-border)] rounded-lg text-sm bg-[var(--card)] text-[var(--foreground)]" />
+                <input type="number" min={1} max={pageCount} value={startPage} onChange={(e) => setStartPage(Math.max(1, Math.min(pageCount, Number(e.target.value))))} className="w-20 px-3 py-1.5 border border-[var(--border)] rounded-lg text-sm bg-[var(--surface)] text-[var(--foreground)]" />
                 <label className="text-sm text-[var(--muted)]">Hasta:</label>
-                <input type="number" min={1} max={pageCount} value={endPage} onChange={(e) => setEndPage(Math.max(1, Math.min(pageCount, Number(e.target.value))))} className="w-20 px-3 py-1.5 border border-[var(--card-border)] rounded-lg text-sm bg-[var(--card)] text-[var(--foreground)]" />
+                <input type="number" min={1} max={pageCount} value={endPage} onChange={(e) => setEndPage(Math.max(1, Math.min(pageCount, Number(e.target.value))))} className="w-20 px-3 py-1.5 border border-[var(--border)] rounded-lg text-sm bg-[var(--surface)] text-[var(--foreground)]" />
                 <span className="text-xs text-[var(--muted)]">(1–{pageCount})</span>
               </div>
             )}
@@ -204,7 +205,7 @@ export default function EsSplitPage() {
             <button
               onClick={split}
               disabled={processing || showTimer}
-              className="w-full py-3 bg-indigo-600 text-white font-medium rounded-xl hover:bg-indigo-700 disabled:opacity-40 disabled:cursor-not-allowed transition shadow-sm"
+              className="w-full py-3 bg-[var(--accent)] text-white font-medium rounded-[var(--r-lg)] hover:bg-[var(--accent-hover)] disabled:opacity-40 disabled:cursor-not-allowed transition shadow-sm"
             >
               {processing ? (
                 <span className="flex items-center justify-center gap-2">
@@ -217,7 +218,7 @@ export default function EsSplitPage() {
             {!isPremium() && (
               <p className="mt-3 text-center text-xs text-[var(--muted)]">
                 Usuarios gratuitos limitados a 10MB.{ " " }
-                <a href="/premium" className="text-indigo-500 font-medium hover:underline">Actualiza para 100MB, lotes y sin espera</a>
+                <a href="/premium" className="text-[var(--accent)] font-medium hover:underline">Actualiza para 100MB, lotes y sin espera</a>
               </p>
             )}
           </div>
@@ -228,7 +229,7 @@ export default function EsSplitPage() {
         <SuccessAnimation show={success} message="¡División completa!" onRestore={restoreOriginal} />
       </div>
 
-      <div className="max-w-3xl mx-auto mt-12 pt-8 border-t border-[var(--card-border)]">
+      <div className="max-w-3xl mx-auto mt-12 pt-8 border-t border-[var(--border)]">
         <h2 className="text-xl font-bold text-[var(--foreground)] mb-3">Acerca de Dividir PDF</h2>
         <div className="text-sm text-[var(--muted)] space-y-3 leading-relaxed">
           <p>¿Necesitas dividir PDF online gratis? Nuestra herramienta te permite extraer páginas PDF o dividir cada página en archivos individuales, dándote flexibilidad completa sobre cómo gestionas tus documentos. Elige entre extraer un rango de páginas específico o dividir el documento completo en páginas separadas. Es ideal cuando necesitas solo ciertas secciones de un informe grande, quieres compartir páginas una por una, o reorganizar contenido eliminando páginas específicas. El procesamiento ocurre completamente del lado del cliente usando pdf-lib, lo que significa que tu documento nunca sale de tu navegador. Cada página extraída preserva la calidad y el formato original.</p>

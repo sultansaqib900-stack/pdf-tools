@@ -82,10 +82,10 @@ export default function ToastProvider() {
   };
 
   const colors = {
-    success: "bg-emerald-500",
-    error: "bg-red-500",
+    success: "bg-[var(--success)]",
+    error: "bg-[var(--danger)]",
     info: "bg-blue-500",
-    warning: "bg-amber-500",
+    warning: "bg-[var(--premium)]",
   };
 
   return (

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useEffect, useRef } from "react";
+import Icon from "@/components/ui/Icon";
 import ToolGuide from "@/components/ToolGuide";
 import ToolInfo from "@/components/ToolInfo";
 import FreeWaitTimer from "@/components/FreeWaitTimer";
@@ -149,13 +150,13 @@ export default function PdfToImagesPage() {
         <UsageBar remaining={usage.remaining} unlimited={usage.unlimited} />
       </div>
 
-      <div className="bg-[var(--card)] rounded-xl border border-[var(--card-border)] p-8">
+      <div className="bg-[var(--surface)] rounded-[var(--r-lg)] border border-[var(--border)] p-8">
         <div
           onDrop={(e) => { e.preventDefault(); setDragging(false); handleFile(e.dataTransfer.files[0]); }}
           onDragOver={(e) => { e.preventDefault(); setDragging(true); }}
           onDragLeave={() => setDragging(false)}
-          className={`border-2 border-dashed rounded-xl p-10 text-center transition ${
-            dragging ? "border-indigo-500 bg-indigo-50 dark:bg-indigo-950/30" : "border-[var(--card-border)] bg-[var(--background)]"
+          className={`border-2 border-dashed rounded-[var(--r-lg)] p-10 text-center transition ${
+            dragging ? "border-[var(--accent-border)] bg-[var(--accent-subtle)]" : "border-[var(--border)] bg-[var(--background)]"
           }`}
         >
           <input
@@ -166,8 +167,8 @@ export default function PdfToImagesPage() {
             id="fileInput"
           />
           <label htmlFor="fileInput" className="cursor-pointer flex flex-col items-center gap-3">
-            <span className="text-5xl">📸</span>
-            <span className="text-indigo-500 font-medium hover:underline">
+            <Icon name="camera" size={36} className="text-[var(--muted)]" />
+            <span className="text-[var(--accent)] font-medium hover:underline">
               {file ? file.name : "Click to select or drag & drop a PDF"}
             </span>
             {pageCount > 0 && <span className="text-sm text-[var(--muted)]">{pageCount} page{pageCount > 1 ? "s" : ""}</span>}
@@ -183,7 +184,7 @@ export default function PdfToImagesPage() {
             <button
               onClick={extract}
               disabled={processing || showTimer}
-              className="mt-6 w-full py-3 bg-indigo-600 text-white font-medium rounded-xl hover:bg-indigo-700 disabled:opacity-40 disabled:cursor-not-allowed transition shadow-sm"
+              className="mt-6 w-full py-3 bg-[var(--accent)] text-white font-medium rounded-[var(--r-lg)] hover:bg-[var(--accent-hover)] disabled:opacity-40 disabled:cursor-not-allowed transition shadow-sm"
             >
               {processing ? (
                 <span className="flex flex-col items-center gap-1">
@@ -192,7 +193,7 @@ export default function PdfToImagesPage() {
                     Extracting page {Math.floor(progress / (100 / pageCount)) + 1} of {pageCount}...
                   </span>
                   <div className="w-full bg-gray-700 rounded-full h-1.5">
-                    <div className="bg-indigo-400 h-1.5 rounded-full transition-all" style={{ width: `${progress}%` }} />
+                    <div className="bg-[var(--accent)] h-1.5 rounded-full transition-all" style={{ width: `${progress}%` }} />
                   </div>
                 </span>
               ) : `Extract ${pageCount} page${pageCount > 1 ? "s" : ""} as images`}
@@ -201,7 +202,7 @@ export default function PdfToImagesPage() {
             {!isPremium() && (
               <p className="mt-3 text-center text-xs text-[var(--muted)]">
                 Free users limited to 10MB files.{ " " }
-                <a href="/premium" className="text-indigo-500 font-medium hover:underline">Upgrade for 100MB, batch & no wait</a>
+                <a href="/premium" className="text-[var(--accent)] font-medium hover:underline">Upgrade for 100MB, batch & no wait</a>
               </p>
             )}
           </>
@@ -211,17 +212,17 @@ export default function PdfToImagesPage() {
           <div className="mt-6">
             <div className="flex items-center justify-between mb-3">
               <span className="text-sm font-medium text-[var(--foreground)]">{previews.length} image{previews.length > 1 ? "s" : ""} extracted</span>
-              <button onClick={downloadAll} className="text-sm text-indigo-500 hover:text-indigo-600 font-medium">
+              <button onClick={downloadAll} className="text-sm text-[var(--accent)] hover:text-[var(--accent)] font-medium">
                 Download all
               </button>
             </div>
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
               {previews.map((src, i) => (
-                <div key={i} className="border border-[var(--card-border)] rounded-lg overflow-hidden">
+                <div key={i} className="border border-[var(--border)] rounded-lg overflow-hidden">
                   <img src={src} alt={`Page ${i + 1}`} className="w-full" />
                   <div className="p-2 text-xs text-[var(--muted)] flex justify-between items-center">
                     <span>Page {i + 1}</span>
-                    <a href={src} download={`page-${i + 1}.png`} className="text-indigo-500 hover:underline">Download</a>
+                    <a href={src} download={`page-${i + 1}.png`} className="text-[var(--accent)] hover:underline">Download</a>
                   </div>
                 </div>
               ))}
@@ -234,7 +235,7 @@ export default function PdfToImagesPage() {
         <SuccessAnimation show={success} message="Extraction complete!" onRestore={restoreOriginal} />
       </div>
 
-      <div className="max-w-3xl mx-auto mt-12 pt-8 border-t border-[var(--card-border)]">
+      <div className="max-w-3xl mx-auto mt-12 pt-8 border-t border-[var(--border)]">
         <h2 className="text-xl font-bold text-[var(--foreground)] mb-3">About PDF to Images</h2>
         <div className="text-sm text-[var(--muted)] space-y-3 leading-relaxed">
           <p>Extract every page of your PDF as a high-quality PNG image using our PDF to images tool, designed for quick and private conversion. This is perfect for creating thumbnails, sharing individual pages on social media, or embedding document content into presentations and reports. To convert PDF to PNG, simply upload your file and click extract — each page is rendered client-side using PDF.js, ensuring your document never leaves your device. Use our free PDF to images online free tool to get high-resolution PNGs that preserve the original layout, fonts, and formatting of every page. Each image can be downloaded individually or all at once, giving you full control over how you use your extracted content.</p>

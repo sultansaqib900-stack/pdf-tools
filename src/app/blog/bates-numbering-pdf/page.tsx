@@ -14,7 +14,7 @@ export default function BlogPost() {
       />
       <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Blog", item: "https://allaboutpdfediting.xyz/blog" }, { name: "How to Add Bates Numbering to PDF Documents", item: "https://allaboutpdfediting.xyz/blog/bates-numbering-pdf" }]} />
       <HowToJsonLd name="How to Add Bates Numbering to PDF Documents" description="Learn how to add Bates numbering, sequential page numbers, and custom labels to every page of a PDF. Perfect for legal documents and discovery." steps={[{name:"Upload your PDF — Drag and drop any PDF file.",text:"Upload your PDF — Drag and drop any PDF file."},{name:"Configure your labels — Set prefix, suffix, start number, digit padding, and ...",text:"Configure your labels — Set prefix, suffix, start number, digit padding, and position."},{name:"Apply and download — The tool stamps every page and gives you a numbered PDF ...",text:"Apply and download — The tool stamps every page and gives you a numbered PDF to save."}]} />
-      <a href="/blog" className="text-sm text-indigo-500 hover:underline mb-6 inline-block">&larr; Back to blog</a>
+      <a href="/blog" className="text-sm text-[var(--accent)] hover:underline mb-6 inline-block">&larr; Back to blog</a>
       <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">How to Add Bates Numbering to PDF Documents</h1>
       <p className="text-sm text-[var(--muted)] mb-8">5 min read · Updated June 2026</p>
 
@@ -33,13 +33,13 @@ export default function BlogPost() {
         <h2 className="text-xl font-bold text-[var(--foreground)] pt-4">Bates Numbering Options</h2>
         <p>A good Bates numbering tool lets you control every aspect of the label:</p>
         <ul className="list-disc pl-5 space-y-2">
-          <li><strong>Prefix</strong> — Add a text prefix like <code className="bg-[var(--card)] px-1 rounded">DEF-</code> or <code className="bg-[var(--card)] px-1 rounded">EXH-A-</code></li>
-          <li><strong>Suffix</strong> — Append text after the number, e.g. <code className="bg-[var(--card)] px-1 rounded">-v1</code></li>
+          <li><strong>Prefix</strong> — Add a text prefix like <code className="bg-[var(--surface)] px-1 rounded">DEF-</code> or <code className="bg-[var(--surface)] px-1 rounded">EXH-A-</code></li>
+          <li><strong>Suffix</strong> — Append text after the number, e.g. <code className="bg-[var(--surface)] px-1 rounded">-v1</code></li>
           <li><strong>Start number</strong> — Begin from any number, not just 1</li>
           <li><strong>Digit padding</strong> — Zero-pad to 3, 4, 5, or 6 digits for consistent alignment</li>
           <li><strong>Position</strong> — Place the label at any corner or centered at the bottom</li>
         </ul>
-        <p>Example output: <code className="bg-[var(--card)] px-1 rounded">DEF-00001-v1</code>, <code className="bg-[var(--card)] px-1 rounded">DEF-00002-v1</code>, <code className="bg-[var(--card)] px-1 rounded">DEF-00003-v1</code> across all pages.</p>
+        <p>Example output: <code className="bg-[var(--surface)] px-1 rounded">DEF-00001-v1</code>, <code className="bg-[var(--surface)] px-1 rounded">DEF-00002-v1</code>, <code className="bg-[var(--surface)] px-1 rounded">DEF-00003-v1</code> across all pages.</p>
 
         <h2 className="text-xl font-bold text-[var(--foreground)] pt-4">How to Add Bates Numbering in 3 Steps</h2>
         <ol className="list-decimal pl-5 space-y-3">
@@ -58,12 +58,12 @@ export default function BlogPost() {
         </ul>
 
         <h2 className="text-xl font-bold text-[var(--foreground)] pt-4">Premium Feature</h2>
-        <p>Bates numbering is a <strong>premium feature</strong> available to PDFTools Premium subscribers. Premium also unlocks document comparison, bulk certificate generation, PDF-to-audio conversion, and more. <a href="/premium" className="text-indigo-500 hover:underline font-medium">Learn more about Premium →</a></p>
+        <p>Bates numbering is a <strong>premium feature</strong> available to PDFTools Premium subscribers. Premium also unlocks document comparison, bulk certificate generation, PDF-to-audio conversion, and more. <a href="/premium" className="text-[var(--accent)] hover:underline font-medium">Learn more about Premium →</a></p>
 
-        <div className="bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-950/20 dark:to-orange-950/20 border border-amber-200/50 dark:border-amber-800/30 rounded-xl p-6 mt-6">
+        <div className="bg-[var(--premium-subtle)] border border-[var(--premium-border)]/50 dark:border-[var(--premium-border)]/30 rounded-[var(--r-lg)] p-6 mt-6">
           <p className="font-bold text-[var(--foreground)] mb-1">Need Bates numbering?</p>
           <p className="text-xs mb-3">Add sequential page numbers to every page of your PDF in seconds.</p>
-          <a href="/bates-numbering" className="inline-block px-5 py-2 bg-gradient-to-r from-amber-500 to-orange-600 text-white text-sm font-medium rounded-lg hover:from-amber-600 hover:to-orange-700 transition">Bates Numbering →</a>
+          <a href="/bates-numbering" className="inline-block px-5 py-2 bg-[var(--premium)] text-white text-sm font-medium rounded-lg hover:opacity-90 transition">Bates Numbering →</a>
         </div>
       </div>
     </article>

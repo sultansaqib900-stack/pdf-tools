@@ -56,7 +56,7 @@ export default function FeedbackForm({ onSubmitted }: { onSubmitted: () => void 
             onChange={(e) => setName(e.target.value)}
             placeholder="e.g. Ahmad"
             required
-            className="w-full px-4 py-2.5 rounded-xl border border-[var(--card-border)] bg-[var(--background)] text-[var(--foreground)] text-sm outline-none focus:border-indigo-500 transition"
+            className="w-full px-4 py-2.5 rounded-[var(--r-lg)] border border-[var(--border)] bg-[var(--background)] text-[var(--foreground)] text-sm outline-none focus:border-[var(--accent-border)] transition"
           />
         </div>
         <div>
@@ -66,7 +66,7 @@ export default function FeedbackForm({ onSubmitted }: { onSubmitted: () => void 
             value={role}
             onChange={(e) => setRole(e.target.value)}
             placeholder="e.g. Student, Freelancer"
-            className="w-full px-4 py-2.5 rounded-xl border border-[var(--card-border)] bg-[var(--background)] text-[var(--foreground)] text-sm outline-none focus:border-indigo-500 transition"
+            className="w-full px-4 py-2.5 rounded-[var(--r-lg)] border border-[var(--border)] bg-[var(--background)] text-[var(--foreground)] text-sm outline-none focus:border-[var(--accent-border)] transition"
           />
         </div>
       </div>
@@ -78,7 +78,7 @@ export default function FeedbackForm({ onSubmitted }: { onSubmitted: () => void 
           placeholder="Share your experience using PDFTools..."
           rows={3}
           required
-          className="w-full px-4 py-2.5 rounded-xl border border-[var(--card-border)] bg-[var(--background)] text-[var(--foreground)] text-sm outline-none focus:border-indigo-500 transition resize-none"
+          className="w-full px-4 py-2.5 rounded-[var(--r-lg)] border border-[var(--border)] bg-[var(--background)] text-[var(--foreground)] text-sm outline-none focus:border-[var(--accent-border)] transition resize-none"
         />
       </div>
       <div>
@@ -89,18 +89,18 @@ export default function FeedbackForm({ onSubmitted }: { onSubmitted: () => void 
               key={star}
               type="button"
               onClick={() => setRating(star)}
-              className={`text-2xl transition ${star <= rating ? "text-amber-400" : "text-[var(--card-border)]"}`}
+              className={`text-2xl transition ${star <= rating ? "text-[var(--premium)]" : "text-[var(--border)]"}`}
             >
               ★
             </button>
           ))}
         </div>
       </div>
-      {error && <p className="text-sm text-red-500">{error}</p>}
+      {error && <p className="text-sm text-[var(--danger)]">{error}</p>}
       <button
         type="submit"
         disabled={submitting || !name.trim() || !text.trim()}
-        className="w-full py-2.5 bg-indigo-600 text-white font-medium rounded-xl hover:bg-indigo-700 disabled:opacity-40 disabled:cursor-not-allowed transition text-sm"
+        className="w-full py-2.5 bg-[var(--accent)] text-white font-medium rounded-[var(--r-lg)] hover:bg-[var(--accent-hover)] disabled:opacity-40 disabled:cursor-not-allowed transition text-sm"
       >
         {submitting ? "Submitting..." : "Submit Feedback"}
       </button>

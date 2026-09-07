@@ -14,7 +14,7 @@ export default function BlogPost() {
       />
       <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Blog", item: "https://allaboutpdfediting.xyz/blog" }, { name: "How to Store PDFs Securely Online Free", item: "https://allaboutpdfediting.xyz/blog/secure-pdf-vault" }]} />
       <HowToJsonLd name="How to Store PDFs Securely Online Free" description="Store your PDF documents securely in an encrypted browser vault with password protection." steps={[{name:"Set a vault password — Choose a strong password that will encrypt all your st...",text:"Set a vault password — Choose a strong password that will encrypt all your stored documents."},{name:"Upload documents — Drag and drop PDFs into the vault. They are encrypted imme...",text:"Upload documents — Drag and drop PDFs into the vault. They are encrypted immediately before storage."},{name:"Access anytime — Return to the vault, enter your password, and download or vi...",text:"Access anytime — Return to the vault, enter your password, and download or view your documents securely."}]} />
-      <a href="/blog" className="text-sm text-indigo-500 hover:underline mb-6 inline-block">&larr; Back to blog</a>
+      <a href="/blog" className="text-sm text-[var(--accent)] hover:underline mb-6 inline-block">&larr; Back to blog</a>
       <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">How to Store PDFs Securely Online Free</h1>
       <p className="text-sm text-[var(--muted)] mb-8">5 min read · Updated June 2026</p>
 
@@ -54,10 +54,10 @@ export default function BlogPost() {
           <li>The vault is not a cloud backup — keep copies of important documents elsewhere</li>
         </ul>
 
-        <div className="bg-[var(--card)] border border-[var(--card-border)] rounded-xl p-6 mt-6">
+        <div className="bg-[var(--surface)] border border-[var(--border)] rounded-[var(--r-lg)] p-6 mt-6">
           <p className="font-semibold text-[var(--foreground)] mb-1">Premium Feature</p>
           <p className="text-sm text-[var(--muted)] mb-3">The secure document vault is a premium tool with password-protected encrypted storage. Upgrade to keep your PDFs safe.</p>
-          <a href="/premium" className="inline-block px-5 py-2.5 bg-amber-600 text-white font-medium rounded-xl text-sm hover:bg-amber-700 transition">Upgrade to Premium →</a>
+          <a href="/premium" className="inline-block px-5 py-2.5 bg-[var(--premium)] text-white font-medium rounded-[var(--r-lg)] text-sm hover:opacity-90 transition">Upgrade to Premium →</a>
         </div>
       </div>
     </article>

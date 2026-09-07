@@ -232,7 +232,7 @@ export default function PdfViewer({ file, onClose }: PdfViewerProps) {
             <button
               key={t}
               onClick={() => setTool(t)}
-              className={`px-2.5 py-1 rounded-lg text-xs font-medium transition ${tool === t ? "bg-indigo-600 text-white" : "text-white/70 hover:bg-white/10"}`}
+              className={`px-2.5 py-1 rounded-lg text-xs font-medium transition ${tool === t ? "bg-[var(--accent)] text-white" : "text-white/70 hover:bg-white/10"}`}
             >
               {t === "cursor" ? "↖" : t === "highlight" ? "🖍" : t === "sticky" ? "📌" : "✏"}
             </button>
@@ -247,7 +247,7 @@ export default function PdfViewer({ file, onClose }: PdfViewerProps) {
               <button
                 key={i}
                 onClick={() => setPageIndex(i)}
-                className={`w-full rounded-lg overflow-hidden border-2 transition ${i === pageIndex ? "border-indigo-500" : "border-transparent opacity-60 hover:opacity-100"}`}
+                className={`w-full rounded-lg overflow-hidden border-2 transition ${i === pageIndex ? "border-[var(--accent-border)]" : "border-transparent opacity-60 hover:opacity-100"}`}
               >
                 <img src={t} alt={`Page ${i + 1}`} className="w-full" />
               </button>
@@ -272,29 +272,29 @@ export default function PdfViewer({ file, onClose }: PdfViewerProps) {
       </div>
 
       {stickNotePos && (
-        <div className="absolute z-30 bg-gray-800 rounded-xl p-3 shadow-2xl border border-white/10" style={{ left: "50%", top: "50%", transform: "translate(-50%, -50%)" }}>
+        <div className="absolute z-30 bg-gray-800 rounded-[var(--r-lg)] p-3 shadow-2xl border border-white/10" style={{ left: "50%", top: "50%", transform: "translate(-50%, -50%)" }}>
           <textarea
             autoFocus
             value={stickNoteText}
             onChange={(e) => setStickNoteText(e.target.value)}
             placeholder="Type your note..."
-            className="w-64 h-24 bg-gray-700 text-white rounded-lg p-2 text-sm outline-none border border-white/10 focus:border-indigo-500 resize-none"
+            className="w-64 h-24 bg-gray-700 text-white rounded-lg p-2 text-sm outline-none border border-white/10 focus:border-[var(--accent-border)] resize-none"
           />
           <div className="flex justify-end gap-2 mt-2">
             <button onClick={() => setStickNotePos(null)} className="px-3 py-1 text-xs text-white/70 hover:text-white">Cancel</button>
-            <button onClick={saveStickyNote} className="px-3 py-1 text-xs bg-indigo-600 text-white rounded-lg hover:bg-indigo-700">Save</button>
+            <button onClick={saveStickyNote} className="px-3 py-1 text-xs bg-[var(--accent)] text-white rounded-lg hover:bg-[var(--accent-hover)]">Save</button>
           </div>
         </div>
       )}
 
       {pageAnnotations.length > 0 && (
-        <div className="absolute bottom-4 right-4 bg-gray-800/90 rounded-xl p-3 max-h-40 overflow-y-auto max-w-xs">
+        <div className="absolute bottom-4 right-4 bg-gray-800/90 rounded-[var(--r-lg)] p-3 max-h-40 overflow-y-auto max-w-xs">
           <p className="text-xs text-white/50 mb-1">Annotations on this page</p>
           {pageAnnotations.map((ann) => (
             <div key={ann.id} className="text-xs text-white/80 flex items-center gap-1 py-0.5">
               <span>{ann.type === "highlight" ? "🖍" : ann.type === "sticky" ? "📌" : "✏"}</span>
               <span className="truncate">{ann.type === "sticky" ? (ann as any).text : ann.type}</span>
-              <button onClick={() => { annotStore.current.remove(ann.id); annotState.current++; forceUpdate((n) => n + 1); }} className="ml-auto text-red-400 hover:text-red-300">✕</button>
+              <button onClick={() => { annotStore.current.remove(ann.id); annotState.current++; forceUpdate((n) => n + 1); }} className="ml-auto text-[var(--danger)] hover:text-[var(--danger)]">✕</button>
             </div>
           ))}
         </div>

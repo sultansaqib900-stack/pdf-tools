@@ -33,7 +33,7 @@ export default function FeedbackSection() {
   }, []);
 
   return (
-    <div className="bg-[var(--card)] border border-[var(--card-border)] rounded-xl p-8">
+    <div className="bg-[var(--surface)] border border-[var(--border)] rounded-[var(--r-lg)] p-8">
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-2xl font-bold text-[var(--foreground)]">What Users Say</h2>
         <button
@@ -45,7 +45,7 @@ export default function FeedbackSection() {
       </div>
 
       {showForm && (
-        <div className="mb-8 p-5 border border-[var(--card-border)] rounded-xl bg-[var(--background)]">
+        <div className="mb-8 p-5 border border-[var(--border)] rounded-[var(--r-lg)] bg-[var(--background)]">
           <FeedbackForm onSubmitted={() => { setShowForm(false); fetchFeedback(); }} />
         </div>
       )}
@@ -63,7 +63,7 @@ export default function FeedbackSection() {
       ) : (
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
           {feedback.map((item) => (
-            <div key={item.id} className="p-5 rounded-xl border border-[var(--card-border)] bg-[var(--background)]">
+            <div key={item.id} className="p-5 rounded-[var(--r-lg)] border border-[var(--border)] bg-[var(--background)]">
               <div className="flex mb-2 text-[var(--premium)]">
                 {Array.from({ length: 5 }, (_, i) => (
                   <span key={i} className={i < item.rating ? "" : "opacity-20"}>&#9733;</span>

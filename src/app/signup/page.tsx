@@ -32,28 +32,28 @@ export default function SignupPage() {
         <input
           type="text" placeholder="Name (optional)" value={name}
           onChange={(e) => setName(e.target.value)}
-          className="w-full px-4 py-3 rounded-xl border border-[var(--card-border)] bg-[var(--card)] text-[var(--foreground)] outline-none focus:border-indigo-500"
+          className="w-full px-4 py-3 rounded-[var(--r-lg)] border border-[var(--border)] bg-[var(--surface)] text-[var(--foreground)] outline-none focus:border-[var(--accent-border)]"
         />
         <input
           type="email" placeholder="Email" required value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className="w-full px-4 py-3 rounded-xl border border-[var(--card-border)] bg-[var(--card)] text-[var(--foreground)] outline-none focus:border-indigo-500"
+          className="w-full px-4 py-3 rounded-[var(--r-lg)] border border-[var(--border)] bg-[var(--surface)] text-[var(--foreground)] outline-none focus:border-[var(--accent-border)]"
         />
         <input
           type="password" placeholder="Password (min 6 chars)" required value={password}
           onChange={(e) => setPassword(e.target.value)}
-          className="w-full px-4 py-3 rounded-xl border border-[var(--card-border)] bg-[var(--card)] text-[var(--foreground)] outline-none focus:border-indigo-500"
+          className="w-full px-4 py-3 rounded-[var(--r-lg)] border border-[var(--border)] bg-[var(--surface)] text-[var(--foreground)] outline-none focus:border-[var(--accent-border)]"
         />
-        {error && <p className="text-red-500 text-sm">{error}</p>}
+        {error && <p className="text-[var(--danger)] text-sm">{error}</p>}
         <button
           type="submit" disabled={busy}
-          className="w-full py-3 bg-indigo-600 text-white font-semibold rounded-xl hover:bg-indigo-700 transition disabled:opacity-50"
+          className="w-full py-3 bg-[var(--accent)] text-white font-semibold rounded-[var(--r-lg)] hover:bg-[var(--accent-hover)] transition disabled:opacity-50"
         >
           {busy ? "Creating..." : "Create Account"}
         </button>
       </form>
       <p className="mt-4 text-center text-sm text-[var(--muted)]">
-        Already have an account? <Link href="/login" className="text-indigo-500 hover:underline">Sign in</Link>
+        Already have an account? <Link href="/login" className="text-[var(--accent)] hover:underline">Sign in</Link>
       </p>
     </main>
   );

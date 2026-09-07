@@ -14,7 +14,7 @@ export default function BlogPost() {
       />
       <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Blog", item: "https://allaboutpdfediting.xyz/blog" }, { name: "How to Resize PDF Pages Online Free — Change to A4, Letter &amp; Custom Sizes", item: "https://allaboutpdfediting.xyz/blog/resize-pdf-pages" }]} />
       <HowToJsonLd name="How to Resize PDF Pages Online Free — Change to A4, Letter &amp; Custom Sizes" description="Change page size of PDF documents online for free..." steps={[{name:"Go to the Resize PDF page",text:"Go to the Resize PDF page"},{name:"Upload your PDF file",text:"Upload your PDF file"},{name:"Choose a preset size (A4, Letter, Legal, etc.) or enter custom dimensions",text:"Choose a preset size (A4, Letter, Legal, etc.) or enter custom dimensions"},{name:"Click &quot;Resize&quot; and your updated PDF downloads automatically",text:"Click &quot;Resize&quot; and your updated PDF downloads automatically"}]} />
-      <Link href="/blog" className="text-sm text-indigo-500 hover:underline mb-6 inline-block">&larr; Back to blog</Link>
+      <Link href="/blog" className="text-sm text-[var(--accent)] hover:underline mb-6 inline-block">&larr; Back to blog</Link>
       <h1 className="text-3xl font-bold text-[var(--foreground)] mb-3">How to Resize PDF Pages Online Free — Change to A4, Letter & Custom Sizes</h1>
       <p className="text-sm text-[var(--muted)] mb-8">June 24, 2026 &middot; 3 min read</p>
 
@@ -30,9 +30,9 @@ export default function BlogPost() {
         </ul>
 
         <h2 className="text-xl font-semibold text-[var(--foreground)] pt-4">How to Resize a PDF Online Free</h2>
-        <p>Using <Link href="/resize" className="text-indigo-500 hover:underline">PDFTools Resize PDF</Link> tool:</p>
+        <p>Using <Link href="/resize" className="text-[var(--accent)] hover:underline">PDFTools Resize PDF</Link> tool:</p>
         <ol className="list-decimal list-inside space-y-2">
-          <li>Go to the <Link href="/resize" className="text-indigo-500 hover:underline">Resize PDF page</Link></li>
+          <li>Go to the <Link href="/resize" className="text-[var(--accent)] hover:underline">Resize PDF page</Link></li>
           <li>Upload your PDF file</li>
           <li>Choose a preset size (A4, Letter, Legal, etc.) or enter custom dimensions</li>
           <li>Click &quot;Resize&quot; and your updated PDF downloads automatically</li>
@@ -46,9 +46,9 @@ export default function BlogPost() {
           <li><strong>A3</strong> — 297 × 420 mm (large format)</li>
         </ul>
 
-        <p className="pt-4">Try the <Link href="/resize" className="text-indigo-500 font-medium hover:underline">free online PDF resizer</Link> now.</p>
+        <p className="pt-4">Try the <Link href="/resize" className="text-[var(--accent)] font-medium hover:underline">free online PDF resizer</Link> now.</p>
 
-        <p className="pt-4">If your PDF has uneven margins or excess whitespace, read our guide on <Link href="/blog/crop-pdf-margins" className="text-indigo-500 font-medium hover:underline">how to crop PDF margins</Link> to clean up your document.</p>
+        <p className="pt-4">If your PDF has uneven margins or excess whitespace, read our guide on <Link href="/blog/crop-pdf-margins" className="text-[var(--accent)] font-medium hover:underline">how to crop PDF margins</Link> to clean up your document.</p>
       </div>
     </article>
   );

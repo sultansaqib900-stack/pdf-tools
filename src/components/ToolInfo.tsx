@@ -1,26 +1,40 @@
+import Icon from "@/components/ui/Icon";
+
 interface ToolInfoProps {
   name: string;
   description: string;
 }
 
-export default function ToolInfo({ name, description }: ToolInfoProps) {
+const ASSURANCES = [
+  "Your files stay on your device",
+  "No account needed",
+  "Instant processing",
+  "No file storage",
+];
+
+export default function ToolInfo({ description }: ToolInfoProps) {
   return (
-    <div className="mb-6 p-5 bg-indigo-50/50 dark:bg-indigo-950/20 border border-indigo-100 dark:border-indigo-900/50 rounded-xl">
+    <div className="mb-6 p-5 surface-card">
       <div className="flex items-center gap-2 mb-2">
-        <span className="text-xl">🔒</span>
-        <span className="font-semibold text-sm text-indigo-700 dark:text-indigo-300">
-          100% Private — No Server Uploads
+        <Icon name="shield" size={17} className="text-[var(--accent)]" />
+        <span className="text-[0.875rem] font-medium text-[var(--foreground)]">
+          Private by design — nothing is uploaded
         </span>
       </div>
-      <p className="text-sm text-[var(--muted)] leading-relaxed mb-3">
+      <p className="text-[0.875rem] leading-relaxed text-[var(--muted-strong)] mb-3">
         {description}
       </p>
-      <div className="flex flex-wrap gap-2">
-        <span className="px-2.5 py-1 bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 rounded-lg text-xs font-medium">Your files stay on your device</span>
-        <span className="px-2.5 py-1 bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 rounded-lg text-xs font-medium">No account needed</span>
-        <span className="px-2.5 py-1 bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 rounded-lg text-xs font-medium">Instant processing</span>
-        <span className="px-2.5 py-1 bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 rounded-lg text-xs font-medium">No file storage</span>
-      </div>
+      <ul className="flex flex-wrap gap-1.5">
+        {ASSURANCES.map((a) => (
+          <li
+            key={a}
+            className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-[var(--r-md)] bg-[var(--surface-subtle)] border border-[var(--border)] text-[0.75rem] font-medium text-[var(--muted-strong)]"
+          >
+            <Icon name="check" size={12} strokeWidth={2.5} className="text-[var(--success)]" />
+            {a}
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }

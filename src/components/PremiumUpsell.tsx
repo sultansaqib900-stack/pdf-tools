@@ -69,7 +69,7 @@ export default function PremiumUpsell({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-fade-in">
-      <div className="bg-[var(--card)] border border-[var(--card-border)] rounded-2xl p-6 max-w-sm w-full shadow-2xl animate-slide-up">
+      <div className="bg-[var(--surface)] border border-[var(--border)] rounded-[var(--r-xl)] p-6 max-w-sm w-full shadow-2xl animate-slide-up">
         <div className="text-center">
           <div className="text-5xl mb-4">{icons[mode]}</div>
           <h3 className="text-xl font-bold text-[var(--foreground)] mb-2">
@@ -83,13 +83,13 @@ export default function PremiumUpsell({
           <div className="flex flex-col gap-2.5">
             <a
               href="/premium"
-              className="w-full py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-xl text-sm transition text-center"
+              className="w-full py-2.5 bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-white font-semibold rounded-[var(--r-lg)] text-sm transition text-center"
             >
               Upgrade to Premium
             </a>
             <button
               onClick={onClose}
-              className="w-full py-2.5 bg-[var(--background)] text-[var(--foreground)] font-medium rounded-xl text-sm border border-[var(--card-border)] hover:bg-[var(--card)] transition"
+              className="w-full py-2.5 bg-[var(--background)] text-[var(--foreground)] font-medium rounded-[var(--r-lg)] text-sm border border-[var(--border)] hover:bg-[var(--surface)] transition"
             >
               Maybe Later
             </button>

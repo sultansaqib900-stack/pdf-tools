@@ -99,7 +99,7 @@ export default function QaPage() {
           {qas.map((qa, i) => (
             <div
               key={i}
-              className="border border-[var(--card-border)] rounded-xl p-6 bg-[var(--card)]"
+              className="border border-[var(--border)] rounded-[var(--r-lg)] p-6 bg-[var(--surface)]"
             >
               <h2 className="text-lg font-semibold text-[var(--foreground)] mb-2">
                 {qa.q}

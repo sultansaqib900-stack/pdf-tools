@@ -9,7 +9,7 @@ export default function BlogLoading() {
       </div>
       <div className="grid gap-6 md:grid-cols-2">
         {Array.from({ length: 6 }).map((_, i) => (
-          <div key={i} className="rounded-xl border border-[var(--card-border)] p-5">
+          <div key={i} className="rounded-[var(--r-lg)] border border-[var(--border)] p-5">
             <Skeleton className="h-4 w-20 mb-3" />
             <Skeleton className="h-6 w-full mb-2" />
             <Skeleton className="h-4 w-3/4 mb-4" />

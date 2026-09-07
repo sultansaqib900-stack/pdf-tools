@@ -64,14 +64,14 @@ export default function LemonSqueezyCheckout({
 
   const baseClass =
     variant === "primary"
-      ? "bg-indigo-600 text-white hover:bg-indigo-700 shadow-sm"
-      : "bg-[var(--background)] text-[var(--foreground)] border border-[var(--card-border)] hover:bg-[var(--card-border)]";
+      ? "bg-[var(--accent)] text-white hover:bg-[var(--accent-hover)] shadow-sm"
+      : "bg-[var(--background)] text-[var(--foreground)] border border-[var(--border)] hover:bg-[var(--border)]";
 
   return (
     <button
       onClick={handleCheckout}
       disabled={disabled || loading}
-      className={`w-full py-2.5 rounded-xl font-medium transition disabled:opacity-40 disabled:cursor-not-allowed ${baseClass}`}
+      className={`w-full py-2.5 rounded-[var(--r-lg)] font-medium transition disabled:opacity-40 disabled:cursor-not-allowed ${baseClass}`}
     >
       {loading ? (
         <span className="flex items-center justify-center gap-2">

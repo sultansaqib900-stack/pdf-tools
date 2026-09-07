@@ -153,7 +153,7 @@ export default function SitemapPage() {
       <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">Sitemap</h1>
       <p className="text-sm text-[var(--muted)] mb-8">
         Browse all pages on PDFTools. You can also view our{" "}
-        <a href="/sitemap.xml" className="text-indigo-500 hover:underline">XML sitemap</a>
+        <a href="/sitemap.xml" className="text-[var(--accent)] hover:underline">XML sitemap</a>
         {" "}for search engines.
       </p>
 
@@ -166,7 +166,7 @@ export default function SitemapPage() {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className="text-sm text-[var(--muted)] hover:text-indigo-500 transition px-3 py-1.5 rounded-lg hover:bg-[var(--card)]"
+                  className="text-sm text-[var(--muted)] hover:text-[var(--accent)] transition px-3 py-1.5 rounded-lg hover:bg-[var(--surface)]"
                 >
                   {link.label}
                 </Link>
@@ -187,8 +187,8 @@ export default function SitemapPage() {
               if (pages.length === 0) return null;
               const toolNames = pages.map((p) => p.toolName);
               return (
-                <details key={audience} className="group rounded-xl border border-[var(--card-border)] bg-[var(--card)] open:shadow-sm transition-all">
-                  <summary className="flex items-center justify-between px-5 py-3 cursor-pointer text-sm font-semibold text-[var(--foreground)] hover:text-indigo-600 transition-colors">
+                <details key={audience} className="group rounded-[var(--r-lg)] border border-[var(--border)] bg-[var(--surface)] open:shadow-sm transition-all">
+                  <summary className="flex items-center justify-between px-5 py-3 cursor-pointer text-sm font-semibold text-[var(--foreground)] hover:text-[var(--accent)] transition-colors">
                     <span>{label} ({pages.length} pages)</span>
                     <svg className="w-4 h-4 text-[var(--muted)] group-open:rotate-180 transition-transform shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
                   </summary>
@@ -197,7 +197,7 @@ export default function SitemapPage() {
                       <Link
                         key={p.slug}
                         href={`/for/${p.slug}`}
-                        className="text-xs text-[var(--muted)] hover:text-indigo-500 transition px-2 py-1.5 rounded hover:bg-[var(--background)]"
+                        className="text-xs text-[var(--muted)] hover:text-[var(--accent)] transition px-2 py-1.5 rounded hover:bg-[var(--background)]"
                       >
                         {p.toolName}
                       </Link>

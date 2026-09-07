@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useRef, useEffect } from "react";
+import Icon from "@/components/ui/Icon";
 import ToolGuide from "@/components/ToolGuide";
 import ToolInfo from "@/components/ToolInfo";
 import FreeWaitTimer from "@/components/FreeWaitTimer";
@@ -377,19 +378,19 @@ export default function AnnotatePage() {
         <UsageBar remaining={usage.remaining} />
       </div>
 
-      <div className="bg-[var(--card)] rounded-xl border border-[var(--card-border)] p-8">
+      <div className="bg-[var(--surface)] rounded-[var(--r-lg)] border border-[var(--border)] p-8">
         <div
           onDrop={(e) => { e.preventDefault(); setDragging(false); handleFile(e.dataTransfer.files[0]); }}
           onDragOver={(e) => { e.preventDefault(); setDragging(true); }}
           onDragLeave={() => setDragging(false)}
-          className={`border-2 border-dashed rounded-xl p-10 text-center transition ${
-            dragging ? "border-indigo-500 bg-indigo-50 dark:bg-indigo-950/30" : "border-[var(--card-border)] bg-[var(--background)]"
+          className={`border-2 border-dashed rounded-[var(--r-lg)] p-10 text-center transition ${
+            dragging ? "border-[var(--accent-border)] bg-[var(--accent-subtle)]" : "border-[var(--border)] bg-[var(--background)]"
           }`}
         >
           <input type="file" accept="application/pdf" onChange={(e) => handleFile(e.target.files?.[0] ?? null)} className="hidden" id="fileInput" />
           <label htmlFor="fileInput" className="cursor-pointer flex flex-col items-center gap-3">
-            <span className="text-5xl">🖍</span>
-            <span className="text-indigo-500 font-medium hover:underline">
+            <Icon name="annotate" size={36} className="text-[var(--muted)]" />
+            <span className="text-[var(--accent)] font-medium hover:underline">
               {file ? file.name : "Click to select or drag & drop a PDF"}
             </span>
             {file && pages.length > 0 && <span className="text-sm text-[var(--muted)]">{(file.size / 1024).toFixed(1)} KB · {pages.length} pages</span>}
@@ -404,7 +405,7 @@ export default function AnnotatePage() {
                 <button
                   onClick={() => setCurrentPage((p) => Math.max(0, p - 1))}
                   disabled={currentPage === 0}
-                  className="px-3 py-1.5 text-sm rounded-lg border border-[var(--card-border)] text-[var(--foreground)] hover:bg-[var(--background)] disabled:opacity-40 transition"
+                  className="px-3 py-1.5 text-sm rounded-lg border border-[var(--border)] text-[var(--foreground)] hover:bg-[var(--background)] disabled:opacity-40 transition"
                 >
                   ← Prev
                 </button>
@@ -414,7 +415,7 @@ export default function AnnotatePage() {
                 <button
                   onClick={() => setCurrentPage((p) => Math.min(pages.length - 1, p + 1))}
                   disabled={currentPage >= pages.length - 1}
-                  className="px-3 py-1.5 text-sm rounded-lg border border-[var(--card-border)] text-[var(--foreground)] hover:bg-[var(--background)] disabled:opacity-40 transition"
+                  className="px-3 py-1.5 text-sm rounded-lg border border-[var(--border)] text-[var(--foreground)] hover:bg-[var(--background)] disabled:opacity-40 transition"
                 >
                   Next →
                 </button>
@@ -424,7 +425,7 @@ export default function AnnotatePage() {
                 {hasRects && (
                   <button
                     onClick={undoLast}
-                    className="px-3 py-1.5 text-xs rounded-lg border border-red-200 text-red-500 hover:bg-red-50 dark:hover:bg-red-950/20 transition"
+                    className="px-3 py-1.5 text-xs rounded-lg border border-[var(--danger)]/25 text-[var(--danger)] hover:bg-[var(--danger-subtle)] dark:hover:bg-[var(--danger-subtle)]/20 transition"
                   >
                     Undo Last
                   </button>
@@ -442,18 +443,18 @@ export default function AnnotatePage() {
                       ? "ring-2 ring-offset-1 " + (
                           m.key === "highlight" ? "ring-yellow-500 border-yellow-400 bg-yellow-50 dark:bg-yellow-950/20" :
                           m.key === "underline" ? "ring-green-500 border-green-400 bg-green-50 dark:bg-green-950/20" :
-                          "ring-red-500 border-red-400 bg-red-50 dark:bg-red-950/20"
+                          "ring-red-500 border-[var(--danger)]/25 bg-[var(--danger-subtle)] bg-[var(--danger-subtle)]"
                         )
-                      : "border-[var(--card-border)] text-[var(--muted)] hover:bg-[var(--background)]"
+                      : "border-[var(--border)] text-[var(--muted)] hover:bg-[var(--background)]"
                   }`}
                 >
-                  <span className={`w-3 h-3 rounded ${m.key === "highlight" ? "bg-yellow-400" : m.key === "underline" ? "bg-green-500" : "bg-red-500"}`} />
+                  <span className={`w-3 h-3 rounded ${m.key === "highlight" ? "bg-yellow-400" : m.key === "underline" ? "bg-green-500" : "bg-[var(--danger)]"}`} />
                   {m.label}
                 </button>
               ))}
             </div>
 
-            <div ref={containerRef} className="border border-[var(--card-border)] rounded-xl overflow-hidden">
+            <div ref={containerRef} className="border border-[var(--border)] rounded-[var(--r-lg)] overflow-hidden">
               <canvas
                 ref={canvasRef}
                 onMouseDown={handleMouseDown}
@@ -479,7 +480,7 @@ export default function AnnotatePage() {
           <button
             onClick={process}
             disabled={!hasRects || saving || showTimer}
-            className="mt-6 w-full py-3 bg-indigo-600 text-white font-medium rounded-xl hover:bg-indigo-700 disabled:opacity-40 disabled:cursor-not-allowed transition shadow-sm"
+            className="mt-6 w-full py-3 bg-[var(--accent)] text-white font-medium rounded-[var(--r-lg)] hover:bg-[var(--accent-hover)] disabled:opacity-40 disabled:cursor-not-allowed transition shadow-sm"
           >
             {saving ? (
               <span className="flex items-center justify-center gap-2">
@@ -493,7 +494,7 @@ export default function AnnotatePage() {
         {!isPremium() && (
           <p className="mt-3 text-center text-xs text-[var(--muted)]">
             Free users limited to 10MB & 5s wait.{ " " }
-            <a href="/premium" className="text-indigo-500 font-medium hover:underline">Upgrade for 100MB & no limits</a>
+            <a href="/premium" className="text-[var(--accent)] font-medium hover:underline">Upgrade for 100MB & no limits</a>
           </p>
         )}
 
@@ -501,7 +502,7 @@ export default function AnnotatePage() {
       </div>
 
 
-      <div className="max-w-3xl mx-auto mt-12 pt-8 border-t border-[var(--card-border)]">
+      <div className="max-w-3xl mx-auto mt-12 pt-8 border-t border-[var(--border)]">
         <h2 className="text-xl font-bold text-[var(--foreground)] mb-3">About Annotate PDF</h2>
         <div className="text-sm text-[var(--muted)] space-y-3 leading-relaxed">
           <p>Add highlights, underlines, and strikethroughs to your PDF documents. Select an annotation mode, then click and drag over any text to mark it up. All annotations are drawn as colored rectangles and lines — perfect for studying, reviewing documents, or marking up drafts.</p>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import Icon from "@/components/ui/Icon";
 import ToolGuide from "@/components/ToolGuide";
 import { isPremium } from "@/lib/premium";
 import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
@@ -43,13 +44,13 @@ export default function VaultPage() {
       <div className="max-w-3xl mx-auto px-4 py-12">
         <SoftwareAppJsonLd name="Secure PDF Vault" description="Store PDFs in encrypted browser vault. Premium secure storage." url="https://allaboutpdfediting.xyz/vault" image="https://allaboutpdfediting.xyz/opengraph-image.png" aggregateRating={{ ratingValue: 4.3, bestRating: 5, ratingCount: 62 }} />
         <div className="text-center py-20">
-          <div className="text-6xl mb-6">🔐</div>
+          <div className="flex justify-center mb-6"><Icon name="shield" size={42} className="text-[var(--muted)]" /></div>
           <h1 className="text-3xl font-bold mb-3">Secure PDF Vault</h1>
           <p className="text-[var(--muted)] mb-8 max-w-md mx-auto">Store sensitive PDFs in an encrypted browser vault with password protection.</p>
-          <div className="inline-block bg-gradient-to-r from-amber-500 to-orange-600 text-white px-8 py-4 rounded-2xl shadow-lg">
+          <div className="inline-block bg-[var(--premium)] text-white px-8 py-4 rounded-[var(--r-xl)] shadow-lg">
             <p className="text-lg font-bold mb-1">Premium Feature</p>
             <p className="text-sm opacity-90 mb-4">Only premium subscribers can use the document vault</p>
-            <a href="/premium" className="inline-block bg-white text-orange-600 px-6 py-2 rounded-xl font-semibold text-sm hover:bg-orange-50 transition">Upgrade to Premium</a>
+            <a href="/premium" className="inline-block bg-white text-[var(--premium)] px-6 py-2 rounded-[var(--r-lg)] font-semibold text-sm hover:bg-[var(--premium-subtle)] transition">Upgrade to Premium</a>
           </div>
         </div>
       </div>
@@ -135,17 +136,17 @@ export default function VaultPage() {
         <div className="mb-8">
           <div className="flex items-center gap-3 mb-2">
             <h1 className="text-3xl font-bold text-[var(--foreground)]">Secure PDF Vault</h1>
-            <span className="text-xs font-semibold bg-gradient-to-r from-amber-500 to-orange-600 text-white px-2.5 py-0.5 rounded-full">Premium</span>
+            <span className="text-xs font-semibold bg-[var(--premium)] text-white px-2.5 py-0.5 rounded-full">Premium</span>
           </div>
           <p className="text-[var(--muted)]">Enter your vault password to access documents stored in this browser.</p>
         </div>
-        <div className="bg-[var(--card)] border border-[var(--card-border)] rounded-xl p-6 text-center space-y-4">
-          <div className="text-6xl">🔐</div>
+        <div className="bg-[var(--surface)] border border-[var(--border)] rounded-[var(--r-lg)] p-6 text-center space-y-4">
+          <div className="flex justify-center"><Icon name="shield" size={42} className="text-[var(--muted)]" /></div>
           <p className="text-sm text-[var(--muted)]">Your vault keeps PDFs in this browser&apos;s local storage on this device — nothing is uploaded to a server, and nothing is backed up. Keep your own copy of anything important. Create a new password to start fresh, or enter an existing one.</p>
-          <input type="password" value={vaultPassword} onChange={(e) => setVaultPassword(e.target.value)} placeholder="Enter vault password" className="w-full max-w-xs mx-auto px-4 py-2.5 rounded-xl border border-[var(--card-border)] bg-[var(--background)] text-sm text-center" onKeyDown={(e) => e.key === "Enter" && unlockVault()} />
-          <button onClick={unlockVault} disabled={!vaultPassword.trim()} className="w-full max-w-xs mx-auto py-2.5 bg-gradient-to-r from-amber-500 to-orange-600 text-white font-medium rounded-xl hover:from-amber-600 hover:to-orange-700 disabled:opacity-40 transition">Unlock Vault</button>
+          <input type="password" value={vaultPassword} onChange={(e) => setVaultPassword(e.target.value)} placeholder="Enter vault password" className="w-full max-w-xs mx-auto px-4 py-2.5 rounded-[var(--r-lg)] border border-[var(--border)] bg-[var(--background)] text-sm text-center" onKeyDown={(e) => e.key === "Enter" && unlockVault()} />
+          <button onClick={unlockVault} disabled={!vaultPassword.trim()} className="w-full max-w-xs mx-auto py-2.5 bg-[var(--premium)] text-white font-medium rounded-[var(--r-lg)] hover:opacity-90 disabled:opacity-40 transition">Unlock Vault</button>
         </div>
-        {error && <div className="mt-4 p-4 bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-800 rounded-xl text-red-600 text-sm">{error}</div>}
+        {error && <div className="mt-4 p-4 bg-[var(--danger-subtle)] border border-[var(--danger)]/25 rounded-[var(--r-lg)] text-[var(--danger)] text-sm">{error}</div>}
         <ToolGuide slug="vault" />
       </div>
     );
@@ -162,17 +163,17 @@ export default function VaultPage() {
           <div>
             <div className="flex items-center gap-3 mb-2">
               <h1 className="text-3xl font-bold text-[var(--foreground)]">Secure PDF Vault</h1>
-              <span className="text-xs font-semibold bg-gradient-to-r from-amber-500 to-orange-600 text-white px-2.5 py-0.5 rounded-full">Premium</span>
+              <span className="text-xs font-semibold bg-[var(--premium)] text-white px-2.5 py-0.5 rounded-full">Premium</span>
             </div>
             <p className="text-[var(--muted)]">{items.length} file(s) stored</p>
           </div>
-          <button onClick={clearVault} className="text-xs text-red-500 hover:underline">Clear vault</button>
+          <button onClick={clearVault} className="text-xs text-[var(--danger)] hover:underline">Clear vault</button>
         </div>
       </div>
 
-      <div className="bg-[var(--card)] border border-[var(--card-border)] rounded-xl p-6 mb-6">
+      <div className="bg-[var(--surface)] border border-[var(--border)] rounded-[var(--r-lg)] p-6 mb-6">
         <label className="block text-sm font-medium text-[var(--foreground)] mb-2">Add a PDF to your vault</label>
-        <input type="file" accept=".pdf" onChange={addToVault} className="text-sm file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:bg-indigo-100 dark:file:bg-indigo-900 file:text-indigo-700 dark:file:text-indigo-300 file:text-xs file:font-medium w-full" />
+        <input type="file" accept=".pdf" onChange={addToVault} className="text-sm file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:bg-[var(--accent-subtle)] file:text-[var(--accent)] file:text-xs file:font-medium w-full" />
       </div>
 
       {items.length === 0 ? (
@@ -183,14 +184,14 @@ export default function VaultPage() {
       ) : (
         <div className="space-y-2">
           {items.map(item => (
-            <div key={item.id} className="flex items-center justify-between p-4 rounded-xl bg-[var(--card)] border border-[var(--card-border)]">
+            <div key={item.id} className="flex items-center justify-between p-4 rounded-[var(--r-lg)] bg-[var(--surface)] border border-[var(--border)]">
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-medium truncate">{item.name}</p>
                 <p className="text-xs text-[var(--muted)]">{formatSize(item.size)} · {new Date(item.storedAt).toLocaleDateString()}</p>
               </div>
               <div className="flex gap-2">
-                <button onClick={() => downloadFromVault(item.id)} className="px-3 py-1.5 bg-indigo-600 text-white text-xs font-medium rounded-lg hover:bg-indigo-700 transition">Download</button>
-                <button onClick={() => removeFromVault(item.id)} className="px-3 py-1.5 bg-red-500 text-white text-xs font-medium rounded-lg hover:bg-red-600 transition">Delete</button>
+                <button onClick={() => downloadFromVault(item.id)} className="px-3 py-1.5 bg-[var(--accent)] text-white text-xs font-medium rounded-lg hover:bg-[var(--accent-hover)] transition">Download</button>
+                <button onClick={() => removeFromVault(item.id)} className="px-3 py-1.5 bg-[var(--danger)] text-white text-xs font-medium rounded-lg hover:opacity-90 transition">Delete</button>
               </div>
             </div>
           ))}
@@ -198,13 +199,13 @@ export default function VaultPage() {
       )}
 
       {processing && <p className="text-center text-sm text-[var(--muted)] mt-4">Adding to vault...</p>}
-      {success && <div className="mt-4 p-4 bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-200 dark:border-emerald-800 rounded-xl text-center text-sm text-emerald-700">{success}</div>}
-      {error && <div className="mt-4 p-4 bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-800 rounded-xl text-red-600 text-sm">{error}</div>}
+      {success && <div className="mt-4 p-4 bg-[var(--success-subtle)] border border-[var(--success)]/25 rounded-[var(--r-lg)] text-center text-sm text-[var(--success)]">{success}</div>}
+      {error && <div className="mt-4 p-4 bg-[var(--danger-subtle)] border border-[var(--danger)]/25 rounded-[var(--r-lg)] text-[var(--danger)] text-sm">{error}</div>}
 
 
       <ToolGuide slug="vault" />
       <div className="text-center mt-8">
-        <a href="/premium" className="text-sm text-indigo-500 hover:underline font-medium">Explore all Premium features →</a>
+        <a href="/premium" className="text-sm text-[var(--accent)] hover:underline font-medium">Explore all Premium features →</a>
       </div>
     </div>
   );

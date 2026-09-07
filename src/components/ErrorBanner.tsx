@@ -20,19 +20,19 @@ export default function ErrorBanner({
   if (dismissed) return null;
 
   return (
-    <div className="mt-4 p-4 bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-800 rounded-xl animate-fadeIn">
+    <div className="mt-4 p-4 bg-[var(--danger-subtle)] border border-[var(--danger)]/25 rounded-[var(--r-lg)] animate-fadeIn">
       <div className="flex items-start gap-3">
-        <span className="shrink-0 w-6 h-6 rounded-full bg-red-100 dark:bg-red-900/40 flex items-center justify-center text-red-500 text-xs font-bold">!</span>
+        <span className="shrink-0 w-6 h-6 rounded-full bg-[var(--danger-subtle)] flex items-center justify-center text-[var(--danger)] text-xs font-bold">!</span>
         <div className="flex-1 min-w-0">
-          <p className="text-sm font-medium text-red-800 dark:text-red-300">{message}</p>
+          <p className="text-sm font-medium text-[var(--danger)]">{message}</p>
           {details && (
-            <p className="text-xs text-red-600 dark:text-red-400 mt-1">{details}</p>
+            <p className="text-xs text-[var(--danger)] dark:text-[var(--danger)] mt-1">{details}</p>
           )}
           <div className="flex gap-3 mt-2">
             {onRetry && (
               <button
                 onClick={onRetry}
-                className="text-xs font-medium text-indigo-600 dark:text-indigo-400 hover:underline"
+                className="text-xs font-medium text-[var(--accent)] dark:text-[var(--accent)] hover:underline"
               >
                 Try Again
               </button>

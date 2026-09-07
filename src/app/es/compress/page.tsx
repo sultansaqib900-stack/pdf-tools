@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useEffect, useRef } from "react";
+import Icon from "@/components/ui/Icon";
 import ToolInfo from "@/components/ToolInfo";
 import FreeWaitTimer from "@/components/FreeWaitTimer";
 import UsageBar from "@/components/UsageBar";
@@ -144,15 +145,15 @@ export default function EsCompressPage() {
         <UsageBar remaining={usage.remaining} />
       </div>
 
-      <div className="bg-[var(--card)] rounded-xl border border-[var(--card-border)] p-8">
+      <div className="bg-[var(--surface)] rounded-[var(--r-lg)] border border-[var(--border)] p-8">
         <div
           onDrop={onDrop}
           onDragOver={onDragOver}
           onDragLeave={onDragLeave}
-          className={`border-2 border-dashed rounded-xl p-10 text-center transition ${
+          className={`border-2 border-dashed rounded-[var(--r-lg)] p-10 text-center transition ${
             dragging
-              ? "border-indigo-500 bg-indigo-50 dark:bg-indigo-950/30"
-              : "border-[var(--card-border)] bg-[var(--background)]"
+              ? "border-[var(--accent-border)] bg-[var(--accent-subtle)]"
+              : "border-[var(--border)] bg-[var(--background)]"
           }`}
         >
           <input
@@ -163,8 +164,8 @@ export default function EsCompressPage() {
             id="fileInput"
           />
           <label htmlFor="fileInput" className="cursor-pointer flex flex-col items-center gap-3">
-            <span className="text-5xl">📦</span>
-            <span className="text-indigo-500 font-medium hover:underline">
+            <Icon name="archive" size={36} className="text-[var(--muted)]" />
+            <span className="text-[var(--accent)] font-medium hover:underline">
               {file ? file.name : "Haz clic para seleccionar o arrastra un PDF"}
             </span>
             {file && <span className="text-sm text-[var(--muted)]">{formatBytes(file.size)}</span>}
@@ -179,7 +180,7 @@ export default function EsCompressPage() {
         <button
           onClick={compress}
           disabled={!file || processing || showTimer}
-          className="mt-6 w-full py-3 bg-indigo-600 text-white font-medium rounded-xl hover:bg-indigo-700 disabled:opacity-40 disabled:cursor-not-allowed transition shadow-sm"
+          className="mt-6 w-full py-3 bg-[var(--accent)] text-white font-medium rounded-[var(--r-lg)] hover:bg-[var(--accent-hover)] disabled:opacity-40 disabled:cursor-not-allowed transition shadow-sm"
         >
           {processing ? (
             <span className="flex items-center justify-center gap-2">
@@ -192,7 +193,7 @@ export default function EsCompressPage() {
         {!isPremium() && (
           <p className="mt-3 text-center text-xs text-[var(--muted)]">
             Usuarios gratuitos limitados a 10MB.{ " " }
-            <a href="/premium" className="text-indigo-500 font-medium hover:underline">Actualiza para 100MB, lotes y sin espera</a>
+            <a href="/premium" className="text-[var(--accent)] font-medium hover:underline">Actualiza para 100MB, lotes y sin espera</a>
           </p>
         )}
 
@@ -200,19 +201,19 @@ export default function EsCompressPage() {
 
         {result && !processing && (
           <div className="mt-4 space-y-2">
-            <div className="p-4 bg-[var(--background)] rounded-xl border border-[var(--card-border)]">
+            <div className="p-4 bg-[var(--background)] rounded-[var(--r-lg)] border border-[var(--border)]">
               <p className="text-sm font-medium text-[var(--foreground)]">Resultados de compresión</p>
               <div className="flex justify-between mt-2 text-sm text-[var(--muted)]">
                 <span>Original: {formatBytes(result.originalSize)}</span>
-                <span className="text-emerald-600 dark:text-emerald-400">Comprimido: {formatBytes(result.size)}</span>
+                <span className="text-[var(--success)] dark:text-[var(--success)]">Comprimido: {formatBytes(result.size)}</span>
               </div>
-              <div className="mt-2 w-full h-2 bg-[var(--card-border)] rounded-full overflow-hidden">
+              <div className="mt-2 w-full h-2 bg-[var(--border)] rounded-full overflow-hidden">
                 <div
-                  className="h-full bg-emerald-500 rounded-full"
+                  className="h-full bg-[var(--success)] rounded-full"
                   style={{ width: `${Math.min(100, Math.round((1 - result.size / result.originalSize) * 100))}%` }}
                 />
               </div>
-              <p className="mt-1 text-xs text-emerald-600 dark:text-emerald-400">
+              <p className="mt-1 text-xs text-[var(--success)] dark:text-[var(--success)]">
                 {Math.round((1 - result.size / result.originalSize) * 100)}% más pequeño
               </p>
             </div>
@@ -222,7 +223,7 @@ export default function EsCompressPage() {
         <SuccessAnimation show={success} message="¡Compresión completa!" details={`${file ? formatBytes((result?.originalSize || 0)) : ""} → ${file ? formatBytes((result?.size || 0)) : ""}`} onRestore={restoreOriginal} />
       </div>
 
-      <div className="max-w-3xl mx-auto mt-12 pt-8 border-t border-[var(--card-border)]">
+      <div className="max-w-3xl mx-auto mt-12 pt-8 border-t border-[var(--border)]">
         <h2 className="text-xl font-bold text-[var(--foreground)] mb-3">Acerca de Comprimir PDF</h2>
         <div className="text-sm text-[var(--muted)] space-y-3 leading-relaxed">
           <p>Nuestra herramienta gratuita para comprimir PDF te permite reducir el tamaño del archivo sin sacrificar calidad, facilitando el envío por correo electrónico o la carga en sitios web. La compresión funciona completamente en tu navegador usando pdf-lib, que elimina datos redundantes y optimiza los flujos de objetos para máxima eficiencia. Puedes lograr relaciones de compresión significativas dependiendo del contenido de tu archivo: las imágenes, fuentes y elementos incrustados se comprimen de manera diferente. Para obtener los mejores resultados, comprime PDF online gratis antes de compartir archivos adjuntos grandes, ya que los archivos más pequeños se transfieren más rápido y usan menos almacenamiento. Todo se procesa del lado del cliente, tus archivos nunca salen de tu dispositivo, garantizando privacidad y seguridad totales.</p>

@@ -79,7 +79,7 @@ export default function ToolSearch() {
 
   return (
     <div ref={ref} className="relative w-full max-w-xl mx-auto">
-      <div className="flex items-center bg-[var(--card)] border border-[var(--card-border)] rounded-xl px-4 py-3 focus-within:border-indigo-500 transition-colors">
+      <div className="flex items-center bg-[var(--surface)] border border-[var(--border)] rounded-[var(--r-lg)] px-4 py-3 focus-within:border-[var(--accent-border)] transition-colors">
         <svg className="w-5 h-5 text-[var(--muted)] shrink-0 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
         <input
           ref={inputRef}
@@ -94,13 +94,13 @@ export default function ToolSearch() {
         )}
       </div>
       {open && (
-        <div className="absolute top-full mt-1 left-0 right-0 bg-[var(--card)]/95 backdrop-blur-lg border border-[var(--card-border)] rounded-xl shadow-2xl py-2 max-h-64 overflow-y-auto z-50 animate-scaleIn">
+        <div className="absolute top-full mt-1 left-0 right-0 bg-[var(--surface)]/95 backdrop-blur-lg border border-[var(--border)] rounded-[var(--r-lg)] shadow-2xl py-2 max-h-64 overflow-y-auto z-50 animate-scaleIn">
           {results.map((tool) => (
             <Link
               key={tool.href}
               href={tool.href}
               onClick={() => { setQuery(""); setOpen(false); }}
-              className="block px-4 py-2 text-sm text-[var(--muted)] hover:text-indigo-500 hover:bg-indigo-50/50 dark:hover:bg-indigo-950/10 transition-all hover:translate-x-1"
+              className="block px-4 py-2 text-sm text-[var(--muted)] hover:text-[var(--accent)] hover:bg-[var(--accent-subtle)] dark:hover:bg-[var(--accent-subtle)]/10 transition-all hover:translate-x-1"
             >
               {tool.label}
             </Link>

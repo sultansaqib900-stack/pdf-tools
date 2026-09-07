@@ -52,7 +52,7 @@ export default function FeedbackWidget() {
   return (
     <div ref={ref} className="fixed bottom-4 right-4 z-50">
       {open ? (
-        <div className="bg-[var(--card)]/95 backdrop-blur-lg border border-[var(--card-border)] rounded-xl shadow-2xl p-4 w-72 animate-scaleIn origin-bottom-right">
+        <div className="bg-[var(--surface)]/95 backdrop-blur-lg border border-[var(--border)] rounded-[var(--r-lg)] shadow-2xl p-4 w-72 animate-scaleIn origin-bottom-right">
           <h3 className="font-semibold text-sm text-[var(--foreground)] mb-3">Send Feedback</h3>
           <form onSubmit={handleSubmit} className="space-y-3">
             <input
@@ -60,7 +60,7 @@ export default function FeedbackWidget() {
               placeholder="Your name"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="w-full px-3 py-2 text-sm rounded-lg bg-[var(--background)] border border-[var(--card-border)] text-[var(--foreground)] focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all"
+              className="w-full px-3 py-2 text-sm rounded-lg bg-[var(--background)] border border-[var(--border)] text-[var(--foreground)] focus:outline-none focus:border-[var(--accent-border)] focus:ring-2 focus:ring-[var(--accent)] transition-all"
               required
             />
             <textarea
@@ -68,7 +68,7 @@ export default function FeedbackWidget() {
               value={text}
               onChange={(e) => setText(e.target.value)}
               rows={3}
-              className="w-full px-3 py-2 text-sm rounded-lg bg-[var(--background)] border border-[var(--card-border)] text-[var(--foreground)] focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all resize-none"
+              className="w-full px-3 py-2 text-sm rounded-lg bg-[var(--background)] border border-[var(--border)] text-[var(--foreground)] focus:outline-none focus:border-[var(--accent-border)] focus:ring-2 focus:ring-[var(--accent)] transition-all resize-none"
               required
             />
             <div className="flex gap-1">
@@ -81,8 +81,8 @@ export default function FeedbackWidget() {
                   onMouseLeave={() => setHoverRating(0)}
                   className={`text-lg transition-all duration-150 ${
                     (hoverRating || rating) >= s
-                      ? "text-amber-400 scale-110"
-                      : "text-[var(--muted)] hover:text-amber-300"
+                      ? "text-[var(--premium)] scale-110"
+                      : "text-[var(--muted)] hover:text-[var(--premium)]"
                   }`}
                 >
                   ★
@@ -92,7 +92,7 @@ export default function FeedbackWidget() {
             <button
               type="submit"
               disabled={sending}
-              className="w-full px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-700 disabled:opacity-50 transition-all active:scale-95"
+              className="w-full px-4 py-2 bg-[var(--accent)] text-white text-sm font-medium rounded-lg hover:bg-[var(--accent-hover)] disabled:opacity-50 transition-all active:scale-95"
             >
               {sending ? "Sending..." : "Send Feedback"}
             </button>

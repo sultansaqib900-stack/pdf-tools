@@ -14,7 +14,7 @@ export default function BlogPost() {
       />
       <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Blog", item: "https://allaboutpdfediting.xyz/blog" }, { name: "How to Bulk Rename PDF Files by Metadata Online Free", item: "https://allaboutpdfediting.xyz/blog/bulk-rename-pdf-files" }]} />
       <HowToJsonLd name="How to Bulk Rename PDF Files by Metadata Online Free" description="Rename multiple PDF files at once using embedded metadata." steps={[{name:"Upload your PDFs — Select multiple PDF files that contain metadata.",text:"Upload your PDFs — Select multiple PDF files that contain metadata."},{name:"Define a naming pattern — Use metadata tags like {`{title} - {author}`} to cr...",text:"Define a naming pattern — Use metadata tags like {`{title} - {author}`} to create a template."},{name:"Preview and rename — See how files will be named before applying. Download th...",text:"Preview and rename — See how files will be named before applying. Download the renamed files."}]} />
-      <a href="/blog" className="text-sm text-indigo-500 hover:underline mb-6 inline-block">&larr; Back to blog</a>
+      <a href="/blog" className="text-sm text-[var(--accent)] hover:underline mb-6 inline-block">&larr; Back to blog</a>
       <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">How to Bulk Rename PDF Files by Metadata Online Free</h1>
       <p className="text-sm text-[var(--muted)] mb-8">4 min read · Updated June 2026</p>
 
@@ -56,10 +56,10 @@ export default function BlogPost() {
         </ul>
         <p>Files without metadata will use their original name with a fallback pattern.</p>
 
-        <div className="bg-[var(--card)] border border-[var(--card-border)] rounded-xl p-6 mt-6">
+        <div className="bg-[var(--surface)] border border-[var(--border)] rounded-[var(--r-lg)] p-6 mt-6">
           <p className="font-semibold text-[var(--foreground)] mb-1">Premium Feature</p>
           <p className="text-sm text-[var(--muted)] mb-3">Bulk PDF renaming is a premium tool. Upgrade to rename hundreds of PDFs at once using metadata patterns.</p>
-          <a href="/premium" className="inline-block px-5 py-2.5 bg-amber-600 text-white font-medium rounded-xl text-sm hover:bg-amber-700 transition">Upgrade to Premium →</a>
+          <a href="/premium" className="inline-block px-5 py-2.5 bg-[var(--premium)] text-white font-medium rounded-[var(--r-lg)] text-sm hover:opacity-90 transition">Upgrade to Premium →</a>
         </div>
       </div>
     </article>

@@ -1,7 +1,7 @@
 export function Skeleton({ className = "", ...props }: React.HTMLAttributes<HTMLDivElement>) {
   return (
     <div
-      className={`animate-pulse rounded-md bg-[var(--card-border)] ${className}`}
+      className={`animate-pulse rounded-md bg-[var(--border)] ${className}`}
       {...props}
     />
   );
@@ -22,7 +22,7 @@ export function SkeletonText({ lines = 3, className = "" }: { lines?: number; cl
 
 export function SkeletonCard({ className = "" }: { className?: string }) {
   return (
-    <div className={`p-5 border border-[var(--card-border)] rounded-xl ${className}`}>
+    <div className={`p-5 border border-[var(--border)] rounded-[var(--r-lg)] ${className}`}>
       <Skeleton className="h-6 w-3/4 mb-4" />
       <SkeletonText lines={2} />
     </div>

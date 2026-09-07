@@ -20,7 +20,7 @@ export default function UseCaseLinks({ toolSlug }: Props) {
           <Link
             key={p.slug}
             href={`/for/${p.slug}`}
-            className="px-3 py-2 rounded-lg border border-[var(--card-border)] bg-[var(--card)] text-xs font-medium text-[var(--muted)] hover:text-indigo-500 hover:border-indigo-400/30 transition text-center"
+            className="px-3 py-2 rounded-lg border border-[var(--border)] bg-[var(--surface)] text-xs font-medium text-[var(--muted)] hover:text-[var(--accent)] hover:border-[var(--accent-border)]/30 transition text-center"
           >
             {p.audience.replace("for ", "")}
           </Link>
