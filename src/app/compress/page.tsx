@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useCallback, useEffect, useRef } from "react";
-import ToolInfo from "@/components/ToolInfo";
 import FreeWaitTimer from "@/components/FreeWaitTimer";
 import UsageBar from "@/components/UsageBar";
 import ProgressBar from "@/components/ProgressBar";
@@ -12,6 +11,9 @@ import { isPremium, checkFileSize } from "@/lib/premium";
 import { useUsage } from "@/hooks/useUsage";
 import { useToolHistory } from "@/hooks/useToolHistory";
 import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
+import ToolShell from "@/components/ui/ToolShell";
+import DropZone from "@/components/ui/DropZone";
+import Icon from "@/components/ui/Icon";
 
 import HowToJsonLd from "@/components/HowToJsonLd";
 import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
@@ -121,7 +123,11 @@ export default function CompressPage() {
     b < 1024 ? `${b} B` : b < 1048576 ? `${(b / 1024).toFixed(1)} KB` : `${(b / 1048576).toFixed(1)} MB`;
 
   return (
-    <div className="max-w-3xl mx-auto px-4 py-12">
+    <ToolShell
+      icon="compress"
+      title="Compress PDF"
+      lead="Reduce PDF file size while keeping the document readable. Runs entirely in your browser."
+    >
       <SoftwareAppJsonLd
         name="PDF Compressor - Free Online PDF Tool"
         description="Compress PDF files online for free. Reduce PDF file size without losing quality. No uploads, 100% private, all in your browser."
@@ -131,48 +137,16 @@ export default function CompressPage() {
       <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Compress PDF", item: "https://allaboutpdfediting.xyz/compress" }]} />
       <FaqPageJsonLd questions={rc?.faqs} />
       <AiSummaryJsonLd name="Compress PDF" summary="Reduce PDF file size instantly without losing quality" category="Utilities" inputType="PDF" outputType="PDF" processing="client-side" price="free" features={["Lossless compression","Size reduction","Quality preservation","Instant processing","No uploads"]} limits="Files up to 10MB" />
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">Compress PDF</h1>
-        <p className="text-[var(--muted)]">Reduce PDF file size while maintaining quality.</p>
-      </div>
-
-      <ToolInfo
-        name="Compress PDF"
-        description="Your PDF never leaves your device. All compression happens locally in your browser using pdf-lib. Select a file, click compress, and download the smaller version — no uploads, no servers, no privacy risks."
-      />
-
-
       <div className="mb-4">
         <UsageBar remaining={usage.remaining} />
       </div>
 
-      <div className="bg-[var(--card)] rounded-xl border border-[var(--card-border)] p-8">
-        <div
-          onDrop={onDrop}
-          onDragOver={onDragOver}
-          onDragLeave={onDragLeave}
-          className={`border-2 border-dashed rounded-xl p-10 text-center transition ${
-            dragging
-              ? "border-indigo-500 bg-indigo-50 dark:bg-indigo-950/30"
-              : "border-[var(--card-border)] bg-[var(--background)]"
-          }`}
-        >
-          <input
-            type="file"
-            accept="application/pdf"
-            onChange={(e) => handleFile(e.target.files?.[0] ?? null)}
-            className="hidden"
-            id="fileInput"
-          />
-          <label htmlFor="fileInput" className="cursor-pointer flex flex-col items-center gap-3">
-            <span className="text-5xl">📦</span>
-            <span className="text-indigo-500 font-medium hover:underline">
-              {file ? file.name : "Click to select or drag & drop a PDF"}
-            </span>
-            {file && <span className="text-sm text-[var(--muted)]">{formatBytes(file.size)}</span>}
-            {!file && <span className="text-xs text-[var(--muted)]">Max 50MB · PDF format only</span>}
-          </label>
-        </div>
+      <div className="surface-card p-5 sm:p-6">
+        <DropZone
+          file={file}
+          onFile={handleFile}
+          hint={isPremium() ? "PDF up to 100 MB" : "PDF up to 10 MB"}
+        />
 
         <ProgressBar processing={processing} fileSize={file?.size} label="Compressing PDF..." />
 
@@ -181,55 +155,71 @@ export default function CompressPage() {
         <button
           onClick={compress}
           disabled={!file || processing || showTimer}
-          className="mt-6 w-full py-3 bg-indigo-600 text-white font-medium rounded-xl hover:bg-indigo-700 disabled:opacity-40 disabled:cursor-not-allowed transition shadow-sm"
+          className="btn btn-primary btn-lg w-full mt-4"
         >
           {processing ? (
-            <span className="flex items-center justify-center gap-2">
-              <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none"/><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
-              Compressing...
-            </span>
+            <>
+              <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24" fill="none">
+                <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" className="opacity-25" />
+                <path d="M12 2a10 10 0 0 1 10 10" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
+              </svg>
+              Compressing
+            </>
           ) : "Compress PDF"}
         </button>
 
         {!isPremium() && (
-          <p className="mt-3 text-center text-xs text-[var(--muted)]">
-            Free users limited to 10MB files.{ " " }
-            <a href="/premium" className="text-indigo-500 font-medium hover:underline">Upgrade for 100MB, batch & no wait</a>
+          <p className="mt-3 text-center text-[0.75rem] text-[var(--muted)]">
+            Free tier is limited to 10 MB.{" "}
+            <a href="/premium" className="font-medium text-[var(--accent)] hover:underline">
+              Upgrade for 100 MB and batch processing
+            </a>
           </p>
         )}
 
         {error && <ErrorBanner message={error} onRetry={runCompress} onDismiss={() => setError(null)} />}
 
-        {result && !processing && (
-          <div className="mt-4 space-y-2">
-            <div className="p-4 bg-[var(--background)] rounded-xl border border-[var(--card-border)]">
-              <p className="text-sm font-medium text-[var(--foreground)]">Compression Results</p>
-              <div className="flex justify-between mt-2 text-sm text-[var(--muted)]">
-                <span>Original: {formatBytes(result.originalSize)}</span>
-                <span className="text-emerald-600 dark:text-emerald-400">Compressed: {formatBytes(result.size)}</span>
+        {result && !processing && (() => {
+          const pct = Math.max(0, Math.round((1 - result.size / result.originalSize) * 100));
+          return (
+            <div className="mt-4 p-4 rounded-[var(--r-lg)] border border-[var(--border)] bg-[var(--surface-subtle)]">
+              <div className="flex items-center justify-between gap-3">
+                <p className="text-[0.875rem] font-medium text-[var(--foreground)]">Result</p>
+                <span className="badge" style={{ color: "var(--success)" }}>
+                  <Icon name="check" size={11} />
+                  {pct}% smaller
+                </span>
               </div>
-              <div className="mt-2 w-full h-2 bg-[var(--card-border)] rounded-full overflow-hidden">
-                <div
-                  className="h-full bg-emerald-500 rounded-full"
-                  style={{ width: `${Math.min(100, Math.round((1 - result.size / result.originalSize) * 100))}%` }}
-                />
+              <div className="mt-3 flex items-baseline justify-between text-[0.8125rem] tabular-nums">
+                <span className="text-[var(--muted)]">{formatBytes(result.originalSize)}</span>
+                <Icon name="arrowRight" size={13} className="text-[var(--muted)]" />
+                <span className="font-medium text-[var(--foreground)]">{formatBytes(result.size)}</span>
               </div>
-              <p className="mt-1 text-xs text-emerald-600 dark:text-emerald-400">
-                {Math.round((1 - result.size / result.originalSize) * 100)}% smaller
-              </p>
+              <div className="mt-2.5 h-1.5 w-full rounded-full bg-[var(--surface-sunken)] overflow-hidden">
+                <div className="h-full rounded-full bg-[var(--success)] transition-[width] duration-500" style={{ width: `${pct}%` }} />
+              </div>
             </div>
-          </div>
-        )}
+          );
+        })()}
 
-        <SuccessAnimation show={success} message="Compression complete!" details={`${file ? formatBytes((result?.originalSize || 0)) : ""} → ${file ? formatBytes((result?.size || 0)) : ""}`} onRestore={restoreOriginal} />
+        <SuccessAnimation
+          show={success}
+          message="Compression complete"
+          details={`${formatBytes(result?.originalSize || 0)} → ${formatBytes(result?.size || 0)}`}
+          onRestore={restoreOriginal}
+        />
       </div>
 
-      <div className="max-w-3xl mx-auto mt-12 pt-8 border-t border-[var(--card-border)]">
-        <h2 className="text-xl font-bold text-[var(--foreground)] mb-3">About Compress PDF</h2>
-        <div className="text-sm text-[var(--muted)] space-y-3 leading-relaxed">
-          <p>Our free compress PDF tool lets you reduce PDF file size without sacrificing quality, making it easy to email documents or upload to websites. The compression works entirely in your browser using pdf-lib, which removes redundant data and optimizes object streams for maximum efficiency. You can achieve significant compression ratios depending on your file's content — images, fonts, and embedded elements all compress differently. For best results, compress PDF online free before sharing large attachments, as smaller files transfer faster and use less storage. Whether you are reducing scan quality or optimizing a presentation, this tool helps you make a smaller PDF while preserving readability. Since everything runs client-side, your files never leave your device, ensuring complete privacy and security. Try it now and see how much smaller your PDFs can get with just one click — no sign-up, no uploads, no limits.</p>
-        </div>
-      </div>
+      <section className="mt-10 pt-8 border-t border-[var(--border)]">
+        <h2 className="text-lg font-semibold text-[var(--foreground)] mb-3">About this tool</h2>
+        <p className="text-[0.875rem] leading-relaxed text-[var(--muted-strong)]">
+          This compressor reduces PDF size by removing redundant objects and optimising
+          object streams with pdf-lib. How much you save depends on the document —
+          image-heavy files shrink the most, while text-only PDFs are already compact.
+          Everything runs client-side, so your file is never uploaded and nothing is
+          stored on our servers.
+        </p>
+      </section>
 
       <RelatedContent slug="compress" />
 
@@ -241,6 +231,6 @@ export default function CompressPage() {
         message={upsell.state.message}
         onClose={upsell.hideUpsell}
       />
-    </div>
+    </ToolShell>
   );
 }

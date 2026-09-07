@@ -1,8 +1,10 @@
+import type { IconName } from "@/components/ui/Icon";
+
 export interface ToolRef {
   title: string;
   href: string;
   description: string;
-  icon: string;
+  icon: IconName;
 }
 
 export interface BlogRef {
@@ -77,9 +79,9 @@ const allBlogs: Record<string, BlogRef> = {
 export const relatedContent: Record<string, ToolRelatedContent> = {
   "compress": {
     relatedTools: [
-      { title: "Image to PDF", description: "Convert images to PDF", href: "/image-to-pdf", icon: "🖼️" },
-      { title: "Resize PDF", description: "Change page size", href: "/resize", icon: "📐" },
-      { title: "PDF to Images", description: "Extract pages as images", href: "/pdf-to-images", icon: "📸" },
+      { title: "Image to PDF", description: "Convert images to PDF", href: "/image-to-pdf", icon: "image" },
+      { title: "Resize PDF", description: "Change page size", href: "/resize", icon: "resize" },
+      { title: "PDF to Images", description: "Extract pages as images", href: "/pdf-to-images", icon: "image" },
     ],
     relatedBlogs: [allBlogs["compress"], allBlogs["compress-long"], allBlogs["pdf-to-images"]],
     faqs: [
@@ -91,9 +93,9 @@ export const relatedContent: Record<string, ToolRelatedContent> = {
   },
   "merge": {
     relatedTools: [
-      { title: "Split PDF", description: "Split into separate files", href: "/split", icon: "✂️" },
-      { title: "Organize Pages", description: "Reorder PDF pages", href: "/organize", icon: "📑" },
-      { title: "Delete Pages", description: "Remove unwanted pages", href: "/delete-pages", icon: "🗑️" },
+      { title: "Split PDF", description: "Split into separate files", href: "/split", icon: "split" },
+      { title: "Organize Pages", description: "Reorder PDF pages", href: "/organize", icon: "organize" },
+      { title: "Delete Pages", description: "Remove unwanted pages", href: "/delete-pages", icon: "delete" },
     ],
     relatedBlogs: [allBlogs["merge"], allBlogs["organize"], allBlogs["split"]],
     faqs: [
@@ -104,9 +106,9 @@ export const relatedContent: Record<string, ToolRelatedContent> = {
   },
   "split": {
     relatedTools: [
-      { title: "Merge PDF", description: "Combine PDFs into one", href: "/merge", icon: "🔗" },
-      { title: "Split by Bookmarks", description: "Split by PDF bookmarks", href: "/split-by-bookmarks", icon: "📑" },
-      { title: "Delete Pages", description: "Remove specific pages", href: "/delete-pages", icon: "🗑️" },
+      { title: "Merge PDF", description: "Combine PDFs into one", href: "/merge", icon: "merge" },
+      { title: "Split by Bookmarks", description: "Split by PDF bookmarks", href: "/split-by-bookmarks", icon: "bookmark" },
+      { title: "Delete Pages", description: "Remove specific pages", href: "/delete-pages", icon: "delete" },
     ],
     relatedBlogs: [allBlogs["split"], allBlogs["split-by-bookmarks"], allBlogs["organize"]],
     faqs: [
@@ -117,9 +119,9 @@ export const relatedContent: Record<string, ToolRelatedContent> = {
   },
   "image-to-pdf": {
     relatedTools: [
-      { title: "PDF to Images", description: "Extract pages as images", href: "/pdf-to-images", icon: "📸" },
-      { title: "Scan to PDF", description: "Scan documents to PDF", href: "/scan-to-pdf", icon: "📷" },
-      { title: "Compress PDF", description: "Reduce file size", href: "/compress", icon: "📦" },
+      { title: "PDF to Images", description: "Extract pages as images", href: "/pdf-to-images", icon: "image" },
+      { title: "Scan to PDF", description: "Scan documents to PDF", href: "/scan-to-pdf", icon: "camera" },
+      { title: "Compress PDF", description: "Reduce file size", href: "/compress", icon: "compress" },
     ],
     relatedBlogs: [allBlogs["image-to-pdf"], allBlogs["scan-to-pdf"], allBlogs["pdf-to-images"]],
     faqs: [
@@ -130,9 +132,9 @@ export const relatedContent: Record<string, ToolRelatedContent> = {
   },
   "protect": {
     relatedTools: [
-      { title: "Unlock PDF", description: "Remove password protection", href: "/unlock", icon: "🔓" },
-      { title: "Sign PDF", description: "Add signatures", href: "/sign", icon: "✍️" },
-      { title: "Redact PDF", description: "Black out sensitive content", href: "/redact", icon: "⬛" },
+      { title: "Unlock PDF", description: "Remove password protection", href: "/unlock", icon: "unlock" },
+      { title: "Sign PDF", description: "Add signatures", href: "/sign", icon: "signature" },
+      { title: "Redact PDF", description: "Black out sensitive content", href: "/redact", icon: "redact" },
     ],
     relatedBlogs: [allBlogs["protect"], allBlogs["unlock"], allBlogs["sign"]],
     faqs: [
@@ -143,9 +145,9 @@ export const relatedContent: Record<string, ToolRelatedContent> = {
   },
   "unlock": {
     relatedTools: [
-      { title: "Protect PDF", description: "Add password protection", href: "/protect", icon: "🔒" },
-      { title: "Redact PDF", description: "Black out sensitive content", href: "/redact", icon: "⬛" },
-      { title: "Metadata Sanitizer", description: "Strip hidden metadata", href: "/metadata-sanitizer", icon: "🧹" },
+      { title: "Protect PDF", description: "Add password protection", href: "/protect", icon: "lock" },
+      { title: "Redact PDF", description: "Black out sensitive content", href: "/redact", icon: "redact" },
+      { title: "Metadata Sanitizer", description: "Strip hidden metadata", href: "/metadata-sanitizer", icon: "eraser" },
     ],
     relatedBlogs: [allBlogs["unlock"], allBlogs["protect"], allBlogs["metadata-sanitizer"]],
     faqs: [
@@ -156,9 +158,9 @@ export const relatedContent: Record<string, ToolRelatedContent> = {
   },
   "sign": {
     relatedTools: [
-      { title: "Protect PDF", description: "Add password protection", href: "/protect", icon: "🔒" },
-      { title: "Fill PDF Form", description: "Fill form fields", href: "/fill-form", icon: "📋" },
-      { title: "Annotate PDF", description: "Highlight and comment", href: "/annotate", icon: "🖍️" },
+      { title: "Protect PDF", description: "Add password protection", href: "/protect", icon: "lock" },
+      { title: "Fill PDF Form", description: "Fill form fields", href: "/fill-form", icon: "form" },
+      { title: "Annotate PDF", description: "Highlight and comment", href: "/annotate", icon: "annotate" },
     ],
     relatedBlogs: [allBlogs["sign"], allBlogs["fill-form"], allBlogs["annotate"]],
     faqs: [
@@ -169,9 +171,9 @@ export const relatedContent: Record<string, ToolRelatedContent> = {
   },
   "edit-pdf": {
     relatedTools: [
-      { title: "Annotate PDF", description: "Highlight and comment", href: "/annotate", icon: "🖍️" },
-      { title: "Fill PDF Form", description: "Fill form fields", href: "/fill-form", icon: "📋" },
-      { title: "Watermark PDF", description: "Add text watermarks", href: "/watermark", icon: "💧" },
+      { title: "Annotate PDF", description: "Highlight and comment", href: "/annotate", icon: "annotate" },
+      { title: "Fill PDF Form", description: "Fill form fields", href: "/fill-form", icon: "form" },
+      { title: "Watermark PDF", description: "Add text watermarks", href: "/watermark", icon: "droplet" },
     ],
     relatedBlogs: [allBlogs["edit-pdf"], allBlogs["annotate"], allBlogs["add-page-numbers"]],
     faqs: [
@@ -182,9 +184,9 @@ export const relatedContent: Record<string, ToolRelatedContent> = {
   },
   "crop": {
     relatedTools: [
-      { title: "Resize PDF", description: "Change page size", href: "/resize", icon: "📐" },
-      { title: "Compress PDF", description: "Reduce file size", href: "/compress", icon: "📦" },
-      { title: "Organize Pages", description: "Reorder pages", href: "/organize", icon: "📑" },
+      { title: "Resize PDF", description: "Change page size", href: "/resize", icon: "resize" },
+      { title: "Compress PDF", description: "Reduce file size", href: "/compress", icon: "compress" },
+      { title: "Organize Pages", description: "Reorder pages", href: "/organize", icon: "organize" },
     ],
     relatedBlogs: [allBlogs["crop"], allBlogs["resize"], allBlogs["compress"]],
     faqs: [
@@ -194,9 +196,9 @@ export const relatedContent: Record<string, ToolRelatedContent> = {
   },
   "resize": {
     relatedTools: [
-      { title: "Crop PDF", description: "Remove margins", href: "/crop", icon: "🔲" },
-      { title: "Compress PDF", description: "Reduce file size", href: "/compress", icon: "📦" },
-      { title: "Booklet Creator", description: "Create printable booklets", href: "/booklet", icon: "📖" },
+      { title: "Crop PDF", description: "Remove margins", href: "/crop", icon: "crop" },
+      { title: "Compress PDF", description: "Reduce file size", href: "/compress", icon: "compress" },
+      { title: "Booklet Creator", description: "Create printable booklets", href: "/booklet", icon: "book" },
     ],
     relatedBlogs: [allBlogs["resize"], allBlogs["crop"], allBlogs["booklet"]],
     faqs: [
@@ -206,9 +208,9 @@ export const relatedContent: Record<string, ToolRelatedContent> = {
   },
   "annotate": {
     relatedTools: [
-      { title: "Edit PDF", description: "Add text and shapes", href: "/edit-pdf", icon: "✏️" },
-      { title: "Sign PDF", description: "Add signatures", href: "/sign", icon: "✍️" },
-      { title: "Redact PDF", description: "Black out content", href: "/redact", icon: "⬛" },
+      { title: "Edit PDF", description: "Add text and shapes", href: "/edit-pdf", icon: "edit" },
+      { title: "Sign PDF", description: "Add signatures", href: "/sign", icon: "signature" },
+      { title: "Redact PDF", description: "Black out content", href: "/redact", icon: "redact" },
     ],
     relatedBlogs: [allBlogs["annotate"], allBlogs["edit-pdf"], allBlogs["sign"]],
     faqs: [
@@ -218,9 +220,9 @@ export const relatedContent: Record<string, ToolRelatedContent> = {
   },
   "delete-pages": {
     relatedTools: [
-      { title: "Organize Pages", description: "Reorder pages", href: "/organize", icon: "📑" },
-      { title: "Split PDF", description: "Split into files", href: "/split", icon: "✂️" },
-      { title: "Insert Blank Pages", description: "Add empty pages", href: "/insert-blank", icon: "📄" },
+      { title: "Organize Pages", description: "Reorder pages", href: "/organize", icon: "organize" },
+      { title: "Split PDF", description: "Split into files", href: "/split", icon: "split" },
+      { title: "Insert Blank Pages", description: "Add empty pages", href: "/insert-blank", icon: "insertPage" },
     ],
     relatedBlogs: [allBlogs["delete-pages"], allBlogs["organize"], allBlogs["insert-blank"]],
     faqs: [
@@ -230,9 +232,9 @@ export const relatedContent: Record<string, ToolRelatedContent> = {
   },
   "organize": {
     relatedTools: [
-      { title: "Delete Pages", description: "Remove pages", href: "/delete-pages", icon: "🗑️" },
-      { title: "Reverse PDF", description: "Reverse page order", href: "/reverse-pdf", icon: "🔄" },
-      { title: "Split PDF", description: "Split into files", href: "/split", icon: "✂️" },
+      { title: "Delete Pages", description: "Remove pages", href: "/delete-pages", icon: "delete" },
+      { title: "Reverse PDF", description: "Reverse page order", href: "/reverse-pdf", icon: "reverse" },
+      { title: "Split PDF", description: "Split into files", href: "/split", icon: "split" },
     ],
     relatedBlogs: [allBlogs["organize"], allBlogs["delete-pages"], allBlogs["reverse"]],
     faqs: [
@@ -242,9 +244,9 @@ export const relatedContent: Record<string, ToolRelatedContent> = {
   },
   "rotate": {
     relatedTools: [
-      { title: "Organize Pages", description: "Reorder pages", href: "/organize", icon: "📑" },
-      { title: "Crop PDF", description: "Remove margins", href: "/crop", icon: "🔲" },
-      { title: "Reverse PDF", description: "Reverse page order", href: "/reverse-pdf", icon: "🔄" },
+      { title: "Organize Pages", description: "Reorder pages", href: "/organize", icon: "organize" },
+      { title: "Crop PDF", description: "Remove margins", href: "/crop", icon: "crop" },
+      { title: "Reverse PDF", description: "Reverse page order", href: "/reverse-pdf", icon: "reverse" },
     ],
     relatedBlogs: [allBlogs["rotate"], allBlogs["organize"], allBlogs["reverse"]],
     faqs: [
@@ -254,9 +256,9 @@ export const relatedContent: Record<string, ToolRelatedContent> = {
   },
   "watermark": {
     relatedTools: [
-      { title: "Add Page Numbers", description: "Add page numbers", href: "/add-page-numbers", icon: "🔢" },
-      { title: "QR Code Stamp", description: "Add QR codes", href: "/qr-stamp", icon: "📱" },
-      { title: "Bates Numbering", description: "Sequential numbering", href: "/bates-numbering", icon: "🔢" },
+      { title: "Add Page Numbers", description: "Add page numbers", href: "/add-page-numbers", icon: "numbers" },
+      { title: "QR Code Stamp", description: "Add QR codes", href: "/qr-stamp", icon: "qr" },
+      { title: "Bates Numbering", description: "Sequential numbering", href: "/bates-numbering", icon: "numbers" },
     ],
     relatedBlogs: [allBlogs["watermark"], allBlogs["add-page-numbers"], allBlogs["bates-numbering"]],
     faqs: [
@@ -266,9 +268,9 @@ export const relatedContent: Record<string, ToolRelatedContent> = {
   },
   "pdf-to-word": {
     relatedTools: [
-      { title: "Word to PDF", description: "Convert DOCX to PDF", href: "/word-to-pdf", icon: "📝" },
-      { title: "PDF to Excel", description: "Extract tables", href: "/pdf-to-excel", icon: "📊" },
-      { title: "Extract Text", description: "Extract text content", href: "/extract-text", icon: "📝" },
+      { title: "Word to PDF", description: "Convert DOCX to PDF", href: "/word-to-pdf", icon: "fileText" },
+      { title: "PDF to Excel", description: "Extract tables", href: "/pdf-to-excel", icon: "fileSheet" },
+      { title: "Extract Text", description: "Extract text content", href: "/extract-text", icon: "fileText" },
     ],
     relatedBlogs: [allBlogs["pdf-to-word"], allBlogs["word-to-pdf"], allBlogs["pdf-to-excel"]],
     faqs: [
@@ -278,9 +280,9 @@ export const relatedContent: Record<string, ToolRelatedContent> = {
   },
   "word-to-pdf": {
     relatedTools: [
-      { title: "PDF to Word", description: "Convert PDF to DOCX", href: "/pdf-to-word", icon: "📄" },
-      { title: "HTML to PDF", description: "Convert HTML to PDF", href: "/html-to-pdf", icon: "🌐" },
-      { title: "Text to PDF", description: "Convert text to PDF", href: "/text-to-pdf", icon: "📝" },
+      { title: "PDF to Word", description: "Convert PDF to DOCX", href: "/pdf-to-word", icon: "fileWord" },
+      { title: "HTML to PDF", description: "Convert HTML to PDF", href: "/html-to-pdf", icon: "code" },
+      { title: "Text to PDF", description: "Convert text to PDF", href: "/text-to-pdf", icon: "type" },
     ],
     relatedBlogs: [allBlogs["word-to-pdf"], allBlogs["pdf-to-word"], allBlogs["html-to-pdf"]],
     faqs: [
@@ -290,9 +292,9 @@ export const relatedContent: Record<string, ToolRelatedContent> = {
   },
   "redact": {
     relatedTools: [
-      { title: "Search & Redact", description: "Auto-redact words", href: "/search-redact", icon: "⬛" },
-      { title: "Metadata Sanitizer", description: "Strip metadata", href: "/metadata-sanitizer", icon: "🧹" },
-      { title: "Protect PDF", description: "Add password protection", href: "/protect", icon: "🔒" },
+      { title: "Search & Redact", description: "Auto-redact words", href: "/search-redact", icon: "search" },
+      { title: "Metadata Sanitizer", description: "Strip metadata", href: "/metadata-sanitizer", icon: "eraser" },
+      { title: "Protect PDF", description: "Add password protection", href: "/protect", icon: "lock" },
     ],
     relatedBlogs: [allBlogs["redact"], allBlogs["search-redact"], allBlogs["metadata-sanitizer"]],
     faqs: [
@@ -302,9 +304,9 @@ export const relatedContent: Record<string, ToolRelatedContent> = {
   },
   "search-redact": {
     relatedTools: [
-      { title: "Redact PDF", description: "Manual area redaction", href: "/redact", icon: "⬛" },
-      { title: "Metadata Sanitizer", description: "Strip metadata", href: "/metadata-sanitizer", icon: "🧹" },
-      { title: "PDF Inverter", description: "Invert PDF colors", href: "/pdf-inverter", icon: "🎨" },
+      { title: "Redact PDF", description: "Manual area redaction", href: "/redact", icon: "redact" },
+      { title: "Metadata Sanitizer", description: "Strip metadata", href: "/metadata-sanitizer", icon: "eraser" },
+      { title: "PDF Inverter", description: "Invert PDF colors", href: "/pdf-inverter", icon: "contrast" },
     ],
     relatedBlogs: [allBlogs["search-redact"], allBlogs["redact"], allBlogs["metadata-sanitizer"]],
     faqs: [
@@ -314,9 +316,9 @@ export const relatedContent: Record<string, ToolRelatedContent> = {
   },
   "fill-form": {
     relatedTools: [
-      { title: "Form Data Extract", description: "Extract form data", href: "/form-data-extract", icon: "📊" },
-      { title: "Sign PDF", description: "Add signatures", href: "/sign", icon: "✍️" },
-      { title: "Flatten PDF", description: "Flatten form fields", href: "/flatten-pdf", icon: "📄" },
+      { title: "Form Data Extract", description: "Extract form data", href: "/form-data-extract", icon: "fileSheet" },
+      { title: "Sign PDF", description: "Add signatures", href: "/sign", icon: "signature" },
+      { title: "Flatten PDF", description: "Flatten form fields", href: "/flatten-pdf", icon: "flatten" },
     ],
     relatedBlogs: [allBlogs["fill-form"], allBlogs["form-data-extract"], allBlogs["flatten-pdf"]],
     faqs: [
@@ -326,9 +328,9 @@ export const relatedContent: Record<string, ToolRelatedContent> = {
   },
   "extract-text": {
     relatedTools: [
-      { title: "OCR PDF", description: "OCR for scanned PDFs", href: "/ocr-pdf", icon: "🔍" },
-      { title: "PDF to Word", description: "Convert to DOCX", href: "/pdf-to-word", icon: "📄" },
-      { title: "Chat with PDF", description: "Ask questions", href: "/chat-pdf", icon: "🤖" },
+      { title: "OCR PDF", description: "OCR for scanned PDFs", href: "/ocr-pdf", icon: "scan" },
+      { title: "PDF to Word", description: "Convert to DOCX", href: "/pdf-to-word", icon: "fileWord" },
+      { title: "Chat with PDF", description: "Ask questions", href: "/chat-pdf", icon: "sparkles" },
     ],
     relatedBlogs: [allBlogs["extract-text"], allBlogs["ocr-pdf"], allBlogs["chat-pdf"]],
     faqs: [
@@ -338,9 +340,9 @@ export const relatedContent: Record<string, ToolRelatedContent> = {
   },
   "ocr-pdf": {
     relatedTools: [
-      { title: "Extract Text", description: "Extract text content", href: "/extract-text", icon: "📝" },
-      { title: "PDF to Word", description: "Convert to DOCX", href: "/pdf-to-word", icon: "📄" },
-      { title: "Chat with PDF", description: "Ask questions", href: "/chat-pdf", icon: "🤖" },
+      { title: "Extract Text", description: "Extract text content", href: "/extract-text", icon: "fileText" },
+      { title: "PDF to Word", description: "Convert to DOCX", href: "/pdf-to-word", icon: "fileWord" },
+      { title: "Chat with PDF", description: "Ask questions", href: "/chat-pdf", icon: "sparkles" },
     ],
     relatedBlogs: [allBlogs["ocr-pdf"], allBlogs["extract-text"], allBlogs["pdf-to-word"]],
     faqs: [
@@ -350,9 +352,9 @@ export const relatedContent: Record<string, ToolRelatedContent> = {
   },
   "add-page-numbers": {
     relatedTools: [
-      { title: "Bates Numbering", description: "Sequential numbering", href: "/bates-numbering", icon: "🔢" },
-      { title: "Watermark PDF", description: "Add watermarks", href: "/watermark", icon: "💧" },
-      { title: "QR Code Stamp", description: "Add QR codes", href: "/qr-stamp", icon: "📱" },
+      { title: "Bates Numbering", description: "Sequential numbering", href: "/bates-numbering", icon: "numbers" },
+      { title: "Watermark PDF", description: "Add watermarks", href: "/watermark", icon: "droplet" },
+      { title: "QR Code Stamp", description: "Add QR codes", href: "/qr-stamp", icon: "qr" },
     ],
     relatedBlogs: [allBlogs["add-page-numbers"], allBlogs["bates-numbering"], allBlogs["watermark"]],
     faqs: [
@@ -362,9 +364,9 @@ export const relatedContent: Record<string, ToolRelatedContent> = {
   },
   "reverse-pdf": {
     relatedTools: [
-      { title: "Organize Pages", description: "Reorder pages", href: "/organize", icon: "📑" },
-      { title: "Delete Pages", description: "Remove pages", href: "/delete-pages", icon: "🗑️" },
-      { title: "Rotate PDF", description: "Rotate pages", href: "/rotate", icon: "🔄" },
+      { title: "Organize Pages", description: "Reorder pages", href: "/organize", icon: "organize" },
+      { title: "Delete Pages", description: "Remove pages", href: "/delete-pages", icon: "delete" },
+      { title: "Rotate PDF", description: "Rotate pages", href: "/rotate", icon: "rotate" },
     ],
     relatedBlogs: [allBlogs["reverse"], allBlogs["organize"], allBlogs["delete-pages"]],
     faqs: [
@@ -373,9 +375,9 @@ export const relatedContent: Record<string, ToolRelatedContent> = {
   },
   "insert-blank": {
     relatedTools: [
-      { title: "Delete Pages", description: "Remove pages", href: "/delete-pages", icon: "🗑️" },
-      { title: "Split PDF", description: "Split into files", href: "/split", icon: "✂️" },
-      { title: "Organize Pages", description: "Reorder pages", href: "/organize", icon: "📑" },
+      { title: "Delete Pages", description: "Remove pages", href: "/delete-pages", icon: "delete" },
+      { title: "Split PDF", description: "Split into files", href: "/split", icon: "split" },
+      { title: "Organize Pages", description: "Reorder pages", href: "/organize", icon: "organize" },
     ],
     relatedBlogs: [allBlogs["insert-blank"], allBlogs["delete-pages"], allBlogs["organize"]],
     faqs: [
@@ -385,9 +387,9 @@ export const relatedContent: Record<string, ToolRelatedContent> = {
   },
   "metadata": {
     relatedTools: [
-      { title: "Metadata Sanitizer", description: "Strip metadata", href: "/metadata-sanitizer", icon: "🧹" },
-      { title: "Protect PDF", description: "Add password protection", href: "/protect", icon: "🔒" },
-      { title: "Compress PDF", description: "Reduce file size", href: "/compress", icon: "📦" },
+      { title: "Metadata Sanitizer", description: "Strip metadata", href: "/metadata-sanitizer", icon: "eraser" },
+      { title: "Protect PDF", description: "Add password protection", href: "/protect", icon: "lock" },
+      { title: "Compress PDF", description: "Reduce file size", href: "/compress", icon: "compress" },
     ],
     relatedBlogs: [allBlogs["metadata"], allBlogs["metadata-sanitizer"], allBlogs["compress"]],
     faqs: [
@@ -397,9 +399,9 @@ export const relatedContent: Record<string, ToolRelatedContent> = {
   },
   "metadata-sanitizer": {
     relatedTools: [
-      { title: "Metadata Editor", description: "View and edit metadata", href: "/metadata", icon: "📋" },
-      { title: "Redact PDF", description: "Black out content", href: "/redact", icon: "⬛" },
-      { title: "Unlock PDF", description: "Remove protection", href: "/unlock", icon: "🔓" },
+      { title: "Metadata Editor", description: "View and edit metadata", href: "/metadata", icon: "info" },
+      { title: "Redact PDF", description: "Black out content", href: "/redact", icon: "redact" },
+      { title: "Unlock PDF", description: "Remove protection", href: "/unlock", icon: "unlock" },
     ],
     relatedBlogs: [allBlogs["metadata-sanitizer"], allBlogs["metadata"], allBlogs["redact"]],
     faqs: [
@@ -409,9 +411,9 @@ export const relatedContent: Record<string, ToolRelatedContent> = {
   },
   "flatten-pdf": {
     relatedTools: [
-      { title: "Fill PDF Form", description: "Fill form fields", href: "/fill-form", icon: "📋" },
-      { title: "Form Data Extract", description: "Extract form data", href: "/form-data-extract", icon: "📊" },
-      { title: "Redact PDF", description: "Black out content", href: "/redact", icon: "⬛" },
+      { title: "Fill PDF Form", description: "Fill form fields", href: "/fill-form", icon: "form" },
+      { title: "Form Data Extract", description: "Extract form data", href: "/form-data-extract", icon: "fileSheet" },
+      { title: "Redact PDF", description: "Black out content", href: "/redact", icon: "redact" },
     ],
     relatedBlogs: [allBlogs["flatten-pdf"], allBlogs["fill-form"], allBlogs["form-data-extract"]],
     faqs: [
@@ -421,9 +423,9 @@ export const relatedContent: Record<string, ToolRelatedContent> = {
   },
   "html-to-pdf": {
     relatedTools: [
-      { title: "Text to PDF", description: "Convert text to PDF", href: "/text-to-pdf", icon: "📝" },
-      { title: "Word to PDF", description: "Convert DOCX to PDF", href: "/word-to-pdf", icon: "📝" },
-      { title: "PDF to Word", description: "Convert PDF to DOCX", href: "/pdf-to-word", icon: "📄" },
+      { title: "Text to PDF", description: "Convert text to PDF", href: "/text-to-pdf", icon: "type" },
+      { title: "Word to PDF", description: "Convert DOCX to PDF", href: "/word-to-pdf", icon: "fileText" },
+      { title: "PDF to Word", description: "Convert PDF to DOCX", href: "/pdf-to-word", icon: "fileWord" },
     ],
     relatedBlogs: [allBlogs["html-to-pdf"], allBlogs["text-to-pdf"], allBlogs["word-to-pdf"]],
     faqs: [
@@ -432,9 +434,9 @@ export const relatedContent: Record<string, ToolRelatedContent> = {
   },
   "text-to-pdf": {
     relatedTools: [
-      { title: "Word to PDF", description: "Convert DOCX to PDF", href: "/word-to-pdf", icon: "📝" },
-      { title: "HTML to PDF", description: "Convert HTML to PDF", href: "/html-to-pdf", icon: "🌐" },
-      { title: "Word Counter", description: "Count words", href: "/word-counter", icon: "📝" },
+      { title: "Word to PDF", description: "Convert DOCX to PDF", href: "/word-to-pdf", icon: "fileText" },
+      { title: "HTML to PDF", description: "Convert HTML to PDF", href: "/html-to-pdf", icon: "code" },
+      { title: "Word Counter", description: "Count words", href: "/word-counter", icon: "hash" },
     ],
     relatedBlogs: [allBlogs["text-to-pdf"], allBlogs["html-to-pdf"], allBlogs["word-counter"]],
     faqs: [
@@ -443,9 +445,9 @@ export const relatedContent: Record<string, ToolRelatedContent> = {
   },
   "word-counter": {
     relatedTools: [
-      { title: "Extract Text", description: "Extract text content", href: "/extract-text", icon: "📝" },
-      { title: "Text to PDF", description: "Convert text to PDF", href: "/text-to-pdf", icon: "📝" },
-      { title: "OCR PDF", description: "OCR for scanned PDFs", href: "/ocr-pdf", icon: "🔍" },
+      { title: "Extract Text", description: "Extract text content", href: "/extract-text", icon: "fileText" },
+      { title: "Text to PDF", description: "Convert text to PDF", href: "/text-to-pdf", icon: "type" },
+      { title: "OCR PDF", description: "OCR for scanned PDFs", href: "/ocr-pdf", icon: "scan" },
     ],
     relatedBlogs: [allBlogs["word-counter"], allBlogs["extract-text"], allBlogs["text-to-pdf"]],
     faqs: [
@@ -454,9 +456,9 @@ export const relatedContent: Record<string, ToolRelatedContent> = {
   },
   "scan-to-pdf": {
     relatedTools: [
-      { title: "Image to PDF", description: "Convert images to PDF", href: "/image-to-pdf", icon: "🖼️" },
-      { title: "OCR PDF", description: "Extract text from scans", href: "/ocr-pdf", icon: "🔍" },
-      { title: "Compress PDF", description: "Reduce file size", href: "/compress", icon: "📦" },
+      { title: "Image to PDF", description: "Convert images to PDF", href: "/image-to-pdf", icon: "image" },
+      { title: "OCR PDF", description: "Extract text from scans", href: "/ocr-pdf", icon: "scan" },
+      { title: "Compress PDF", description: "Reduce file size", href: "/compress", icon: "compress" },
     ],
     relatedBlogs: [allBlogs["scan-to-pdf"], allBlogs["image-to-pdf"], allBlogs["ocr-pdf"]],
     faqs: [
@@ -466,9 +468,9 @@ export const relatedContent: Record<string, ToolRelatedContent> = {
   },
   "pdf-to-excel": {
     relatedTools: [
-      { title: "PDF to Word", description: "Convert to DOCX", href: "/pdf-to-word", icon: "📄" },
-      { title: "Form Data Extract", description: "Extract form data", href: "/form-data-extract", icon: "📊" },
-      { title: "Extract Text", description: "Extract text content", href: "/extract-text", icon: "📝" },
+      { title: "PDF to Word", description: "Convert to DOCX", href: "/pdf-to-word", icon: "fileWord" },
+      { title: "Form Data Extract", description: "Extract form data", href: "/form-data-extract", icon: "fileSheet" },
+      { title: "Extract Text", description: "Extract text content", href: "/extract-text", icon: "fileText" },
     ],
     relatedBlogs: [allBlogs["pdf-to-excel"], allBlogs["form-data-extract"], allBlogs["pdf-to-word"]],
     faqs: [
@@ -477,9 +479,9 @@ export const relatedContent: Record<string, ToolRelatedContent> = {
   },
   "chat-pdf": {
     relatedTools: [
-      { title: "Extract Text", description: "Extract text content", href: "/extract-text", icon: "📝" },
-      { title: "OCR PDF", description: "OCR for scanned PDFs", href: "/ocr-pdf", icon: "🔍" },
-      { title: "PDF to Audio", description: "Listen to PDFs", href: "/pdf-to-audio", icon: "🎧" },
+      { title: "Extract Text", description: "Extract text content", href: "/extract-text", icon: "fileText" },
+      { title: "OCR PDF", description: "OCR for scanned PDFs", href: "/ocr-pdf", icon: "scan" },
+      { title: "PDF to Audio", description: "Listen to PDFs", href: "/pdf-to-audio", icon: "headphones" },
     ],
     relatedBlogs: [allBlogs["chat-pdf"], allBlogs["ocr-pdf"], allBlogs["pdf-to-audio"]],
     faqs: [
@@ -489,9 +491,9 @@ export const relatedContent: Record<string, ToolRelatedContent> = {
   },
   "pdf-to-audio": {
     relatedTools: [
-      { title: "Chat with PDF", description: "Ask questions", href: "/chat-pdf", icon: "🤖" },
-      { title: "Extract Text", description: "Extract text content", href: "/extract-text", icon: "📝" },
-      { title: "Word Counter", description: "Count words", href: "/word-counter", icon: "📝" },
+      { title: "Chat with PDF", description: "Ask questions", href: "/chat-pdf", icon: "sparkles" },
+      { title: "Extract Text", description: "Extract text content", href: "/extract-text", icon: "fileText" },
+      { title: "Word Counter", description: "Count words", href: "/word-counter", icon: "hash" },
     ],
     relatedBlogs: [allBlogs["pdf-to-audio"], allBlogs["chat-pdf"], allBlogs["extract-text"]],
     faqs: [
@@ -501,9 +503,9 @@ export const relatedContent: Record<string, ToolRelatedContent> = {
   },
   "pdf-diff": {
     relatedTools: [
-      { title: "Search & Redact", description: "Auto-redact words", href: "/search-redact", icon: "⬛" },
-      { title: "PDF Inverter", description: "Invert colors", href: "/pdf-inverter", icon: "🎨" },
-      { title: "Organize Pages", description: "Reorder pages", href: "/organize", icon: "📑" },
+      { title: "Search & Redact", description: "Auto-redact words", href: "/search-redact", icon: "search" },
+      { title: "PDF Inverter", description: "Invert colors", href: "/pdf-inverter", icon: "contrast" },
+      { title: "Organize Pages", description: "Reorder pages", href: "/organize", icon: "organize" },
     ],
     relatedBlogs: [allBlogs["pdf-diff"], allBlogs["search-redact"], allBlogs["pdf-inverter"]],
     faqs: [
@@ -513,9 +515,9 @@ export const relatedContent: Record<string, ToolRelatedContent> = {
   },
   "certificate-generator": {
     relatedTools: [
-      { title: "Form Data Extract", description: "Extract form data", href: "/form-data-extract", icon: "📊" },
-      { title: "Bulk Rename", description: "Rename by metadata", href: "/bulk-rename", icon: "🏷️" },
-      { title: "Bates Numbering", description: "Sequential numbering", href: "/bates-numbering", icon: "🔢" },
+      { title: "Form Data Extract", description: "Extract form data", href: "/form-data-extract", icon: "fileSheet" },
+      { title: "Bulk Rename", description: "Rename by metadata", href: "/bulk-rename", icon: "tag" },
+      { title: "Bates Numbering", description: "Sequential numbering", href: "/bates-numbering", icon: "numbers" },
     ],
     relatedBlogs: [allBlogs["certificate-generator"], allBlogs["bulk-rename"], allBlogs["bates-numbering"]],
     faqs: [
@@ -525,9 +527,9 @@ export const relatedContent: Record<string, ToolRelatedContent> = {
   },
   "form-data-extract": {
     relatedTools: [
-      { title: "Fill PDF Form", description: "Fill form fields", href: "/fill-form", icon: "📋" },
-      { title: "PDF to Excel", description: "Extract tables", href: "/pdf-to-excel", icon: "📊" },
-      { title: "Flatten PDF", description: "Flatten form fields", href: "/flatten-pdf", icon: "📄" },
+      { title: "Fill PDF Form", description: "Fill form fields", href: "/fill-form", icon: "form" },
+      { title: "PDF to Excel", description: "Extract tables", href: "/pdf-to-excel", icon: "fileSheet" },
+      { title: "Flatten PDF", description: "Flatten form fields", href: "/flatten-pdf", icon: "flatten" },
     ],
     relatedBlogs: [allBlogs["form-data-extract"], allBlogs["fill-form"], allBlogs["pdf-to-excel"]],
     faqs: [
@@ -536,9 +538,9 @@ export const relatedContent: Record<string, ToolRelatedContent> = {
   },
   "bulk-rename": {
     relatedTools: [
-      { title: "Certificate Generator", description: "Generate certificates", href: "/certificate-generator", icon: "🏆" },
-      { title: "Bates Numbering", description: "Sequential numbering", href: "/bates-numbering", icon: "🔢" },
-      { title: "Split by Bookmarks", description: "Split by bookmarks", href: "/split-by-bookmarks", icon: "📑" },
+      { title: "Certificate Generator", description: "Generate certificates", href: "/certificate-generator", icon: "award" },
+      { title: "Bates Numbering", description: "Sequential numbering", href: "/bates-numbering", icon: "numbers" },
+      { title: "Split by Bookmarks", description: "Split by bookmarks", href: "/split-by-bookmarks", icon: "bookmark" },
     ],
     relatedBlogs: [allBlogs["bulk-rename"], allBlogs["bates-numbering"], allBlogs["split-by-bookmarks"]],
     faqs: [
@@ -547,9 +549,9 @@ export const relatedContent: Record<string, ToolRelatedContent> = {
   },
   "booklet": {
     relatedTools: [
-      { title: "Bates Numbering", description: "Sequential numbering", href: "/bates-numbering", icon: "🔢" },
-      { title: "Organize Pages", description: "Reorder pages", href: "/organize", icon: "📑" },
-      { title: "Resize PDF", description: "Change page size", href: "/resize", icon: "📐" },
+      { title: "Bates Numbering", description: "Sequential numbering", href: "/bates-numbering", icon: "numbers" },
+      { title: "Organize Pages", description: "Reorder pages", href: "/organize", icon: "organize" },
+      { title: "Resize PDF", description: "Change page size", href: "/resize", icon: "resize" },
     ],
     relatedBlogs: [allBlogs["booklet"], allBlogs["bates-numbering"], allBlogs["resize"]],
     faqs: [
@@ -558,9 +560,9 @@ export const relatedContent: Record<string, ToolRelatedContent> = {
   },
   "pdf-inverter": {
     relatedTools: [
-      { title: "PDF Diff", description: "Compare PDFs", href: "/pdf-diff", icon: "🔍" },
-      { title: "Search & Redact", description: "Auto-redact words", href: "/search-redact", icon: "⬛" },
-      { title: "Metadata Sanitizer", description: "Strip metadata", href: "/metadata-sanitizer", icon: "🧹" },
+      { title: "PDF Diff", description: "Compare PDFs", href: "/pdf-diff", icon: "diff" },
+      { title: "Search & Redact", description: "Auto-redact words", href: "/search-redact", icon: "search" },
+      { title: "Metadata Sanitizer", description: "Strip metadata", href: "/metadata-sanitizer", icon: "eraser" },
     ],
     relatedBlogs: [allBlogs["pdf-inverter"], allBlogs["pdf-diff"], allBlogs["search-redact"]],
     faqs: [
@@ -569,9 +571,9 @@ export const relatedContent: Record<string, ToolRelatedContent> = {
   },
   "vault": {
     relatedTools: [
-      { title: "Protect PDF", description: "Add password protection", href: "/protect", icon: "🔒" },
-      { title: "Metadata Sanitizer", description: "Strip metadata", href: "/metadata-sanitizer", icon: "🧹" },
-      { title: "Redact PDF", description: "Black out content", href: "/redact", icon: "⬛" },
+      { title: "Protect PDF", description: "Add password protection", href: "/protect", icon: "lock" },
+      { title: "Metadata Sanitizer", description: "Strip metadata", href: "/metadata-sanitizer", icon: "eraser" },
+      { title: "Redact PDF", description: "Black out content", href: "/redact", icon: "redact" },
     ],
     relatedBlogs: [allBlogs["vault"], allBlogs["protect"], allBlogs["metadata-sanitizer"]],
     faqs: [
@@ -581,9 +583,9 @@ export const relatedContent: Record<string, ToolRelatedContent> = {
   },
   "qr-stamp": {
     relatedTools: [
-      { title: "Watermark PDF", description: "Add text watermarks", href: "/watermark", icon: "💧" },
-      { title: "Add Page Numbers", description: "Add page numbers", href: "/add-page-numbers", icon: "🔢" },
-      { title: "Bates Numbering", description: "Sequential numbering", href: "/bates-numbering", icon: "🔢" },
+      { title: "Watermark PDF", description: "Add text watermarks", href: "/watermark", icon: "droplet" },
+      { title: "Add Page Numbers", description: "Add page numbers", href: "/add-page-numbers", icon: "numbers" },
+      { title: "Bates Numbering", description: "Sequential numbering", href: "/bates-numbering", icon: "numbers" },
     ],
     relatedBlogs: [allBlogs["qr-stamp"], allBlogs["watermark"], allBlogs["add-page-numbers"]],
     faqs: [
@@ -593,9 +595,9 @@ export const relatedContent: Record<string, ToolRelatedContent> = {
   },
   "split-by-bookmarks": {
     relatedTools: [
-      { title: "Split PDF", description: "Split by page ranges", href: "/split", icon: "✂️" },
-      { title: "Organize Pages", description: "Reorder pages", href: "/organize", icon: "📑" },
-      { title: "Delete Pages", description: "Remove pages", href: "/delete-pages", icon: "🗑️" },
+      { title: "Split PDF", description: "Split by page ranges", href: "/split", icon: "split" },
+      { title: "Organize Pages", description: "Reorder pages", href: "/organize", icon: "organize" },
+      { title: "Delete Pages", description: "Remove pages", href: "/delete-pages", icon: "delete" },
     ],
     relatedBlogs: [allBlogs["split-by-bookmarks"], allBlogs["split"], allBlogs["organize"]],
     faqs: [
@@ -604,9 +606,9 @@ export const relatedContent: Record<string, ToolRelatedContent> = {
   },
   "bates-numbering": {
     relatedTools: [
-      { title: "Add Page Numbers", description: "Add page numbers", href: "/add-page-numbers", icon: "🔢" },
-      { title: "Watermark PDF", description: "Add watermarks", href: "/watermark", icon: "💧" },
-      { title: "Bulk Rename", description: "Rename by metadata", href: "/bulk-rename", icon: "🏷️" },
+      { title: "Add Page Numbers", description: "Add page numbers", href: "/add-page-numbers", icon: "numbers" },
+      { title: "Watermark PDF", description: "Add watermarks", href: "/watermark", icon: "droplet" },
+      { title: "Bulk Rename", description: "Rename by metadata", href: "/bulk-rename", icon: "tag" },
     ],
     relatedBlogs: [allBlogs["bates-numbering"], allBlogs["add-page-numbers"], allBlogs["watermark"]],
     faqs: [
@@ -615,9 +617,9 @@ export const relatedContent: Record<string, ToolRelatedContent> = {
   },
   "pdf-to-images": {
     relatedTools: [
-      { title: "Image to PDF", description: "Convert images to PDF", href: "/image-to-pdf", icon: "🖼️" },
-      { title: "Scan to PDF", description: "Scan to PDF", href: "/scan-to-pdf", icon: "📷" },
-      { title: "Compress PDF", description: "Reduce file size", href: "/compress", icon: "📦" },
+      { title: "Image to PDF", description: "Convert images to PDF", href: "/image-to-pdf", icon: "image" },
+      { title: "Scan to PDF", description: "Scan to PDF", href: "/scan-to-pdf", icon: "camera" },
+      { title: "Compress PDF", description: "Reduce file size", href: "/compress", icon: "compress" },
     ],
     relatedBlogs: [allBlogs["pdf-to-images"], allBlogs["image-to-pdf"], allBlogs["scan-to-pdf"]],
     faqs: [
@@ -626,9 +628,9 @@ export const relatedContent: Record<string, ToolRelatedContent> = {
   },
   "pdf-to-pdfa": {
     relatedTools: [
-      { title: "Compress PDF", description: "Reduce file size", href: "/compress", icon: "📦" },
-      { title: "Metadata Sanitizer", description: "Strip metadata", href: "/metadata-sanitizer", icon: "🧹" },
-      { title: "Repair PDF", description: "Fix corrupted PDFs", href: "/repair-pdf", icon: "🔧" },
+      { title: "Compress PDF", description: "Reduce file size", href: "/compress", icon: "compress" },
+      { title: "Metadata Sanitizer", description: "Strip metadata", href: "/metadata-sanitizer", icon: "eraser" },
+      { title: "Repair PDF", description: "Fix corrupted PDFs", href: "/repair-pdf", icon: "repair" },
     ],
     relatedBlogs: [allBlogs["pdf-to-pdfa"], allBlogs["compress"], allBlogs["metadata-sanitizer"]],
     faqs: [
@@ -638,9 +640,9 @@ export const relatedContent: Record<string, ToolRelatedContent> = {
   },
   "batch": {
     relatedTools: [
-      { title: "Bulk Rename", description: "Rename by metadata", href: "/bulk-rename", icon: "🏷️" },
-      { title: "Certificate Generator", description: "Generate certificates", href: "/certificate-generator", icon: "🏆" },
-      { title: "Booklet Creator", description: "Create booklets", href: "/booklet", icon: "📖" },
+      { title: "Bulk Rename", description: "Rename by metadata", href: "/bulk-rename", icon: "tag" },
+      { title: "Certificate Generator", description: "Generate certificates", href: "/certificate-generator", icon: "award" },
+      { title: "Booklet Creator", description: "Create booklets", href: "/booklet", icon: "book" },
     ],
     relatedBlogs: [allBlogs["batch"], allBlogs["bulk-rename"], allBlogs["certificate-generator"]],
     faqs: [
@@ -649,9 +651,9 @@ export const relatedContent: Record<string, ToolRelatedContent> = {
   },
   "repair-pdf": {
     relatedTools: [
-      { title: "Compress PDF", description: "Reduce file size", href: "/compress", icon: "📦" },
-      { title: "PDF to PDF/A", description: "Convert to archive format", href: "/pdf-to-pdfa", icon: "📦" },
-      { title: "Metadata Sanitizer", description: "Strip metadata", href: "/metadata-sanitizer", icon: "🧹" },
+      { title: "Compress PDF", description: "Reduce file size", href: "/compress", icon: "compress" },
+      { title: "PDF to PDF/A", description: "Convert to archive format", href: "/pdf-to-pdfa", icon: "archive" },
+      { title: "Metadata Sanitizer", description: "Strip metadata", href: "/metadata-sanitizer", icon: "eraser" },
     ],
     relatedBlogs: [allBlogs["pdf-to-pdfa"], allBlogs["compress"], allBlogs["metadata-sanitizer"]],
     faqs: [

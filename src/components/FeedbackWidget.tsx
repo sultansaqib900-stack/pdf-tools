@@ -1,6 +1,7 @@
 "use client";
 import { useState, useRef, useEffect } from "react";
 import { success, error } from "@/components/Toast";
+import Icon from "@/components/ui/Icon";
 
 export default function FeedbackWidget() {
   const [open, setOpen] = useState(false);
@@ -100,10 +101,10 @@ export default function FeedbackWidget() {
       ) : (
         <button
           onClick={() => setOpen(true)}
-          className="w-12 h-12 bg-gradient-to-br from-indigo-500 to-purple-600 text-white rounded-full shadow-lg hover:shadow-xl hover:shadow-indigo-500/30 hover:scale-110 transition-all active:scale-90 flex items-center justify-center text-lg animate-glowPulse"
+          className="inline-flex items-center justify-center w-11 h-11 rounded-full bg-[var(--accent)] text-[var(--accent-fg)] shadow-[var(--shadow-lg)] hover:bg-[var(--accent-hover)] transition-colors"
           title="Send feedback"
         >
-          💬
+          <Icon name="annotate" size={18} />
         </button>
       )}
     </div>

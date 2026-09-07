@@ -1,62 +1,50 @@
 import Link from "next/link";
+import Icon, { type IconName } from "@/components/ui/Icon";
 
 interface ToolCardProps {
   title: string;
   description: string;
-  icon: string;
+  /** Icon name from the shared set. Legacy emoji strings are tolerated. */
+  icon: IconName | string;
   href: string;
-  gradient: string;
   category?: string;
+  /** Legacy prop — previously a per-tool gradient. Ignored by design. */
+  gradient?: string;
 }
 
-const badgeColors: Record<string, string> = {
-  Edit: "bg-blue-500",
-  Convert: "bg-amber-500",
-  Security: "bg-violet-500",
-  Organize: "bg-fuchsia-500",
-  Extract: "bg-teal-500",
-  Premium: "bg-gradient-to-r from-amber-500 to-orange-600",
-};
-
-const hoverBorderColors: Record<string, string> = {
-  Edit: "hover:border-blue-500/30 group-hover:shadow-blue-500/10",
-  Convert: "hover:border-amber-500/30 group-hover:shadow-amber-500/10",
-  Security: "hover:border-violet-500/30 group-hover:shadow-violet-500/10",
-  Organize: "hover:border-fuchsia-500/30 group-hover:shadow-fuchsia-500/10",
-  Extract: "hover:border-teal-500/30 group-hover:shadow-teal-500/10",
-  Premium: "hover:border-amber-500/30 group-hover:shadow-amber-500/10",
-};
-
-const hoverTextColors: Record<string, string> = {
-  Edit: "group-hover:text-blue-500",
-  Convert: "group-hover:text-amber-500",
-  Security: "group-hover:text-violet-500",
-  Organize: "group-hover:text-fuchsia-500",
-  Extract: "group-hover:text-teal-500",
-  Premium: "group-hover:text-amber-500",
-};
-
-export default function ToolCard({ title, description, icon, href, gradient, category }: ToolCardProps) {
-  const borderColor = hoverBorderColors[category || ""] || "hover:border-indigo-500/30 group-hover:shadow-indigo-500/10";
-  const textColor = hoverTextColors[category || ""] || "group-hover:text-indigo-500";
+export default function ToolCard({ title, description, icon, href, category }: ToolCardProps) {
+  const isPremium = category === "Premium";
 
   return (
+    // `relative` was missing here: the category badge below is absolutely
+    // positioned and was escaping the card to the nearest positioned ancestor.
     <Link
       href={href}
-      className={`group block p-6 rounded-xl border border-[var(--card-border)] bg-[var(--card)] transition-all duration-300 hover:shadow-xl ${borderColor} hover:-translate-y-1`}
+      className="group card-interactive relative flex flex-col p-5 h-full"
     >
       {category && (
-        <span className={`absolute top-3 right-3 text-[10px] font-semibold text-white px-2 py-0.5 rounded-full ${badgeColors[category] || "bg-indigo-500"}`}>
-          {category === "Premium" ? "⭐ Premium" : category}
+        <span className={`badge absolute top-4 right-4 ${isPremium ? "badge-premium" : ""}`}>
+          {isPremium && <Icon name="star" size={10} strokeWidth={2.5} />}
+          {category}
         </span>
       )}
-      <div className={`w-14 h-14 rounded-xl ${gradient} flex items-center justify-center text-3xl mb-4 shadow-sm group-hover:scale-110 group-hover:shadow-md transition-all duration-300`}>
-        {icon}
-      </div>
-      <h3 className={`text-lg font-semibold text-[var(--foreground)] ${textColor} transition-colors duration-200`}>
+
+      {/* Single neutral icon tile. Colour is reserved for the accent and for
+          state — using 41 different gradients made the grid read as noise. */}
+      <span
+        className={`inline-flex items-center justify-center w-10 h-10 rounded-[var(--r-md)] mb-3.5 border transition-colors duration-150 ${
+          isPremium
+            ? "bg-[var(--premium-subtle)] border-[var(--premium-border)] text-[var(--premium)]"
+            : "bg-[var(--surface-subtle)] border-[var(--border)] text-[var(--muted-strong)] group-hover:bg-[var(--accent-subtle)] group-hover:border-[var(--accent-border)] group-hover:text-[var(--accent)]"
+        }`}
+      >
+        <Icon name={icon as IconName} size={19} />
+      </span>
+
+      <h3 className="text-[0.9375rem] font-semibold text-[var(--foreground)] leading-snug pr-16">
         {title}
       </h3>
-      <p className="mt-2 text-sm text-[var(--muted)] leading-relaxed">
+      <p className="mt-1.5 text-[0.8125rem] leading-relaxed text-[var(--muted)]">
         {description}
       </p>
     </Link>

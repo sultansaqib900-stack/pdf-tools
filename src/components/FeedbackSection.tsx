@@ -38,7 +38,7 @@ export default function FeedbackSection() {
         <h2 className="text-2xl font-bold text-[var(--foreground)]">What Users Say</h2>
         <button
           onClick={() => setShowForm(!showForm)}
-          className="text-sm text-indigo-500 hover:underline font-medium"
+          className="text-[0.875rem] text-[var(--accent)] hover:underline font-medium"
         >
           {showForm ? "Close form" : "Leave feedback"}
         </button>
@@ -64,7 +64,7 @@ export default function FeedbackSection() {
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
           {feedback.map((item) => (
             <div key={item.id} className="p-5 rounded-xl border border-[var(--card-border)] bg-[var(--background)]">
-              <div className="flex mb-2 text-amber-400">
+              <div className="flex mb-2 text-[var(--premium)]">
                 {Array.from({ length: 5 }, (_, i) => (
                   <span key={i} className={i < item.rating ? "" : "opacity-20"}>&#9733;</span>
                 ))}

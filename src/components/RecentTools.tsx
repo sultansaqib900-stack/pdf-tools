@@ -22,7 +22,7 @@ export default function RecentTools() {
             <Link
               key={t.path}
               href={`/${t.path}`}
-              className="px-3 py-1.5 text-xs font-medium text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/30 rounded-lg hover:bg-indigo-100 dark:hover:bg-indigo-950/50 transition"
+              className="px-3 py-1.5 text-[0.8125rem] font-medium text-[var(--accent)] bg-[var(--accent-subtle)] border border-[var(--accent-border)] rounded-[var(--r-md)] hover:bg-[var(--surface-hover)] transition-colors"
             >
               {t.label}
             </Link>

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { getRelatedContent, type ToolRelatedContent } from "@/lib/related-content";
+import Icon from "@/components/ui/Icon";
 
 interface Props {
   slug: string;
@@ -8,20 +9,18 @@ interface Props {
 function RelatedToolsSection({ data }: { data: ToolRelatedContent }) {
   return (
     <div>
-      <h3 className="text-lg font-semibold text-[var(--foreground)] mb-4">Related Tools</h3>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      <h3 className="text-lg font-semibold text-[var(--foreground)] mb-4">Related tools</h3>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5">
         {data.relatedTools.map((tool) => (
-          <Link
-            key={tool.href}
-            href={tool.href}
-            className="flex items-center gap-3 p-4 rounded-xl border border-[var(--card-border)] bg-[var(--card)] hover:border-indigo-500/30 hover:shadow-md transition-all duration-200 group"
-          >
-            <span className="text-2xl">{tool.icon}</span>
-            <div>
-              <p className="text-sm font-medium text-[var(--foreground)] group-hover:text-indigo-500 transition-colors">
+          <Link key={tool.href} href={tool.href} className="card-interactive group flex items-center gap-3 p-3.5">
+            <span className="inline-flex items-center justify-center w-9 h-9 shrink-0 rounded-[var(--r-md)] bg-[var(--surface-subtle)] border border-[var(--border)] text-[var(--muted-strong)] group-hover:bg-[var(--accent-subtle)] group-hover:border-[var(--accent-border)] group-hover:text-[var(--accent)] transition-colors">
+              <Icon name={tool.icon} size={17} />
+            </span>
+            <div className="min-w-0">
+              <p className="text-[0.875rem] font-medium text-[var(--foreground)] group-hover:text-[var(--accent)] transition-colors truncate">
                 {tool.title}
               </p>
-              <p className="text-xs text-[var(--muted)]">{tool.description}</p>
+              <p className="text-[0.75rem] text-[var(--muted)] truncate">{tool.description}</p>
             </div>
           </Link>
         ))}
@@ -34,18 +33,18 @@ function RelatedBlogsSection({ data }: { data: ToolRelatedContent }) {
   if (data.relatedBlogs.length === 0) return null;
   return (
     <div>
-      <h3 className="text-lg font-semibold text-[var(--foreground)] mb-4">Related Articles</h3>
-      <div className="space-y-3">
+      <h3 className="text-lg font-semibold text-[var(--foreground)] mb-4">Related articles</h3>
+      <div className="space-y-2">
         {data.relatedBlogs.map((blog) => (
           <Link
             key={blog.href}
             href={blog.href}
-            className="block p-4 rounded-xl border border-[var(--card-border)] bg-[var(--card)] hover:border-amber-500/30 hover:shadow-md transition-all duration-200 group"
+            className="card-interactive group block p-3.5"
           >
-            <p className="text-sm font-medium text-[var(--foreground)] group-hover:text-amber-500 transition-colors">
+            <p className="text-[0.875rem] font-medium text-[var(--foreground)] group-hover:text-[var(--accent)] transition-colors">
               {blog.title}
             </p>
-            <p className="text-xs text-[var(--muted)] mt-1">{blog.description}</p>
+            <p className="mt-0.5 text-[0.75rem] text-[var(--muted)]">{blog.description}</p>
           </Link>
         ))}
       </div>
@@ -57,20 +56,18 @@ function FaqSection({ data }: { data: ToolRelatedContent }) {
   if (data.faqs.length === 0) return null;
   return (
     <div>
-      <h3 className="text-xl font-bold text-[var(--foreground)] mb-6">Frequently Asked Questions</h3>
-      <div className="space-y-4">
+      <h3 className="text-lg font-semibold text-[var(--foreground)] mb-4">Frequently asked questions</h3>
+      <div className="space-y-1.5">
         {data.faqs.map((faq, i) => (
           <details
             key={i}
-            className="group rounded-xl border border-[var(--card-border)] bg-[var(--card)] overflow-hidden"
+            className="group surface-card overflow-hidden"
           >
-            <summary className="flex items-center justify-between p-4 cursor-pointer text-sm font-medium text-[var(--foreground)] hover:bg-[var(--background)] transition-colors list-none">
+            <summary className="flex items-center justify-between gap-4 px-4 py-3 cursor-pointer list-none text-[0.875rem] font-medium text-[var(--foreground)] hover:bg-[var(--surface-hover)] transition-colors">
               {faq.question}
-              <svg className="w-4 h-4 text-[var(--muted)] group-open:rotate-180 transition-transform flex-shrink-0 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-              </svg>
+              <Icon name="chevronDown" size={15} className="shrink-0 text-[var(--muted)] group-open:rotate-180 transition-transform duration-150" />
             </summary>
-            <div className="px-4 pb-4 text-sm text-[var(--muted)] leading-relaxed">
+            <div className="px-4 pb-3.5 pt-0.5 text-[0.8125rem] leading-relaxed text-[var(--muted-strong)]">
               {faq.answer}
             </div>
           </details>

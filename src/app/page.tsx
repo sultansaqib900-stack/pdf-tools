@@ -2,9 +2,10 @@
 
 import { usePageMeta } from "@/hooks/usePageMeta";
 import ToolGrid from "@/components/ToolGrid";
-import ToolSearch from "@/components/ToolSearch";
 import FaqPageJsonLd from "@/components/FaqPageJsonLd";
 import { useEffect, useRef, useState } from "react";
+import Link from "next/link";
+import Icon from "@/components/ui/Icon";
 import dynamic from "next/dynamic";
 
 const LiveStats = dynamic(() => import("@/components/LiveStats"));
@@ -13,86 +14,58 @@ const FeedbackSection = dynamic(() => import("@/components/FeedbackSection"));
 const RecentTools = dynamic(() => import("@/components/RecentTools"));
 const PremiumFeatureShowcase = dynamic(() => import("@/components/PremiumFeatureShowcase"));
 
-function AnimatedHero() {
-  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
-  const heroRef = useRef<HTMLElement>(null);
-
-  useEffect(() => {
-    const handler = (e: MouseEvent) => {
-      if (heroRef.current) {
-        const rect = heroRef.current.getBoundingClientRect();
-        setMousePos({
-          x: ((e.clientX - rect.left) / rect.width - 0.5) * 2,
-          y: ((e.clientY - rect.top) / rect.height - 0.5) * 2,
-        });
-      }
-    };
-    window.addEventListener("mousemove", handler);
-    return () => window.removeEventListener("mousemove", handler);
-  }, []);
-
+/**
+ * Calm, confident hero.
+ *
+ * Replaces the previous version, which ran mouse-tracking parallax, four
+ * blurred gradient blobs, six floating particles, an infinitely shifting
+ * gradient, a grid overlay and two pulsing badges. The job of this section is
+ * to say what the product is and get the user into a tool.
+ */
+function Hero() {
   return (
-    <section ref={heroRef} className="bg-gradient-hero text-white py-20 px-4 relative overflow-hidden">
-      {/* Animated floating blobs */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-10 left-10 w-72 h-72 bg-indigo-400/20 rounded-full blur-3xl animate-floatSlow" style={{ transform: `translate(${mousePos.x * -10}px, ${mousePos.y * -10}px)` }} />
-        <div className="absolute bottom-10 right-10 w-96 h-96 bg-purple-400/20 rounded-full blur-3xl animate-float" style={{ animationDelay: "2s", transform: `translate(${mousePos.x * 10}px, ${mousePos.y * 10}px)` }} />
-        <div className="absolute top-1/3 right-1/4 w-48 h-48 bg-pink-300/20 rounded-full blur-3xl animate-float" style={{ animationDelay: "4s", transform: `translate(${mousePos.x * -15}px, ${mousePos.y * -8}px)` }} />
-        <div className="absolute bottom-1/4 left-1/3 w-56 h-56 bg-cyan-300/10 rounded-full blur-3xl animate-floatSlow" style={{ animationDelay: "1s", transform: `translate(${mousePos.x * 8}px, ${mousePos.y * -12}px)` }} />
-      </div>
+    <section className="relative border-b border-[var(--border)] bg-[var(--surface-subtle)] overflow-hidden">
+      <div className="absolute inset-0 bg-dots opacity-60 [mask-image:radial-gradient(ellipse_at_center,black,transparent_75%)]" aria-hidden="true" />
 
-      {/* Animated grid pattern overlay */}
-      <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, white 1px, transparent 0)', backgroundSize: '40px 40px' }} />
+      <div className="relative max-w-3xl mx-auto px-4 py-16 sm:py-20 text-center">
+        <span className="badge mb-5">
+          <Icon name="shield" size={11} />
+          Files never leave your browser
+        </span>
 
-      {/* Floating decorative particles */}
-      <div className="absolute inset-0 pointer-events-none overflow-hidden hidden md:block">
-        {[...Array(6)].map((_, i) => (
-          <div
-            key={i}
-            className="absolute w-1.5 h-1.5 rounded-full bg-white/40 animate-float"
-            style={{
-              left: `${15 + i * 14}%`,
-              top: `${20 + (i % 3) * 30}%`,
-              animationDelay: `${i * 0.7}s`,
-              animationDuration: `${3 + i * 0.5}s`,
-            }}
-          />
-        ))}
-      </div>
-
-      <div className="max-w-4xl mx-auto text-center relative z-10">
-        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 text-sm mb-6 animate-fadeIn">
-          <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-          100% Free — No Signup Needed
-        </div>
-
-        <h1 className="text-4xl md:text-6xl font-bold mb-4 leading-tight animate-scaleIn">
-          Free Online <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-pink-200 to-white">PDF Tools</span>
+        <h1 className="text-[2rem] sm:text-[2.75rem] font-semibold leading-[1.1] text-[var(--foreground)]">
+          Every PDF tool you need,
+          <br className="hidden sm:block" />{" "}
+          <span className="text-[var(--muted)]">free and private</span>
         </h1>
 
-        <p className="text-lg md:text-xl text-white/80 max-w-2xl mx-auto mb-8 animate-slideUp">
-          Compress, merge, split, convert, and edit PDFs instantly in your browser.
-          No uploads — everything stays on your device. 100% private.
+        <p className="mt-4 text-[0.9375rem] sm:text-base leading-relaxed text-[var(--muted-strong)] max-w-xl mx-auto">
+          Compress, merge, split, convert, edit and sign PDFs in seconds.
+          Everything runs on your device — no uploads, no signup.
         </p>
 
-        <div className="flex flex-wrap justify-center gap-2 text-sm animate-fadeIn animate-delay-200">
-          {["🔒 No Uploads Ever", "⚡ Instant Processing", "🌐 No Install", "💯 Free", "🖥️ 40+ Tools"].map(
-            (tag, i) => (
-              <span
-                key={tag}
-                className="px-4 py-2 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 hover:bg-white/20 transition"
-                style={{ animationDelay: `${i * 100}ms` }}
-              >
-                {tag}
-              </span>
-            )
-          )}
+        <div className="mt-7 flex flex-wrap items-center justify-center gap-2.5">
+          <Link href="/tools" className="btn btn-primary btn-lg">
+            Browse all tools
+            <Icon name="arrowRight" size={15} />
+          </Link>
+          <Link href="/compress" className="btn btn-secondary btn-lg">
+            Compress a PDF
+          </Link>
         </div>
 
-        <div className="mt-5 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500/20 backdrop-blur-sm border border-emerald-400/30 text-sm font-medium animate-scaleIn animate-delay-300 hover:bg-emerald-500/30 transition">
-          <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-          Your files never leave your device. 100% private, always.
-        </div>
+        <dl className="mt-10 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-[0.8125rem]">
+          {[
+            { k: "49", v: "free tools" },
+            { k: "0", v: "files uploaded" },
+            { k: "No", v: "signup needed" },
+          ].map((s) => (
+            <div key={s.v} className="flex items-baseline gap-1.5">
+              <dt className="font-semibold text-[var(--foreground)]">{s.k}</dt>
+              <dd className="text-[var(--muted)]">{s.v}</dd>
+            </div>
+          ))}
+        </dl>
       </div>
     </section>
   );
@@ -118,6 +91,19 @@ function SectionReveal({ children, className = "" }: { children: React.ReactNode
   );
 }
 
+/** Consistent section shell: heading, optional lead, and a bordered surface. */
+function Section({
+  title, lead, children, className = "",
+}: { title: string; lead?: string; children: React.ReactNode; className?: string }) {
+  return (
+    <section className={`max-w-6xl mx-auto px-4 pb-14 ${className}`}>
+      <h2 className="text-xl font-semibold text-[var(--foreground)]">{title}</h2>
+      {lead && <p className="mt-1.5 text-[0.875rem] text-[var(--muted)]">{lead}</p>}
+      <div className="mt-5">{children}</div>
+    </section>
+  );
+}
+
 export default function Home() {
   usePageMeta(
     "PDFTools - Free Online PDF Editor | Compress, Merge, Split, Convert & Premium PDF Tools",
@@ -126,13 +112,9 @@ export default function Home() {
 
   return (
     <div>
-      <AnimatedHero />
+      <Hero />
 
-      <section className="max-w-6xl mx-auto px-4 -mt-8 mb-8">
-        <ToolSearch />
-      </section>
-
-      <section className="max-w-6xl mx-auto px-4 -mt-6 mb-12">
+      <section className="max-w-6xl mx-auto px-4 pt-12 pb-16">
         <ToolGrid />
       </section>
 
@@ -143,185 +125,189 @@ export default function Home() {
       </SectionReveal>
 
       <SectionReveal>
-        <section className="max-w-6xl mx-auto px-4 pb-8">
-          <div className="bg-[var(--card)] border border-[var(--card-border)] rounded-xl p-8">
-            <h2 className="text-2xl font-bold text-[var(--foreground)] mb-6">Popular PDF Tools</h2>
-            <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
-              {[
-                { name: "Compress PDF", href: "/compress", blog: "/blog/compress-pdf-without-losing-quality", icon: "📦" },
-                { name: "Merge PDF", href: "/merge", blog: "/blog/merge-multiple-pdfs-into-one", icon: "🔗" },
-                { name: "Split PDF", href: "/split", blog: "/blog/split-pdf-pages-online", icon: "✂️" },
-                { name: "Image to PDF", href: "/image-to-pdf", blog: "/blog/convert-image-to-pdf", icon: "🖼️" },
-                { name: "PDF to Excel", href: "/pdf-to-excel", blog: "/blog/convert-pdf-to-excel", icon: "📊" },
-                { name: "PDF to Images", href: "/pdf-to-images", blog: "/blog/convert-pdf-to-images", icon: "📸" },
-                { name: "Extract Text", href: "/extract-text", blog: "/blog/extract-text-from-pdf", icon: "📝" },
-                { name: "Sign PDF", href: "/sign", blog: "/blog/sign-pdf-without-printing", icon: "✍️" },
-                { name: "Protect PDF", href: "/protect", blog: "/blog/protect-pdf-with-password", icon: "🔒" },
-                { name: "Unlock PDF", href: "/unlock", blog: "/blog/remove-password-from-pdf", icon: "🔓" },
-                { name: "Rotate PDF", href: "/rotate", blog: "/blog/rotate-pdf-pages-online", icon: "🔄" },
-                { name: "Organize PDF", href: "/organize", blog: "/blog/organize-pdf-pages", icon: "📑" },
-              ].map((tool) => (
-                <div key={tool.name} className="flex flex-col card-hover rounded-lg">
-                  <a href={tool.href} className="flex items-center gap-2 px-3 py-2.5 rounded-lg bg-[var(--background)] border border-[var(--card-border)] text-sm text-[var(--foreground)] hover:border-indigo-500/30 hover:bg-indigo-50/50 dark:hover:bg-indigo-950/20 transition font-medium">
-                    <span className="text-base">{tool.icon}</span>
+        <Section title="Popular PDF tools" lead="The tools people reach for most, each with a step-by-step guide.">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-2.5">
+            {[
+              { name: "Compress PDF", href: "/compress", blog: "/blog/compress-pdf-without-losing-quality", icon: "compress" },
+              { name: "Merge PDF", href: "/merge", blog: "/blog/merge-multiple-pdfs-into-one", icon: "merge" },
+              { name: "Split PDF", href: "/split", blog: "/blog/split-pdf-pages-online", icon: "split" },
+              { name: "Image to PDF", href: "/image-to-pdf", blog: "/blog/convert-image-to-pdf", icon: "image" },
+              { name: "PDF to Excel", href: "/pdf-to-excel", blog: "/blog/convert-pdf-to-excel", icon: "fileSheet" },
+              { name: "PDF to Images", href: "/pdf-to-images", blog: "/blog/convert-pdf-to-images", icon: "image" },
+              { name: "Extract Text", href: "/extract-text", blog: "/blog/extract-text-from-pdf", icon: "fileText" },
+              { name: "Sign PDF", href: "/sign", blog: "/blog/sign-pdf-without-printing", icon: "signature" },
+              { name: "Protect PDF", href: "/protect", blog: "/blog/protect-pdf-with-password", icon: "lock" },
+            ].map((tool) => (
+              <div key={tool.name} className="card-interactive p-3.5 flex items-center gap-3">
+                <span className="inline-flex items-center justify-center w-8 h-8 shrink-0 rounded-[var(--r-md)] bg-[var(--surface-subtle)] border border-[var(--border)] text-[var(--muted-strong)]">
+                  <Icon name={tool.icon as never} size={16} />
+                </span>
+                <div className="min-w-0 flex-1">
+                  <Link href={tool.href} className="block text-[0.875rem] font-medium text-[var(--foreground)] hover:text-[var(--accent)] transition-colors truncate">
                     {tool.name}
-                  </a>
-                  <a href={tool.blog} className="text-xs text-indigo-500 hover:underline mt-1 ml-1 transition hover:translate-x-0.5">
-                    Read guide &rarr;
-                  </a>
+                  </Link>
+                  <Link href={tool.blog} className="text-[0.75rem] text-[var(--muted)] hover:text-[var(--accent)] transition-colors">
+                    Read the guide
+                  </Link>
                 </div>
-              ))}
-            </div>
+              </div>
+            ))}
           </div>
-        </section>
+        </Section>
       </SectionReveal>
 
       <SectionReveal>
-        <section className="max-w-6xl mx-auto px-4 pb-8">
-          <div className="bg-[var(--card)] border border-[var(--card-border)] rounded-xl p-8">
-            <h2 className="text-2xl font-bold text-[var(--foreground)] mb-6">Popular Use Cases</h2>
-            <p className="text-sm text-[var(--muted)] mb-6">Find the right PDF tool for your specific needs.</p>
-            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
-              {[
-                { name: "Compress PDF for College Students", href: "/for/compress-pdf-college-students", icon: "🎓" },
-                { name: "Merge PDF for Office Workers", href: "/for/merge-pdf-office-workers", icon: "💼" },
-                { name: "Split PDF for Teachers", href: "/for/split-pdf-teachers", icon: "🍎" },
-                { name: "Protect PDF for Lawyers", href: "/for/protect-pdf-lawyers", icon: "⚖️" },
-                { name: "Sign PDF for Freelancers", href: "/for/sign-pdf-freelancers", icon: "✍️" },
-                { name: "Image to PDF for Small Business", href: "/for/image-to-pdf-small-business-owners", icon: "🏪" },
-                { name: "OCR PDF for Researchers", href: "/for/ocr-pdf-researchers", icon: "🔬" },
-                { name: "Edit PDF for Real Estate Agents", href: "/for/edit-pdf-real-estate-agents", icon: "🏠" },
-              ].map((uc) => (
-                <a key={uc.href} href={uc.href} className="flex items-center gap-2 px-3 py-2.5 rounded-lg bg-[var(--background)] border border-[var(--card-border)] text-sm text-[var(--foreground)] hover:border-indigo-500/30 hover:bg-indigo-50/50 dark:hover:bg-indigo-950/20 transition card-hover">
-                  <span className="text-base">{uc.icon}</span>
-                  {uc.name}
-                </a>
-              ))}
-            </div>
+        <Section title="Popular use cases" lead="Guides written for how specific people actually work.">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-2.5">
+            {[
+              { name: "Compress PDF for students", href: "/for/compress-pdf-college-students" },
+              { name: "Merge PDF for office workers", href: "/for/merge-pdf-office-workers" },
+              { name: "Protect PDF for lawyers", href: "/for/protect-pdf-lawyers" },
+              { name: "Split PDF for freelancers", href: "/for/split-pdf-freelancers" },
+              { name: "Compress PDF for small business", href: "/for/compress-pdf-small-business-owners" },
+              { name: "Merge PDF for lawyers", href: "/for/merge-pdf-lawyers" },
+            ].map((uc) => (
+              <Link key={uc.href} href={uc.href} className="card-interactive group flex items-center justify-between gap-3 px-3.5 py-3 text-[0.875rem] text-[var(--foreground)]">
+                <span className="truncate">{uc.name}</span>
+                <Icon name="chevronRight" size={14} className="shrink-0 text-[var(--muted)] group-hover:text-[var(--accent)] transition-colors" />
+              </Link>
+            ))}
           </div>
-        </section>
+        </Section>
       </SectionReveal>
 
       <SectionReveal>
-        <section className="max-w-6xl mx-auto px-4 pb-8">
-          <div className="bg-gradient-to-br from-indigo-50/50 to-transparent dark:from-indigo-950/20 dark:to-transparent border border-[var(--card-border)] rounded-xl p-8">
-            <h2 className="text-2xl font-bold text-[var(--foreground)] mb-4">Latest from Our Blog</h2>
-            <p className="text-sm text-[var(--muted)] mb-6">Tips and guides to get the most out of PDFTools.</p>
-            <div className="grid sm:grid-cols-2 gap-4">
-              {[
-                { title: "How to Compress PDF Without Losing Quality", slug: "compress-pdf-without-losing-quality" },
-                { title: "How to Merge Multiple PDFs Into One", slug: "merge-multiple-pdfs-into-one" },
-                { title: "How to Split PDF Pages Online Free", slug: "split-pdf-pages-online" },
-                { title: "How to Sign a PDF Without Printing", slug: "sign-pdf-without-printing" },
-                { title: "How to Password Protect a PDF", slug: "protect-pdf-with-password" },
-                { title: "How to Remove Password from PDF", slug: "remove-password-from-pdf" },
-              ].map((post, i) => (
-                <a key={post.slug} href={`/blog/${post.slug}`} className="block p-4 rounded-lg bg-[var(--background)] border border-[var(--card-border)] hover:border-indigo-500/30 hover:shadow-md transition card-hover" style={{ animationDelay: `${i * 80}ms` }}>
-                  <h3 className="text-sm font-semibold text-[var(--foreground)]">{post.title}</h3>
-                </a>
-              ))}
-            </div>
-            <div className="mt-6 text-center">
-              <a href="/blog" className="text-sm text-indigo-500 hover:underline font-medium inline-flex items-center gap-1 hover:gap-2 transition-all">View all articles <span>&rarr;</span></a>
-            </div>
+        <Section title="From the blog" lead="Tips and walkthroughs for getting more out of your PDFs.">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-2.5">
+            {[
+              { title: "Compress a PDF without losing quality", slug: "compress-pdf-without-losing-quality" },
+              { title: "Merge multiple PDFs into one", slug: "merge-multiple-pdfs-into-one" },
+              { title: "Split PDF pages online free", slug: "split-pdf-pages-online" },
+              { title: "Sign a PDF without printing", slug: "sign-pdf-without-printing" },
+              { title: "Password protect a PDF", slug: "protect-pdf-with-password" },
+              { title: "Remove a password from a PDF", slug: "remove-password-from-pdf" },
+            ].map((post) => (
+              <Link key={post.slug} href={`/blog/${post.slug}`} className="card-interactive group p-4">
+                <h3 className="text-[0.875rem] font-medium leading-snug text-[var(--foreground)] group-hover:text-[var(--accent)] transition-colors">
+                  {post.title}
+                </h3>
+                <span className="mt-2 inline-flex items-center gap-1 text-[0.75rem] text-[var(--muted)]">
+                  Read article
+                  <Icon name="arrowRight" size={12} />
+                </span>
+              </Link>
+            ))}
           </div>
-        </section>
+          <div className="mt-5">
+            <Link href="/blog" className="inline-flex items-center gap-1.5 text-[0.875rem] font-medium text-[var(--accent)] hover:underline">
+              View all articles
+              <Icon name="arrowRight" size={14} />
+            </Link>
+          </div>
+        </Section>
       </SectionReveal>
 
       <RecentTools />
 
       <SectionReveal>
-        <section className="max-w-6xl mx-auto px-4 pb-16">
-          <div className="bg-[var(--card)] border border-[var(--card-border)] rounded-xl p-8">
-            <h2 className="text-2xl font-bold text-[var(--foreground)] mb-6">
-              Why <span className="text-gradient">PDFTools</span>?
-            </h2>
-            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
-              {[
-                { title: "100% Free", desc: "No hidden fees or credit card required. All basic tools are completely free.", icon: "🎯" },
-                { title: "Private & Secure", desc: "Files process in your browser. Never uploaded to any server. Zero data leaves your device.", icon: "🔒" },
-                { title: "Fast Processing", desc: "Powered by WebAssembly. Large files process in seconds, not minutes.", icon: "⚡" },
-                { title: "Works Everywhere", desc: "Compatible with Chrome, Firefox, Safari, and Edge on desktop and mobile.", icon: "🌍" },
-              ].map((item) => (
-                <div key={item.title} className="card-hover p-4 rounded-xl hover:bg-[var(--background)] transition">
-                  <div className="text-3xl mb-3 animate-float" style={{ animationDuration: "3s" }}>{item.icon}</div>
-                  <h3 className="font-semibold text-[var(--foreground)] mb-1">{item.title}</h3>
-                  <p className="text-sm text-[var(--muted)] leading-relaxed">{item.desc}</p>
-                </div>
-              ))}
-            </div>
+        <Section title="Why PDFTools" lead="Built to be fast, private and genuinely free.">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-2.5">
+            {[
+              { title: "Completely free", desc: "No credit card, no trial period. Every core tool is free to use.", icon: "check" },
+              { title: "Private by design", desc: "Files are processed in your browser and never uploaded to a server.", icon: "shield" },
+              { title: "Fast", desc: "WebAssembly means large documents process in seconds, not minutes.", icon: "zap" },
+              { title: "Works everywhere", desc: "Chrome, Firefox, Safari and Edge — on desktop and mobile.", icon: "globe" },
+            ].map((item) => (
+              <div key={item.title} className="surface-card p-4">
+                <span className="inline-flex items-center justify-center w-8 h-8 rounded-[var(--r-md)] bg-[var(--accent-subtle)] border border-[var(--accent-border)] text-[var(--accent)] mb-3">
+                  <Icon name={item.icon as never} size={16} />
+                </span>
+                <h3 className="text-[0.875rem] font-semibold text-[var(--foreground)]">{item.title}</h3>
+                <p className="mt-1 text-[0.8125rem] leading-relaxed text-[var(--muted)]">{item.desc}</p>
+              </div>
+            ))}
           </div>
-        </section>
+        </Section>
       </SectionReveal>
 
       <SectionReveal>
-        <section className="max-w-6xl mx-auto px-4 pb-16">
-          <div className="border border-[var(--card-border)] rounded-xl p-8 bg-gradient-to-br from-indigo-50/50 to-transparent dark:from-indigo-950/20 dark:to-transparent">
-            <h2 className="text-2xl font-bold text-[var(--foreground)] mb-4">Your Privacy Matters</h2>
-            <div className="grid sm:grid-cols-2 gap-8">
-              <div>
-                <h3 className="font-semibold text-[var(--foreground)] mb-2">How It Works</h3>
-                <ol className="space-y-3 text-sm text-[var(--muted)]">
-                  {["Select your PDF file from your device", "Processing happens instantly in your browser using WebAssembly &mdash; no server involved", "Download the result. Your original file is never stored or transmitted"].map((step, i) => (
-                    <li key={i} className="flex items-start gap-3 card-hover rounded-lg p-2 -ml-2">
-                      <span className="w-7 h-7 rounded-full bg-indigo-100 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-400 flex items-center justify-center font-bold shrink-0 text-xs">{i + 1}</span>
-                      <span dangerouslySetInnerHTML={{ __html: step }} />
-                    </li>
-                  ))}
-                </ol>
-              </div>
-              <div>
-                <h3 className="font-semibold text-[var(--foreground)] mb-2">Why Trust Us</h3>
-                <ul className="space-y-2 text-sm text-[var(--muted)]">
-                  {["No file uploads &mdash; everything runs client-side", "No account or signup required", "Files never leave your device", "No data collection or tracking of your documents", "Open-source libraries with audited security", "No cookies required for PDF processing"].map((item, i) => (
-                    <li key={i} className="flex items-center gap-2 hover:translate-x-1 transition"><span className="text-emerald-500">&#10003;</span> <span dangerouslySetInnerHTML={{ __html: item }} /></li>
-                  ))}
-                </ul>
-              </div>
+        <Section title="How your files stay private">
+          <div className="grid md:grid-cols-2 gap-2.5">
+            <div className="surface-card p-6">
+              <h3 className="text-[0.875rem] font-semibold text-[var(--foreground)] mb-4">How it works</h3>
+              <ol className="space-y-3.5">
+                {[
+                  "Choose a PDF from your device.",
+                  "It is processed instantly in your browser using WebAssembly — no server is involved.",
+                  "Download the result. The original is never stored or transmitted.",
+                ].map((step, i) => (
+                  <li key={i} className="flex gap-3 text-[0.8125rem] leading-relaxed text-[var(--muted-strong)]">
+                    <span className="flex items-center justify-center w-5 h-5 shrink-0 mt-px rounded-full bg-[var(--surface-sunken)] border border-[var(--border)] text-[0.6875rem] font-semibold text-[var(--muted-strong)]">
+                      {i + 1}
+                    </span>
+                    {step}
+                  </li>
+                ))}
+              </ol>
+            </div>
+            <div className="surface-card p-6">
+              <h3 className="text-[0.875rem] font-semibold text-[var(--foreground)] mb-4">What that means</h3>
+              <ul className="space-y-2.5">
+                {[
+                  "No file uploads — everything runs client-side",
+                  "No account or signup required",
+                  "Files never leave your device",
+                  "No tracking of your document contents",
+                  "Audited open-source libraries",
+                  "No cookies required for processing",
+                ].map((item) => (
+                  <li key={item} className="flex items-start gap-2.5 text-[0.8125rem] leading-relaxed text-[var(--muted-strong)]">
+                    <Icon name="check" size={14} className="mt-0.5 shrink-0 text-[var(--success)]" />
+                    {item}
+                  </li>
+                ))}
+              </ul>
             </div>
           </div>
-        </section>
+        </Section>
       </SectionReveal>
 
       <SectionReveal>
-        <section className="max-w-6xl mx-auto px-4 pb-16">
-          <div className="border border-[var(--card-border)] rounded-xl p-8 bg-gradient-to-br from-emerald-50/50 to-transparent dark:from-emerald-950/10 dark:to-transparent card-hover">
+        <section className="max-w-6xl mx-auto px-4 pb-14">
+          <div className="surface-card p-6">
             <LiveStats />
           </div>
         </section>
       </SectionReveal>
 
-      <section className="max-w-6xl mx-auto px-4 pb-16">
+      <section className="max-w-6xl mx-auto px-4 pb-14">
         <FeedbackSection />
       </section>
 
       <SectionReveal>
-        <section className="max-w-6xl mx-auto px-4 pb-16">
-          <div className="bg-[var(--card)] border border-[var(--card-border)] rounded-xl p-8">
-            <h2 className="text-2xl font-bold text-[var(--foreground)] mb-6">Frequently Asked Questions</h2>
-            <div className="space-y-3">
-              {[
-                { q: "Are my files uploaded to a server?", a: "No. All PDF processing happens entirely in your browser using WebAssembly. Your files never leave your device. We cannot access, store, or see your documents." },
-                { q: "Do I need to create an account?", a: "No account or signup required. All tools are free and work instantly without registration." },
-                { q: "What is the maximum file size?", a: "Free users can process files up to 10MB. Premium users get up to 100MB file support with faster processing." },
-                { q: "Is there a limit on how many files I can process?", a: "Free users can process one file at a time. Premium subscribers get batch processing with up to 20 files simultaneously." },
-                { q: "What premium features are available?", a: "Premium includes PDF comparison, certificate generation, PDF-to-audio, form data extraction, bulk rename, booklet creator, search & redact, color inverter, secure vault, QR code stamp, and metadata sanitizer." },
-                { q: "Which browsers are supported?", a: "PDFTools works on Chrome, Firefox, Safari, and Edge on both desktop and mobile devices." },
-                { q: "How is PDFTools free?", a: "We display non-intrusive ads to cover costs. Premium subscriptions remove ads and unlock advanced features for users who want an ad-free experience." },
-              ].map((faq) => (
-                <details key={faq.q} className="group border border-[var(--card-border)] rounded-xl overflow-hidden transition-all duration-200 hover:border-indigo-500/20 open:border-indigo-500/30 open:shadow-md">
-                  <summary className="px-5 py-3.5 font-medium text-sm text-[var(--foreground)] cursor-pointer hover:bg-[var(--background)] transition list-none flex items-center justify-between">
-                    {faq.q}
-                    <svg className="w-4 h-4 text-[var(--muted)] group-open:rotate-180 transition-transform duration-300" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="m6 9 6 6 6-6"/></svg>
-                  </summary>
-                  <div className="px-5 pb-4 text-sm text-[var(--muted)] leading-relaxed border-t border-[var(--card-border)] pt-3 animate-slideUp">
-                    {faq.a}
-                  </div>
-                </details>
-              ))}
-            </div>
+        <Section title="Frequently asked questions" className="max-w-3xl">
+          <div className="space-y-1.5">
+            {[
+              { q: "Are my files uploaded to a server?", a: "No. All PDF processing happens in your browser using WebAssembly. Your files never leave your device — we cannot access, store or see your documents." },
+              { q: "Do I need to create an account?", a: "No. Every core tool works instantly without registration." },
+              { q: "What is the maximum file size?", a: "Free users can process files up to 10MB. Premium raises this to 100MB." },
+              { q: "Is there a limit on how many files I can process?", a: "Free users process one file at a time. Premium adds batch processing for up to 20 files at once." },
+              { q: "What do I get with Premium?", a: "PDF comparison, certificate generation, PDF-to-audio, form data extraction, bulk rename, booklet creator, search and redact, colour inverter, secure vault, QR stamping and metadata sanitising." },
+              { q: "Which browsers are supported?", a: "Chrome, Firefox, Safari and Edge, on both desktop and mobile." },
+              { q: "How is PDFTools free?", a: "Non-intrusive ads cover our costs. Premium removes ads and unlocks advanced tools." },
+            ].map((faq) => (
+              <details key={faq.q} className="group surface-card overflow-hidden">
+                <summary className="flex items-center justify-between gap-4 px-4 py-3 cursor-pointer list-none text-[0.875rem] font-medium text-[var(--foreground)] hover:bg-[var(--surface-hover)] transition-colors">
+                  {faq.q}
+                  <Icon name="chevronDown" size={15} className="shrink-0 text-[var(--muted)] group-open:rotate-180 transition-transform duration-150" />
+                </summary>
+                <div className="px-4 pb-3.5 pt-0.5 text-[0.8125rem] leading-relaxed text-[var(--muted-strong)]">
+                  {faq.a}
+                </div>
+              </details>
+            ))}
           </div>
-        </section>
+        </Section>
       </SectionReveal>
 
       <section className="max-w-3xl mx-auto px-4 pb-16">

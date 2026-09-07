@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useCallback, useEffect, useRef } from "react";
-import ToolInfo from "@/components/ToolInfo";
 import FreeWaitTimer from "@/components/FreeWaitTimer";
 import UsageBar from "@/components/UsageBar";
 import ProgressBar from "@/components/ProgressBar";
@@ -12,6 +11,9 @@ import { isPremium, checkFileSize, checkBatchCount } from "@/lib/premium";
 import { useUsage } from "@/hooks/useUsage";
 import { useToolHistory } from "@/hooks/useToolHistory";
 import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
+import ToolShell from "@/components/ui/ToolShell";
+import DropZone from "@/components/ui/DropZone";
+import Icon from "@/components/ui/Icon";
 
 import HowToJsonLd from "@/components/HowToJsonLd";
 import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
@@ -124,7 +126,11 @@ export default function MergePage() {
   };
 
   return (
-    <div className="max-w-3xl mx-auto px-4 py-12">
+    <ToolShell
+      icon="merge"
+      title="Merge PDF"
+      lead="Combine several PDFs into one document and set the page order. Nothing is uploaded."
+    >
       <SoftwareAppJsonLd
         name="Merge PDF - Free Online PDF Tool"
         description="Merge multiple PDFs into one document online for free. Combine PDF files instantly in your browser. No uploads required."
@@ -134,71 +140,51 @@ export default function MergePage() {
       <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Merge PDF", item: "https://allaboutpdfediting.xyz/merge" }]} />
       <FaqPageJsonLd questions={rc?.faqs} />
       <AiSummaryJsonLd name="Merge PDF" summary="Combine multiple PDF documents into one file with customizable page order" category="Utilities" inputType="PDF" outputType="PDF" processing="client-side" price="free" features={["Multi-file merging","Order customization","Drag-and-drop","Free processing","No file uploads"]} limits="Files up to 10MB" />
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">Merge PDF</h1>
-        <p className="text-[var(--muted)]">Combine multiple PDFs into one document. Drag to reorder.</p>
-      </div>
-
-      <ToolInfo
-        name="Merge PDF"
-        description="Your files stay on your device. Merging is done entirely in your browser using WebAssembly — no data uploaded, no servers involved. Select, reorder, and download your combined PDF instantly."
-      />
-
-
       <div className="mb-4">
         <UsageBar remaining={usage.remaining} unlimited={usage.unlimited} />
       </div>
 
-      <div className="bg-[var(--card)] rounded-xl border border-[var(--card-border)] p-8">
-        <div
-          onDrop={onDrop}
-          onDragOver={(e) => { e.preventDefault(); setDragging(true); }}
-          onDragLeave={() => setDragging(false)}
-          className={`border-2 border-dashed rounded-xl p-10 text-center transition ${
-            dragging ? "border-indigo-500 bg-indigo-50 dark:bg-indigo-950/30" : "border-[var(--card-border)] bg-[var(--background)]"
-          }`}
-        >
-          <input
-            type="file"
-            accept="application/pdf"
-            multiple
-            onChange={(e) => handleFiles(e.target.files)}
-            className="hidden"
-            id="fileInput"
-          />
-          <label htmlFor="fileInput" className="cursor-pointer flex flex-col items-center gap-3">
-            <span className="text-5xl">📄</span>
-            <span className="text-indigo-500 font-medium hover:underline">Click to select or drag & drop PDFs</span>
-            <span className="text-xs text-[var(--muted)]">Select multiple files at once</span>
-          </label>
-        </div>
+      <div className="surface-card p-5 sm:p-6">
+        <DropZone
+          multiple
+          onFiles={(list) => handleFiles(list as unknown as FileList)}
+          label="Drop PDFs here, or click to browse"
+          hint="Select two or more files"
+        />
 
         {files.length > 0 && (
-          <div className="mt-5 space-y-2">
-            <p className="text-sm font-medium text-[var(--muted)] mb-2">
-              {files.length} file{files.length > 1 ? "s" : ""} selected — drag to reorder
-              <button onClick={() => setFiles([])} className="ml-3 text-red-500 hover:text-red-600 text-xs">Clear all</button>
-            </p>
-            {files.map((file, i) => (
-              <div key={i} className="flex items-center justify-between p-3 bg-[var(--background)] border border-[var(--card-border)] rounded-lg">
-                <div className="flex items-center gap-3 min-w-0">
-                  <span className="text-xs text-[var(--muted)] w-6">{i + 1}.</span>
-                  <span className="text-sm font-medium text-[var(--foreground)] truncate">{file.name}</span>
-                  <span className="text-xs text-[var(--muted)] shrink-0">({formatBytes(file.size)})</span>
-                </div>
-                <div className="flex items-center gap-1 shrink-0">
-                  <button onClick={() => moveUp(i)} disabled={i === 0} className="p-1 text-[var(--muted)] hover:text-[var(--foreground)] disabled:opacity-30" title="Move up">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="m18 15-6-6-6 6"/></svg>
-                  </button>
-                  <button onClick={() => moveDown(i)} disabled={i === files.length - 1} className="p-1 text-[var(--muted)] hover:text-[var(--foreground)] disabled:opacity-30" title="Move down">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="m6 9 6 6 6-6"/></svg>
-                  </button>
-                  <button onClick={() => removeFile(i)} className="p-1 text-red-500 hover:text-red-600" title="Remove">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M3 6h18M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
-                  </button>
-                </div>
-              </div>
-            ))}
+          <div className="mt-4">
+            <div className="flex items-center justify-between mb-2">
+              <p className="text-[0.8125rem] text-[var(--muted)]">
+                {files.length} file{files.length > 1 ? "s" : ""} &middot; drag order with the arrows
+              </p>
+              <button onClick={() => setFiles([])} className="text-[0.75rem] text-[var(--muted)] hover:text-[var(--danger)] transition-colors">
+                Clear all
+              </button>
+            </div>
+            <ul className="space-y-1.5">
+              {files.map((file, i) => (
+                <li key={i} className="flex items-center gap-2.5 px-3 py-2 rounded-[var(--r-md)] border border-[var(--border)] bg-[var(--surface)]">
+                  <span className="w-5 shrink-0 text-[0.75rem] tabular-nums text-[var(--muted)]">{i + 1}</span>
+                  <span className="flex-1 min-w-0 truncate text-[0.8125rem] text-[var(--foreground)]">{file.name}</span>
+                  <span className="shrink-0 text-[0.75rem] tabular-nums text-[var(--muted)]">{formatBytes(file.size)}</span>
+                  <div className="flex items-center gap-0.5 shrink-0">
+                    <button onClick={() => moveUp(i)} disabled={i === 0} aria-label="Move up"
+                      className="p-1 rounded text-[var(--muted)] hover:text-[var(--foreground)] hover:bg-[var(--surface-hover)] disabled:opacity-30 disabled:hover:bg-transparent transition-colors">
+                      <Icon name="chevronDown" size={14} className="rotate-180" />
+                    </button>
+                    <button onClick={() => moveDown(i)} disabled={i === files.length - 1} aria-label="Move down"
+                      className="p-1 rounded text-[var(--muted)] hover:text-[var(--foreground)] hover:bg-[var(--surface-hover)] disabled:opacity-30 disabled:hover:bg-transparent transition-colors">
+                      <Icon name="chevronDown" size={14} />
+                    </button>
+                    <button onClick={() => removeFile(i)} aria-label="Remove"
+                      className="p-1 rounded text-[var(--muted)] hover:text-[var(--danger)] hover:bg-[var(--surface-hover)] transition-colors">
+                      <Icon name="close" size={14} />
+                    </button>
+                  </div>
+                </li>
+              ))}
+            </ul>
           </div>
         )}
 
@@ -209,25 +195,28 @@ export default function MergePage() {
         <button
           onClick={merge}
           disabled={files.length < 2 || processing || showTimer}
-          className="mt-6 w-full py-3 bg-indigo-600 text-white font-medium rounded-xl hover:bg-indigo-700 disabled:opacity-40 disabled:cursor-not-allowed transition shadow-sm"
+          className="btn btn-primary btn-lg w-full mt-4"
         >
           {processing ? (
-            <span className="flex items-center justify-center gap-2">
-              <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none"/><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
-              Merging {files.length} files...
-            </span>
-          ) : `Merge ${files.length} PDF${files.length !== 1 ? "s" : ""}`}
+            <>
+              <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24" fill="none">
+                <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" className="opacity-25" />
+                <path d="M12 2a10 10 0 0 1 10 10" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
+              </svg>
+              Merging {files.length} files
+            </>
+          ) : files.length > 0 ? `Merge ${files.length} PDF${files.length !== 1 ? "s" : ""}` : "Merge PDFs"}
         </button>
 
         {!isPremium() && (
-          <p className="mt-3 text-center text-xs text-[var(--muted)]">
-            Free users limited to 10MB files.{ " " }
-            <a href="/premium" className="text-indigo-500 font-medium hover:underline">Upgrade for 100MB, batch & no wait</a>
+          <p className="mt-3 text-center text-[0.75rem] text-[var(--muted)]">
+            Free tier is limited to 10 MB.{" "}
+            <a href="/premium" className="font-medium text-[var(--accent)] hover:underline">Upgrade for 100 MB and batch processing</a>
           </p>
         )}
 
         {files.length > 0 && files.length < 2 && (
-          <p className="text-xs text-amber-500 mt-2 text-center">Select at least 2 PDF files to merge.</p>
+          <p className="mt-2 text-center text-[0.75rem] text-[var(--muted)]">Select at least two PDFs to merge.</p>
         )}
 
         {error && <ErrorBanner message={error} onRetry={runMerge} onDismiss={() => setError(null)} />}
@@ -235,12 +224,12 @@ export default function MergePage() {
         <SuccessAnimation show={success} message="PDFs merged!" onRestore={restoreOriginal} />
       </div>
 
-      <div className="max-w-3xl mx-auto mt-12 pt-8 border-t border-[var(--card-border)]">
-        <h2 className="text-xl font-bold text-[var(--foreground)] mb-3">About Merge PDF</h2>
-        <div className="text-sm text-[var(--muted)] space-y-3 leading-relaxed">
+      <section className="mt-10 pt-8 border-t border-[var(--border)]">
+        <h2 className="text-lg font-semibold text-[var(--foreground)] mb-3">About this tool</h2>
+        <div className="text-[0.875rem] leading-relaxed text-[var(--muted-strong)] space-y-3">
           <p>With our merge PDF tool, you can combine PDF documents into a single file effortlessly, making it perfect for consolidating reports, invoices, scanned contracts, or any collection of related pages. Simply upload your PDFs, drag to reorder them, and click merge — the intuitive interface gives you full control over the final page sequence. The tool processes everything locally in your browser using pdf-lib, so your sensitive documents never touch a server. To merge PDF files online free, just select multiple PDFs, arrange them in the desired order, and download the combined result in seconds. This feature is especially useful for merging scanned documents that arrive as separate files, unifying chapter drafts into a complete manuscript, or creating comprehensive portfolios from individual pages. Everything stays private and secure.</p>
         </div>
-      </div>
+      </section>
 
       <RelatedContent slug="merge" />
 
@@ -252,6 +241,6 @@ export default function MergePage() {
         message={upsell.state.message}
         onClose={upsell.hideUpsell}
       />
-    </div>
+    </ToolShell>
   );
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Icon from "@/components/ui/Icon";
 
 export default function EmailSubscribe() {
   const [email, setEmail] = useState("");
@@ -35,35 +36,31 @@ export default function EmailSubscribe() {
   };
 
   return (
-    <div className="bg-gradient-to-r from-indigo-600 to-purple-600 rounded-xl p-8 text-white text-center">
-      <h3 className="text-xl font-bold mb-2">Get New Tools & Updates</h3>
-      <p className="text-sm text-white/80 mb-5 max-w-md mx-auto">
-        Subscribe to know when we add new PDF tools. No spam, unsubscribe anytime.
+    <div className="surface-card p-7 text-center">
+      <h3 className="text-lg font-semibold text-[var(--foreground)]">Get new tools and updates</h3>
+      <p className="mt-1.5 text-[0.875rem] text-[var(--muted)] max-w-md mx-auto">
+        We&apos;ll email you when we ship a new PDF tool. No spam, unsubscribe anytime.
       </p>
       {subscribed ? (
-        <p className="text-emerald-200 font-medium">&#10003; You&apos;re subscribed!</p>
+        <p className="mt-5 inline-flex items-center gap-1.5 text-[0.875rem] font-medium text-[var(--success)]">
+          <Icon name="check" size={15} />
+          You&apos;re subscribed
+        </p>
       ) : (
-        <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
+        <form onSubmit={handleSubmit} className="mt-5 flex flex-col sm:flex-row gap-2 max-w-sm mx-auto">
           <input
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            placeholder="your@email.com"
+            placeholder="you@example.com"
             required
-            className="flex-1 px-4 py-2.5 rounded-lg text-[var(--foreground)] text-sm outline-none"
+            aria-label="Email address"
+            className="input flex-1"
           />
-          <button
-            type="submit"
-            className="px-6 py-2.5 bg-white text-indigo-700 font-semibold rounded-lg text-sm hover:bg-indigo-50 transition"
-          >
-            Subscribe
-          </button>
+          <button type="submit" className="btn btn-primary shrink-0">Subscribe</button>
         </form>
       )}
-      {error && <p className="text-xs text-red-200 mt-2">{error}</p>}
-      <p className="text-xs text-white/50 mt-3">
-        {!process.env.NEXT_PUBLIC_BUTTONDOWN ? "Subscribe via API when connected" : "Powered by Buttondown"}
-      </p>
+      {error && <p className="mt-2 text-[0.8125rem] text-[var(--danger)]">{error}</p>}
     </div>
   );
 }

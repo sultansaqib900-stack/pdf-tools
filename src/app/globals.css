@@ -1,272 +1,476 @@
 @import "tailwindcss";
 @variant dark (&:where(.dark, .dark *));
 
-:root,
-[data-theme="midnight"] {
-  --background: #0b1120;
-  --foreground: #f1f5f9;
-  --card: #171f2e;
-  --card-border: #2a3448;
-  --muted: #8899b4;
-  --accent: #6366f1;
-  --accent-hover: #818cf8;
-  --gradient-from: #1e1b4b;
-  --gradient-via: #312e81;
-  --gradient-to: #3730a3;
+/* ============================================================================
+   DESIGN TOKENS
+   Light-first. Dark mode is a token remap on `.dark`, so components never
+   need dark: variants for colour — they consume semantic vars only.
+
+   Palette is deliberately narrow: one accent (indigo), one neutral ramp, and
+   three semantic states. Category colour has been removed entirely — tools are
+   differentiated by icon and label, not by 41 competing gradients.
+   ========================================================================= */
+
+:root {
+  /* Neutral ramp (slate) */
+  --n-0:   #ffffff;
+  --n-25:  #fcfcfd;
+  --n-50:  #f8fafc;
+  --n-100: #f1f5f9;
+  --n-200: #e2e8f0;
+  --n-300: #cbd5e1;
+  --n-400: #94a3b8;
+  --n-500: #64748b;
+  --n-600: #475569;
+  --n-700: #334155;
+  --n-800: #1e293b;
+  --n-900: #0f172a;
+  --n-950: #020617;
+
+  /* Accent ramp (indigo) — the single brand colour */
+  --a-50:  #eef2ff;
+  --a-100: #e0e7ff;
+  --a-200: #c7d2fe;
+  --a-300: #a5b4fc;
+  --a-400: #818cf8;
+  --a-500: #6366f1;
+  --a-600: #4f46e5;
+  --a-700: #4338ca;
+  --a-800: #3730a3;
+
+  /* ---- Semantic surface tokens ---- */
+  --background:      var(--n-0);
+  --surface:         var(--n-0);
+  --surface-subtle:  var(--n-50);
+  --surface-sunken:  var(--n-100);
+  --surface-hover:   var(--n-50);
+
+  --foreground:      var(--n-900);
+  --foreground-soft: var(--n-700);
+  --muted:           var(--n-500);
+  --muted-strong:    var(--n-600);
+
+  --border:          var(--n-200);
+  --border-strong:   var(--n-300);
+
+  /* Back-compat alias: a lot of existing pages reference --card/--card-border */
+  --card:            var(--surface);
+  --card-border:     var(--border);
+
+  --accent:          var(--a-600);
+  --accent-hover:    var(--a-700);
+  --accent-subtle:   var(--a-50);
+  --accent-border:   var(--a-200);
+  --accent-fg:       #ffffff;
+
+  --success:         #059669;
+  --success-subtle:  #ecfdf5;
+  --warning:         #d97706;
+  --warning-subtle:  #fffbeb;
+  --danger:          #dc2626;
+  --danger-subtle:   #fef2f2;
+
+  /* Premium accent — amber, used sparingly and only for paid surfaces */
+  --premium:         #b45309;
+  --premium-subtle:  #fffbeb;
+  --premium-border:  #fde68a;
+
+  /* ---- Elevation. Soft, tight shadows — no coloured glows. ---- */
+  --shadow-xs: 0 1px 2px 0 rgb(15 23 42 / 0.04);
+  --shadow-sm: 0 1px 3px 0 rgb(15 23 42 / 0.06), 0 1px 2px -1px rgb(15 23 42 / 0.04);
+  --shadow-md: 0 4px 12px -2px rgb(15 23 42 / 0.08), 0 2px 4px -2px rgb(15 23 42 / 0.04);
+  --shadow-lg: 0 12px 28px -6px rgb(15 23 42 / 0.10), 0 4px 8px -4px rgb(15 23 42 / 0.05);
+
+  /* ---- Radii ---- */
+  --r-sm: 6px;
+  --r-md: 8px;
+  --r-lg: 12px;
+  --r-xl: 16px;
+  --r-full: 9999px;
+
+  /* ---- Motion. One duration, one easing. ---- */
+  --ease: cubic-bezier(0.4, 0, 0.2, 1);
+  --dur: 150ms;
 }
 
-[data-theme="amber"] {
-  --background: #17120e;
-  --foreground: #fef3c7;
-  --card: #261f16;
-  --card-border: #3d3528;
-  --muted: #c9944a;
-  --accent: #f59e0b;
-  --accent-hover: #fbbf24;
-  --gradient-from: #451a03;
-  --gradient-via: #78350f;
-  --gradient-to: #92400e;
+.dark {
+  --background:      var(--n-950);
+  --surface:         #0b1220;
+  --surface-subtle:  #111c2e;
+  --surface-sunken:  #0a1120;
+  --surface-hover:   #16233a;
+
+  --foreground:      var(--n-50);
+  --foreground-soft: var(--n-300);
+  --muted:           var(--n-400);
+  --muted-strong:    var(--n-300);
+
+  --border:          #1e2d45;
+  --border-strong:   #2a3d5a;
+
+  --card:            var(--surface);
+  --card-border:     var(--border);
+
+  --accent:          var(--a-400);
+  --accent-hover:    var(--a-300);
+  --accent-subtle:   rgb(99 102 241 / 0.12);
+  --accent-border:   rgb(99 102 241 / 0.30);
+  --accent-fg:       var(--n-950);
+
+  --success:         #34d399;
+  --success-subtle:  rgb(16 185 129 / 0.12);
+  --warning:         #fbbf24;
+  --warning-subtle:  rgb(245 158 11 / 0.12);
+  --danger:          #f87171;
+  --danger-subtle:   rgb(239 68 68 / 0.12);
+
+  --premium:         #fbbf24;
+  --premium-subtle:  rgb(245 158 11 / 0.10);
+  --premium-border:  rgb(245 158 11 / 0.28);
+
+  --shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.30);
+  --shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.40);
+  --shadow-md: 0 4px 12px -2px rgb(0 0 0 / 0.45);
+  --shadow-lg: 0 12px 28px -6px rgb(0 0 0 / 0.55);
 }
 
-[data-theme="ocean"] {
-  --background: #080f14;
-  --foreground: #ccfbf1;
-  --card: #0f1f28;
-  --card-border: #1a2f3a;
-  --muted: #5eead4;
-  --accent: #06b6d4;
-  --accent-hover: #22d3ee;
-  --gradient-from: #042f2e;
-  --gradient-via: #0f766e;
-  --gradient-to: #0e7490;
+/* Expose tokens to Tailwind v4 utilities (bg-surface, text-muted, etc.) */
+@theme inline {
+  --color-background:     var(--background);
+  --color-surface:        var(--surface);
+  --color-surface-subtle: var(--surface-subtle);
+  --color-surface-sunken: var(--surface-sunken);
+  --color-foreground:     var(--foreground);
+  --color-muted:          var(--muted);
+  --color-border:         var(--border);
+  --color-accent:         var(--accent);
+  --color-success:        var(--success);
+  --color-warning:        var(--warning);
+  --color-danger:         var(--danger);
+  --color-premium:        var(--premium);
+
+  --radius-sm: var(--r-sm);
+  --radius-md: var(--r-md);
+  --radius-lg: var(--r-lg);
+  --radius-xl: var(--r-xl);
+}
+
+/* ============================================================================
+   BASE
+   ========================================================================= */
+
+* {
+  -webkit-tap-highlight-color: transparent;
+  border-color: var(--border);
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: "Inter", Arial, Helvetica, sans-serif;
-  transition: background-color 0.3s, color 0.3s;
+  font-family: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-feature-settings: "cv11", "ss01";
+  font-variant-ligatures: contextual common-ligatures;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
 
-/* ── Existing keyframes (unchanged) ── */
+/* Tighter tracking on display sizes — the main lever that makes type look
+   designed rather than default. */
+h1, h2, h3, h4 {
+  color: var(--foreground);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+h1 { letter-spacing: -0.035em; }
+h2 { letter-spacing: -0.028em; }
 
-@keyframes successBounce {
-  0% { transform: scale(0.9); opacity: 0; }
-  50% { transform: scale(1.02); }
-  100% { transform: scale(1); opacity: 1; }
-}
-@keyframes successScale {
-  0% { transform: scale(0); }
-  50% { transform: scale(1.2); }
-  100% { transform: scale(1); }
-}
-@keyframes successSparkle {
-  0% { transform: scale(0) rotate(0deg); opacity: 0; }
-  50% { transform: scale(1.3) rotate(180deg); opacity: 1; }
-  100% { transform: scale(1) rotate(360deg); opacity: 0.6; }
-}
-@keyframes drawCheck {
-  from { stroke-dashoffset: 30; }
-  to { stroke-dashoffset: 0; }
-}
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(-4px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-@keyframes slideUp {
-  from { opacity: 0; transform: translateY(8px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-@keyframes pulseGlow {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(79,70,229,0.3); }
-  50% { box-shadow: 0 0 0 6px rgba(79,70,229,0); }
+p { text-wrap: pretty; }
+
+::selection {
+  background: var(--accent);
+  color: var(--accent-fg);
 }
 
-/* ── New interactive / eye-catching keyframes ── */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: var(--r-sm);
+}
+:focus:not(:focus-visible) { outline: none; }
 
-@keyframes float {
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-10px); }
-}
-@keyframes floatSlow {
-  0%, 100% { transform: translateY(0px) rotate(0deg); }
-  33% { transform: translateY(-6px) rotate(1deg); }
-  66% { transform: translateY(4px) rotate(-1deg); }
-  100% { transform: translateY(0px) rotate(0deg); }
-}
-@keyframes shimmer {
-  0% { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
-}
-@keyframes gradientShift {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}
-@keyframes scaleIn {
-  from { opacity: 0; transform: scale(0.85); }
-  to { opacity: 1; transform: scale(1); }
-}
-@keyframes slideInRight {
-  from { opacity: 0; transform: translateX(20px); }
-  to { opacity: 1; transform: translateX(0); }
-}
-@keyframes slideInLeft {
-  from { opacity: 0; transform: translateX(-20px); }
-  to { opacity: 1; transform: translateX(0); }
-}
-@keyframes wiggle {
-  0%, 100% { transform: rotate(0deg); }
-  25% { transform: rotate(-5deg); }
-  75% { transform: rotate(5deg); }
-}
-@keyframes breathe {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.03); }
-}
-@keyframes borderGlow {
-  0%, 100% { border-color: var(--card-border); box-shadow: 0 0 0 0 rgba(79,70,229,0); }
-  50% { border-color: rgba(79,70,229,0.3); box-shadow: 0 0 12px 2px rgba(79,70,229,0.1); }
-}
-@keyframes spinner {
-  to { transform: rotate(360deg); }
-}
-@keyframes ripple {
-  to { transform: scale(4); opacity: 0; }
-}
-@keyframes cardLift {
-  0% { transform: translateY(0) scale(1); }
-  100% { transform: translateY(-6px) scale(1.02); }
-}
-@keyframes glowPulse {
-  0%, 100% { box-shadow: 0 0 8px rgba(79,70,229,0.2); }
-  50% { box-shadow: 0 0 20px rgba(79,70,229,0.4); }
-}
-@keyframes progressFill {
-  from { width: 0%; }
-}
-
-/* ── Utility classes ── */
-.animate-successBounce { animation: successBounce 0.4s ease-out; }
-.animate-successScale { animation: successScale 0.5s ease-out; }
-.animate-successSparkle { animation: successSparkle 0.8s ease-out; }
-.animate-drawCheck { stroke-dasharray: 30; animation: drawCheck 0.4s ease-out 0.1s forwards; }
-.animate-fadeIn { animation: fadeIn 0.3s ease-out; }
-.animate-slideUp { animation: slideUp 0.3s ease-out; }
-.animate-pulseGlow { animation: pulseGlow 1.5s ease-in-out infinite; }
-.animate-float { animation: float 3s ease-in-out infinite; }
-.animate-floatSlow { animation: floatSlow 6s ease-in-out infinite; }
-.animate-shimmer { background-size: 200% 100%; animation: shimmer 2s linear infinite; }
-.animate-gradientShift { background-size: 200% 200%; animation: gradientShift 4s ease infinite; }
-.animate-scaleIn { animation: scaleIn 0.4s ease-out; }
-.animate-slideInRight { animation: slideInRight 0.4s ease-out; }
-.animate-slideInLeft { animation: slideInLeft 0.4s ease-out; }
-.animate-wiggle { animation: wiggle 0.4s ease-in-out; }
-.animate-breathe { animation: breathe 3s ease-in-out infinite; }
-.animate-borderGlow { animation: borderGlow 2s ease-in-out infinite; }
-.animate-spin { animation: spinner 1s linear infinite; }
-.animate-cardLift { animation: cardLift 0.3s ease-out forwards; }
-.animate-glowPulse { animation: glowPulse 2s ease-in-out infinite; }
-.animate-progressFill { animation: progressFill 1s ease-out forwards; }
-.animate-delay-100 { animation-delay: 100ms; }
-.animate-delay-200 { animation-delay: 200ms; }
-.animate-delay-300 { animation-delay: 300ms; }
-.animate-delay-400 { animation-delay: 400ms; }
-.animate-delay-500 { animation-delay: 500ms; }
-.animate-delay-600 { animation-delay: 600ms; }
-
-/* ── Scroll-triggered reveal helper (used via class, JS can add on intersection) ── */
-.reveal {
-  opacity: 0;
-  transform: translateY(16px);
-  transition: opacity 0.5s ease-out, transform 0.5s ease-out;
-}
-.reveal.visible {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-/* ── Interactive state styles ── */
+/* Thin, unobtrusive scrollbars */
 * {
-  -webkit-tap-highlight-color: transparent;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-strong) transparent;
+}
+*::-webkit-scrollbar { width: 10px; height: 10px; }
+*::-webkit-scrollbar-track { background: transparent; }
+*::-webkit-scrollbar-thumb {
+  background: var(--border-strong);
+  border-radius: var(--r-full);
+  border: 3px solid var(--background);
+}
+*::-webkit-scrollbar-thumb:hover { background: var(--muted); }
+
+/* ============================================================================
+   COMPONENT PRIMITIVES
+   ========================================================================= */
+
+.surface-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
 }
 
-button:active:not(:disabled) {
-  transform: scale(0.97);
+/* Interactive card: 1px lift + border darkening. No scale, no colour glow. */
+.card-interactive {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  transition: border-color var(--dur) var(--ease),
+              box-shadow var(--dur) var(--ease),
+              transform var(--dur) var(--ease);
 }
-
-a:active:not(.sr-only) {
-  transform: scale(0.97);
+.card-interactive:hover {
+  border-color: var(--border-strong);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-1px);
 }
+.card-interactive:active { transform: translateY(0); }
 
-/* Card with hover lift */
+/* Back-compat for pages still using .card-hover */
 .card-hover {
-  transition: transform 0.2s ease-out, box-shadow 0.2s ease-out, border-color 0.2s ease-out;
+  transition: border-color var(--dur) var(--ease),
+              box-shadow var(--dur) var(--ease),
+              transform var(--dur) var(--ease);
 }
 .card-hover:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 8px 30px rgba(0,0,0,0.08);
-}
-.dark .card-hover:hover,
-[data-theme] .card-hover:hover {
-  box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+  border-color: var(--border-strong);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-1px);
 }
 
-/* Gradient border trick */
-.gradient-border {
-  position: relative;
-  border-radius: 12px;
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-weight: 500;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  padding: 0.5625rem 1rem;
+  border-radius: var(--r-md);
+  border: 1px solid transparent;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background-color var(--dur) var(--ease),
+              border-color var(--dur) var(--ease),
+              color var(--dur) var(--ease),
+              box-shadow var(--dur) var(--ease);
 }
-.gradient-border::before {
+.btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.btn-primary {
+  background: var(--accent);
+  color: var(--accent-fg);
+  box-shadow: var(--shadow-xs);
+}
+.btn-primary:hover:not(:disabled) { background: var(--accent-hover); }
+
+.btn-secondary {
+  background: var(--surface);
+  color: var(--foreground);
+  border-color: var(--border-strong);
+  box-shadow: var(--shadow-xs);
+}
+.btn-secondary:hover:not(:disabled) { background: var(--surface-hover); }
+
+.btn-ghost { background: transparent; color: var(--muted-strong); }
+.btn-ghost:hover:not(:disabled) {
+  background: var(--surface-hover);
+  color: var(--foreground);
+}
+
+.btn-lg { padding: 0.6875rem 1.25rem; font-size: 0.9375rem; }
+
+.input {
+  width: 100%;
+  background: var(--surface);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--r-md);
+  padding: 0.5625rem 0.75rem;
+  font-size: 0.875rem;
+  color: var(--foreground);
+  transition: border-color var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
+}
+.input::placeholder { color: var(--muted); }
+.input:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-subtle);
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.6875rem;
+  font-weight: 500;
+  line-height: 1;
+  padding: 0.25rem 0.5rem;
+  border-radius: var(--r-full);
+  border: 1px solid var(--border);
+  background: var(--surface-subtle);
+  color: var(--muted-strong);
+  white-space: nowrap;
+}
+.badge-accent {
+  background: var(--accent-subtle);
+  border-color: var(--accent-border);
+  color: var(--accent);
+}
+.badge-premium {
+  background: var(--premium-subtle);
+  border-color: var(--premium-border);
+  color: var(--premium);
+}
+
+/* Hairline separator that fades at both ends */
+.rule {
+  height: 1px;
+  border: 0;
+  background: linear-gradient(90deg, transparent, var(--border) 15%, var(--border) 85%, transparent);
+}
+
+/* ============================================================================
+   MOTION
+   Four utilities. Entrance only — nothing loops except the spinner and a
+   skeleton shimmer, both of which communicate real state.
+   ========================================================================= */
+
+@keyframes fadeIn  { from { opacity: 0; } to { opacity: 1; } }
+@keyframes slideUp { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes scaleIn { from { opacity: 0; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } }
+@keyframes spinner { to { transform: rotate(360deg); } }
+@keyframes shimmer { 100% { transform: translateX(100%); } }
+
+.animate-fadeIn  { animation: fadeIn 200ms var(--ease) both; }
+.animate-slideUp { animation: slideUp 240ms var(--ease) both; }
+.animate-scaleIn { animation: scaleIn 160ms var(--ease) both; }
+.animate-spin    { animation: spinner 700ms linear infinite; }
+
+.animate-delay-100 { animation-delay: 50ms; }
+.animate-delay-200 { animation-delay: 100ms; }
+.animate-delay-300 { animation-delay: 150ms; }
+.animate-delay-400 { animation-delay: 200ms; }
+.animate-delay-500 { animation-delay: 250ms; }
+.animate-delay-600 { animation-delay: 300ms; }
+
+.skeleton {
+  position: relative;
+  overflow: hidden;
+  background: var(--surface-sunken);
+  border-radius: var(--r-md);
+}
+.skeleton::after {
   content: "";
   position: absolute;
   inset: 0;
-  border-radius: inherit;
-  padding: 1px;
-  background: linear-gradient(135deg, var(--accent), #a855f7, var(--accent));
-  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
+  transform: translateX(-100%);
+  background: linear-gradient(90deg, transparent, rgb(255 255 255 / 0.06), transparent);
+  animation: shimmer 1.4s infinite;
+}
+
+/* Scroll reveal */
+.reveal {
   opacity: 0;
-  transition: opacity 0.3s;
+  transform: translateY(10px);
+  transition: opacity 400ms var(--ease), transform 400ms var(--ease);
 }
-.gradient-border:hover::before {
-  opacity: 1;
+.reveal.visible { opacity: 1; transform: translateY(0); }
+
+/* ----------------------------------------------------------------------------
+   Legacy animation aliases.
+   ~80 pages still reference the old decorative classes. Rather than leave them
+   undefined (which would strand elements at opacity:0 or mid-transform), each
+   maps to a calm equivalent or an explicit no-op. Remove once every page is
+   migrated to the new system.
+   ------------------------------------------------------------------------- */
+.animate-successBounce,
+.animate-successScale,
+.animate-scaleIn        { animation: scaleIn 160ms var(--ease) both; }
+.animate-slideInRight,
+.animate-slideInLeft    { animation: slideUp 240ms var(--ease) both; }
+.animate-successSparkle,
+.animate-pulseGlow,
+.animate-float,
+.animate-floatSlow,
+.animate-breathe,
+.animate-wiggle,
+.animate-borderGlow,
+.animate-glowPulse,
+.animate-shimmer,
+.animate-gradientShift,
+.animate-cardLift       { animation: none; }
+.animate-drawCheck      { stroke-dasharray: 30; animation: none; stroke-dashoffset: 0; }
+.animate-progressFill   { animation: none; }
+
+/* The old hero gradient — now a flat, calm surface. */
+.bg-gradient-hero {
+  background: var(--surface-subtle);
+  animation: none;
 }
 
-/* Text gradient */
+.gradient-border { position: relative; border-radius: var(--r-lg); }
+.gradient-border::before { content: none; }
+
 .text-gradient {
-  background: linear-gradient(135deg, var(--foreground) 0%, var(--accent) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  background: none;
+  -webkit-text-fill-color: currentColor;
+  color: var(--foreground);
 }
 
-html { scroll-behavior: smooth; }
+/* ============================================================================
+   UTILITIES
+   ========================================================================= */
 
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+@layer utilities {
+  .scrollbar-none::-webkit-scrollbar { display: none; }
+  .scrollbar-none { -ms-overflow-style: none; scrollbar-width: none; }
+
+  .container-page { max-width: 72rem; margin-inline: auto; padding-inline: 1rem; }
+  .container-prose { max-width: 44rem; margin-inline: auto; padding-inline: 1rem; }
+
+  /* Subtle dotted background for hero/empty states */
+  .bg-dots {
+    background-image: radial-gradient(circle at 1px 1px, var(--border) 1px, transparent 0);
+    background-size: 22px 22px;
+  }
 }
 
 @media (max-width: 640px) {
-  input, select, textarea, button, a { font-size: 16px !important; }
+  input, select, textarea { font-size: 16px !important; }
   .touch-target { min-height: 44px; min-width: 44px; }
   .mobile-bottom-pad { padding-bottom: env(safe-area-inset-bottom, 16px); }
 }
 
-*:focus-visible { outline: 2px solid #6366f1; outline-offset: 2px; border-radius: 8px; }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
 
-@layer utilities {
-  .bg-gradient-hero {
-    background: linear-gradient(135deg, var(--gradient-from) 0%, var(--gradient-via) 50%, var(--gradient-to) 100%);
-    background-size: 200% 200%;
-    animation: gradientShift 6s ease infinite;
-  }
-  .scrollbar-none::-webkit-scrollbar {
-    display: none;
-  }
-  .scrollbar-none {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-  }
+@media print {
+  header, footer, .no-print { display: none !important; }
+  body { background: #fff; color: #000; }
 }
