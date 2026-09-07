@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useEffect, useRef } from "react";
+import ToolGuide from "@/components/ToolGuide";
 import ToolInfo from "@/components/ToolInfo";
 import FreeWaitTimer from "@/components/FreeWaitTimer";
 import UsageBar from "@/components/UsageBar";
@@ -241,6 +242,8 @@ export default function OcrPdfPage() {
           <p>Perfect for digitizing printed documents, extracting text from screenshots, making scanned PDFs searchable, or converting image-based content into editable text. Powered by Tesseract.js, one of the most accurate open-source OCR engines.</p>
         </div>
       </div>
+      <ToolGuide slug="ocr-pdf" />
+
       <RelatedContent slug="ocr-pdf" />
 
       <UseCaseLinks toolSlug="ocr-pdf" />

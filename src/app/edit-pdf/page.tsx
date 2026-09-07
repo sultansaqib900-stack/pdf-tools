@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useRef, useEffect } from "react";
+import ToolGuide from "@/components/ToolGuide";
 import ToolInfo from "@/components/ToolInfo";
 import FreeWaitTimer from "@/components/FreeWaitTimer";
 import UsageBar from "@/components/UsageBar";
@@ -386,6 +387,8 @@ export default function EditPdfPage() {
           <p>Your original PDF stays private. All editing happens client-side using pdf-lib. Simply upload, edit, and download your modified PDF.</p>
         </div>
       </div>
+      <ToolGuide slug="edit-pdf" />
+
       <RelatedContent slug="edit-pdf" />
 
       <UseCaseLinks toolSlug="edit-pdf" />

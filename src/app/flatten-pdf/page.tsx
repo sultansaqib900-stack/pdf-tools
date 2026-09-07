@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useEffect, useRef } from "react";
+import ToolGuide from "@/components/ToolGuide";
 import ToolInfo from "@/components/ToolInfo";
 import FreeWaitTimer from "@/components/FreeWaitTimer";
 import UsageBar from "@/components/UsageBar";
@@ -180,6 +181,8 @@ export default function FlattenPDFPage() {
           <p>Keywords: flatten PDF online free, merge layers in PDF, flatten form fields, make PDF permanent, flatten annotations.</p>
         </div>
       </div>
+      <ToolGuide slug="flatten-pdf" />
+
       <RelatedContent slug="flatten-pdf" />
 
       <PremiumUpsell

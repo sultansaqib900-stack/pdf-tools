@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useEffect, useRef } from "react";
+import ToolGuide from "@/components/ToolGuide";
 import ToolInfo from "@/components/ToolInfo";
 import FreeWaitTimer from "@/components/FreeWaitTimer";
 import UsageBar from "@/components/UsageBar";
@@ -249,6 +250,8 @@ export default function AddPageNumbersPage() {
           <p>Number your PDF pages easily with our free tool, designed for authors, office workers, and anyone preparing professional documents. Whether you are laying out a book, organizing a multi-section report, or creating an instruction manual, adding sequential page numbers helps readers navigate your content with confidence. Our tool lets you choose from six positions — top or bottom, aligned left, center, or right — and set any starting number. To add page numbers to PDF online free, just upload your file, pick your settings, and download instantly. The numbering is applied client-side using pdf-lib, so your files remain private and secure. The clean Helvetica font and balanced size blend seamlessly with your document's layout.</p>
         </div>
       </div>
+      <ToolGuide slug="add-page-numbers" />
+
       <RelatedContent slug="add-page-numbers" />
 
       <UseCaseLinks toolSlug="add-page-numbers" />

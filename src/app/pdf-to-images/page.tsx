@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useEffect, useRef } from "react";
+import ToolGuide from "@/components/ToolGuide";
 import ToolInfo from "@/components/ToolInfo";
 import FreeWaitTimer from "@/components/FreeWaitTimer";
 import UsageBar from "@/components/UsageBar";
@@ -239,6 +240,8 @@ export default function PdfToImagesPage() {
           <p>Extract every page of your PDF as a high-quality PNG image using our PDF to images tool, designed for quick and private conversion. This is perfect for creating thumbnails, sharing individual pages on social media, or embedding document content into presentations and reports. To convert PDF to PNG, simply upload your file and click extract — each page is rendered client-side using PDF.js, ensuring your document never leaves your device. Use our free PDF to images online free tool to get high-resolution PNGs that preserve the original layout, fonts, and formatting of every page. Each image can be downloaded individually or all at once, giving you full control over how you use your extracted content.</p>
         </div>
       </div>
+      <ToolGuide slug="pdf-to-images" />
+
       <RelatedContent slug="pdf-to-images" />
 
       <PremiumUpsell

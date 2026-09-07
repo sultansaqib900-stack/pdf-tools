@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useEffect, useRef } from "react";
+import ToolGuide from "@/components/ToolGuide";
 import ToolInfo from "@/components/ToolInfo";
 import FreeWaitTimer from "@/components/FreeWaitTimer";
 import { isPremium, checkFileSize } from "@/lib/premium";
@@ -253,6 +254,8 @@ export default function ResizePage() {
           <p>Keywords: resize PDF online free, change PDF page size, PDF to A4 online, PDF page dimensions, change PDF paper size.</p>
         </div>
       </div>
+
+      <ToolGuide slug="resize" />
 
       <RelatedContent slug="resize" />
 

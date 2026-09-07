@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useEffect, useRef } from "react";
+import ToolGuide from "@/components/ToolGuide";
 import ToolInfo from "@/components/ToolInfo";
 import FreeWaitTimer from "@/components/FreeWaitTimer";
 import UsageBar from "@/components/UsageBar";
@@ -193,6 +194,8 @@ export default function UnlockPage() {
           <p>Keywords: unlock PDF online free, remove PDF password, decrypt PDF file, remove PDF protection online free.</p>
         </div>
       </div>
+      <ToolGuide slug="unlock" />
+
       <RelatedContent slug="unlock" />
 
       <UseCaseLinks toolSlug="unlock" />

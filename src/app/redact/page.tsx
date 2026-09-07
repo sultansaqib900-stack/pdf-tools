@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useRef, useEffect } from "react";
+import ToolGuide from "@/components/ToolGuide";
 import ToolInfo from "@/components/ToolInfo";
 import FreeWaitTimer from "@/components/FreeWaitTimer";
 import UsageBar from "@/components/UsageBar";
@@ -397,6 +398,8 @@ export default function RedactPage() {
           <p>All processing happens locally in your browser — no uploads, no servers, complete privacy. Keywords: redact PDF online free, black out text PDF, hide sensitive information PDF, PDF redaction tool.</p>
         </div>
       </div>
+
+      <ToolGuide slug="redact" />
 
       <RelatedContent slug="redact" />
 

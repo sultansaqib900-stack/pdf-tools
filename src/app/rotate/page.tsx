@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useEffect, useRef } from "react";
+import ToolGuide from "@/components/ToolGuide";
 import ToolInfo from "@/components/ToolInfo";
 import FreeWaitTimer from "@/components/FreeWaitTimer";
 import UsageBar from "@/components/UsageBar";
@@ -212,6 +213,8 @@ export default function RotatePage() {
           <p>Fix upside-down or sideways pages instantly with our rotate PDF tool, the simplest way to correct misaligned documents. Whether you scanned a document at the wrong angle, received a PDF that displays incorrectly, or need to adjust mixed-orientation files, this tool lets you rotate all pages by 90, 180, or 270 degrees in one click. To rotate PDF online free, upload your file, choose your angle, and download the corrected version immediately. All processing happens client-side using pdf-lib, ensuring your files stay private and never leave your device. This is especially helpful when dealing with misaligned scans, rotated camera photos converted to PDF, or any document that needs quick page rotation across the whole file.</p>
         </div>
       </div>
+      <ToolGuide slug="rotate" />
+
       <RelatedContent slug="rotate" />
 
       <UseCaseLinks toolSlug="rotate" />

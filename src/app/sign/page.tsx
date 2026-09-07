@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useRef, useEffect } from "react";
+import ToolGuide from "@/components/ToolGuide";
 import ToolInfo from "@/components/ToolInfo";
 import FreeWaitTimer from "@/components/FreeWaitTimer";
 import UsageBar from "@/components/UsageBar";
@@ -269,6 +270,8 @@ export default function SignPage() {
           <p>Add your signature to PDF documents digitally with our e-sign tool, designed for quick and secure document signing without printing or scanning. Draw your signature using your mouse or touchscreen, upload a PDF, and your signature is placed neatly on the last page. To sign PDF online free, simply draw in the signature pad, select your document, and download the signed file immediately. Everything runs entirely in your browser — drawing, embedding, and downloading — so your data never reaches a server. This is ideal for contracts, rental agreements, consent forms, approval workflows, and any document that requires a personal touch. Our e-sign PDF document tool gives you a simple, private way to sign.</p>
         </div>
       </div>
+      <ToolGuide slug="sign" />
+
       <RelatedContent slug="sign" />
 
       <UseCaseLinks toolSlug="sign" />

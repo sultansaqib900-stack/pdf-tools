@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useEffect, useRef } from "react";
+import ToolGuide from "@/components/ToolGuide";
 import ToolInfo from "@/components/ToolInfo";
 import FreeWaitTimer from "@/components/FreeWaitTimer";
 import UsageBar from "@/components/UsageBar";
@@ -231,6 +232,8 @@ export default function WatermarkPage() {
           <p>Keywords: add watermark to PDF online free, PDF watermark tool, mark PDF as confidential, draft watermark PDF free online.</p>
         </div>
       </div>
+      <ToolGuide slug="watermark" />
+
       <RelatedContent slug="watermark" />
 
       <UseCaseLinks toolSlug="watermark" />

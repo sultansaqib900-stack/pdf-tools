@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useEffect, useRef } from "react";
+import ToolGuide from "@/components/ToolGuide";
 import ToolInfo from "@/components/ToolInfo";
 import FreeWaitTimer from "@/components/FreeWaitTimer";
 import UsageBar from "@/components/UsageBar";
@@ -252,6 +253,8 @@ export default function PdfToExcelPage() {
           <p>Convert PDF tables to CSV online for free with our AI-powered PDF to Excel tool. Upload a PDF containing tabular data — invoices, financial statements, reports, or spreadsheets — and our tool extracts all tables into clean CSV format using Google Gemini vision AI. Unlike traditional PDF table extractors that rely on text parsing, our approach uses vision AI to understand the layout and structure of every table on each page. This means it works even with scanned PDFs, image-based tables, and complex multi-column layouts. Each table is separated by a blank line in the output, and headers are preserved exactly as they appear. You can copy the CSV directly from the textarea or download it as a .csv file for use in Excel, Google Sheets, or any spreadsheet application. Your data is processed securely — pages are rendered locally in your browser and only the anonymized page images are sent to Gemini for extraction. No files are stored on our servers.</p>
         </div>
       </div>
+      <ToolGuide slug="pdf-to-excel" />
+
       <RelatedContent slug="pdf-to-excel" />
 
       <PremiumUpsell

@@ -1,5 +1,7 @@
+import React from "react";
 import Link from "next/link";
 import Icon from "@/components/ui/Icon";
+import { getToolGuide, type ToolGuideData } from "@/lib/tool-guides";
 
 export interface GuideStep {
   title: string;
@@ -12,10 +14,65 @@ export interface GuideSection {
 }
 
 interface Props {
-  /** Short answer to the page's primary query — the passage most likely to be quoted in a snippet. */
-  summary: React.ReactNode;
+  /** Pull the guide from src/lib/tool-guides.ts by slug. */
+  slug?: string;
+  /** Or pass content directly as JSX (used by the earliest pilot pages). */
+  summary?: React.ReactNode;
   steps?: GuideStep[];
-  sections: GuideSection[];
+  sections?: GuideSection[];
+}
+
+/**
+ * Renders a very small subset of markdown: **bold** and [label](/href).
+ * This exists so tool-guides.ts can stay plain data instead of JSX.
+ */
+function renderInline(text: string, keyPrefix: string): React.ReactNode[] {
+  const out: React.ReactNode[] = [];
+  const pattern = /\[([^\]]+)\]\((\/[^)]*)\)|\*\*([^*]+)\*\*/g;
+  let last = 0;
+  let m: RegExpExecArray | null;
+  let i = 0;
+
+  while ((m = pattern.exec(text)) !== null) {
+    if (m.index > last) out.push(text.slice(last, m.index));
+    if (m[1] && m[2]) {
+      out.push(
+        <Link key={`${keyPrefix}-l${i}`} href={m[2]} className="text-[var(--accent)] hover:underline">
+          {m[1]}
+        </Link>
+      );
+    } else if (m[3]) {
+      out.push(
+        <strong key={`${keyPrefix}-b${i}`} className="font-medium text-[var(--foreground)]">
+          {m[3]}
+        </strong>
+      );
+    }
+    last = m.index + m[0].length;
+    i++;
+  }
+  if (last < text.length) out.push(text.slice(last));
+  return out;
+}
+
+function fromData(data: ToolGuideData) {
+  return {
+    summary: <p>{renderInline(data.summary, "sum")}</p>,
+    steps: data.steps?.map((s, i) => ({
+      title: s.title,
+      body: <>{renderInline(s.body, `st${i}`)}</>,
+    })),
+    sections: data.sections.map((s, i) => ({
+      heading: s.heading,
+      body: (
+        <>
+          {s.paras.map((p, j) => (
+            <p key={j}>{renderInline(p, `s${i}p${j}`)}</p>
+          ))}
+        </>
+      ),
+    })),
+  };
 }
 
 /**
@@ -23,21 +80,35 @@ interface Props {
  * never delays interaction, but gives the page enough substance to rank for
  * the informational queries around the tool.
  */
-export default function ToolGuide({ summary, steps, sections }: Props) {
+export default function ToolGuide({ slug, summary, steps, sections }: Props) {
+  let content = { summary, steps, sections: sections ?? [] };
+
+  if (slug) {
+    const data = getToolGuide(slug);
+    if (!data) return null;
+    content = fromData(data);
+  }
+
+  if (!content.summary && content.sections.length === 0) return null;
+
   return (
     <div className="mt-12 pt-8 border-t border-[var(--border)] space-y-9">
-      <section>
-        <div className="surface-card p-5 flex gap-3">
-          <Icon name="info" size={17} className="mt-0.5 shrink-0 text-[var(--accent)]" />
-          <div className="space-y-2 text-[0.875rem] leading-[1.7] text-[var(--muted-strong)]">{summary}</div>
-        </div>
-      </section>
+      {content.summary && (
+        <section>
+          <div className="surface-card p-5 flex gap-3">
+            <Icon name="info" size={17} className="mt-0.5 shrink-0 text-[var(--accent)]" />
+            <div className="space-y-2 text-[0.875rem] leading-[1.7] text-[var(--muted-strong)]">
+              {content.summary}
+            </div>
+          </div>
+        </section>
+      )}
 
-      {steps && steps.length > 0 && (
+      {content.steps && content.steps.length > 0 && (
         <section>
           <h2 className="text-lg font-semibold text-[var(--foreground)] mb-4">Step by step</h2>
           <ol className="space-y-3">
-            {steps.map((s, i) => (
+            {content.steps.map((s, i) => (
               <li key={s.title} className="flex gap-3">
                 <span className="inline-flex items-center justify-center w-6 h-6 shrink-0 rounded-full bg-[var(--accent-subtle)] border border-[var(--accent-border)] text-[0.75rem] font-semibold text-[var(--accent)]">
                   {i + 1}
@@ -52,7 +123,7 @@ export default function ToolGuide({ summary, steps, sections }: Props) {
         </section>
       )}
 
-      {sections.map((s) => (
+      {content.sections.map((s) => (
         <section key={s.heading}>
           <h2 className="text-lg font-semibold text-[var(--foreground)] mb-2">{s.heading}</h2>
           <div className="space-y-3 text-[0.875rem] leading-[1.7] text-[var(--muted-strong)]">{s.body}</div>

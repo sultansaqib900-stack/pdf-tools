@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useEffect, useRef } from "react";
+import ToolGuide from "@/components/ToolGuide";
 import ToolInfo from "@/components/ToolInfo";
 import FreeWaitTimer from "@/components/FreeWaitTimer";
 import { isPremium, checkFileSize } from "@/lib/premium";
@@ -266,6 +267,8 @@ export default function OrganizePage() {
           <p>Keywords: organize PDF pages online free, reorder PDF pages, rearrange PDF file, PDF page organizer free online.</p>
         </div>
       </div>
+
+      <ToolGuide slug="organize" />
 
       <RelatedContent slug="organize" />
 

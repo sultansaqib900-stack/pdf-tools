@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useEffect, useRef } from "react";
+import ToolGuide from "@/components/ToolGuide";
 import ToolInfo from "@/components/ToolInfo";
 import FreeWaitTimer from "@/components/FreeWaitTimer";
 import UsageBar from "@/components/UsageBar";
@@ -316,6 +317,8 @@ export default function FillFormPage() {
           <p>Keywords: fill PDF form online free, complete PDF forms, PDF form filler, fillable PDF, submit PDF form, flatten PDF form fields.</p>
         </div>
       </div>
+      <ToolGuide slug="fill-form" />
+
       <RelatedContent slug="fill-form" />
 
       <UseCaseLinks toolSlug="fill-form" />

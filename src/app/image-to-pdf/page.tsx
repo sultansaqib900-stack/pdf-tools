@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useEffect, useRef } from "react";
+import ToolGuide from "@/components/ToolGuide";
 import ToolInfo from "@/components/ToolInfo";
 import FreeWaitTimer from "@/components/FreeWaitTimer";
 import UsageBar from "@/components/UsageBar";
@@ -227,6 +228,8 @@ export default function ImageToPdfPage() {
           <p>Convert your images to PDF documents with our free image to PDF converter, designed for speed and simplicity. Whether you have JPG photos from your camera, PNG screenshots, or other image formats, you can combine them into a single PDF with just a few clicks. This is great for creating photo albums, digitizing handwritten notes, or converting scanned documents into a portable format that anyone can view. Our JPG to PDF converter works entirely in your browser using pdf-lib, so your images stay private and secure with no server uploads. Simply upload your images, preview them in the gallery, and download your PDF. Each image becomes a separate page preserving its original dimensions and quality — perfect for archiving or sharing.</p>
         </div>
       </div>
+      <ToolGuide slug="image-to-pdf" />
+
       <RelatedContent slug="image-to-pdf" />
 
       <UseCaseLinks toolSlug="image-to-pdf" />

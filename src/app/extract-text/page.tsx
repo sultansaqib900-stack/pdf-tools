@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useEffect, useRef } from "react";
+import ToolGuide from "@/components/ToolGuide";
 import ToolInfo from "@/components/ToolInfo";
 import FreeWaitTimer from "@/components/FreeWaitTimer";
 import UsageBar from "@/components/UsageBar";
@@ -218,6 +219,8 @@ export default function ExtractTextPage() {
           <p>Our free PDF text extractor lets you extract text from PDF documents quickly and privately, making it an essential tool for researchers, students, and professionals. Whether you need to copy quotes for academic work, analyze document content for data processing, or repurpose text from a scanned PDF, this tool handles it all with ease. The extraction runs entirely in your browser using PDF.js, so your documents never leave your device — complete privacy guaranteed. To extract text from PDF online free, just upload your file and click extract. The tool reads every page and presents the text in a clean, copyable format with page markers. You can copy to clipboard or download as a .txt file for further editing.</p>
         </div>
       </div>
+
+      <ToolGuide slug="extract-text" />
 
       <RelatedContent slug="extract-text" />
 

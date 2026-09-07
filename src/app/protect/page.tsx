@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useEffect, useRef } from "react";
+import ToolGuide from "@/components/ToolGuide";
 import ToolInfo from "@/components/ToolInfo";
 import FreeWaitTimer from "@/components/FreeWaitTimer";
 import UsageBar from "@/components/UsageBar";
@@ -193,6 +194,8 @@ export default function ProtectPage() {
           <p>Secure your sensitive documents by adding a password with our protect tool, keeping your files safe from unauthorized access. To password protect PDF online free, upload your file, enter a strong password, and download the encrypted version instantly. The encryption is applied entirely in your browser using pdf-lib, so your document never leaves your device and no data is transmitted over the network. This is essential for protecting confidential business reports, personal financial documents, legal contracts, or any PDF that contains sensitive information. Once protected, the password must be entered to open the file, giving you full control over who can view it. Encrypt PDF file securely with our fully client-side tool — no data transmission, no server storage, complete privacy guaranteed.</p>
         </div>
       </div>
+      <ToolGuide slug="protect" />
+
       <RelatedContent slug="protect" />
 
       <UseCaseLinks toolSlug="protect" />

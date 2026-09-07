@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useEffect, useRef } from "react";
+import ToolGuide from "@/components/ToolGuide";
 import ToolInfo from "@/components/ToolInfo";
 import FreeWaitTimer from "@/components/FreeWaitTimer";
 import UsageBar from "@/components/UsageBar";
@@ -226,6 +227,8 @@ export default function DeletePagesPage() {
           <p>Keywords: delete pages from PDF online free, remove PDF pages, PDF page remover, delete PDF pages without acrobat.</p>
         </div>
       </div>
+      <ToolGuide slug="delete-pages" />
+
       <RelatedContent slug="delete-pages" />
 
       <UseCaseLinks toolSlug="delete-pages" />

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useEffect, useRef } from "react";
+import ToolGuide from "@/components/ToolGuide";
 import ToolInfo from "@/components/ToolInfo";
 import FreeWaitTimer from "@/components/FreeWaitTimer";
 import UsageBar from "@/components/UsageBar";
@@ -128,6 +129,8 @@ export default function PdfToWordPage() {
         )}
         {error && <ErrorBanner message={error} onRetry={runConvert} onDismiss={() => setError(null)} />}
       </div>
+      <ToolGuide slug="pdf-to-word" />
+
       <RelatedContent slug="pdf-to-word" />
 
       <UseCaseLinks toolSlug="pdf-to-word" />

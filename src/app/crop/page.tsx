@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useEffect, useRef } from "react";
+import ToolGuide from "@/components/ToolGuide";
 import ToolInfo from "@/components/ToolInfo";
 import FreeWaitTimer from "@/components/FreeWaitTimer";
 import { isPremium, checkFileSize } from "@/lib/premium";
@@ -224,6 +225,8 @@ export default function CropPage() {
           <p>Keywords: crop PDF online free, trim PDF margins, remove whitespace PDF, cut PDF pages, PDF margin remover free online.</p>
         </div>
       </div>
+      <ToolGuide slug="crop" />
+
       <RelatedContent slug="crop" />
 
       <UseCaseLinks toolSlug="crop" />
