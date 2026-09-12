@@ -20,6 +20,8 @@ import FaqPageJsonLd from "@/components/FaqPageJsonLd";
 import RelatedContent from "@/components/RelatedContent";
 import { getRelatedContent } from "@/lib/related-content";
 import UseCaseLinks from "@/components/UseCaseLinks";
+import { createZipArchive } from "@/lib/archive";
+import { downloadBytes } from "@/lib/pdfBytes";
 
 const rc = getRelatedContent("split");
 
@@ -67,39 +69,37 @@ export default function SplitPage() {
       const sourcePdf = await PDFDocument.load(bytes, { ignoreEncryption: true });
 
       if (mode === "all") {
+        const outputFiles: { name: string; bytes: Uint8Array }[] = [];
+        const padding = String(sourcePdf.getPageCount()).length;
         for (let i = 0; i < sourcePdf.getPageCount(); i++) {
           const newPdf = await PDFDocument.create();
           const [page] = await newPdf.copyPages(sourcePdf, [i]);
           newPdf.addPage(page);
-          const pdfBytes = await newPdf.save({ useObjectStreams: true });
-          const blob = new Blob([pdfBytes.slice()], { type: "application/pdf" });
-          const url = URL.createObjectURL(blob);
-          const a = document.createElement("a");
-          a.href = url;
-          a.download = `page-${i + 1}-${file.name}`;
-          a.click();
-          URL.revokeObjectURL(url);
+          outputFiles.push({
+            name: `page-${String(i + 1).padStart(padding, "0")}.pdf`,
+            bytes: await newPdf.save({ useObjectStreams: true }),
+          });
         }
-        trackExport(file.name, "Split PDF", sourcePdf.getPageCount());
+        const archive = createZipArchive(outputFiles);
+        const baseName = file.name.replace(/\.pdf$/i, "") || "split-pages";
+        downloadBytes(archive, `${baseName}-pages.zip`, "application/zip");
+        trackExport(file.name, "Split PDF", archive.byteLength);
       } else {
-        const s = Math.max(0, startPage - 1);
-        const e = Math.min(sourcePdf.getPageCount() - 1, endPage - 1);
+        if (startPage > endPage) {
+          throw new Error("The first page must not come after the last page.");
+        }
+        const s = startPage - 1;
+        const e = endPage - 1;
         const newPdf = await PDFDocument.create();
         const pages = await newPdf.copyPages(sourcePdf, Array.from({ length: e - s + 1 }, (_, i) => s + i));
         pages.forEach((p) => newPdf.addPage(p));
         const pdfBytes = await newPdf.save({ useObjectStreams: true });
-        const blob = new Blob([pdfBytes.slice()], { type: "application/pdf" });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = `pages-${startPage}-${endPage}-${file.name}`;
-        a.click();
-        URL.revokeObjectURL(url);
+        downloadBytes(pdfBytes, `pages-${startPage}-${endPage}-${file.name}`);
         trackExport(file.name, "Split PDF", pdfBytes.byteLength);
       }
       setSuccess(true);
-    } catch {
-      setError("Failed to split PDF. The file may be encrypted or corrupted.");
+    } catch (splitError) {
+      setError(splitError instanceof Error ? splitError.message : "Failed to split PDF. The file may be encrypted or corrupted.");
     }
     setProcessing(false);
   }, [file, mode, startPage, endPage]);
@@ -132,7 +132,7 @@ export default function SplitPage() {
         description="Split PDF files online for free. Extract pages from PDF documents instantly in your browser. No uploads."
         url="https://allaboutpdfediting.xyz/split"
       />
-      <HowToJsonLd name="Split PDF Pages Online" description="Separate PDF pages into multiple files or extract specific pages" steps={[{name:"Upload PDF",text:"Select the PDF file to split"},{name:"Choose split method",text:"Select page ranges or split every page"},{name:"Download split files",text:"Download the individual PDF files"}]} />
+      <HowToJsonLd name="Split PDF Pages Online" description="Separate every PDF page into a ZIP or extract one continuous page range" steps={[{name:"Upload PDF",text:"Select the PDF file to split"},{name:"Choose split method",text:"Select one continuous page range or split every page"},{name:"Download output",text:"Download the extracted PDF or ZIP of single-page PDFs"}]} />
       <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Split PDF", item: "https://allaboutpdfediting.xyz/split" }]} />
       <FaqPageJsonLd questions={rc?.faqs} />
       <AiSummaryJsonLd name="Split PDF" summary="Separate PDF pages into multiple documents or extract specific page ranges" category="Utilities" inputType="PDF" outputType="PDF" processing="client-side" price="free" features={["Page range extraction","Split every page","Multiple output files","Client-side processing","Free"]} limits="Files up to 10MB" />
@@ -213,7 +213,7 @@ export default function SplitPage() {
                   <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none"/><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
                   Splitting...
                 </span>
-              ) : mode === "all" ? `Split into ${pageCount} files` : `Extract pages ${startPage}–${endPage}`}
+              ) : mode === "all" ? `Split ${pageCount} pages to ZIP` : `Extract pages ${startPage}–${endPage}`}
             </button>
 
             {!isPremium() && (

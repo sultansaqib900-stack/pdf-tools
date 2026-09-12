@@ -19,6 +19,8 @@ import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 import FaqPageJsonLd from "@/components/FaqPageJsonLd";
 import RelatedContent from "@/components/RelatedContent";
 import { getRelatedContent } from "@/lib/related-content";
+import { flattenPdfVisually } from "@/lib/pdfRaster";
+import { downloadBytes } from "@/lib/pdfBytes";
 
 const rc = getRelatedContent("flatten-pdf");
 
@@ -33,6 +35,7 @@ export default function FlattenPDFPage() {
   const [success, setSuccess] = useState(false);
   const [dragging, setDragging] = useState(false);
   const [showTimer, setShowTimer] = useState(false);
+  const [progress, setProgress] = useState(0);
 
   useEffect(() => { trackToolVisit("flatten-pdf"); }, []);
 
@@ -47,29 +50,25 @@ export default function FlattenPDFPage() {
   const runFlatten = useCallback(async () => {
     if (!file) return;
     setProcessing(true);
+    setProgress(0);
+    setError(null);
     const canProceed = await usage.checkAndTrack();
     if (!canProceed) { setProcessing(false); upsell.showUpsell("daily-limit"); return; }
     try {
-      const { PDFDocument } = await import("pdf-lib");
       const bytes = await file.arrayBuffer();
       originalBytes.current = bytes;
-      const pdfDoc = await PDFDocument.load(bytes);
-      const form = pdfDoc.getForm();
-      if (form) form.flatten();
-      const flattenedBytes = await pdfDoc.save({ useObjectStreams: true });
-      const blob = new Blob([flattenedBytes as unknown as BlobPart], { type: "application/pdf" });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `flattened-${file.name}`;
-      a.click();
-      trackExport(file.name, "Flatten PDF", flattenedBytes.length);
-      URL.revokeObjectURL(url);
+      const flattenedBytes = await flattenPdfVisually(bytes, (completed, total) => {
+        setProgress(Math.round((completed / total) * 100));
+      });
+      downloadBytes(flattenedBytes, `flattened-${file.name}`);
+      trackExport(file.name, "Visual Flatten PDF", flattenedBytes.byteLength);
       setSuccess(true);
-    } catch {
-      setError("Failed to flatten. The PDF may not contain form fields or layers.");
+    } catch (flattenError) {
+      setError(flattenError instanceof Error ? flattenError.message : "Failed to flatten the visible PDF content.");
+    } finally {
+      setProcessing(false);
+      setProgress(0);
     }
-    setProcessing(false);
   }, [file]);
 
   const flatten = useCallback(async () => {
@@ -97,21 +96,21 @@ export default function FlattenPDFPage() {
     <div className="max-w-3xl mx-auto px-4 py-12">
       <SoftwareAppJsonLd
         name="Flatten PDF - Free Online Tool"
-        description="Flatten PDF files online for free. Merge form fields annotations and layers into permanent content."
+        description="Flatten visible PDF pages into non-interactive image content in your browser."
         url="https://allaboutpdfediting.xyz/flatten-pdf"
       />
-      <HowToJsonLd name="Flatten PDF Online" description="Merge form fields annotations and layers into permanent page content" steps={[{name:"Upload PDF",text:"Select the PDF with form fields or layers to flatten"},{name:"Flatten document",text:"The tool merges all interactive elements into page content"},{name:"Download flattened PDF",text:"Download the PDF with permanently flattened content"}]} />
+      <HowToJsonLd name="Flatten PDF Online" description="Render the visible PDF appearance into non-interactive page images" steps={[{name:"Upload PDF",text:"Select the PDF to flatten"},{name:"Render visible pages",text:"The tool renders forms, visible annotations, and the current layer appearance"},{name:"Download flattened PDF",text:"Download a non-interactive image-based PDF"}]} />
       <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Flatten PDF", item: "https://allaboutpdfediting.xyz/flatten-pdf" }]} />
       <FaqPageJsonLd questions={rc?.faqs} />
-      <AiSummaryJsonLd name="Flatten PDF" summary="Merge form fields annotations and layers into permanent PDF page content" category="Utilities" inputType="PDF" outputType="PDF" processing="client-side" price="free" features={["Form flattening","Annotation merge","Layer flattening","Permanent content","Free tool"]} limits="Files up to 10MB" />
+      <AiSummaryJsonLd name="Flatten PDF" summary="Render visible PDF pages as non-interactive images so visible forms and annotations become page content" category="Utilities" inputType="PDF" outputType="PDF" processing="client-side" price="free" features={["Visual form flattening","Visible annotation flattening","Active layer appearance","Image-based output","Client-side tool"]} limits="Files up to 10MB" />
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">Flatten PDF</h1>
-        <p className="text-[var(--muted)]">Merge form fields, annotations, and layers into the page content.</p>
+        <p className="text-[var(--muted)]">Turn the visible page appearance into non-interactive image content.</p>
       </div>
 
       <ToolInfo
         name="Flatten PDF"
-        description="Your file stays private. All processing happens locally in your browser using pdf-lib — no uploads, no servers. Flatten your PDF to make form fields and annotations permanent, then download instantly."
+        description="PDF.js renders each visible page locally, then a fresh image-based PDF is created. Visible form values and annotations become non-interactive; selectable text, links, and hidden layer states are not retained."
       />
 
       <div className="mb-4">
@@ -138,7 +137,7 @@ export default function FlattenPDFPage() {
           </label>
         </div>
 
-        <ProgressBar processing={processing} fileSize={file?.size} label="Flattening PDF..." />
+        <ProgressBar processing={processing} fileSize={file?.size} label={progress ? `Flattening visible pages... ${progress}%` : "Flattening visible pages..."} />
 
         {showTimer && <FreeWaitTimer onDone={() => { setShowTimer(false); runFlatten(); }} />}
 
@@ -175,8 +174,8 @@ export default function FlattenPDFPage() {
       <div className="max-w-3xl mx-auto mt-12 pt-8 border-t border-[var(--card-border)]">
         <h2 className="text-xl font-bold text-[var(--foreground)] mb-3">About Flatten PDF</h2>
         <div className="text-sm text-[var(--muted)] space-y-3 leading-relaxed">
-          <p>Flatten a PDF to merge form fields, annotations, comments, and layers into the page content. Once flattened, the content becomes permanent and cannot be edited. This is useful for finalizing filled forms, locking annotations, or preparing documents for printing.</p>
-          <p>All processing happens in your browser using pdf-lib — no uploads, no servers, complete privacy. Upload your PDF and download the flattened version instantly.</p>
+          <p>This tool performs full visual flattening: PDF.js renders the currently visible appearance of each page, including visible form widgets and annotations, and rebuilds the document from those page images. The resulting pages no longer contain interactive fields, links, or selectable text.</p>
+          <p>Only the currently visible optional-content state is rendered; hidden layer states are discarded rather than merged. Processing happens locally in your browser with no file upload.</p>
           <p>Keywords: flatten PDF online free, merge layers in PDF, flatten form fields, make PDF permanent, flatten annotations.</p>
         </div>
       </div>

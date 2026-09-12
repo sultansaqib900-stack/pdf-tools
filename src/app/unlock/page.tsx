@@ -12,6 +12,8 @@ import ProgressBar from "@/components/ProgressBar";
 import SuccessAnimation from "@/components/SuccessAnimation";
 import ErrorBanner from "@/components/ErrorBanner";
 import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
+import { decryptPdf, getPdfEncryptionInfo } from "@/lib/pdfSecurity";
+import { downloadBytes, isPdfFile } from "@/lib/pdfBytes";
 
 import HowToJsonLd from "@/components/HowToJsonLd";
 import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
@@ -39,12 +41,14 @@ export default function UnlockPage() {
   useEffect(() => { trackToolVisit("unlock"); }, []);
 
   const handleFile = useCallback((f: File | null) => {
-    if (!f || f.type !== "application/pdf") return;
+    if (!f) return;
+    if (!isPdfFile(f)) { setError("Please select a valid PDF file."); return; }
     const check = checkFileSize(f.size);
     if (!check.ok) { upsell.showUpsell("file-size"); return; }
     setFile(f);
     setSuccess(false);
-  }, []);
+    setError(null);
+  }, [upsell]);
 
   const runUnlock = useCallback(async () => {
     if (!file || !password) return;
@@ -52,22 +56,21 @@ export default function UnlockPage() {
     const canProceed = await usage.checkAndTrack();
     if (!canProceed) { setProcessing(false); upsell.showUpsell("daily-limit"); return; }
     try {
-      const { PDFDocument } = await import("pdf-lib");
       const bytes = await file.arrayBuffer();
-      originalBytes.current = bytes;
-      const pdfDoc = await PDFDocument.load(bytes, { password } as any);
-      const unlockedBytes = await pdfDoc.save({ useObjectStreams: true });
-      const blob = new Blob([unlockedBytes as unknown as BlobPart], { type: "application/pdf" });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `unlocked-${file.name}`;
-      a.click();
-      trackExport(file.name, "Unlock PDF", bytes.byteLength);
-      URL.revokeObjectURL(url);
+      originalBytes.current = bytes.slice(0);
+      const encryption = await getPdfEncryptionInfo(bytes);
+      if (!encryption.encrypted) {
+        throw new Error("This PDF is not password protected.");
+      }
+      const unlockedBytes = await decryptPdf(bytes, password);
+      downloadBytes(unlockedBytes, `unlocked-${file.name}`);
+      trackExport(file.name, "Unlock PDF", unlockedBytes.byteLength);
       setSuccess(true);
-    } catch {
-      setError("Failed to unlock. The password may be incorrect or the file is not password-protected.");
+    } catch (unlockError) {
+      const message = unlockError instanceof Error ? unlockError.message : "Failed to unlock the PDF.";
+      setError(/incorrect password/i.test(message)
+        ? "Incorrect password. Check it and try again."
+        : message);
     }
     setProcessing(false);
   }, [file, password]);
@@ -84,13 +87,7 @@ export default function UnlockPage() {
 
   const restoreOriginal = useCallback(async () => {
     if (!originalBytes.current) return;
-    const blob = new Blob([originalBytes.current], { type: "application/pdf" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `original-${file?.name || "restored.pdf"}`;
-    a.click();
-    URL.revokeObjectURL(url);
+    downloadBytes(originalBytes.current, `original-${file?.name || "restored.pdf"}`);
   }, [file]);
 
   return (

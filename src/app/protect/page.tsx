@@ -12,6 +12,9 @@ import ProgressBar from "@/components/ProgressBar";
 import SuccessAnimation from "@/components/SuccessAnimation";
 import ErrorBanner from "@/components/ErrorBanner";
 import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
+import { getPipelineDocument } from "@/lib/pdfPipeline";
+import { copyPdfBytes, createPdfFile, downloadBytes, isPdfFile } from "@/lib/pdfBytes";
+import { encryptPdf } from "@/lib/pdfSecurity";
 
 import HowToJsonLd from "@/components/HowToJsonLd";
 import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
@@ -36,15 +39,26 @@ export default function ProtectPage() {
   const [dragging, setDragging] = useState(false);
   const [showTimer, setShowTimer] = useState(false);
 
-  useEffect(() => { trackToolVisit("protect"); }, []);
+  useEffect(() => {
+    trackToolVisit("protect");
+    let cancelled = false;
+    void getPipelineDocument().then((pipelineDoc) => {
+      if (!cancelled && pipelineDoc?.bytes) {
+        setFile(createPdfFile(pipelineDoc.bytes, pipelineDoc.name));
+      }
+    });
+    return () => { cancelled = true; };
+  }, [trackToolVisit]);
 
   const handleFile = useCallback((f: File | null) => {
-    if (!f || f.type !== "application/pdf") return;
+    if (!f) return;
+    if (!isPdfFile(f)) { setError("Please select a valid PDF file."); return; }
     const check = checkFileSize(f.size);
     if (!check.ok) { upsell.showUpsell("file-size"); return; }
     setFile(f);
     setSuccess(false);
-  }, []);
+    setError(null);
+  }, [upsell]);
 
   const runProtect = useCallback(async () => {
     if (!file || !password) return;
@@ -52,25 +66,15 @@ export default function ProtectPage() {
     const canProceed = await usage.checkAndTrack();
     if (!canProceed) { setProcessing(false); upsell.showUpsell("daily-limit"); return; }
     try {
-      const { PDFDocument } = await import("pdf-lib");
       const bytes = await file.arrayBuffer();
-      originalBytes.current = bytes;
-      const pdfDoc = await PDFDocument.load(bytes, { ignoreEncryption: true });
-      const protectedBytes = await pdfDoc.save({
-        userPassword: password,
-        ownerPassword: password,
-      } as never);
-      const blob = new Blob([protectedBytes.slice()], { type: "application/pdf" });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `protected-${file.name}`;
-      a.click();
-      trackExport(file.name, "Password Protect", bytes.byteLength);
-      URL.revokeObjectURL(url);
+      originalBytes.current = bytes.slice(0);
+      const protectedBytes = await encryptPdf(bytes, password);
+      const output = copyPdfBytes(protectedBytes);
+      downloadBytes(output, `protected-${file.name}`);
+      trackExport(file.name, "AES-256 Password Protect", output.byteLength);
       setSuccess(true);
-    } catch {
-      setError("Failed to protect PDF. The file may be corrupted.");
+    } catch (protectError) {
+      setError(protectError instanceof Error ? protectError.message : "Failed to protect PDF. The file may be corrupted.");
     }
     setProcessing(false);
   }, [file, password]);
@@ -147,7 +151,8 @@ export default function ProtectPage() {
           <div className="mt-6">
             <label className="block text-sm font-medium text-[var(--foreground)] mb-2">Enter Password</label>
             <input
-              type="text"
+              type="password"
+              autoComplete="new-password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Enter a password to protect the PDF"
@@ -162,7 +167,7 @@ export default function ProtectPage() {
           <>
             <button
               onClick={protect}
-              disabled={!password || processing || showTimer}
+              disabled={password.length < 4 || processing || showTimer}
               className="mt-6 w-full py-3 bg-indigo-600 text-white font-medium rounded-xl hover:bg-indigo-700 disabled:opacity-40 disabled:cursor-not-allowed transition shadow-sm"
             >
               {processing ? (
@@ -184,7 +189,7 @@ export default function ProtectPage() {
 
         {error && <ErrorBanner message={error} onRetry={runProtect} onDismiss={() => setError(null)} />}
 
-        <SuccessAnimation show={success} message="Password added!" onRestore={restoreOriginal} />
+        <SuccessAnimation show={success} message="AES-256 password protection added!" onRestore={restoreOriginal} />
       </div>
 
       <div className="max-w-3xl mx-auto mt-12 pt-8 border-t border-[var(--card-border)]">

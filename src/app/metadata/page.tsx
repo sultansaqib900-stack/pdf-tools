@@ -71,10 +71,10 @@ export default function MetadataPage() {
       const bytes = await file.arrayBuffer();
       originalBytes.current = bytes;
       const pdf = await PDFDocument.load(bytes, { ignoreEncryption: true });
-      if (title) pdf.setTitle(title);
-      if (author) pdf.setAuthor(author);
-      if (subject) pdf.setSubject(subject);
-      if (keywords) pdf.setKeywords(keywords.split(",").map((k) => k.trim()));
+      pdf.setTitle(title);
+      pdf.setAuthor(author);
+      pdf.setSubject(subject);
+      pdf.setKeywords(keywords.split(",").map((keyword) => keyword.trim()).filter(Boolean));
 
       const pdfBytes = await pdf.save({ useObjectStreams: true });
       const blob = new Blob([pdfBytes as unknown as BlobPart], { type: "application/pdf" });

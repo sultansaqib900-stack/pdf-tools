@@ -18,6 +18,7 @@ import FaqPageJsonLd from "@/components/FaqPageJsonLd";
 import RelatedContent from "@/components/RelatedContent";
 import { getRelatedContent } from "@/lib/related-content";
 import UseCaseLinks from "@/components/UseCaseLinks";
+import { downloadBytes, isPdfFile } from "@/lib/pdfBytes";
 
 const rc = getRelatedContent("ocr-pdf");
 
@@ -47,37 +48,49 @@ export default function OcrPdfPage() {
     try {
       const Tesseract = await import("tesseract.js");
       const buffer = await file.arrayBuffer();
-      const isPdf = file.type === "application/pdf";
+      const pdfInput = isPdfFile(file);
       const pageTexts: string[] = [];
 
-      if (isPdf) {
+      if (pdfInput) {
         const pdfjsLib = await import("pdfjs-dist");
         if (!pdfjsLib.GlobalWorkerOptions.workerSrc) pdfjsLib.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";
         const canvas = document.createElement("canvas");
-        const ctx = canvas.getContext("2d")!;
-        const pdf = await pdfjsLib.getDocument({ data: buffer.slice(0) }).promise;
-        for (let i = 1; i <= pdf.numPages; i++) {
-          setProgress(`Recognizing page ${i}/${pdf.numPages}...`);
-          const page = await pdf.getPage(i);
-          const vp = page.getViewport({ scale: 2 });
-          canvas.width = vp.width;
-          canvas.height = vp.height;
-          await page.render({ canvas, canvasContext: ctx, viewport: vp }).promise;
-          const blob = await new Promise<Blob>((res) => canvas.toBlob((b) => res(b!), "image/png"));
-          const { data: { text } } = await Tesseract.recognize(blob, "eng");
-          pageTexts.push(text || "[No text detected]");
+        const context = canvas.getContext("2d");
+        if (!context) throw new Error("Canvas rendering is unavailable.");
+        const loadingTask = pdfjsLib.getDocument({ data: buffer.slice(0) });
+        try {
+          const pdf = await loadingTask.promise;
+          if (!isPremium() && pdf.numPages > 3) {
+            throw new Error(`This PDF has ${pdf.numPages} pages. The free OCR limit is 3 pages; no partial result was produced.`);
+          }
+          for (let i = 1; i <= pdf.numPages; i++) {
+            setProgress(`Recognizing page ${i}/${pdf.numPages}...`);
+            const page = await pdf.getPage(i);
+            const viewport = page.getViewport({ scale: 2 });
+            canvas.width = viewport.width;
+            canvas.height = viewport.height;
+            await page.render({ canvas, canvasContext: context, viewport }).promise;
+            const blob = await new Promise<Blob>((resolve, reject) => canvas.toBlob((result) => (
+              result ? resolve(result) : reject(new Error("Could not render an OCR image."))
+            ), "image/png"));
+            const { data: { text } } = await Tesseract.recognize(blob, "eng");
+            pageTexts.push(text.trim());
+            page.cleanup();
+          }
+        } finally {
+          await loadingTask.destroy();
         }
       } else {
         setProgress("Recognizing text...");
-        const { data: { text } } = await Tesseract.recognize(new Blob([buffer]), "eng");
-        pageTexts.push(text || "[No text detected]");
+        const { data: { text } } = await Tesseract.recognize(new Blob([buffer], { type: file.type }), "eng");
+        pageTexts.push(text.trim());
       }
 
+      if (!pageTexts.some((text) => text)) throw new Error("OCR completed, but no English text was detected.");
       setOcrResult({ pages: pageTexts, fullText: pageTexts.join("\n\n--- Page Break ---\n\n") });
       trackExport(file.name, "OCR PDF", buffer.byteLength);
-    } catch (err) {
-      console.error(err);
-      setError("OCR failed. Please try a different file.");
+    } catch (ocrError) {
+      setError(ocrError instanceof Error ? ocrError.message : "OCR failed. Please try a different file.");
     }
     setProcessing(false);
     setProgress("");
@@ -87,8 +100,9 @@ export default function OcrPdfPage() {
     if (!f) return;
     const check = checkFileSize(f.size);
     if (!check.ok) { upsell.showUpsell("file-size"); return; }
-    if (!f.type.startsWith("image/") && f.type !== "application/pdf") {
-      setError("Please upload an image or PDF file.");
+    const supportedImage = f.type === "image/jpeg" || f.type === "image/png";
+    if (!supportedImage && !isPdfFile(f)) {
+      setError("Please upload a PDF, JPEG, or PNG file.");
       return;
     }
     setFile(f);

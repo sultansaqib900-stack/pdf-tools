@@ -44,18 +44,8 @@ export default function RepairPdfPage() {
     try {
       const { PDFDocument } = await import("pdf-lib");
       const bytes = await file.arrayBuffer();
-      let doc: any;
-      try {
-        doc = await PDFDocument.load(bytes, { ignoreEncryption: true });
-      } catch {
-        try {
-          doc = await PDFDocument.load(bytes, { ignoreEncryption: true, updateMetadata: false });
-        } catch {
-          setError("Could not repair this PDF. The file may be severely corrupted.");
-          setProcessing(false); return;
-        }
-      }
-      setProgress("Rebuilding PDF...");
+      const doc = await PDFDocument.load(bytes, { ignoreEncryption: true, updateMetadata: false });
+      setProgress("Re-serializing readable objects and cross-references...");
       const repairedBytes = await doc.save({ useObjectStreams: true });
       const blob = new Blob([repairedBytes.slice()], { type: "application/pdf" });
       const url = URL.createObjectURL(blob);
@@ -65,7 +55,7 @@ export default function RepairPdfPage() {
       trackExport(file.name, "Repair PDF", repairedBytes.byteLength);
       setSuccess(true);
     } catch {
-      setError("Repair failed. The file may be too corrupted to fix.");
+      setError("This PDF could not be parsed, so it cannot be re-saved in the browser. Severely corrupted or encrypted files require a dedicated recovery tool.");
     }
     setProcessing(false);
   }, [file]);
@@ -93,16 +83,16 @@ export default function RepairPdfPage() {
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-12">
-      <SoftwareAppJsonLd name="Repair PDF - Free Online PDF Repair" description="Fix corrupted PDF files online for free." url="https://allaboutpdfediting.xyz/repair-pdf" />
-      <HowToJsonLd name="Repair PDF" description="Fix corrupted PDF documents" steps={[{name:"Upload PDF",text:"Select a corrupted PDF file"},{name:"Repair",text:"Rebuild the PDF structure"},{name:"Download",text:"Download your repaired PDF"}]} />
+      <SoftwareAppJsonLd name="Re-save PDF - Browser PDF Structure Rebuilder" description="Re-serialize a readable PDF to rebuild object streams and cross-reference data. It cannot recover files that cannot be parsed." url="https://allaboutpdfediting.xyz/repair-pdf" />
+      <HowToJsonLd name="Re-save a Readable PDF" description="Parse and re-serialize a readable PDF into a fresh byte stream" steps={[{name:"Upload PDF",text:"Select a PDF that can still be opened"},{name:"Re-save structure",text:"Parse readable objects and write fresh object streams and cross-references"},{name:"Download",text:"Download the re-saved PDF"}]} />
       <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Repair PDF", item: "https://allaboutpdfediting.xyz/repair-pdf" }]} />
       <FaqPageJsonLd questions={rc?.faqs} />
-      <AiSummaryJsonLd name="Repair PDF" summary="Fix corrupted PDF files by rebuilding their internal structure" category="Utilities" inputType="PDF" outputType="PDF" processing="client-side" price="free" features={["PDF repair","Corruption fix","Structure rebuild","Client-side processing"]} limits="Files up to 10MB" />
+      <AiSummaryJsonLd name="Re-save PDF" summary="Parse a readable PDF and re-serialize it with fresh object streams and cross-reference data" category="Utilities" inputType="Readable PDF" outputType="PDF" processing="client-side" price="free" features={["PDF re-serialization","Cross-reference rewrite","Object-stream output","Explicit failure for unreadable files"]} limits="Cannot recover PDFs that pdf-lib cannot parse" />
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">Repair PDF</h1>
-        <p className="text-[var(--muted)]">Fix corrupted or damaged PDF files.</p>
+        <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">Re-save PDF Structure</h1>
+        <p className="text-[var(--muted)]">Re-serialize a readable PDF with fresh object streams and cross-references.</p>
       </div>
-      <ToolInfo name="Repair PDF" description="Fix corrupted PDF files by rebuilding their internal structure. All processing happens in your browser." />
+      <ToolInfo name="Re-save PDF" description="This is not a forensic recovery engine. It can rewrite a PDF that pdf-lib can parse, which may repair some cross-reference or serialization compatibility issues; it cannot reconstruct unreadable headers or missing objects." />
       <div className="mb-4"><UsageBar remaining={usage.remaining} unlimited={usage.unlimited} /></div>
       <div className="bg-[var(--card)] rounded-xl border border-[var(--card-border)] p-8 space-y-6">
         <div onDrop={onDrop} onDragOver={(e) => { e.preventDefault(); setDragging(true); }} onDragLeave={() => setDragging(false)}
@@ -117,7 +107,7 @@ export default function RepairPdfPage() {
         {showTimer && <FreeWaitTimer onDone={() => { setShowTimer(false); runRepair(); }} />}
         <button onClick={convert} disabled={!file || processing || showTimer}
           className="w-full py-3 bg-indigo-600 text-white font-medium rounded-xl hover:bg-indigo-700 disabled:opacity-40 transition shadow-sm">
-          {processing ? "Repairing..." : "Repair PDF"}
+          {processing ? "Re-saving..." : "Re-save PDF"}
         </button>
         {!isPremium() && (
           <p className="text-center text-xs text-[var(--muted)]">
@@ -125,7 +115,7 @@ export default function RepairPdfPage() {
           </p>
         )}
         {error && <ErrorBanner message={error} onRetry={runRepair} onDismiss={() => setError(null)} />}
-        <SuccessAnimation show={success} message="PDF repaired!" />
+        <SuccessAnimation show={success} message="PDF re-saved successfully!" />
       </div>
       <RelatedContent slug="repair-pdf" />
       <PremiumUpsell show={upsell.state.show} mode={upsell.state.mode} message={upsell.state.message} onClose={upsell.hideUpsell} />

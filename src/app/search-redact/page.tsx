@@ -7,6 +7,8 @@ import { usePageMeta } from "@/hooks/usePageMeta";
 import HowToJsonLd from "@/components/HowToJsonLd";
 import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
 import PremiumGate from "@/components/PremiumGate";
+import { secureRedactPdf, type PdfRedactionArea } from "@/lib/pdfRaster";
+import { copyPdfBytes, downloadBytes, isPdfFile } from "@/lib/pdfBytes";
 
 export default function SearchRedactPage() {
   usePageMeta("Search & Redact PDF - Auto-Redact Multiple Words | PDFTools Premium", "Search for specific words or phrases in a PDF and redact all occurrences automatically. Bulk redaction tool. Premium.");
@@ -48,103 +50,90 @@ export default function SearchRedactPage() {
     setError(null);
     setSuccess(false);
     try {
-      const terms = searchTerms.split(",").map(t => t.trim().toLowerCase()).filter(Boolean);
-      const bytes = await file.arrayBuffer();
-      const { PDFDocument, rgb } = await import("pdf-lib");
-      const pdfLibDoc = await PDFDocument.load(bytes);
+      if (!isPdfFile(file)) throw new Error("Please select a valid PDF file.");
+      const terms = Array.from(new Set(searchTerms.split(",").map((term) => term.trim().toLowerCase()).filter(Boolean)));
+      const bytes = new Uint8Array(await file.arrayBuffer());
       const pdfjsLib = await import("pdfjs-dist");
       if (!pdfjsLib.GlobalWorkerOptions.workerSrc) {
         pdfjsLib.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";
       }
-      const pdf = await pdfjsLib.getDocument({ data: bytes }).promise;
-      let totalMatches = 0;
-
+      const loadingTask = pdfjsLib.getDocument({ data: copyPdfBytes(bytes) });
+      const pdf = await loadingTask.promise;
+      const redactions: PdfRedactionArea[] = [];
       const offscreen = document.createElement("canvas");
 
-      for (let pageIdx = 0; pageIdx < pdf.numPages; pageIdx++) {
-        const page = await pdf.getPage(pageIdx + 1);
-        const viewport = page.getViewport({ scale: 2 });
-        offscreen.width = viewport.width;
-        offscreen.height = viewport.height;
-        const ctx = offscreen.getContext("2d")!;
-        await page.render({ canvas: offscreen, viewport }).promise;
-
-        const pdfPage = pdfLibDoc.getPages()[pageIdx];
-        const pageHeight = pdfPage.getHeight();
-        const scaleX = pageHeight / viewport.height;
-        const scaleY = pageHeight / viewport.height;
-
-        const textItems: Array<{ str: string; x: number; y: number; w: number; h: number }> = [];
-
-        try {
+      try {
+        for (let pageIndex = 0; pageIndex < pdf.numPages; pageIndex += 1) {
+          const page = await pdf.getPage(pageIndex + 1);
+          const textItems: Array<{ str: string; x: number; y: number; w: number; h: number }> = [];
           const content = await page.getTextContent();
           for (const item of content.items) {
-            const tItem = item as { str: string; transform: number[]; width?: number; height?: number };
+            const textItem = item as { str: string; transform: number[]; width?: number; height?: number };
             textItems.push({
-              str: tItem.str || "",
-              x: tItem.transform[4],
-              y: tItem.transform[5],
-              w: tItem.width || (tItem.str || "").length * 5,
-              h: tItem.height || 12,
+              str: textItem.str || "",
+              x: textItem.transform[4],
+              y: textItem.transform[5],
+              w: textItem.width || (textItem.str || "").length * 5,
+              h: textItem.height || Math.abs(textItem.transform[3]) || 12,
             });
           }
-        } catch {}
 
-        const hasText = textItems.some(t => t.str.trim().length > 0);
-        if (!hasText) {
-          const words = await ocrPage(offscreen);
-          for (const word of words) {
-            textItems.push({
-              str: word.text,
-              x: word.x * scaleX,
-              y: (viewport.height - word.y - word.h) * scaleY,
-              w: word.w * scaleX,
-              h: word.h * scaleY,
-            });
-          }
-        }
-
-        for (const item of textItems) {
-          const text = item.str || "";
-          const lowerText = text.toLowerCase();
-          for (const term of terms) {
-            let idx = 0;
-            while ((idx = lowerText.indexOf(term, idx)) !== -1) {
-              const charsBefore = text.substring(0, idx).length;
-              const charsOfTerm = term.length;
-              const avgCharWidth = item.w / Math.max(text.length, 1);
-              const x = item.x + charsBefore * avgCharWidth;
-              const y = item.y;
-              const w = charsOfTerm * avgCharWidth;
-              const h = item.h;
-
-              pdfPage.drawRectangle({
-                x, y: y - h * 0.2,
-                width: w + 2,
-                height: h + 2,
-                color: rgb(0, 0, 0),
+          if (!textItems.some((item) => item.str.trim())) {
+            const viewport = page.getViewport({ scale: 2 });
+            offscreen.width = Math.max(1, Math.round(viewport.width));
+            offscreen.height = Math.max(1, Math.round(viewport.height));
+            const context = offscreen.getContext("2d");
+            if (!context) throw new Error("Canvas is unavailable for OCR.");
+            await page.render({ canvas: offscreen, canvasContext: context, viewport }).promise;
+            const words = await ocrPage(offscreen);
+            for (const word of words) {
+              const first = viewport.convertToPdfPoint(word.x, word.y);
+              const second = viewport.convertToPdfPoint(word.x + word.w, word.y + word.h);
+              textItems.push({
+                str: word.text,
+                x: Math.min(first[0], second[0]),
+                y: Math.min(first[1], second[1]),
+                w: Math.abs(second[0] - first[0]),
+                h: Math.abs(second[1] - first[1]),
               });
-              totalMatches++;
-              idx += term.length;
             }
           }
+
+          for (const item of textItems) {
+            const lowerText = item.str.toLowerCase();
+            for (const term of terms) {
+              let matchIndex = 0;
+              while ((matchIndex = lowerText.indexOf(term, matchIndex)) !== -1) {
+                const averageCharacterWidth = item.w / Math.max(item.str.length, 1);
+                redactions.push({
+                  pageIndex,
+                  x: item.x + matchIndex * averageCharacterWidth,
+                  y: item.y - item.h * 0.25,
+                  width: term.length * averageCharacterWidth,
+                  height: item.h * 1.25,
+                });
+                matchIndex += Math.max(1, term.length);
+              }
+            }
+          }
+          page.cleanup();
         }
+      } finally {
+        await loadingTask.destroy();
       }
 
-      setMatchCount(totalMatches);
-      const pdfBytes = await pdfLibDoc.save();
-      const blob = new Blob([pdfBytes as unknown as BlobPart], { type: "application/pdf" });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `redacted-${file.name}`;
-      a.click();
-      URL.revokeObjectURL(url);
+      if (redactions.length === 0) {
+        throw new Error("No matching words or phrases were found. Nothing was changed.");
+      }
+      setMatchCount(redactions.length);
+      const pdfBytes = await secureRedactPdf(bytes, redactions);
+      downloadBytes(pdfBytes, `redacted-${file.name}`);
       setSuccess(true);
-    } catch {
-      setError("Failed to redact. The file may be encrypted or corrupted.");
+    } catch (redactError) {
+      setError(redactError instanceof Error ? redactError.message : "Failed to redact. The file may be encrypted or corrupted.");
+    } finally {
+      setProcessing(false);
     }
-    setProcessing(false);
   };
 
   return (
@@ -169,7 +158,7 @@ export default function SearchRedactPage() {
 
         <div className="bg-[var(--card)] border border-[var(--card-border)] rounded-2xl p-6 sm:p-8 space-y-6 shadow-xl">
           <div className="border-2 border-dashed border-[var(--card-border)] hover:border-indigo-500/50 rounded-2xl p-6 text-center">
-            <input type="file" accept=".pdf" onChange={(e) => setFile(e.target.files?.[0] || null)} className="text-sm file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:bg-indigo-600 file:text-white file:text-xs file:font-semibold w-full cursor-pointer" />
+            <input type="file" accept="application/pdf,.pdf" onChange={(e) => { const selected = e.target.files?.[0] || null; if (selected && isPdfFile(selected)) { setFile(selected); setError(null); setSuccess(false); } else if (selected) setError("Please select a valid PDF file."); }} className="text-sm file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:bg-indigo-600 file:text-white file:text-xs file:font-semibold w-full cursor-pointer" />
             {file && <p className="text-xs text-emerald-600 font-semibold mt-2">Selected: {file.name} ({(file.size / 1024).toFixed(0)} KB)</p>}
           </div>
 

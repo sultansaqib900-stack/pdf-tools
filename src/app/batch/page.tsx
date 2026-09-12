@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useEffect, useRef } from "react";
+import { useState, useCallback, useEffect } from "react";
 import ToolInfo from "@/components/ToolInfo";
 import UsageBar from "@/components/UsageBar";
 import ProgressBar from "@/components/ProgressBar";
@@ -11,6 +11,9 @@ import { isPremium, checkFileSize } from "@/lib/premium";
 import { useUsage } from "@/hooks/useUsage";
 import { useToolHistory } from "@/hooks/useToolHistory";
 import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
+import { executePdfRecipe, type PdfRecipe, type RecipeActionConfig } from "@/lib/pdfRecipes";
+import { isPdfFile, sanitizeDownloadFilename } from "@/lib/pdfBytes";
+import type { PdfCompressionMode } from "@/lib/pdfRaster";
 
 import HowToJsonLd from "@/components/HowToJsonLd";
 import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
@@ -28,6 +31,7 @@ type Operation = {
   password?: string;
   rotation?: 90 | 180 | 270;
   text?: string;
+  compressionMode?: PdfCompressionMode;
 };
 
 const ops: { value: Operation["type"]; label: string }[] = [
@@ -43,16 +47,26 @@ export default function BatchPage() {
   const { trackToolVisit, trackExport } = useToolHistory();
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
-  const originalBytes = useRef<ArrayBuffer | null>(null);
   const [operations, setOperations] = useState<Operation[]>([]);
-  const [results, setResults] = useState<{ id: string; name: string; status: "ok" | "error" }[]>([]);
+  const [results, setResults] = useState<Array<{
+    id: string;
+    name: string;
+    downloadName: string;
+    status: "ok" | "error";
+    url?: string;
+    error?: string;
+  }>>([]);
   const [processing, setProcessing] = useState(false);
 
-  useEffect(() => { trackToolVisit("batch"); }, []);
+  useEffect(() => { trackToolVisit("batch"); }, [trackToolVisit]);
+
+  useEffect(() => () => {
+    results.forEach((result) => { if (result.url) URL.revokeObjectURL(result.url); });
+  }, [results]);
 
   const addOp = () => {
     const id = crypto.randomUUID();
-    setOperations((prev) => [...prev, { id, type: "compress", file: null }]);
+    setOperations((prev) => [...prev, { id, type: "compress", file: null, compressionMode: "balanced" }]);
   };
 
   const update = (id: string, patch: Partial<Operation>) =>
@@ -63,7 +77,7 @@ export default function BatchPage() {
 
   const handleFileFor = (id: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
     const f = e.target.files?.[0] ?? null;
-    if (f && f.type !== "application/pdf") return;
+    if (f && !isPdfFile(f)) { setError("Please select PDF files only."); return; }
     const check = checkFileSize(f?.size || 0);
     if (!check.ok) { upsell.showUpsell("file-size"); return; }
     update(id, { file: f });
@@ -71,68 +85,73 @@ export default function BatchPage() {
 
   const runBatch = useCallback(async () => {
     if (!operations.length || !isPremium()) { setError("Batch processing requires Premium."); return; }
+    if (operations.some((operation) => operation.type === "protect" && (operation.password?.length ?? 0) < 4)) {
+      setError("Every password-protection operation needs a password of at least 4 characters.");
+      return;
+    }
+
     setProcessing(true);
+    setSuccess(false);
+    setError(null);
     const canProceed = await usage.checkAndTrack();
     if (!canProceed) { setProcessing(false); upsell.showUpsell("daily-limit"); return; }
     setResults([]);
-    const out: typeof results = [];
+    const output: typeof results = [];
 
-        const { PDFDocument, StandardFonts, rgb, degrees } = await import("pdf-lib");
+    for (const operation of operations) {
+      if (!operation.file) continue;
+      const action: RecipeActionConfig = operation.type === "protect"
+        ? { type: "protect" }
+        : operation.type === "rotate"
+          ? { type: "rotate", params: { degrees: operation.rotation ?? 90 } }
+          : operation.type === "watermark"
+            ? { type: "watermark", params: { text: operation.text?.trim() || "CONFIDENTIAL" } }
+            : { type: "compress", params: { mode: operation.compressionMode ?? "balanced" } };
+      const recipe: PdfRecipe = {
+        id: `batch_${operation.id}`,
+        name: `Batch ${operation.type}`,
+        badge: "Batch",
+        icon: "⚡",
+        category: "Custom",
+        actions: [action],
+        description: "Single batch operation",
+      };
 
-        for (const op of operations) {
-      if (!op.file) continue;
       try {
-        const bytes = await op.file.arrayBuffer();
-        const pdfDoc = await PDFDocument.load(bytes);
-        switch (op.type) {
-          case "compress":
-            await pdfDoc.save({ useObjectStreams: false });
-            break;
-          case "protect": {
-            const pass = op.password || "password";
-            const encrypted = await PDFDocument.load(await pdfDoc.save());
-            break;
-          }
-          case "rotate": {
-            const pages = pdfDoc.getPages();
-            for (const p of pages) p.setRotation(degrees(p.getRotation().angle + (op.rotation || 90)));
-            break;
-          }
-          case "watermark": {
-            const font = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
-            for (const p of pdfDoc.getPages()) {
-              const { width, height } = p.getSize();
-              p.drawText((op.text || "BATCH").toUpperCase(), {
-                x: width / 6,
-                y: height / 2.5,
-                size: Math.min(width, height) / 6,
-                font,
-                color: rgb(0.8, 0.2, 0.2),
-                opacity: 0.3,
-                rotate: degrees(45),
-              });
-            }
-            break;
-          }
-        }
-        const pdfBytes = await pdfDoc.save({ useObjectStreams: true });
-        const blob = new Blob([pdfBytes as unknown as BlobPart], { type: "application/pdf" });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = `${op.type}-${op.file.name}`;
-        a.click();
-        trackExport(op.file.name, "Batch Tool", pdfBytes.length);
-        URL.revokeObjectURL(url);
-        out.push({ id: op.id, name: op.file.name, status: "ok" });
-      } catch {
-        out.push({ id: op.id, name: op.file?.name || "unknown", status: "error" });
+        const pdfBytes = await executePdfRecipe(
+          await operation.file.arrayBuffer(),
+          recipe,
+          undefined,
+          { password: operation.password },
+        );
+        const downloadName = sanitizeDownloadFilename(`${operation.type}-${operation.file.name}`);
+        const blob = new Blob([pdfBytes.slice() as unknown as BlobPart], { type: "application/pdf" });
+        output.push({
+          id: operation.id,
+          name: operation.file.name,
+          downloadName,
+          status: "ok",
+          url: URL.createObjectURL(blob),
+        });
+        trackExport(operation.file.name, "Batch Tool", pdfBytes.length);
+      } catch (batchError) {
+        output.push({
+          id: operation.id,
+          name: operation.file.name,
+          downloadName: operation.file.name,
+          status: "error",
+          error: batchError instanceof Error ? batchError.message : "Processing failed",
+        });
       }
     }
 
-    setResults(out);
+    setResults(output);
+    setSuccess(output.some((result) => result.status === "ok"));
+    if (output.some((result) => result.status === "error")) {
+      setError("Some files could not be processed. Review the results below.");
+    }
     setProcessing(false);
-  }, [operations]);
+  }, [operations, results, trackExport, upsell, usage]);
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-12">
@@ -141,10 +160,10 @@ export default function BatchPage() {
         description="Process multiple PDF files at once. Batch compress merge convert PDFs. Premium feature."
         url="https://allaboutpdfediting.xyz/batch"
       />
-      <HowToJsonLd name="Batch Process PDF Files" description="Process multiple PDF files at once with the same operation" steps={[{name:"Upload PDFs",text:"Select multiple PDF files to process"},{name:"Choose operation",text:"Select compress merge split or other batch operation"},{name:"Download results",text:"Download all processed files individually or as ZIP"}]} />
+      <HowToJsonLd name="Batch Process PDF Files" description="Queue multiple PDF operations and process them in one run" steps={[{name:"Add jobs",text:"Add a row and select a PDF for each job"},{name:"Choose operations",text:"Configure compression, protection, rotation, or watermarking"},{name:"Download results",text:"Download each successful PDF from the result list"}]} />
       <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Batch Process", item: "https://allaboutpdfediting.xyz/batch" }]} />
       <FaqPageJsonLd questions={rc?.faqs} />
-      <AiSummaryJsonLd name="Batch Process" summary="Process multiple PDF files simultaneously applying the same operation to all" category="Utilities" inputType="PDF" outputType="PDF" processing="client-side" price="free" features={["Multi-file batch","Same operation","Compress merge split","ZIP download","Free tool"]} limits="Files up to 10MB" />
+      <AiSummaryJsonLd name="Batch Process" summary="Queue multiple PDFs and apply a configured operation to each in one run" category="Utilities" inputType="PDF" outputType="PDF" processing="client-side" price="premium" features={["Multi-file job queue","Real AES-256 protection","Compression modes","Rotation","Watermarking","Per-file results"]} limits="Premium subscribers; browser file-size limits apply" />
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">Batch Process PDF</h1>
         <p className="text-[var(--muted)]">Process multiple PDFs at once — compress, protect, rotate, or watermark. <span className="text-indigo-500 font-semibold">Premium feature</span>.</p>
@@ -162,15 +181,43 @@ export default function BatchPage() {
           <div key={op.id} className={`flex flex-wrap items-end gap-4 p-4 rounded-lg border border-[var(--card-border)] mb-4 ${i > 0 ? "mt-4" : ""}`}>
             <div className="flex-1 min-w-[200px]">
               <label className="block text-xs font-medium text-[var(--muted)] mb-1">Operation</label>
-              <select value={op.type} onChange={(e) => update(op.id, { type: e.target.value as any })} className="w-full px-3 py-2 rounded-lg border border-[var(--card-border)] bg-[var(--background)] text-[var(--foreground)] text-sm outline-none focus:border-indigo-500">
+              <select value={op.type} onChange={(e) => update(op.id, { type: e.target.value as Operation["type"] })} className="w-full px-3 py-2 rounded-lg border border-[var(--card-border)] bg-[var(--background)] text-[var(--foreground)] text-sm outline-none focus:border-indigo-500">
                 {ops.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
               </select>
             </div>
             <div className="flex-1 min-w-[200px]">
               <label className="block text-xs font-medium text-[var(--muted)] mb-1">PDF File</label>
-              <input type="file" accept="application/pdf" onChange={handleFileFor(op.id)} className="w-full text-sm text-[var(--foreground)] file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:bg-indigo-100 dark:file:bg-indigo-900 file:text-indigo-700 dark:file:text-indigo-300 file:text-xs file:font-medium" />
+              <input type="file" accept="application/pdf,.pdf" onChange={handleFileFor(op.id)} className="w-full text-sm text-[var(--foreground)] file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:bg-indigo-100 dark:file:bg-indigo-900 file:text-indigo-700 dark:file:text-indigo-300 file:text-xs file:font-medium" />
             </div>
-            <button onClick={() => remove(op.id)} className="shrink-0 text-red-500 hover:text-red-700 text-lg mb-1">&times;</button>
+            {op.type === "compress" && (
+              <div className="w-full">
+                <label className="block text-xs font-medium text-[var(--muted)] mb-1">Compression</label>
+                <select value={op.compressionMode ?? "balanced"} onChange={(e) => update(op.id, { compressionMode: e.target.value as PdfCompressionMode })} className="w-full px-3 py-2 rounded-lg border border-[var(--card-border)] bg-[var(--background)] text-[var(--foreground)] text-sm outline-none focus:border-indigo-500">
+                  <option value="balanced">Balanced (flattens pages)</option><option value="maximum">Maximum (flattens pages)</option><option value="lossless">Lossless (preserves text and forms)</option>
+                </select>
+              </div>
+            )}
+            {op.type === "protect" && (
+              <div className="w-full">
+                <label className="block text-xs font-medium text-[var(--muted)] mb-1">AES-256 Output Password</label>
+                <input type="password" autoComplete="new-password" value={op.password ?? ""} onChange={(e) => update(op.id, { password: e.target.value })} placeholder="At least 4 characters" className="w-full px-3 py-2 rounded-lg border border-[var(--card-border)] bg-[var(--background)] text-[var(--foreground)] text-sm outline-none focus:border-indigo-500" />
+              </div>
+            )}
+            {op.type === "rotate" && (
+              <div className="w-full">
+                <label className="block text-xs font-medium text-[var(--muted)] mb-1">Rotation</label>
+                <select value={op.rotation ?? 90} onChange={(e) => update(op.id, { rotation: Number(e.target.value) as 90 | 180 | 270 })} className="w-full px-3 py-2 rounded-lg border border-[var(--card-border)] bg-[var(--background)] text-[var(--foreground)] text-sm outline-none focus:border-indigo-500">
+                  <option value={90}>90° clockwise</option><option value={180}>180°</option><option value={270}>270° clockwise</option>
+                </select>
+              </div>
+            )}
+            {op.type === "watermark" && (
+              <div className="w-full">
+                <label className="block text-xs font-medium text-[var(--muted)] mb-1">Watermark Text</label>
+                <input value={op.text ?? ""} onChange={(e) => update(op.id, { text: e.target.value })} placeholder="CONFIDENTIAL" className="w-full px-3 py-2 rounded-lg border border-[var(--card-border)] bg-[var(--background)] text-[var(--foreground)] text-sm outline-none focus:border-indigo-500" />
+              </div>
+            )}
+            <button onClick={() => remove(op.id)} aria-label={`Remove operation ${i + 1}`} className="shrink-0 text-red-500 hover:text-red-700 text-lg mb-1">&times;</button>
           </div>
         ))}
 
@@ -208,9 +255,9 @@ export default function BatchPage() {
             <h3 className="font-semibold text-[var(--foreground)] mb-3">Results</h3>
             <div className="space-y-2">
               {results.map((r) => (
-                <div key={r.id} className={`flex items-center gap-3 text-sm ${r.status === "ok" ? "text-emerald-600 dark:text-emerald-400" : "text-red-500"}`}>
-                  <span>{r.status === "ok" ? "✓" : "✗"}</span>
-                  <span>{r.name}</span>
+                <div key={r.id} className={`flex flex-col sm:flex-row sm:items-center justify-between gap-2 p-2 rounded-lg ${r.status === "ok" ? "text-emerald-600 dark:text-emerald-400" : "text-red-500"}`}>
+                  <span className="text-sm"><span className="mr-2">{r.status === "ok" ? "✓" : "✗"}</span>{r.name}{r.error ? ` — ${r.error}` : ""}</span>
+                  {r.url && <a href={r.url} download={r.downloadName} className="px-3 py-1.5 rounded-lg bg-emerald-600 text-white text-xs font-bold text-center">Download</a>}
                 </div>
               ))}
             </div>

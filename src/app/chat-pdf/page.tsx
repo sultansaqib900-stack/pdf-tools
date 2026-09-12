@@ -89,7 +89,7 @@ export default function ChatPDFPage() {
       pdfjsLib.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";
 
       const bytes = await f.arrayBuffer();
-      const pdf = await pdfjsLib.getDocument({ data: bytes }).promise;
+      const pdf = await pdfjsLib.getDocument({ data: bytes.slice(0) }).promise;
       setPdfPages(pdf.numPages);
       let fullText = "";
 
@@ -127,7 +127,7 @@ export default function ChatPDFPage() {
       pdfjsLib.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";
 
       const bytes = await file.arrayBuffer();
-      const pdf = await pdfjsLib.getDocument({ data: bytes }).promise;
+      const pdf = await pdfjsLib.getDocument({ data: bytes.slice(0) }).promise;
       const scale = 2;
       const pageImages: string[] = [];
 

@@ -2,6 +2,9 @@
 // High-precision client-side privacy detector for PDFs
 // Detects SSNs, Credit Cards, Emails, Phone Numbers, Currency, IBANs, and IP Addresses.
 
+import { copyPdfBytes } from "./pdfBytes";
+import { secureRedactPdf, type PdfRedactionArea } from "./pdfRaster";
+
 export type PiiType =
   | "ssn"
   | "creditCard"
@@ -104,8 +107,11 @@ export async function scanPdfForPii(
     pdfjsLib.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";
   }
 
-  const uint8 = pdfBytes instanceof Uint8Array ? pdfBytes : new Uint8Array(pdfBytes);
-  const pdf = await pdfjsLib.getDocument({ data: uint8 }).promise;
+  // PDF.js transfers the supplied typed-array buffer to its worker. Passing a
+  // copy prevents the caller's pipeline bytes from becoming detached.
+  const loadingTask = pdfjsLib.getDocument({ data: copyPdfBytes(pdfBytes) });
+  const pdf = await loadingTask.promise;
+  const totalPages = pdf.numPages;
 
   const matches: PiiMatch[] = [];
   const byTypeCount: Record<PiiType, number> = {
@@ -118,8 +124,9 @@ export async function scanPdfForPii(
     ipAddress: 0,
   };
 
-  for (let pageIdx = 0; pageIdx < pdf.numPages; pageIdx++) {
-    const page = await pdf.getPage(pageIdx + 1);
+  try {
+    for (let pageIdx = 0; pageIdx < pdf.numPages; pageIdx++) {
+      const page = await pdf.getPage(pageIdx + 1);
     const content = await page.getTextContent();
 
     for (const item of content.items) {
@@ -198,39 +205,37 @@ export async function scanPdfForPii(
         }
       }
     }
+    page.cleanup();
+  }
+  } finally {
+    await loadingTask.destroy();
   }
 
   return {
     matches,
     byTypeCount,
-    totalPagesScanned: pdf.numPages,
+    totalPagesScanned: totalPages,
     totalMatches: matches.length,
   };
 }
 
 export async function redactSelectedPii(
   pdfBytes: Uint8Array | ArrayBuffer,
-  selectedMatches: PiiMatch[]
+  selectedMatches: PiiMatch[],
+  onProgress?: (completedPages: number, totalPages: number) => void,
 ): Promise<Uint8Array> {
-  const { PDFDocument, rgb } = await import("pdf-lib");
-  const uint8 = pdfBytes instanceof Uint8Array ? pdfBytes : new Uint8Array(pdfBytes);
-  const pdfDoc = await PDFDocument.load(uint8, { ignoreEncryption: true });
-
-  const pages = pdfDoc.getPages();
-
-  for (const match of selectedMatches) {
-    if (!match.selected || match.pageIndex >= pages.length) continue;
-    const page = pages[match.pageIndex];
-
-    // Draw opaque blackout rectangle with slight safety padding
-    page.drawRectangle({
+  const areas: PdfRedactionArea[] = selectedMatches
+    .filter((match) => match.selected)
+    .map((match) => ({
+      pageIndex: match.pageIndex,
       x: Math.max(0, match.x - 2),
-      y: Math.max(0, match.y - match.h * 0.2),
+      y: Math.max(0, match.y - match.h * 0.25),
       width: match.w + 4,
-      height: match.h + 4,
-      color: rgb(0, 0, 0),
-    });
-  }
+      height: match.h * 1.25 + 4,
+    }));
 
-  return await pdfDoc.save({ useObjectStreams: true });
+  // Rebuild pages from pixels after applying the blackouts. A normal
+  // drawRectangle call only hides text visually; the original value remains
+  // searchable and copyable underneath it.
+  return secureRedactPdf(pdfBytes, areas, onProgress);
 }

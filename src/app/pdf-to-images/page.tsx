@@ -19,6 +19,8 @@ import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 import FaqPageJsonLd from "@/components/FaqPageJsonLd";
 import RelatedContent from "@/components/RelatedContent";
 import { getRelatedContent } from "@/lib/related-content";
+import { createZipArchive } from "@/lib/archive";
+import { downloadBytes } from "@/lib/pdfBytes";
 
 const rc = getRelatedContent("pdf-to-images");
 
@@ -30,6 +32,7 @@ export default function PdfToImagesPage() {
   const [processing, setProcessing] = useState(false);
   const [pageCount, setPageCount] = useState(0);
   const [previews, setPreviews] = useState<string[]>([]);
+  const [format, setFormat] = useState<"png" | "jpeg">("png");
   const [dragging, setDragging] = useState(false);
   const [showTimer, setShowTimer] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -68,17 +71,26 @@ export default function PdfToImagesPage() {
       ).toString();
 
       const bytes = await file.arrayBuffer();
-      const pdf = await pdfjsLib.getDocument({ data: bytes }).promise;
-
-      for (let i = 1; i <= pdf.numPages; i++) {
-        setProgress(Math.round((i / pdf.numPages) * 100));
-        const page = await pdf.getPage(i);
-        const viewport = page.getViewport({ scale: 2 });
-        const canvas = canvasRef.current;
-        canvas.height = viewport.height;
-        canvas.width = viewport.width;
-        await page.render({ canvas: canvas, viewport: viewport }).promise;
-        previewsArr.push(canvas.toDataURL("image/png"));
+      const loadingTask = pdfjsLib.getDocument({ data: bytes.slice(0) });
+      try {
+        const pdf = await loadingTask.promise;
+        for (let i = 1; i <= pdf.numPages; i++) {
+          setProgress(Math.round((i / pdf.numPages) * 100));
+          const page = await pdf.getPage(i);
+          const viewport = page.getViewport({ scale: 2 });
+          const canvas = canvasRef.current;
+          canvas.height = viewport.height;
+          canvas.width = viewport.width;
+          const context = canvas.getContext("2d");
+          if (!context) throw new Error("Canvas rendering is unavailable.");
+          context.fillStyle = "#ffffff";
+          context.fillRect(0, 0, canvas.width, canvas.height);
+          await page.render({ canvas, canvasContext: context, viewport, background: "#ffffff" }).promise;
+          previewsArr.push(canvas.toDataURL(format === "png" ? "image/png" : "image/jpeg", 0.92));
+          page.cleanup();
+        }
+      } finally {
+        await loadingTask.destroy();
       }
       setPreviews(previewsArr);
       setSuccess(true);
@@ -110,14 +122,21 @@ export default function PdfToImagesPage() {
     URL.revokeObjectURL(url);
   }, [file]);
 
-  const downloadAll = () => {
-    previews.forEach((dataUrl, i) => {
-      const a = document.createElement("a");
-      a.href = dataUrl;
-      a.download = `page-${i + 1}.png`;
-      a.click();
-    });
-    if (file) trackExport(file.name, "PDF to Images", previews.length);
+  const downloadAll = async () => {
+    if (previews.length === 0) return;
+    try {
+      const extension = format === "png" ? "png" : "jpg";
+      const files = await Promise.all(previews.map(async (dataUrl, i) => ({
+        name: `page-${String(i + 1).padStart(String(previews.length).length, "0")}.${extension}`,
+        bytes: new Uint8Array(await (await fetch(dataUrl)).arrayBuffer()),
+      })));
+      const archive = createZipArchive(files);
+      const baseName = file?.name.replace(/\.pdf$/i, "") || "pdf-pages";
+      downloadBytes(archive, `${baseName}-${extension}.zip`, "application/zip");
+      if (file) trackExport(file.name, "PDF to Images ZIP", archive.byteLength);
+    } catch {
+      setError("Failed to build the image ZIP archive.");
+    }
   };
 
   return (
@@ -135,12 +154,12 @@ export default function PdfToImagesPage() {
 
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">PDF to Images</h1>
-        <p className="text-[var(--muted)]">Extract all pages as high-quality PNG images.</p>
+        <p className="text-[var(--muted)]">Render all pages as high-quality PNG or JPG images.</p>
       </div>
 
       <ToolInfo
         name="PDF to Images"
-        description="Your PDF stays on your device. Image extraction runs locally using PDF.js in your browser — no uploads, no servers. Each page is rendered as a high-quality PNG you can download individually."
+        description="Your PDF stays on your device. PDF.js renders each page locally as PNG or JPG. Download images individually or package every page into one ZIP — no uploads or servers."
       />
 
 
@@ -173,7 +192,17 @@ export default function PdfToImagesPage() {
           </label>
         </div>
 
-        <ProgressBar processing={processing} fileSize={file?.size} label="Extracting images..." />
+        <ProgressBar processing={processing} fileSize={file?.size} label="Rendering page images..." />
+
+        {pageCount > 0 && previews.length === 0 && (
+          <div className="mt-5">
+            <label className="block text-sm font-medium text-[var(--foreground)] mb-2">Image format</label>
+            <div className="grid grid-cols-2 gap-2">
+              <button type="button" onClick={() => setFormat("png")} className={`py-2 rounded-lg border text-sm font-medium ${format === "png" ? "border-indigo-500 bg-indigo-500/10 text-indigo-500" : "border-[var(--card-border)] text-[var(--muted)]"}`}>PNG (lossless)</button>
+              <button type="button" onClick={() => setFormat("jpeg")} className={`py-2 rounded-lg border text-sm font-medium ${format === "jpeg" ? "border-indigo-500 bg-indigo-500/10 text-indigo-500" : "border-[var(--card-border)] text-[var(--muted)]"}`}>JPG (smaller)</button>
+            </div>
+          </div>
+        )}
 
         {showTimer && <FreeWaitTimer onDone={() => { setShowTimer(false); runExtract(); }} />}
 
@@ -211,7 +240,7 @@ export default function PdfToImagesPage() {
             <div className="flex items-center justify-between mb-3">
               <span className="text-sm font-medium text-[var(--foreground)]">{previews.length} image{previews.length > 1 ? "s" : ""} extracted</span>
               <button onClick={downloadAll} className="text-sm text-indigo-500 hover:text-indigo-600 font-medium">
-                Download all
+                Download ZIP
               </button>
             </div>
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
@@ -220,7 +249,7 @@ export default function PdfToImagesPage() {
                   <img src={src} alt={`Page ${i + 1}`} className="w-full" />
                   <div className="p-2 text-xs text-[var(--muted)] flex justify-between items-center">
                     <span>Page {i + 1}</span>
-                    <a href={src} download={`page-${i + 1}.png`} className="text-indigo-500 hover:underline">Download</a>
+                    <a href={src} download={`page-${i + 1}.${format === "png" ? "png" : "jpg"}`} className="text-indigo-500 hover:underline">Download</a>
                   </div>
                 </div>
               ))}
@@ -236,7 +265,7 @@ export default function PdfToImagesPage() {
       <div className="max-w-3xl mx-auto mt-12 pt-8 border-t border-[var(--card-border)]">
         <h2 className="text-xl font-bold text-[var(--foreground)] mb-3">About PDF to Images</h2>
         <div className="text-sm text-[var(--muted)] space-y-3 leading-relaxed">
-          <p>Extract every page of your PDF as a high-quality PNG image using our PDF to images tool, designed for quick and private conversion. This is perfect for creating thumbnails, sharing individual pages on social media, or embedding document content into presentations and reports. To convert PDF to PNG, simply upload your file and click extract — each page is rendered client-side using PDF.js, ensuring your document never leaves your device. Use our free PDF to images online free tool to get high-resolution PNGs that preserve the original layout, fonts, and formatting of every page. Each image can be downloaded individually or all at once, giving you full control over how you use your extracted content.</p>
+          <p>Render every page of a PDF as a high-resolution PNG or JPG. PNG preserves pixels losslessly; JPG usually produces smaller files. PDF.js performs the rendering in your browser, and each result can be downloaded individually or packaged into one ZIP archive. The rendered image preserves the visible page appearance but, like any image, does not contain selectable PDF text.</p>
         </div>
       </div>
       <RelatedContent slug="pdf-to-images" />

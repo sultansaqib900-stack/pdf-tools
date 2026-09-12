@@ -7,6 +7,8 @@ import { usePageMeta } from "@/hooks/usePageMeta";
 import HowToJsonLd from "@/components/HowToJsonLd";
 import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
 import PremiumGate from "@/components/PremiumGate";
+import { transformPdfColors } from "@/lib/pdfRaster";
+import { downloadBytes, isPdfFile } from "@/lib/pdfBytes";
 
 type Mode = "invert" | "grayscale" | "high-contrast";
 
@@ -17,42 +19,28 @@ export default function PdfInverterPage() {
   const [processing, setProcessing] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
+  const [progress, setProgress] = useState(0);
 
   const transform = async () => {
     if (!file) return;
     setProcessing(true);
     setError(null);
     setSuccess(false);
+    setProgress(0);
     try {
-      const { PDFDocument, rgb } = await import("pdf-lib");
-      const bytes = await file.arrayBuffer();
-      const pdfDoc = await PDFDocument.load(bytes);
-      const pages = pdfDoc.getPages();
-
-      for (const page of pages) {
-        const { width, height } = page.getSize();
-        if (mode === "invert") {
-          page.drawRectangle({ x: 0, y: 0, width, height, color: rgb(0, 0, 0), opacity: 1 });
-        } else if (mode === "grayscale") {
-          page.drawRectangle({ x: 0, y: 0, width, height, color: rgb(0.5, 0.5, 0.5), opacity: 0.15 });
-        } else if (mode === "high-contrast") {
-          page.drawRectangle({ x: 0, y: 0, width, height, color: rgb(0, 0, 0), opacity: 0.85 });
-        }
-      }
-
-      const pdfBytes = await pdfDoc.save();
-      const blob = new Blob([pdfBytes as unknown as BlobPart], { type: "application/pdf" });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `${mode}-${file.name}`;
-      a.click();
-      URL.revokeObjectURL(url);
+      if (!isPdfFile(file)) throw new Error("Please select a valid PDF file.");
+      const bytes = await transformPdfColors(
+        await file.arrayBuffer(),
+        mode,
+        (completed, total) => setProgress(Math.round((completed / total) * 100)),
+      );
+      downloadBytes(bytes, `${mode}-${file.name}`);
       setSuccess(true);
-    } catch {
-      setError("Failed to transform PDF colors. The file may be encrypted or corrupted.");
+    } catch (transformError) {
+      setError(transformError instanceof Error ? transformError.message : "Failed to transform PDF colors. The file may be encrypted or corrupted.");
+    } finally {
+      setProcessing(false);
     }
-    setProcessing(false);
   };
 
   return (
@@ -77,7 +65,7 @@ export default function PdfInverterPage() {
 
         <div className="bg-[var(--card)] border border-[var(--card-border)] rounded-2xl p-6 sm:p-8 space-y-6 shadow-xl">
           <div className="border-2 border-dashed border-[var(--card-border)] hover:border-indigo-500/50 rounded-2xl p-6 text-center">
-            <input type="file" accept=".pdf" onChange={(e) => setFile(e.target.files?.[0] || null)} className="text-sm file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:bg-indigo-600 file:text-white file:text-xs file:font-semibold w-full cursor-pointer" />
+            <input type="file" accept="application/pdf,.pdf" onChange={(e) => { const selected = e.target.files?.[0] || null; if (selected && isPdfFile(selected)) { setFile(selected); setError(null); setSuccess(false); } else if (selected) setError("Please select a valid PDF file."); }} className="text-sm file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:bg-indigo-600 file:text-white file:text-xs file:font-semibold w-full cursor-pointer" />
             {file && <p className="text-xs text-emerald-600 font-semibold mt-2">Selected: {file.name} ({(file.size / 1024).toFixed(0)} KB)</p>}
           </div>
 
@@ -99,6 +87,15 @@ export default function PdfInverterPage() {
               </button>
             ))}
           </div>
+
+          {processing && (
+            <div className="space-y-1" aria-live="polite">
+              <div className="h-2 rounded-full bg-[var(--card-border)] overflow-hidden"><div className="h-full bg-gradient-to-r from-amber-500 to-orange-600 transition-all" style={{ width: `${progress}%` }} /></div>
+              <p className="text-xs text-[var(--muted)] text-center">Rendering and transforming pages… {progress}%</p>
+            </div>
+          )}
+
+          <p className="text-xs text-[var(--muted)]">Color conversion rebuilds pages as images so every pixel—including scanned content—is transformed consistently.</p>
 
           <button
             onClick={transform}

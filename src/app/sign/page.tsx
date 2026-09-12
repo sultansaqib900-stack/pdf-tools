@@ -37,6 +37,7 @@ export default function SignPage() {
   const [dragging, setDragging] = useState(false);
   const [showTimer, setShowTimer] = useState(false);
   const [drawing, setDrawing] = useState(false);
+  const [hasSignature, setHasSignature] = useState(false);
   const [resultBytes, setResultBytes] = useState<Uint8Array | null>(null);
   const [downloadUrl, setDownloadUrl] = useState<string | null>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -52,13 +53,16 @@ export default function SignPage() {
     })();
   }, [trackToolVisit]);
 
+  useEffect(() => () => {
+    if (downloadUrl) URL.revokeObjectURL(downloadUrl);
+  }, [downloadUrl]);
+
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
-    ctx.fillStyle = "#ffffff";
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.strokeStyle = "#0f172a";
     ctx.lineWidth = 2;
     ctx.lineCap = "round";
@@ -85,6 +89,7 @@ export default function SignPage() {
     const pos = getPos(e);
     ctx.lineTo(pos.x, pos.y);
     ctx.stroke();
+    setHasSignature(true);
   };
 
   const stopDraw = () => setDrawing(false);
@@ -93,10 +98,18 @@ export default function SignPage() {
     const canvas = canvasRef.current;
     if (!canvas) return { x: 0, y: 0 };
     const rect = canvas.getBoundingClientRect();
+    const scaleX = canvas.width / Math.max(rect.width, 1);
+    const scaleY = canvas.height / Math.max(rect.height, 1);
     if ("touches" in e) {
-      return { x: e.touches[0].clientX - rect.left, y: e.touches[0].clientY - rect.top };
+      return {
+        x: (e.touches[0].clientX - rect.left) * scaleX,
+        y: (e.touches[0].clientY - rect.top) * scaleY,
+      };
     }
-    return { x: e.clientX - rect.left, y: e.clientY - rect.top };
+    return {
+      x: (e.clientX - rect.left) * scaleX,
+      y: (e.clientY - rect.top) * scaleY,
+    };
   };
 
   const clearCanvas = () => {
@@ -104,8 +117,8 @@ export default function SignPage() {
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
-    ctx.fillStyle = "#ffffff";
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    setHasSignature(false);
   };
 
   const handleFile = useCallback((f: File | null) => {
@@ -118,6 +131,10 @@ export default function SignPage() {
 
   const runSign = useCallback(async () => {
     if (!file) return;
+    if (!hasSignature) {
+      setError("Draw a signature before stamping the PDF.");
+      return;
+    }
     setProcessing(true);
     const canProceed = await usage.checkAndTrack();
     if (!canProceed) { setProcessing(false); upsell.showUpsell("daily-limit"); return; }
@@ -157,7 +174,7 @@ export default function SignPage() {
       setError("Failed to add signature.");
     }
     setProcessing(false);
-  }, [file, usage, upsell, trackExport]);
+  }, [file, hasSignature, usage, upsell, trackExport]);
 
   const sign = useCallback(async () => {
     if (!isPremium()) {
@@ -187,14 +204,14 @@ export default function SignPage() {
         description="Sign PDF documents online for free. Draw your signature and add it to any PDF in your browser."
         url="https://allaboutpdfediting.xyz/sign"
       />
-      <HowToJsonLd name="Sign PDF Online" description="Add electronic signatures to PDF documents" steps={[{name:"Upload PDF",text:"Select the PDF document to sign"},{name:"Draw signature",text:"Draw type or upload your signature"},{name:"Place and download",text:"Position your signature and download the signed PDF"}]} />
+      <HowToJsonLd name="Sign PDF Online" description="Draw and stamp a signature at the bottom of the last PDF page" steps={[{name:"Draw signature",text:"Draw your signature with a mouse or touchscreen"},{name:"Upload PDF",text:"Select the PDF document to stamp"},{name:"Stamp and download",text:"Add the signature at the bottom center of the last page and download"}]} />
       <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Sign PDF", item: "https://allaboutpdfediting.xyz/sign" }]} />
       <FaqPageJsonLd questions={rc?.faqs} />
-      <AiSummaryJsonLd name="Sign PDF" summary="Add electronic signatures to PDF documents by drawing typing or uploading" category="BusinessApplications" inputType="PDF" outputType="PDF" processing="client-side" price="free" features={["Draw signature","Type signature","Upload signature","Position placement","Free e-sign tool"]} limits="Files up to 10MB" />
+      <AiSummaryJsonLd name="Sign PDF" summary="Draw a signature and stamp it at the bottom center of the PDF's last page" category="BusinessApplications" inputType="PDF plus drawn signature" outputType="PDF" processing="client-side" price="free" features={["Mouse drawing","Touchscreen drawing","Transparent PNG stamp","Last-page placement","Client-side processing"]} limits="Files up to 10MB" />
       
       <div className="mb-8">
         <h1 className="text-3xl font-extrabold text-[var(--foreground)] mb-2">e-Sign PDF</h1>
-        <p className="text-[var(--muted)]">Draw your signature and place it on your PDF document.</p>
+        <p className="text-[var(--muted)]">Draw your signature and stamp it at the bottom center of the last page.</p>
       </div>
 
       <ToolInfo
@@ -214,7 +231,7 @@ export default function SignPage() {
               ref={canvasRef}
               width={300}
               height={100}
-              className="w-full h-32 cursor-crosshair touch-none block"
+              className="w-full h-auto cursor-crosshair touch-none block"
               onMouseDown={startDraw}
               onMouseMove={draw}
               onMouseUp={stopDraw}
@@ -256,7 +273,7 @@ export default function SignPage() {
           <>
             <button
               onClick={sign}
-              disabled={processing || showTimer}
+              disabled={!hasSignature || processing || showTimer}
               className="w-full py-4 bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-bold rounded-2xl hover:opacity-95 disabled:opacity-40 disabled:cursor-not-allowed transition shadow-lg shadow-indigo-500/20 active:scale-[0.99]"
             >
               {processing ? "Signing PDF..." : "⚡ Stamp Signature & Save PDF"}

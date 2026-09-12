@@ -63,7 +63,7 @@ export default function ExtractTextPage() {
 
       const bytes = await file.arrayBuffer();
       originalBytes.current = bytes;
-      const pdf = await pdfjsLib.getDocument({ data: bytes }).promise;
+      const pdf = await pdfjsLib.getDocument({ data: bytes.slice(0) }).promise;
 
       for (let i = 1; i <= pdf.numPages; i++) {
         setProgress(Math.round((i / pdf.numPages) * 100));

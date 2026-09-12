@@ -7,6 +7,8 @@ import { usePageMeta } from "@/hooks/usePageMeta";
 import HowToJsonLd from "@/components/HowToJsonLd";
 import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
 import PremiumGate from "@/components/PremiumGate";
+import { escapeCsvCell } from "@/lib/csv";
+import { isPdfFile } from "@/lib/pdfBytes";
 
 export default function FormDataExtractPage() {
   usePageMeta("Extract PDF Form Data to CSV - Form Field Extractor | PDFTools Premium", "Extract filled form field data from PDF documents to CSV. Batch export PDF form data to Excel. Premium.");
@@ -22,48 +24,47 @@ export default function FormDataExtractPage() {
     setError(null);
     setSuccess(false);
     try {
-      const { PDFDocument } = await import("pdf-lib");
+      const { PDFDocument, PDFTextField, PDFCheckBox, PDFDropdown, PDFOptionList, PDFRadioGroup } = await import("pdf-lib");
       const allRows: Record<string, string>[] = [];
       const allFields = new Set<string>();
+      const failedFiles: string[] = [];
 
       for (const file of files) {
-        const bytes = await file.arrayBuffer();
-        const pdfDoc = await PDFDocument.load(bytes);
-        const form = pdfDoc.getForm();
-        const fieldNames = form.getFields().map((f: any) => f.getName());
-        const row: Record<string, string> = { _file: file.name };
-        for (const name of fieldNames) {
-          allFields.add(name);
-          try {
-            const field = (form as any).getFieldByName(name);
-            const type = field.constructor.name;
-            let val = "";
-            if (type === "PDFTextField") val = (field as any).getText() || "";
-            else if (type === "PDFCheckBox") val = (field as any).isChecked() ? "Checked" : "Unchecked";
-            else if (type === "PDFDropdown" || type === "PDFOptionList") val = (field as any).getSelected()?.join(", ") || "";
-            else val = "[Unsupported field type]";
-            row[name] = val;
-          } catch { row[name] = "[Error reading]"; }
+        if (!isPdfFile(file)) { failedFiles.push(file.name); continue; }
+        try {
+          const pdfDoc = await PDFDocument.load(await file.arrayBuffer(), { updateMetadata: false });
+          const fields = pdfDoc.getForm().getFields();
+          const row: Record<string, string> = { _file: file.name };
+          for (const field of fields) {
+            const name = field.getName();
+            allFields.add(name);
+            if (field instanceof PDFTextField) row[name] = field.getText() || "";
+            else if (field instanceof PDFCheckBox) row[name] = field.isChecked() ? "Checked" : "Unchecked";
+            else if (field instanceof PDFDropdown || field instanceof PDFOptionList) row[name] = field.getSelected().join(", ");
+            else if (field instanceof PDFRadioGroup) row[name] = field.getSelected() || "";
+            else row[name] = "[Unsupported field type]";
+          }
+          allRows.push(row);
+        } catch {
+          failedFiles.push(file.name);
         }
-        allRows.push(row);
       }
+      if (allRows.length === 0 || allFields.size === 0) throw new Error("No readable AcroForm fields were found in the selected PDFs.");
 
       const headers = ["_file", ...Array.from(allFields)];
-      const csvLines = [headers.join(",")];
+      const csvLines = [headers.map(escapeCsvCell).join(",")];
       for (const row of allRows) {
-        const vals = headers.map(h => {
-          const v = row[h] || "";
-          return v.includes(",") || v.includes("\n") ? `"${v.replace(/"/g, '""')}"` : v;
-        });
-        csvLines.push(vals.join(","));
+        csvLines.push(headers.map((header) => escapeCsvCell(row[header] || "")).join(","));
       }
+      if (failedFiles.length > 0) setError(`Skipped ${failedFiles.length} unreadable file(s): ${failedFiles.join(", ")}`);
 
       setCsvResult(csvLines.join("\n"));
       setSuccess(true);
-    } catch {
-      setError("Failed to extract form data. Ensure your PDFs contain AcroForm fields.");
+    } catch (extractionError) {
+      setError(extractionError instanceof Error ? extractionError.message : "Failed to extract form data. Ensure your PDFs contain AcroForm fields.");
+    } finally {
+      setExtracting(false);
     }
-    setExtracting(false);
   };
 
   const downloadCsv = () => {
@@ -86,7 +87,7 @@ export default function FormDataExtractPage() {
       <div className="max-w-3xl mx-auto px-4 py-12">
         <SoftwareAppJsonLd name="PDF Form Data Extractor" description="Extract filled form field data from PDF documents to CSV spreadsheet files." url="https://allaboutpdfediting.xyz/form-data-extract" image="https://allaboutpdfediting.xyz/opengraph-image.png" aggregateRating={{ ratingValue: 4.6, bestRating: 5, ratingCount: 143 }} />
         <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Form Data Extract", item: "https://allaboutpdfediting.xyz/form-data-extract" }]} />
-        <HowToJsonLd name="Extract PDF Form Data to CSV" description="Extract filled form field data from PDF forms and export to CSV" steps={[{name:"Upload PDF form",text:"Upload a PDF with interactive form fields AcroForms or XFA"},{name:"Extract data",text:"The tool reads all form fields and extracts their values"},{name:"Download CSV",text:"Download the extracted data as a CSV file for analysis"}]} />
+        <HowToJsonLd name="Extract PDF Form Data to CSV" description="Extract filled form field data from PDF forms and export to CSV" steps={[{name:"Upload PDF form",text:"Upload a PDF with interactive AcroForm fields"},{name:"Extract data",text:"The tool reads all form fields and extracts their values"},{name:"Download CSV",text:"Download the extracted data as a CSV file for analysis"}]} />
         <AiSummaryJsonLd name="Form Data Extraction" summary="Extract field values from PDF forms and export them to CSV format" category="BusinessApplications" inputType="PDF" outputType="CSV" processing="client-side" price="premium" features={["AcroForm extraction","CSV export","Batch processing","Field name mapping","No data uploads"]} limits="Premium subscribers" />
         
         <div className="mb-8">
@@ -101,7 +102,7 @@ export default function FormDataExtractPage() {
           <div>
             <label className="block text-sm font-bold text-[var(--foreground)] mb-2">Upload filled PDF forms</label>
             <div className="border-2 border-dashed border-[var(--card-border)] hover:border-indigo-500/50 rounded-2xl p-6 text-center">
-              <input type="file" accept=".pdf" multiple onChange={(e) => setFiles(Array.from(e.target.files || []))} className="text-sm file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:bg-indigo-600 file:text-white file:text-xs file:font-semibold w-full cursor-pointer" />
+              <input type="file" accept="application/pdf,.pdf" multiple onChange={(e) => { const selected = Array.from(e.target.files || []); const valid = selected.filter(isPdfFile); setFiles(valid); setCsvResult(""); setSuccess(false); setError(valid.length === selected.length ? null : "Some non-PDF files were ignored."); }} className="text-sm file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:bg-indigo-600 file:text-white file:text-xs file:font-semibold w-full cursor-pointer" />
               {files.length > 0 && <p className="text-xs text-emerald-600 font-semibold mt-2">{files.length} file(s) selected</p>}
             </div>
           </div>

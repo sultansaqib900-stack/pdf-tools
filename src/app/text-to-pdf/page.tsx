@@ -52,36 +52,64 @@ export default function TextToPdfPage() {
       const maxWidth = pageWidth - margin * 2;
       const lineHeight = fontSize * 1.4;
 
-      const words = text.split(/\s+/);
-      let line = "";
       const lines: string[] = [];
-
-      for (const word of words) {
-        const testLine = line ? `${line} ${word}` : word;
-        const testWidth = font.widthOfTextAtSize(testLine, fontSize);
-        if (testWidth > maxWidth && line) {
-          lines.push(line);
-          line = word;
-        } else {
-          line = testLine;
+      const splitLongWord = (word: string): string[] => {
+        const parts: string[] = [];
+        let part = "";
+        for (const character of Array.from(word)) {
+          const candidate = part + character;
+          if (part && font.widthOfTextAtSize(candidate, fontSize) > maxWidth) {
+            parts.push(part);
+            part = character;
+          } else {
+            part = candidate;
+          }
         }
+        if (part) parts.push(part);
+        return parts;
+      };
+
+      for (const logicalLine of text.replace(/\r\n?/g, "\n").split("\n")) {
+        if (!logicalLine.trim()) {
+          lines.push("");
+          continue;
+        }
+        let line = "";
+        for (const word of logicalLine.trim().split(/\s+/)) {
+          const segments = font.widthOfTextAtSize(word, fontSize) > maxWidth ? splitLongWord(word) : [word];
+          for (const segment of segments) {
+            const candidate = line ? `${line} ${segment}` : segment;
+            if (line && font.widthOfTextAtSize(candidate, fontSize) > maxWidth) {
+              lines.push(line);
+              line = segment;
+            } else {
+              line = candidate;
+            }
+          }
+        }
+        lines.push(line);
       }
-      if (line) lines.push(line);
 
-      const linesPerPage = Math.floor((pageHeight - margin * 2) / lineHeight);
-      const totalPages = Math.ceil(lines.length / linesPerPage);
-
-      let lineIdx = 0;
-      for (let p = 0; p < totalPages; p++) {
+      let lineIndex = 0;
+      let pageIndex = 0;
+      while (lineIndex < lines.length) {
         const page = pdfDoc.addPage([pageWidth, pageHeight]);
-        if (p === 0 && title) {
-          page.drawText(title, { x: margin, y: pageHeight - margin - 20, size: 18, font, color: rgb(0, 0, 0) });
+        let y = pageHeight - margin - 20;
+        if (pageIndex === 0 && title) {
+          const requestedTitleSize = 18;
+          const titleWidth = font.widthOfTextAtSize(title, requestedTitleSize);
+          const titleSize = Math.max(8, Math.min(requestedTitleSize, requestedTitleSize * maxWidth / Math.max(titleWidth, 1)));
+          page.drawText(title, { x: margin, y, size: titleSize, font, color: rgb(0, 0, 0) });
+          y -= 36;
         }
-        let y = pageHeight - margin - (title && p === 0 ? 50 : 20);
-        for (let i = 0; i < linesPerPage && lineIdx < lines.length; i++, lineIdx++) {
-          page.drawText(lines[lineIdx], { x: margin, y, size: fontSize, font, color: rgb(0, 0, 0) });
+        while (lineIndex < lines.length && y >= margin) {
+          if (lines[lineIndex]) {
+            page.drawText(lines[lineIndex], { x: margin, y, size: fontSize, font, color: rgb(0, 0, 0) });
+          }
+          lineIndex += 1;
           y -= lineHeight;
         }
+        pageIndex += 1;
       }
 
       const pdfBytes = await pdfDoc.save({ useObjectStreams: true });
@@ -94,7 +122,7 @@ export default function TextToPdfPage() {
       URL.revokeObjectURL(url);
       trackExport(title ? `${title.toLowerCase().replace(/\s+/g, "-")}.pdf` : "text-to-pdf.pdf", "Text to PDF", pdfBytes.length);
       setSuccess(true);
-    } catch { setError("Failed to convert text."); }
+    } catch (conversionError) { setError(conversionError instanceof Error ? `Failed to convert text: ${conversionError.message}` : "Failed to convert text."); }
     setProcessing(false);
   }, [text, title]);
 
@@ -115,10 +143,10 @@ export default function TextToPdfPage() {
         description="Convert plain text to PDF online for free. Create PDF documents from text in your browser."
         url="https://allaboutpdfediting.xyz/text-to-pdf"
       />
-      <HowToJsonLd name="Convert Text to PDF" description="Convert plain text to formatted PDF documents" steps={[{name:"Enter or paste text",text:"Type or paste your text content"},{name:"Choose formatting",text:"Select font size and page layout"},{name:"Download PDF",text:"Download your text as a formatted PDF document"}]} />
+      <HowToJsonLd name="Convert Text to PDF" description="Convert entered plain text into a paginated PDF" steps={[{name:"Enter or paste text",text:"Type or paste text supported by the standard PDF Helvetica encoding"},{name:"Add optional title",text:"Optionally enter a title for the first page"},{name:"Download PDF",text:"Download the automatically wrapped and paginated PDF"}]} />
       <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Text to PDF", item: "https://allaboutpdfediting.xyz/text-to-pdf" }]} />
       <FaqPageJsonLd questions={rc?.faqs} />
-      <AiSummaryJsonLd name="Text to PDF" summary="Convert plain text content into formatted PDF documents" category="Utilities" inputType="Text" outputType="PDF" processing="client-side" price="free" features={["Text conversion","Font selection","Page formatting","Free online tool","Client-side"]} limits="Files up to 10MB" />
+      <AiSummaryJsonLd name="Text to PDF" summary="Convert entered text into a US Letter PDF with measured wrapping and automatic page breaks" category="Utilities" inputType="Text" outputType="PDF" processing="client-side" price="free" features={["Optional title","Measured word wrapping","Explicit line breaks","Automatic pagination","Client-side"]} limits="Uses standard PDF Helvetica and its character encoding" />
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">Text to PDF</h1>
         <p className="text-[var(--muted)]">Convert plain text into a downloadable PDF document instantly.</p>

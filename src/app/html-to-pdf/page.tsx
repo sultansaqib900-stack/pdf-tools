@@ -24,6 +24,22 @@ import html2canvas from "html2canvas";
 
 const rc = getRelatedContent("html-to-pdf");
 
+function sanitizePreviewHtml(source: string): string {
+  if (typeof DOMParser === "undefined") return "";
+  const document = new DOMParser().parseFromString(source, "text/html");
+  document.querySelectorAll("script, iframe, object, embed, base, meta, link").forEach((element) => element.remove());
+  document.querySelectorAll("*").forEach((element) => {
+    for (const attribute of Array.from(element.attributes)) {
+      const name = attribute.name.toLowerCase();
+      const value = attribute.value.trim().toLowerCase();
+      if (name.startsWith("on") || name === "srcdoc" || ((name === "href" || name === "src") && value.startsWith("javascript:"))) {
+        element.removeAttribute(attribute.name);
+      }
+    }
+  });
+  return document.body.innerHTML;
+}
+
 export default function HtmlToPdfPage() {
   const usage = useUsage();
   const upsell = usePremiumUpsell();
@@ -33,16 +49,15 @@ export default function HtmlToPdfPage() {
   const [html, setHtml] = useState("<h1>Hello World</h1><p>Your content here.</p>");
   const [processing, setProcessing] = useState(false);
   const [showTimer, setShowTimer] = useState(false);
+  const [sanitizedHtml, setSanitizedHtml] = useState("");
   const previewRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => { trackToolVisit("html-to-pdf"); }, []);
+  useEffect(() => { setSanitizedHtml(sanitizePreviewHtml(html)); }, [html]);
 
-  const convert = useCallback(async () => {
-    if (!html.trim()) return;
-    if (!isPremium()) {
-      const remaining = await usage.peekUsage();
-      if (remaining <= 0) { upsell.showUpsell("daily-limit"); return; }
-      setShowTimer(true);
+  const runConvert = useCallback(async () => {
+    if (!sanitizedHtml.trim()) {
+      setError("Enter HTML with visible content first.");
       return;
     }
     setProcessing(true);
@@ -51,7 +66,7 @@ export default function HtmlToPdfPage() {
     if (!canProceed) { setProcessing(false); upsell.showUpsell("daily-limit"); return; }
     try {
       const container = previewRef.current;
-      if (!container) return;
+      if (!container) throw new Error("The HTML preview is unavailable.");
 
       const canvas = await html2canvas(container, {
         useCORS: true,
@@ -59,39 +74,45 @@ export default function HtmlToPdfPage() {
         backgroundColor: "#ffffff",
         logging: false,
       });
+      if (!canvas.width || !canvas.height) throw new Error("The HTML preview produced an empty canvas.");
 
       const imgData = canvas.toDataURL("image/jpeg", 0.95);
       const pdf = new jsPDF("p", "mm", "a4");
-      const pdfW = pdf.internal.pageSize.getWidth();
-      const pdfH = pdf.internal.pageSize.getHeight();
-      const imgW = canvas.width;
-      const imgH = canvas.height;
-      const ratio = pdfW / imgW;
-      const pageH = imgH * ratio;
-      let heightLeft = pageH;
-      let pos = 0;
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = pdf.internal.pageSize.getHeight();
+      const renderedHeight = canvas.height * (pdfWidth / canvas.width);
+      let remainingHeight = renderedHeight;
+      let position = 0;
 
-      pdf.addImage(imgData, "JPEG", 0, pos, pdfW, pageH);
-      heightLeft -= pdfH;
-
-      while (heightLeft > 0) {
-        pos -= pdfH;
+      pdf.addImage(imgData, "JPEG", 0, position, pdfWidth, renderedHeight);
+      remainingHeight -= pdfHeight;
+      while (remainingHeight > 0) {
+        position -= pdfHeight;
         pdf.addPage();
-        pdf.addImage(imgData, "JPEG", 0, pos, pdfW, pageH);
-        heightLeft -= pdfH;
+        pdf.addImage(imgData, "JPEG", 0, position, pdfWidth, renderedHeight);
+        remainingHeight -= pdfHeight;
       }
 
       pdf.save("document.pdf");
-      trackExport("html-to-pdf", "HTML to PDF", html.length);
+      trackExport("html-to-pdf", "HTML to PDF", sanitizedHtml.length);
       setSuccess(true);
-      setProcessing(false);
-    } catch {
-      setError("Failed to generate PDF. Check your HTML for errors.");
+    } catch (conversionError) {
+      setError(conversionError instanceof Error ? `Failed to generate PDF: ${conversionError.message}` : "Failed to generate PDF.");
+    } finally {
       setProcessing(false);
     }
-  }, [html, usage, upsell]);
+  }, [sanitizedHtml, usage, upsell, trackExport]);
 
-  const runConvert = convert;
+  const convert = useCallback(async () => {
+    if (!sanitizedHtml.trim()) return;
+    if (!isPremium()) {
+      const remaining = await usage.peekUsage();
+      if (remaining <= 0) { upsell.showUpsell("daily-limit"); return; }
+      setShowTimer(true);
+      return;
+    }
+    void runConvert();
+  }, [sanitizedHtml, usage, upsell, runConvert]);
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-12">
@@ -100,10 +121,10 @@ export default function HtmlToPdfPage() {
         description="Convert HTML to PDF online for free. Turn HTML markup into professional PDF documents instantly."
         url="https://allaboutpdfediting.xyz/html-to-pdf"
       />
-      <HowToJsonLd name="Convert HTML to PDF" description="Convert HTML markup and web pages to PDF documents" steps={[{name:"Enter HTML",text:"Paste HTML code or enter a URL"},{name:"Preview",text:"Preview how the PDF will look"},{name:"Download PDF",text:"Download the HTML content as a PDF document"}]} />
+      <HowToJsonLd name="Convert HTML Markup to PDF" description="Render pasted HTML markup into an image-based PDF" steps={[{name:"Paste HTML markup",text:"Enter raw HTML; this tool does not fetch web-page URLs"},{name:"Review sanitized preview",text:"Preview the markup after scripts, embedded frames, and event handlers are removed"},{name:"Download PDF",text:"Render the preview into an A4 image-based PDF"}]} />
       <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "HTML to PDF", item: "https://allaboutpdfediting.xyz/html-to-pdf" }]} />
       <FaqPageJsonLd questions={rc?.faqs} />
-      <AiSummaryJsonLd name="HTML to PDF" summary="Convert HTML markup and web page URLs into PDF documents" category="Utilities" inputType="HTML" outputType="PDF" processing="client-side" price="free" features={["HTML conversion","URL to PDF","Preview","Free tool","Client-side processing"]} limits="Files up to 10MB" />
+      <AiSummaryJsonLd name="HTML Markup to PDF" summary="Sanitize and raster-render pasted HTML markup into an A4 PDF" category="Utilities" inputType="Raw HTML markup" outputType="Image-based PDF" processing="client-side" price="free" features={["Sanitized HTML preview","Multi-page A4 output","Inline CSS rendering","Client-side conversion"]} limits="Does not fetch page URLs; remote assets referenced by markup may make network requests or fail CORS" />
 
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">HTML to PDF</h1>
@@ -112,7 +133,7 @@ export default function HtmlToPdfPage() {
 
       <ToolInfo
         name="HTML to PDF"
-        description="Your content stays private. Conversion happens entirely in your browser using html2canvas and jsPDF — no uploads, no servers, no print dialog. Just paste HTML and download your PDF instantly."
+        description="Pasted markup is sanitized and rasterized locally with html2canvas and jsPDF. The tool does not accept URLs. Remote images, fonts, or CSS referenced inside your markup can still contact their hosts and may fail because of CORS."
       />
 
       <div className="mb-4">
@@ -133,7 +154,7 @@ export default function HtmlToPdfPage() {
           <div
             ref={previewRef}
             className="p-4 rounded-xl border border-[var(--card-border)] bg-white min-h-[120px] overflow-auto text-black text-sm leading-relaxed [&_h1]:text-2xl [&_h1]:font-bold [&_h2]:text-xl [&_h2]:font-bold [&_h3]:text-lg [&_h3]:font-bold [&_p]:mb-2 [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:list-decimal [&_ol]:pl-5 [&_table]:w-full [&_th]:border [&_th]:border-gray-300 [&_th]:p-2 [&_th]:bg-gray-100 [&_td]:border [&_td]:border-gray-300 [&_td]:p-2 [&_img]:max-w-full [&_a]:text-blue-600 [&_a]:underline"
-            dangerouslySetInnerHTML={{ __html: html }}
+            dangerouslySetInnerHTML={{ __html: sanitizedHtml }}
           />
         </div>
 
@@ -143,7 +164,7 @@ export default function HtmlToPdfPage() {
 
         <button
           onClick={convert}
-          disabled={!html.trim() || processing || showTimer}
+          disabled={!sanitizedHtml.trim() || processing || showTimer}
           className="mt-6 w-full py-3 bg-indigo-600 text-white font-medium rounded-xl hover:bg-indigo-700 disabled:opacity-40 disabled:cursor-not-allowed transition shadow-sm"
         >
           {processing ? (
@@ -165,12 +186,6 @@ export default function HtmlToPdfPage() {
 
         <SuccessAnimation show={success} message="PDF downloaded!" onRestore={undefined} />
 
-        {success && (
-          <div className="mt-4 p-3 bg-green-50 dark:bg-green-950/20 border border-green-200 dark:border-green-800 rounded-xl text-center">
-            <p className="text-sm text-green-700 dark:text-green-400">PDF downloaded successfully!</p>
-          </div>
-        )}
-
         <div className="mt-6 p-4 bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800 rounded-xl">
           <p className="text-xs text-amber-700 dark:text-amber-400 font-medium mb-1">Tips:</p>
           <ul className="text-xs text-amber-600 dark:text-amber-500 space-y-1 list-disc list-inside">
@@ -185,7 +200,7 @@ export default function HtmlToPdfPage() {
       <div className="max-w-3xl mx-auto mt-12 pt-8 border-t border-[var(--card-border)]">
         <h2 className="text-xl font-bold text-[var(--foreground)] mb-3">About HTML to PDF</h2>
         <div className="text-sm text-[var(--muted)] space-y-3 leading-relaxed">
-          <p>Convert your HTML markup to a polished PDF document with our free tool, ideal for developers, content creators, and documentation authors. Whether you need to save a web page for offline reading, create printable documentation from HTML templates, or generate reports dynamically, our HTML to PDF converter makes it straightforward. To convert HTML to PDF online free, paste your HTML code into the editor and click download — the conversion uses html2canvas and jsPDF in your browser, so everything stays client-side with no data uploaded to any server. Just paste your markup, preview the result, and download your PDF instantly.</p>
+          <p>Paste raw HTML markup, review its sanitized preview, and render that preview into an A4 PDF. Scripts, embedded frames, plugins, document metadata, linked stylesheets, and inline event handlers are removed before rendering. The result is rasterized, so its text is not selectable. This tool does not retrieve URLs or reproduce a live website; remote assets explicitly referenced by your markup may still make browser requests and are subject to CORS.</p>
         </div>
       </div>
       <RelatedContent slug="html-to-pdf" />
