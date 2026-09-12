@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 
 interface ProgressBarProps {
   processing: boolean;
@@ -17,31 +17,34 @@ export default function ProgressBar({
 }: ProgressBarProps) {
   const [progress, setProgress] = useState(0);
   const [done, setDone] = useState(false);
+  const wasProcessingRef = useRef(false);
 
   useEffect(() => {
     if (!processing) {
-      if (progress === 100) {
+      if (wasProcessingRef.current) {
+        wasProcessingRef.current = false;
         setDone(true);
-        const t = setTimeout(() => { setDone(false); setProgress(0); }, 1500);
+        const t = setTimeout(() => {
+          setDone(false);
+          setProgress(0);
+        }, 1500);
         return () => clearTimeout(t);
       }
-      setProgress(0);
-      setDone(false);
       return;
     }
 
-    setProgress(0);
-    setDone(false);
+    wasProcessingRef.current = true;
+    setProgress(5);
 
     const estimatedMs = fileSize ? Math.min(Math.round(fileSize / 50000) * 1000, 30000) : 8000;
     const interval = 100;
     const step = 100 / (estimatedMs / interval);
-    let p = 0;
+    let p = 5;
 
     const t = setInterval(() => {
       p += step;
-      if (p >= 100) {
-        p = 100;
+      if (p >= 95) {
+        p = 95;
         clearInterval(t);
         onComplete?.();
       }
@@ -70,7 +73,7 @@ export default function ProgressBar({
           </div>
           <div className="w-full h-2 bg-[var(--card-border)] rounded-full overflow-hidden">
             <div
-              className="h-full bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full transition-all duration-200 ease-out"
+              className="h-full bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-full transition-all duration-200 ease-out"
               style={{ width: `${progress}%` }}
             />
           </div>

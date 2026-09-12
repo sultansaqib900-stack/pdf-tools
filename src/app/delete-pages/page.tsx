@@ -19,6 +19,7 @@ import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 import FaqPageJsonLd from "@/components/FaqPageJsonLd";
 import RelatedContent from "@/components/RelatedContent";
 import { getRelatedContent } from "@/lib/related-content";
+import PipelineActionBar from "@/components/PipelineActionBar";
 import UseCaseLinks from "@/components/UseCaseLinks";
 
 const rc = getRelatedContent("delete-pages");
@@ -34,6 +35,8 @@ export default function DeletePagesPage() {
   const [dragging, setDragging] = useState(false);
   const [showTimer, setShowTimer] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [resultBytes, setResultBytes] = useState<Uint8Array | null>(null);
+  const [downloadUrl, setDownloadUrl] = useState<string | null>(null);
   const originalBytes = useRef<ArrayBuffer | null>(null);
 
   useEffect(() => { trackToolVisit("delete-pages"); }, []);
@@ -82,13 +85,14 @@ export default function DeletePagesPage() {
       copiedPages.forEach((p) => newPdf.addPage(p));
 
       const pdfBytes = await newPdf.save({ useObjectStreams: true });
+      setResultBytes(pdfBytes);
       const blob = new Blob([pdfBytes as unknown as BlobPart], { type: "application/pdf" });
       const url = URL.createObjectURL(blob);
+      setDownloadUrl(url);
       const a = document.createElement("a");
       a.href = url;
       a.download = `filtered-${file.name}`;
       a.click();
-      URL.revokeObjectURL(url);
       trackExport(file.name, "Delete Pages", pdfBytes.length);
       setSuccess(true);
     } catch { setError("Failed to delete pages."); }
@@ -215,6 +219,15 @@ export default function DeletePagesPage() {
         {error && <ErrorBanner message={error} onRetry={runDelete} onDismiss={() => setError(null)} />}
 
         <SuccessAnimation show={success} message="Pages deleted successfully!" details={`${pages.filter((p) => p.checked).length} of ${pages.length} pages kept`} onRestore={restoreOriginal} />
+
+        {success && (
+          <PipelineActionBar
+            pdfBytes={resultBytes}
+            filename={`filtered-${file?.name || "document.pdf"}`}
+            downloadUrl={downloadUrl}
+            currentToolName="Delete Pages"
+          />
+        )}
       </div>
 
 

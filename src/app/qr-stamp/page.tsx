@@ -1,14 +1,12 @@
 "use client";
 
 import { useState, useCallback } from "react";
-import { isPremium } from "@/lib/premium";
 import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
 import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 import { usePageMeta } from "@/hooks/usePageMeta";
-
 import HowToJsonLd from "@/components/HowToJsonLd";
 import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
-
+import PremiumGate from "@/components/PremiumGate";
 
 export default function QrStampPage() {
   usePageMeta("Add QR Code to PDF - QR Code Stamping Tool | PDFTools Premium", "Add QR codes and barcodes to any PDF page. Choose position, size, and data. Premium stamping tool.");
@@ -19,26 +17,6 @@ export default function QrStampPage() {
   const [processing, setProcessing] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
-  const [premiumBanner, setPremiumBanner] = useState(false);
-
-  if (typeof window !== "undefined" && !isPremium()) {
-    if (!premiumBanner) setPremiumBanner(true);
-    return (
-      <div className="max-w-3xl mx-auto px-4 py-12">
-        <SoftwareAppJsonLd name="QR Code PDF Stamping" description="Add QR codes and barcodes to any PDF page. Premium." url="https://allaboutpdfediting.xyz/qr-stamp" image="https://allaboutpdfediting.xyz/opengraph-image.png" aggregateRating={{ ratingValue: 4.6, bestRating: 5, ratingCount: 112 }} />
-        <div className="text-center py-20">
-          <div className="text-6xl mb-6">📱</div>
-          <h1 className="text-3xl font-bold mb-3">QR Code Stamp</h1>
-          <p className="text-[var(--muted)] mb-8 max-w-md mx-auto">Add QR codes and barcodes to any PDF in seconds. Perfect for marketing materials, invoices, and labels.</p>
-          <div className="inline-block bg-gradient-to-r from-amber-500 to-orange-600 text-white px-8 py-4 rounded-2xl shadow-lg">
-            <p className="text-lg font-bold mb-1">Premium Feature</p>
-            <p className="text-sm opacity-90 mb-4">Only premium subscribers can stamp QR codes</p>
-            <a href="/premium" className="inline-block bg-white text-orange-600 px-6 py-2 rounded-xl font-semibold text-sm hover:bg-orange-50 transition">Upgrade to Premium</a>
-          </div>
-        </div>
-      </div>
-    );
-  }
 
   const generateQrDataUrl = useCallback(async (text: string, size: number): Promise<string> => {
     const QRCode = await import("qrcode");
@@ -106,60 +84,64 @@ export default function QrStampPage() {
   };
 
   return (
-    <div className="max-w-3xl mx-auto px-4 py-12">
-      <SoftwareAppJsonLd name="QR Code PDF Stamping" description="Add QR codes and barcodes to any PDF page. Premium." url="https://allaboutpdfediting.xyz/qr-stamp" image="https://allaboutpdfediting.xyz/opengraph-image.png" aggregateRating={{ ratingValue: 4.6, bestRating: 5, ratingCount: 112 }} />
-      <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "QR Stamp", item: "https://allaboutpdfediting.xyz/qr-stamp" }]} />
-      <HowToJsonLd name="Add QR Code to PDF" description="Add QR codes to every page of a PDF document" steps={[{name:"Upload PDF",text:"Upload the PDF document to stamp with QR codes"},{name:"Enter URL or text",text:"Type the URL or text to encode in the QR code"},{name:"Download stamped PDF",text:"Download the PDF with QR codes added to each page"}]} />
-      <AiSummaryJsonLd name="QR Code Stamp" summary="Add QR codes to every page of PDF documents with customizable position and size" category="Graphics" inputType="PDF+Text" outputType="PDF" processing="client-side" price="premium" features={["QR code generation","Position customization","Size adjustment","No external APIs"]} limits="Premium subscribers" />
-      <div className="mb-8">
-        <div className="flex items-center gap-3 mb-2">
-          <h1 className="text-3xl font-bold text-[var(--foreground)]">QR Code Stamp</h1>
-          <span className="text-xs font-semibold bg-gradient-to-r from-amber-500 to-orange-600 text-white px-2.5 py-0.5 rounded-full">Premium</span>
-        </div>
-        <p className="text-[var(--muted)]">Add QR codes to every page of your PDF. Link to websites, documents, or any text content.</p>
-      </div>
-
-
-      <div className="bg-[var(--card)] border border-[var(--card-border)] rounded-xl p-6 space-y-5">
-        <input type="file" accept=".pdf" onChange={(e) => setFile(e.target.files?.[0] || null)} className="text-sm file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:bg-indigo-100 dark:file:bg-indigo-900 file:text-indigo-700 dark:file:text-indigo-300 file:text-xs file:font-medium w-full" />
-
-        <div>
-          <label className="block text-sm font-medium text-[var(--foreground)] mb-2">QR Code Content (URL or text)</label>
-          <input value={qrData} onChange={(e) => setQrData(e.target.value)} className="w-full px-4 py-2.5 rounded-xl border border-[var(--card-border)] bg-[var(--background)] text-sm" />
-        </div>
-
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label className="block text-xs font-medium text-[var(--muted)] mb-1">Position</label>
-            <select value={position} onChange={(e) => setPosition(e.target.value as any)} className="w-full px-3 py-2 rounded-lg border border-[var(--card-border)] bg-[var(--background)] text-sm">
-              <option value="bottom-right">Bottom Right</option>
-              <option value="bottom-left">Bottom Left</option>
-              <option value="top-right">Top Right</option>
-              <option value="top-left">Top Left</option>
-            </select>
+    <PremiumGate
+      title="Dynamic QR Code & Barcode PDF Stamper"
+      description="Embed interactive, scannable QR codes and URLs directly onto every page of your PDF documents."
+      icon="📱"
+    >
+      <div className="max-w-3xl mx-auto px-4 py-12">
+        <SoftwareAppJsonLd name="QR Code PDF Stamping" description="Add QR codes and barcodes to any PDF page. Premium." url="https://allaboutpdfediting.xyz/qr-stamp" image="https://allaboutpdfediting.xyz/opengraph-image.png" aggregateRating={{ ratingValue: 4.6, bestRating: 5, ratingCount: 112 }} />
+        <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "QR Stamp", item: "https://allaboutpdfediting.xyz/qr-stamp" }]} />
+        <HowToJsonLd name="Add QR Code to PDF" description="Add QR codes to every page of a PDF document" steps={[{name:"Upload PDF",text:"Upload the PDF document to stamp with QR codes"},{name:"Enter URL or text",text:"Type the URL or text to encode in the QR code"},{name:"Download stamped PDF",text:"Download the PDF with QR codes added to each page"}]} />
+        <AiSummaryJsonLd name="QR Code Stamp" summary="Add QR codes to every page of PDF documents with customizable position and size" category="Graphics" inputType="PDF+Text" outputType="PDF" processing="client-side" price="premium" features={["QR code generation","Position customization","Size adjustment","No external APIs"]} limits="Premium subscribers" />
+        
+        <div className="mb-8">
+          <div className="flex items-center gap-3 mb-2">
+            <h1 className="text-3xl font-extrabold text-[var(--foreground)]">QR Code Stamp</h1>
+            <span className="text-xs font-bold bg-gradient-to-r from-amber-500 to-orange-600 text-white px-3 py-1 rounded-full shadow-sm">Premium</span>
           </div>
-          <div>
-            <label className="block text-xs font-medium text-[var(--muted)] mb-1">Size: {qrSize}px</label>
-            <input type="range" min="40" max="200" value={qrSize} onChange={(e) => setQrSize(Number(e.target.value))} className="w-full" />
-          </div>
+          <p className="text-[var(--muted)]">Add QR codes to every page of your PDF. Link to websites, documents, or any text content.</p>
         </div>
 
-        <button onClick={stamp} disabled={!file || !qrData.trim() || processing} className="w-full py-3 bg-gradient-to-r from-amber-500 to-orange-600 text-white font-bold rounded-xl hover:from-amber-600 hover:to-orange-700 disabled:opacity-40 transition">
-          {processing ? "Stamping..." : "Stamp QR Code"}
-        </button>
-      </div>
+        <div className="bg-[var(--card)] border border-[var(--card-border)] rounded-2xl p-6 sm:p-8 space-y-6 shadow-xl">
+          <div className="border-2 border-dashed border-[var(--card-border)] hover:border-indigo-500/50 rounded-2xl p-6 text-center">
+            <input type="file" accept=".pdf" onChange={(e) => setFile(e.target.files?.[0] || null)} className="text-sm file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:bg-indigo-600 file:text-white file:text-xs file:font-semibold w-full cursor-pointer" />
+            {file && <p className="text-xs text-emerald-600 font-semibold mt-2">Selected: {file.name} ({(file.size / 1024).toFixed(0)} KB)</p>}
+          </div>
 
-      {success && <div className="mt-4 p-4 bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-200 dark:border-emerald-800 rounded-xl text-center text-sm text-emerald-700">✅ QR code stamped and downloading!</div>}
-      {error && <div className="mt-6 p-4 bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-800 rounded-xl text-red-600 text-sm">{error}</div>}
+          <div>
+            <label className="block text-sm font-bold text-[var(--foreground)] mb-2">QR Code Target URL or Text</label>
+            <input value={qrData} onChange={(e) => setQrData(e.target.value)} placeholder="https://example.com" className="w-full px-4 py-3 rounded-xl border border-[var(--card-border)] bg-[var(--background)] text-sm outline-none focus:border-indigo-500 font-medium" />
+          </div>
 
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-xs font-bold text-[var(--muted)] mb-1.5">Page Position</label>
+              <select value={position} onChange={(e) => setPosition(e.target.value as any)} className="w-full px-3.5 py-2.5 rounded-xl border border-[var(--card-border)] bg-[var(--background)] text-xs text-[var(--foreground)] outline-none focus:border-indigo-500">
+                <option value="bottom-right">Bottom Right</option>
+                <option value="bottom-left">Bottom Left</option>
+                <option value="top-right">Top Right</option>
+                <option value="top-left">Top Left</option>
+              </select>
+            </div>
+            <div>
+              <label className="block text-xs font-bold text-[var(--muted)] mb-1.5">QR Size: {qrSize}px</label>
+              <input type="range" min="40" max="200" value={qrSize} onChange={(e) => setQrSize(Number(e.target.value))} className="w-full accent-indigo-600 cursor-pointer" />
+            </div>
+          </div>
 
-      <div className="border-t border-[var(--card-border)] pt-8 mt-8">
-        <h2 className="text-xl font-bold text-[var(--foreground)] mb-3">About QR Code Stamp</h2>
-        <div className="text-sm text-[var(--muted)] space-y-3">Add a QR code to every page of your PDF. Perfect for marketing materials (link to your website), invoices (link to payment portal), labels (link to product page), and business documents (link to your contact page). Choose position and size.</div>
+          <button
+            onClick={stamp}
+            disabled={!file || !qrData.trim() || processing}
+            className="w-full py-4 bg-gradient-to-r from-amber-500 to-orange-600 text-white font-bold rounded-2xl hover:opacity-95 disabled:opacity-40 transition-all text-base shadow-lg shadow-amber-500/25 active:scale-[0.99]"
+          >
+            {processing ? "Stamping QR Code..." : "⚡ Stamp QR Code & Download"}
+          </button>
+        </div>
+
+        {success && <div className="mt-4 p-4 bg-emerald-500/10 border border-emerald-500/30 rounded-2xl text-center text-sm text-emerald-600 font-bold">✅ QR code stamped and downloaded!</div>}
+        {error && <div className="mt-6 p-4 bg-red-500/10 border border-red-500/30 rounded-2xl text-red-500 text-sm">{error}</div>}
       </div>
-      <div className="text-center mt-8">
-        <a href="/premium" className="text-sm text-indigo-500 hover:underline font-medium">Explore all Premium features →</a>
-      </div>
-    </div>
+    </PremiumGate>
   );
 }

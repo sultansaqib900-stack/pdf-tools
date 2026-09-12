@@ -12,6 +12,8 @@ import ProgressBar from "@/components/ProgressBar";
 import SuccessAnimation from "@/components/SuccessAnimation";
 import ErrorBanner from "@/components/ErrorBanner";
 import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
+import PipelineActionBar from "@/components/PipelineActionBar";
+import { getPipelineDocument } from "@/lib/pdfPipeline";
 
 import HowToJsonLd from "@/components/HowToJsonLd";
 import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
@@ -35,9 +37,20 @@ export default function SignPage() {
   const [dragging, setDragging] = useState(false);
   const [showTimer, setShowTimer] = useState(false);
   const [drawing, setDrawing] = useState(false);
+  const [resultBytes, setResultBytes] = useState<Uint8Array | null>(null);
+  const [downloadUrl, setDownloadUrl] = useState<string | null>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
-  useEffect(() => { trackToolVisit("sign"); }, []);
+  useEffect(() => {
+    trackToolVisit("sign");
+    (async () => {
+      const pipelineDoc = await getPipelineDocument();
+      if (pipelineDoc && pipelineDoc.bytes) {
+        const f = new File([pipelineDoc.bytes as unknown as BlobPart], pipelineDoc.name, { type: "application/pdf" });
+        setFile(f);
+      }
+    })();
+  }, [trackToolVisit]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -100,7 +113,8 @@ export default function SignPage() {
     const check = checkFileSize(f.size);
     if (!check.ok) { upsell.showUpsell("file-size"); return; }
     setFile(f);
-  }, []);
+    setSuccess(false);
+  }, [upsell]);
 
   const runSign = useCallback(async () => {
     if (!file) return;
@@ -120,7 +134,7 @@ export default function SignPage() {
       const sigImage = await pdfDoc.embedPng(sigBytes);
       const pages = pdfDoc.getPages();
       const lastPage = pages[pages.length - 1];
-      const { width, height } = lastPage.getSize();
+      const { width } = lastPage.getSize();
       lastPage.drawImage(sigImage, {
         x: width / 2 - 75,
         y: 50,
@@ -129,20 +143,21 @@ export default function SignPage() {
       });
 
       const outBytes = await pdfDoc.save({ useObjectStreams: true });
+      setResultBytes(outBytes);
       const blob = new Blob([outBytes.slice()], { type: "application/pdf" });
       const url = URL.createObjectURL(blob);
+      setDownloadUrl(url);
       const a = document.createElement("a");
       a.href = url;
       a.download = `signed-${file.name}`;
       a.click();
       trackExport(file.name, "Sign PDF", pdfBytes.byteLength);
-      URL.revokeObjectURL(url);
       setSuccess(true);
     } catch {
       setError("Failed to add signature.");
     }
     setProcessing(false);
-  }, [file]);
+  }, [file, usage, upsell, trackExport]);
 
   const sign = useCallback(async () => {
     if (!isPremium()) {
@@ -152,7 +167,7 @@ export default function SignPage() {
       return;
     }
     runSign();
-    }, [usage, upsell, runSign])
+  }, [usage, upsell, runSign]);
 
   const restoreOriginal = useCallback(async () => {
     if (!originalBytes.current) return;
@@ -176,8 +191,9 @@ export default function SignPage() {
       <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Sign PDF", item: "https://allaboutpdfediting.xyz/sign" }]} />
       <FaqPageJsonLd questions={rc?.faqs} />
       <AiSummaryJsonLd name="Sign PDF" summary="Add electronic signatures to PDF documents by drawing typing or uploading" category="BusinessApplications" inputType="PDF" outputType="PDF" processing="client-side" price="free" features={["Draw signature","Type signature","Upload signature","Position placement","Free e-sign tool"]} limits="Files up to 10MB" />
+      
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">e-Sign PDF</h1>
+        <h1 className="text-3xl font-extrabold text-[var(--foreground)] mb-2">e-Sign PDF</h1>
         <p className="text-[var(--muted)]">Draw your signature and place it on your PDF document.</p>
       </div>
 
@@ -190,24 +206,25 @@ export default function SignPage() {
         <UsageBar remaining={usage.remaining} unlimited={usage.unlimited} />
       </div>
 
-      <div className="bg-[var(--card)] rounded-xl border border-[var(--card-border)] p-8 space-y-5">
+      <div className="bg-[var(--card)] rounded-2xl border border-[var(--card-border)] p-6 sm:p-8 space-y-6 shadow-xl">
         <div>
-          <label className="block text-sm font-medium text-[var(--foreground)] mb-2">Draw your signature</label>
-          <canvas
-            ref={canvasRef}
-            width={300}
-            height={100}
-            className="w-full border border-[var(--card-border)] rounded-xl cursor-crosshair touch-none"
-            style={{ background: "#fff" }}
-            onMouseDown={startDraw}
-            onMouseMove={draw}
-            onMouseUp={stopDraw}
-            onMouseLeave={stopDraw}
-            onTouchStart={startDraw}
-            onTouchMove={draw}
-            onTouchEnd={stopDraw}
-          />
-          <button onClick={clearCanvas} className="mt-2 text-xs text-red-500 hover:text-red-600 font-medium">
+          <label className="block text-sm font-bold text-[var(--foreground)] mb-2">Draw your signature</label>
+          <div className="border border-[var(--card-border)] rounded-2xl bg-white overflow-hidden shadow-inner">
+            <canvas
+              ref={canvasRef}
+              width={300}
+              height={100}
+              className="w-full h-32 cursor-crosshair touch-none block"
+              onMouseDown={startDraw}
+              onMouseMove={draw}
+              onMouseUp={stopDraw}
+              onMouseLeave={stopDraw}
+              onTouchStart={startDraw}
+              onTouchMove={draw}
+              onTouchEnd={stopDraw}
+            />
+          </div>
+          <button onClick={clearCanvas} className="mt-2 text-xs text-red-500 hover:text-red-600 font-bold">
             Clear signature
           </button>
         </div>
@@ -216,17 +233,18 @@ export default function SignPage() {
           onDrop={(e) => { e.preventDefault(); setDragging(false); handleFile(e.dataTransfer.files[0]); }}
           onDragOver={(e) => { e.preventDefault(); setDragging(true); }}
           onDragLeave={() => setDragging(false)}
-          className={`border-2 border-dashed rounded-xl p-8 text-center transition ${
-            dragging ? "border-indigo-500 bg-indigo-50 dark:bg-indigo-950/30" : "border-[var(--card-border)] bg-[var(--background)]"
+          className={`border-2 border-dashed rounded-2xl p-8 text-center transition-all ${
+            dragging ? "border-indigo-500 bg-indigo-500/10" : "border-[var(--card-border)] bg-[var(--background)]"
           }`}
         >
           <input type="file" accept="application/pdf" onChange={(e) => handleFile(e.target.files?.[0] ?? null)} className="hidden" id="fileInput" />
           <label htmlFor="fileInput" className="cursor-pointer flex flex-col items-center gap-2">
-            <span className="text-3xl">📄</span>
-            <span className="text-indigo-500 font-medium text-sm hover:underline">
+            <span className="text-4xl">📄</span>
+            <span className="text-indigo-500 font-bold text-sm hover:underline">
               {file ? file.name : "Click to select a PDF"}
             </span>
-            {file && <span className="text-xs text-[var(--muted)]">Signature will be placed on the last page</span>}
+            {file && <span className="text-xs text-emerald-600 font-semibold">✓ Ready to stamp signature on last page</span>}
+            {!file && <span className="text-xs text-[var(--muted)]">Supports any PDF up to 10MB</span>}
           </label>
         </div>
 
@@ -239,19 +257,14 @@ export default function SignPage() {
             <button
               onClick={sign}
               disabled={processing || showTimer}
-              className="w-full py-3 bg-indigo-600 text-white font-medium rounded-xl hover:bg-indigo-700 disabled:opacity-40 disabled:cursor-not-allowed transition shadow-sm"
+              className="w-full py-4 bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-bold rounded-2xl hover:opacity-95 disabled:opacity-40 disabled:cursor-not-allowed transition shadow-lg shadow-indigo-500/20 active:scale-[0.99]"
             >
-              {processing ? (
-                <span className="flex items-center justify-center gap-2">
-                  <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none"/><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
-                  Signing PDF...
-                </span>
-              ) : "Sign PDF"}
+              {processing ? "Signing PDF..." : "⚡ Stamp Signature & Save PDF"}
             </button>
 
             {!isPremium() && (
               <p className="text-center text-xs text-[var(--muted)]">
-                Free users limited to 10MB files.{ " " }
+                Free users limited to 10MB files.{" "}
                 <a href="/premium" className="text-indigo-500 font-medium hover:underline">Upgrade for no wait</a>
               </p>
             )}
@@ -260,7 +273,16 @@ export default function SignPage() {
 
         {error && <ErrorBanner message={error} onRetry={runSign} onDismiss={() => setError(null)} />}
 
-        <SuccessAnimation show={success} message="PDF signed!" onRestore={restoreOriginal} />
+        <SuccessAnimation show={success} message="PDF signed successfully!" onRestore={restoreOriginal} />
+
+        {success && (
+          <PipelineActionBar
+            pdfBytes={resultBytes}
+            filename={`signed-${file?.name || "document.pdf"}`}
+            downloadUrl={downloadUrl}
+            currentToolName="Sign PDF"
+          />
+        )}
       </div>
 
       <div className="max-w-3xl mx-auto mt-12 pt-8 border-t border-[var(--card-border)]">

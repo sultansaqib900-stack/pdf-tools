@@ -1,5 +1,7 @@
 "use client";
 
+import Link from "next/link";
+
 export default function OfflinePage() {
   return (
     <div className="max-w-xl mx-auto px-4 py-32 text-center">
@@ -17,9 +19,9 @@ export default function OfflinePage() {
         <li>&#10003; Split PDF</li>
       </ul>
       <div className="flex justify-center gap-3">
-        <a href="/" className="px-5 py-2.5 bg-indigo-600 text-white font-medium rounded-xl hover:bg-indigo-700 transition text-sm">
+        <Link href="/" className="px-5 py-2.5 bg-indigo-600 text-white font-medium rounded-xl hover:bg-indigo-700 transition text-sm">
           Go Home
-        </a>
+        </Link>
         <button
           onClick={() => window.location.reload()}
           className="px-5 py-2.5 bg-[var(--card)] border border-[var(--card-border)] text-[var(--foreground)] font-medium rounded-xl hover:bg-[var(--card-border)] transition text-sm"

@@ -1,5 +1,7 @@
 "use client";
 
+import Link from "next/link";
+
 export default function RootError({
   error,
   reset,
@@ -23,12 +25,12 @@ export default function RootError({
         >
           Try Again
         </button>
-        <a
+        <Link
           href="/"
           className="px-5 py-2.5 border border-[var(--card-border)] text-[var(--foreground)] font-medium rounded-xl hover:bg-[var(--card)] transition text-sm"
         >
           Go Home
-        </a>
+        </Link>
       </div>
     </div>
   );
