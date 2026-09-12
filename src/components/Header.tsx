@@ -44,9 +44,10 @@ export default function Header() {
 
   const navLinks = [
     { href: "/studio", label: "⚡ PDF Studio", highlight: true },
+    { href: "/recipes", label: "⚡ Recipes" },
+    { href: "/pii-guardian", label: "🛡️ PII Guardian" },
     { href: "/compress", label: "Compress" },
     { href: "/merge", label: "Merge" },
-    { href: "/split", label: "Split" },
   ];
 
   const toolCategories = [
@@ -89,6 +90,7 @@ export default function Header() {
     {
       name: "Security & Sign",
       links: [
+        { href: "/pii-guardian", label: "🛡️ PII Guardian (Auto-Redact)" },
         { href: "/protect", label: "Protect PDF" },
         { href: "/unlock", label: "Unlock PDF" },
         { href: "/sign", label: "Sign PDF" },
@@ -100,6 +102,7 @@ export default function Header() {
     {
       name: "Extract & AI",
       links: [
+        { href: "/recipes", label: "⚡ PDF Automation Recipes" },
         { href: "/extract-text", label: "Extract Text" },
         { href: "/ocr-pdf", label: "OCR PDF" },
         { href: "/chat-pdf", label: "Chat with PDF (AI)" },

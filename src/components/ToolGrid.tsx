@@ -18,6 +18,8 @@ interface ToolDef {
 
 const allTools: ToolDef[] = [
   { title: "PDF Studio Pipeline", description: "Multi-step studio: delete pages, rotate, sign, watermark, & compress without re-uploading.", icon: "⚡", href: "/studio", gradient: "bg-gradient-to-br from-indigo-500 via-purple-600 to-pink-500", category: "Studio & AI", badge: "Flagship" },
+  { title: "PII Guardian (Auto-Redact)", description: "1-Click scanner for SSNs, credit cards, emails, and phone numbers with 100% browser privacy.", icon: "🛡️", href: "/pii-guardian", gradient: "bg-gradient-to-br from-red-500 via-rose-600 to-amber-600", category: "Security", badge: "Killer Feature" },
+  { title: "PDF Automation Recipes", description: "The Zapier for PDFs: execute multi-step macros (Court e-filing, board sign-off) in 1 click.", icon: "⚡", href: "/recipes", gradient: "bg-gradient-to-br from-purple-500 via-indigo-600 to-blue-500", category: "Studio & AI", badge: "1-Click Macro" },
   { title: "Chat with PDF (AI)", description: "Ask questions, generate bullet summaries, translate to Urdu, and extract insights.", icon: "🤖", href: "/chat-pdf", gradient: "bg-gradient-to-br from-violet-500 to-fuchsia-600", category: "Studio & AI" },
   { title: "Compress PDF", description: "Reduce file size up to 90% while keeping crystal-clear quality.", icon: "📦", href: "/compress", gradient: "bg-gradient-to-br from-blue-500 to-indigo-600", category: "Popular" },
   { title: "Merge PDF", description: "Combine multiple PDF documents and images in any custom order.", icon: "🔗", href: "/merge", gradient: "bg-gradient-to-br from-emerald-500 to-teal-600", category: "Popular" },

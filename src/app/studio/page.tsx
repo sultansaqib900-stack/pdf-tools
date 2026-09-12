@@ -5,9 +5,10 @@ import Image from "next/image";
 import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
 import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 import { getPipelineDocument, setPipelineDocument } from "@/lib/pdfPipeline";
-import { success, error as showError } from "@/components/Toast";
+import { scanPdfForPii, redactSelectedPii, type PiiMatch } from "@/lib/piiScanner";
+import { DEFAULT_RECIPES, executePdfRecipe, type PdfRecipe } from "@/lib/pdfRecipes";
 
-type ActiveTab = "pages" | "sign" | "watermark" | "protect" | "compress";
+type ActiveTab = "pages" | "pii" | "recipes" | "sign" | "watermark" | "protect" | "compress";
 
 interface PageMetaInfo {
   index: number;
@@ -31,32 +32,48 @@ export default function StudioPage() {
   // Signature state
   const sigCanvasRef = useRef<HTMLCanvasElement>(null);
   const [sigColor, setSigColor] = useState<string>("#1e293b");
-  const [sigWidth, setSigWidth] = useState<number>(3);
+  const [sigWidth] = useState<number>(3);
   const [isDrawingSig, setIsDrawingSig] = useState<boolean>(false);
   const [sigPosition, setSigPosition] = useState<{ x: number; y: number; scale: number }>({ x: 50, y: 50, scale: 1 });
 
   // Watermark state
   const [watermarkText, setWatermarkText] = useState<string>("CONFIDENTIAL");
-  const [watermarkOpacity, setWatermarkOpacity] = useState<number>(0.3);
-  const [watermarkColor, setWatermarkColor] = useState<string>("#ff0000");
+  const [watermarkOpacity, setWatermarkOpacity] = useState<number>(0.25);
   const [watermarkRotation, setWatermarkRotation] = useState<number>(45);
+  const [watermarkColor] = useState<string>("#dc2626");
 
-  // Protection state
+  // Protect state
   const [password, setPassword] = useState<string>("");
 
-  // Compression state
+  // Compress state
   const [compressionLevel, setCompressionLevel] = useState<"recommended" | "high" | "low">("recommended");
+
+  // PII Scanner State inside Studio
+  const [piiScanning, setPiiScanning] = useState(false);
+  const [piiMatches, setPiiMatches] = useState<PiiMatch[]>([]);
+  const [piiScanned, setPiiScanned] = useState(false);
+
+  // Status banners
+  const [toast, setToast] = useState<{ message: string; type: "success" | "error" | "info" } | null>(null);
 
   const mainCanvasRef = useRef<HTMLCanvasElement>(null);
 
-  // Load pipeline doc or fresh file
+  const showToast = useCallback((message: string, type: "success" | "error" | "info" = "info") => {
+    setToast({ message, type });
+    setTimeout(() => setToast(null), 4000);
+  }, []);
+
+  const success = useCallback((msg: string) => showToast(msg, "success"), [showToast]);
+  const showError = useCallback((msg: string) => showToast(msg, "error"), [showToast]);
+
+  // Load PDF into memory & render page thumbnails
   const loadPdfData = useCallback(async (bytes: Uint8Array, name: string) => {
-    setProcessing(true);
     try {
       const pdfjsLib = await import("pdfjs-dist");
       if (!pdfjsLib.GlobalWorkerOptions.workerSrc) {
         pdfjsLib.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";
       }
+
       const pdf = await pdfjsLib.getDocument({ data: bytes }).promise;
       const loadedPages: PageMetaInfo[] = [];
 
@@ -80,44 +97,45 @@ export default function StudioPage() {
       setDocName(name);
       setPages(loadedPages);
       setActivePage(0);
-      setHistory([{ label: "Imported Document", bytes }]);
-      setExportUrl(null);
+      setPipelineDocument(bytes, name);
     } catch {
-      showError("Failed to parse PDF document.");
-    } finally {
-      setProcessing(false);
+      showError("Could not parse PDF. The file may be password protected or corrupted.");
     }
-  }, []);
+  }, [showError]);
 
+  // Initial load from pipeline or file drop
   useEffect(() => {
     (async () => {
-      const existing = await getPipelineDocument();
-      if (existing && existing.bytes) {
-        loadPdfData(existing.bytes, existing.name);
+      const activePipeline = await getPipelineDocument();
+      if (activePipeline && activePipeline.bytes) {
+        await loadPdfData(activePipeline.bytes, activePipeline.name);
+        setHistory([{ label: "Loaded Document", bytes: activePipeline.bytes }]);
       }
     })();
   }, [loadPdfData]);
 
+  // Handle local file selection
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const f = e.target.files?.[0];
-    if (!f || f.type !== "application/pdf") return;
-    setFile(f);
-    const ab = await f.arrayBuffer();
+    const selected = e.target.files?.[0];
+    if (!selected) return;
+    setFile(selected);
+    const ab = await selected.arrayBuffer();
     const bytes = new Uint8Array(ab);
-    await setPipelineDocument(bytes, f.name);
-    loadPdfData(bytes, f.name);
+    await loadPdfData(bytes, selected.name);
+    setHistory([{ label: `Original: ${selected.name}`, bytes }]);
+    success(`Loaded "${selected.name}" into Studio!`);
   };
 
-  // Render main preview canvas
+  // Render the currently selected page into the main canvas viewer
   useEffect(() => {
-    if (!pdfBytes || pages.length === 0 || !mainCanvasRef.current) return;
+    if (!pdfBytes || pages.length === 0) return;
+    const activeMeta = pages[activePage];
+    if (!activeMeta || activeMeta.deleted) return;
+
     let cancelled = false;
 
     (async () => {
       try {
-        const activeMeta = pages[activePage];
-        if (!activeMeta || activeMeta.deleted) return;
-
         const pdfjsLib = await import("pdfjs-dist");
         const pdf = await pdfjsLib.getDocument({ data: pdfBytes }).promise;
         const page = await pdf.getPage(activePage + 1);
@@ -144,19 +162,18 @@ export default function StudioPage() {
       return;
     }
     setPages(updated);
-    success(updated[idx].deleted ? `Marked page ${idx + 1} for deletion` : `Restored page ${idx + 1}`);
   };
 
   const rotatePage = (idx: number, degrees: number) => {
-    setPages(pages.map((p, i) => i === idx ? { ...p, rotation: (p.rotation + degrees) % 360 } : p));
+    setPages(prev => prev.map((p, i) => i === idx ? { ...p, rotation: (p.rotation + degrees) % 360 } : p));
   };
 
   const rotateAllPages = (degrees: number) => {
-    setPages(pages.map((p) => ({ ...p, rotation: (p.rotation + degrees) % 360 })));
+    setPages(prev => prev.map(p => ({ ...p, rotation: (p.rotation + degrees) % 360 })));
     success(`Rotated all pages by ${degrees}°`);
   };
 
-  // Commit Page Layout Step
+  // Commit Page Organization Step
   const applyPageModifications = async () => {
     if (!pdfBytes) return;
     setProcessing(true);
@@ -165,26 +182,19 @@ export default function StudioPage() {
       const srcDoc = await PDFDocument.load(pdfBytes);
       const newDoc = await PDFDocument.create();
 
-      const validIndices: number[] = [];
-      pages.forEach((p, i) => {
-        if (!p.deleted) validIndices.push(i);
-      });
-
-      const copiedPages = await newDoc.copyPages(srcDoc, validIndices);
-      copiedPages.forEach((cp, idx) => {
-        const originalIndex = validIndices[idx];
-        const rot = pages[originalIndex].rotation;
-        if (rot !== 0) {
-          const currentRot = cp.getRotation().angle;
-          cp.setRotation(degrees((currentRot + rot) % 360));
+      for (const p of pages) {
+        if (!p.deleted) {
+          const [copied] = await newDoc.copyPages(srcDoc, [p.index]);
+          const currentRotation = copied.getRotation().angle;
+          copied.setRotation(degrees((currentRotation + p.rotation) % 360));
+          newDoc.addPage(copied);
         }
-        newDoc.addPage(cp);
-      });
+      }
 
-      const outBytes = await newDoc.save();
+      const outBytes = await newDoc.save({ useObjectStreams: true });
       await loadPdfData(outBytes, docName);
-      setHistory(prev => [...prev, { label: "Modified Page Layout & Deletions", bytes: outBytes }]);
-      success("Page layout updated successfully!");
+      setHistory(prev => [...prev, { label: "Pages Modified / Reorganized", bytes: outBytes }]);
+      success("Page adjustments saved to pipeline!");
     } catch {
       showError("Failed to apply page modifications.");
     } finally {
@@ -192,42 +202,102 @@ export default function StudioPage() {
     }
   };
 
-  // Signature Canvas Helpers
-  const startSigDraw = (e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>) => {
+  // PII Scanning & Redaction Step inside Studio
+  const handleScanPii = async () => {
+    if (!pdfBytes) return;
+    setPiiScanning(true);
+    setPiiMatches([]);
+    try {
+      const result = await scanPdfForPii(pdfBytes);
+      setPiiMatches(result.matches);
+      setPiiScanned(true);
+      if (result.matches.length > 0) {
+        success(`Found ${result.matches.length} sensitive items in document.`);
+      } else {
+        success("No sensitive items detected!");
+      }
+    } catch {
+      showError("PII scan failed.");
+    } finally {
+      setPiiScanning(false);
+    }
+  };
+
+  const handleApplyPiiRedactions = async () => {
+    if (!pdfBytes || piiMatches.length === 0) return;
+    const selected = piiMatches.filter(m => m.selected);
+    if (selected.length === 0) {
+      showError("No items selected for redaction.");
+      return;
+    }
+    setProcessing(true);
+    try {
+      const outBytes = await redactSelectedPii(pdfBytes, selected);
+      await loadPdfData(outBytes, docName);
+      setHistory(prev => [...prev, { label: `Auto-Redacted ${selected.length} PII Items`, bytes: outBytes }]);
+      setPiiScanned(false);
+      setPiiMatches([]);
+      success(`Permanently blacked out ${selected.length} items!`);
+    } catch {
+      showError("Failed to apply redactions.");
+    } finally {
+      setProcessing(false);
+    }
+  };
+
+  // Run Recipe Step inside Studio
+  const handleExecuteRecipeInStudio = async (recipe: PdfRecipe) => {
+    if (!pdfBytes) return;
+    setProcessing(true);
+    try {
+      const outBytes = await executePdfRecipe(pdfBytes, recipe);
+      await loadPdfData(outBytes, docName);
+      setHistory(prev => [...prev, { label: `Executed Macro: ${recipe.name}`, bytes: outBytes }]);
+      success(`Successfully ran "${recipe.name}" workflow!`);
+    } catch {
+      showError(`Failed to run recipe: ${recipe.name}`);
+    } finally {
+      setProcessing(false);
+    }
+  };
+
+  // Signature Canvas Handling
+  const startSigDraw = (e: React.MouseEvent | React.TouchEvent) => {
+    setIsDrawingSig(true);
     const canvas = sigCanvasRef.current;
     if (!canvas) return;
-    const ctx = canvas.getContext("2d")!;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
     const rect = canvas.getBoundingClientRect();
     const x = "touches" in e ? e.touches[0].clientX - rect.left : e.clientX - rect.left;
     const y = "touches" in e ? e.touches[0].clientY - rect.top : e.clientY - rect.top;
     ctx.beginPath();
     ctx.moveTo(x, y);
-    setIsDrawingSig(true);
   };
 
-  const drawSig = (e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>) => {
-    if (!isDrawingSig || !sigCanvasRef.current) return;
+  const drawSig = (e: React.MouseEvent | React.TouchEvent) => {
+    if (!isDrawingSig) return;
     const canvas = sigCanvasRef.current;
-    const ctx = canvas.getContext("2d")!;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
     const rect = canvas.getBoundingClientRect();
     const x = "touches" in e ? e.touches[0].clientX - rect.left : e.clientX - rect.left;
     const y = "touches" in e ? e.touches[0].clientY - rect.top : e.clientY - rect.top;
     ctx.strokeStyle = sigColor;
     ctx.lineWidth = sigWidth;
     ctx.lineCap = "round";
-    ctx.lineJoin = "round";
     ctx.lineTo(x, y);
     ctx.stroke();
   };
 
-  const endSigDraw = () => {
-    setIsDrawingSig(false);
-  };
+  const endSigDraw = () => setIsDrawingSig(false);
 
   const clearSig = () => {
-    if (!sigCanvasRef.current) return;
-    const ctx = sigCanvasRef.current.getContext("2d")!;
-    ctx.clearRect(0, 0, sigCanvasRef.current.width, sigCanvasRef.current.height);
+    const canvas = sigCanvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (ctx) ctx.clearRect(0, 0, canvas.width, canvas.height);
   };
 
   // Commit Signature Step
@@ -235,28 +305,32 @@ export default function StudioPage() {
     if (!pdfBytes || !sigCanvasRef.current) return;
     setProcessing(true);
     try {
-      const sigPng = sigCanvasRef.current.toDataURL("image/png");
+      const sigDataUrl = sigCanvasRef.current.toDataURL("image/png");
+      const sigImgBytes = await fetch(sigDataUrl).then(r => r.arrayBuffer());
+
       const { PDFDocument } = await import("pdf-lib");
       const doc = await PDFDocument.load(pdfBytes);
-      const pngImage = await doc.embedPng(sigPng);
+      const sigImg = await doc.embedPng(sigImgBytes);
 
-      const targetPage = doc.getPages()[activePage] || doc.getPages()[0];
+      const targetPage = doc.getPages()[activePage];
+      if (!targetPage) return;
+
       const { width, height } = targetPage.getSize();
+      const drawWidth = 140 * sigPosition.scale;
+      const drawHeight = 60 * sigPosition.scale;
 
-      const stampW = 150 * sigPosition.scale;
-      const stampH = (pngImage.height / pngImage.width) * stampW;
-
-      targetPage.drawImage(pngImage, {
-        x: Math.min(width - stampW, Math.max(10, sigPosition.x)),
-        y: Math.min(height - stampH, Math.max(10, sigPosition.y)),
-        width: stampW,
-        height: stampH,
+      targetPage.drawImage(sigImg, {
+        x: width / 2 - drawWidth / 2,
+        y: height * 0.15,
+        width: drawWidth,
+        height: drawHeight,
       });
 
       const outBytes = await doc.save();
       await loadPdfData(outBytes, docName);
-      setHistory(prev => [...prev, { label: `Added Signature to Page ${activePage + 1}`, bytes: outBytes }]);
-      success(`Signature added to page ${activePage + 1}!`);
+      setHistory(prev => [...prev, { label: `Added Signature (Page ${activePage + 1})`, bytes: outBytes }]);
+      clearSig();
+      success(`Signature placed on page ${activePage + 1}!`);
     } catch {
       showError("Failed to apply signature.");
     } finally {
@@ -269,7 +343,7 @@ export default function StudioPage() {
     if (!pdfBytes || !watermarkText.trim()) return;
     setProcessing(true);
     try {
-      const { PDFDocument, rgb, degrees, StandardFonts } = await import("pdf-lib");
+      const { PDFDocument, rgb, StandardFonts, degrees } = await import("pdf-lib");
       const doc = await PDFDocument.load(pdfBytes);
       const font = await doc.embedFont(StandardFonts.HelveticaBold);
       const pagesList = doc.getPages();
@@ -418,7 +492,7 @@ export default function StudioPage() {
                 All Your PDF Tasks in One Place
               </h2>
               <p className="text-sm sm:text-base text-[var(--muted)] leading-relaxed">
-                Delete unwanted pages, adjust orientation, add signatures, insert watermarks, and compress — all in one smooth continuous session without re-uploading every time.
+                Delete unwanted pages, auto-redact SSNs/PII, run 1-click recipes, add signatures, insert watermarks, and compress — all in one smooth continuous session without re-uploading every time.
               </p>
             </div>
 
@@ -438,21 +512,26 @@ export default function StudioPage() {
               </span>
             </label>
 
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-8">
+            <div className="grid grid-cols-1 sm:grid-cols-4 gap-3 mt-8">
               <div className="p-4 rounded-2xl border border-[var(--card-border)] bg-[var(--card)] text-center">
-                <div className="text-2xl mb-1">🗑️ + 🔄</div>
-                <h4 className="font-bold text-xs">Delete & Rotate</h4>
-                <p className="text-[10px] text-[var(--muted)] mt-0.5">Visually manage pages</p>
+                <div className="text-2xl mb-1">🛡️ PII</div>
+                <h4 className="font-bold text-xs">Auto-Redact</h4>
+                <p className="text-[10px] text-[var(--muted)] mt-0.5">Scan SSNs &amp; cards</p>
+              </div>
+              <div className="p-4 rounded-2xl border border-[var(--card-border)] bg-[var(--card)] text-center">
+                <div className="text-2xl mb-1">⚡ Macro</div>
+                <h4 className="font-bold text-xs">1-Click Recipes</h4>
+                <p className="text-[10px] text-[var(--muted)] mt-0.5">Automate 5 steps</p>
               </div>
               <div className="p-4 rounded-2xl border border-[var(--card-border)] bg-[var(--card)] text-center">
                 <div className="text-2xl mb-1">✍️ + 💧</div>
-                <h4 className="font-bold text-xs">Sign & Watermark</h4>
-                <p className="text-[10px] text-[var(--muted)] mt-0.5">Stamp & e-sign</p>
+                <h4 className="font-bold text-xs">Sign &amp; Watermark</h4>
+                <p className="text-[10px] text-[var(--muted)] mt-0.5">Stamp &amp; e-sign</p>
               </div>
               <div className="p-4 rounded-2xl border border-[var(--card-border)] bg-[var(--card)] text-center">
                 <div className="text-2xl mb-1">🗜️ + 🔒</div>
-                <h4 className="font-bold text-xs">Compress & Export</h4>
-                <p className="text-[10px] text-[var(--muted)] mt-0.5">Optimize with 1 click</p>
+                <h4 className="font-bold text-xs">Compress &amp; Protect</h4>
+                <p className="text-[10px] text-[var(--muted)] mt-0.5">AES encrypt &amp; shrink</p>
               </div>
             </div>
           </div>
@@ -464,16 +543,18 @@ export default function StudioPage() {
               {/* Pipeline Navigation Tabs */}
               <div className="flex bg-[var(--card)] p-1 rounded-2xl border border-[var(--card-border)] overflow-x-auto gap-1">
                 {[
-                  { id: "pages" as ActiveTab, label: "Pages & Layout", icon: "📑" },
+                  { id: "pages" as ActiveTab, label: "Pages", icon: "📑" },
+                  { id: "pii" as ActiveTab, label: "PII Guard", icon: "🛡️" },
+                  { id: "recipes" as ActiveTab, label: "Recipes", icon: "⚡" },
                   { id: "sign" as ActiveTab, label: "Sign", icon: "✍️" },
                   { id: "watermark" as ActiveTab, label: "Watermark", icon: "💧" },
                   { id: "protect" as ActiveTab, label: "Protect", icon: "🔒" },
-                  { id: "compress" as ActiveTab, label: "Compress", icon: "🗜️" },
+                  { id: "compress" as ActiveTab, label: "Export", icon: "📦" },
                 ].map((t) => (
                   <button
                     key={t.id}
                     onClick={() => setTab(t.id)}
-                    className={`flex-1 py-2.5 px-3 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 whitespace-nowrap ${
+                    className={`flex-1 py-2.5 px-2.5 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1 whitespace-nowrap ${
                       tab === t.id
                         ? "bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow-md shadow-indigo-500/20"
                         : "text-[var(--muted)] hover:text-[var(--foreground)] hover:bg-[var(--card-border)]/40"
@@ -485,19 +566,18 @@ export default function StudioPage() {
                 ))}
               </div>
 
-              {/* Tab 1: Pages & Layout Management */}
+              {/* Tab: Pages & Layout Management */}
               {tab === "pages" && (
                 <div className="bg-[var(--card)] border border-[var(--card-border)] rounded-2xl p-5 shadow-xl space-y-4">
                   <div className="flex items-center justify-between">
                     <div>
                       <h3 className="text-sm font-bold text-[var(--foreground)]">Page Organizer</h3>
-                      <p className="text-xs text-[var(--muted)]">Click red trash to remove or arrow to rotate</p>
+                      <p className="text-xs text-[var(--muted)]">Click trash to remove or arrow to rotate</p>
                     </div>
                     <div className="flex gap-1.5">
                       <button
                         onClick={() => rotateAllPages(90)}
                         className="px-2.5 py-1.5 rounded-lg border border-[var(--card-border)] bg-[var(--background)] text-[11px] font-semibold hover:border-indigo-500"
-                        title="Rotate all 90° clockwise"
                       >
                         Rotate All 90°
                       </button>
@@ -554,7 +634,121 @@ export default function StudioPage() {
                 </div>
               )}
 
-              {/* Tab 2: Signature */}
+              {/* Tab: PII Guardian Scanner */}
+              {tab === "pii" && (
+                <div className="bg-[var(--card)] border border-[var(--card-border)] rounded-2xl p-5 shadow-xl space-y-4">
+                  <div>
+                    <h3 className="text-sm font-bold text-[var(--foreground)] flex items-center gap-1.5">
+                      <span>🛡️</span> PII &amp; Secrets Auto-Redactor
+                    </h3>
+                    <p className="text-xs text-[var(--muted)]">
+                      Scan in-memory document for SSNs, credit cards, emails, and phone numbers.
+                    </p>
+                  </div>
+
+                  {!piiScanned ? (
+                    <button
+                      onClick={handleScanPii}
+                      disabled={piiScanning}
+                      className="w-full py-3.5 bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 text-white text-xs font-extrabold rounded-xl hover:opacity-95 disabled:opacity-40 transition shadow-md shadow-indigo-500/20 active:scale-[0.99]"
+                    >
+                      {piiScanning ? "Scanning Active Document..." : "⚡ 1-Click Scan for PII Data"}
+                    </button>
+                  ) : (
+                    <div className="space-y-3">
+                      <div className="p-3 bg-[var(--background)] rounded-xl border border-[var(--card-border)] flex items-center justify-between text-xs">
+                        <span className="font-bold text-[var(--foreground)]">
+                          Found {piiMatches.length} Sensitive Item(s)
+                        </span>
+                        <button
+                          onClick={handleScanPii}
+                          className="text-indigo-400 font-semibold hover:underline"
+                        >
+                          Re-scan
+                        </button>
+                      </div>
+
+                      {piiMatches.length > 0 ? (
+                        <>
+                          <div className="space-y-2 max-h-56 overflow-y-auto pr-1">
+                            {piiMatches.map((m) => (
+                              <div
+                                key={m.id}
+                                onClick={() => setPiiMatches(prev => prev.map(item => item.id === m.id ? { ...item, selected: !item.selected } : item))}
+                                className={`p-2.5 rounded-xl border text-xs cursor-pointer flex items-center justify-between ${
+                                  m.selected ? "border-red-500/50 bg-red-500/10" : "border-[var(--card-border)] opacity-60"
+                                }`}
+                              >
+                                <div>
+                                  <span className="font-mono font-bold text-[var(--foreground)] block">{m.maskedValue}</span>
+                                  <span className="text-[10px] text-[var(--muted)]">{m.typeLabel} · Page {m.pageIndex + 1}</span>
+                                </div>
+                                <span className="text-[10px] font-bold text-red-400">
+                                  {m.selected ? "Blackout ⬛" : "Keep"}
+                                </span>
+                              </div>
+                            ))}
+                          </div>
+
+                          <button
+                            onClick={handleApplyPiiRedactions}
+                            disabled={processing}
+                            className="w-full py-3 bg-gradient-to-r from-red-600 via-rose-600 to-amber-600 text-white text-xs font-extrabold rounded-xl hover:opacity-95 disabled:opacity-40 transition shadow-md shadow-red-500/20 active:scale-[0.99]"
+                          >
+                            {processing ? "Applying Redactions..." : `⬛ Burn Permanent Blackouts (${piiMatches.filter(m => m.selected).length})`}
+                          </button>
+                        </>
+                      ) : (
+                        <p className="text-xs text-emerald-400 font-bold text-center py-4">
+                          ✓ Document is clean! No PII found.
+                        </p>
+                      )}
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* Tab: 1-Click Recipes */}
+              {tab === "recipes" && (
+                <div className="bg-[var(--card)] border border-[var(--card-border)] rounded-2xl p-5 shadow-xl space-y-4">
+                  <div>
+                    <h3 className="text-sm font-bold text-[var(--foreground)] flex items-center gap-1.5">
+                      <span>⚡</span> 1-Click Workflow Recipes
+                    </h3>
+                    <p className="text-xs text-[var(--muted)]">
+                      Execute multi-step macro pipelines on this document in 1 click.
+                    </p>
+                  </div>
+
+                  <div className="space-y-2.5 max-h-96 overflow-y-auto pr-1">
+                    {DEFAULT_RECIPES.map((recipe) => (
+                      <div
+                        key={recipe.id}
+                        className="p-3.5 rounded-xl border border-[var(--card-border)] bg-[var(--background)] hover:border-indigo-500 transition-all flex flex-col justify-between gap-2"
+                      >
+                        <div className="flex items-start justify-between gap-2">
+                          <div>
+                            <div className="flex items-center gap-1.5">
+                              <span className="text-base">{recipe.icon}</span>
+                              <h4 className="text-xs font-bold text-[var(--foreground)]">{recipe.name}</h4>
+                            </div>
+                            <p className="text-[10px] text-[var(--muted)] mt-1 line-clamp-2">{recipe.description}</p>
+                          </div>
+                          <button
+                            onClick={() => handleExecuteRecipeInStudio(recipe)}
+                            disabled={processing}
+                            className="px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-[10px] font-bold shrink-0 transition disabled:opacity-40"
+                          >
+                            Run Macro
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Tab: Signature */}
               {tab === "sign" && (
                 <div className="bg-[var(--card)] border border-[var(--card-border)] rounded-2xl p-5 shadow-xl space-y-4">
                   <div className="flex items-center justify-between">
@@ -624,7 +818,7 @@ export default function StudioPage() {
                 </div>
               )}
 
-              {/* Tab 3: Watermark */}
+              {/* Tab: Watermark */}
               {tab === "watermark" && (
                 <div className="bg-[var(--card)] border border-[var(--card-border)] rounded-2xl p-5 shadow-xl space-y-4">
                   <div>
@@ -679,7 +873,7 @@ export default function StudioPage() {
                 </div>
               )}
 
-              {/* Tab 4: Protect */}
+              {/* Tab: Protect */}
               {tab === "protect" && (
                 <div className="bg-[var(--card)] border border-[var(--card-border)] rounded-2xl p-5 shadow-xl space-y-4">
                   <div>
@@ -708,11 +902,11 @@ export default function StudioPage() {
                 </div>
               )}
 
-              {/* Tab 5: Compress & Export */}
+              {/* Tab: Compress & Export */}
               {tab === "compress" && (
                 <div className="bg-[var(--card)] border border-[var(--card-border)] rounded-2xl p-5 shadow-xl space-y-4">
                   <div>
-                    <h3 className="text-sm font-bold text-[var(--foreground)] mb-1">Compress & Download</h3>
+                    <h3 className="text-sm font-bold text-[var(--foreground)] mb-1">Compress &amp; Download</h3>
                     <p className="text-xs text-[var(--muted)]">Export your finalized multi-step PDF</p>
                   </div>
 
@@ -748,70 +942,123 @@ export default function StudioPage() {
               )}
 
               {/* Pipeline History Timeline */}
-              <div className="bg-[var(--card)] border border-[var(--card-border)] rounded-2xl p-4 shadow-sm">
-                <p className="text-xs font-bold uppercase tracking-wider text-[var(--muted)] mb-2.5">
-                  Pipeline Steps Applied ({history.length})
-                </p>
-                <div className="space-y-1.5 max-h-36 overflow-y-auto">
-                  {history.map((h, i) => (
-                    <div key={i} className="flex items-center gap-2 text-xs text-[var(--foreground)]">
-                      <span className="w-4 h-4 rounded-full bg-emerald-500/20 text-emerald-500 text-[10px] font-bold flex items-center justify-center shrink-0">
-                        {i + 1}
+              <div className="bg-[var(--card)] border border-[var(--card-border)] rounded-2xl p-4 space-y-2.5">
+                <div className="flex items-center justify-between text-xs">
+                  <span className="font-bold uppercase tracking-wider text-[var(--muted)]">
+                    Pipeline Execution Steps ({history.length})
+                  </span>
+                  <button
+                    onClick={() => {
+                      const input = document.createElement("input");
+                      input.type = "file";
+                      input.accept = ".pdf";
+                      input.onchange = (e) => handleFileUpload(e as any);
+                      input.click();
+                    }}
+                    className="text-indigo-400 font-semibold hover:underline"
+                  >
+                    Load Different PDF
+                  </button>
+                </div>
+
+                <div className="space-y-1 max-h-36 overflow-y-auto pr-1">
+                  {history.map((step, idx) => (
+                    <div
+                      key={idx}
+                      className={`text-xs p-2 rounded-lg flex items-center justify-between ${
+                        idx === history.length - 1
+                          ? "bg-indigo-500/10 border border-indigo-500/30 text-indigo-400 font-bold"
+                          : "text-[var(--muted)] hover:bg-[var(--background)]"
+                      }`}
+                    >
+                      <span className="flex items-center gap-1.5">
+                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                        {idx + 1}. {step.label}
                       </span>
-                      <span className="truncate font-medium">{h.label}</span>
+                      {idx === history.length - 1 && (
+                        <span className="text-[10px] uppercase font-bold text-emerald-400">Current</span>
+                      )}
                     </div>
                   ))}
                 </div>
               </div>
             </div>
 
-            {/* Right Column: Live Interactive Document Canvas View */}
-            <div className="lg:col-span-7 bg-[var(--card)] border border-[var(--card-border)] rounded-3xl p-6 shadow-2xl flex flex-col items-center">
-              <div className="w-full flex items-center justify-between pb-4 border-b border-[var(--card-border)]/60 mb-4">
+            {/* Right Column: Live High-Resolution Page Canvas & Preview */}
+            <div className="lg:col-span-7 bg-[var(--card)] border border-[var(--card-border)] rounded-3xl p-6 shadow-2xl space-y-4">
+              <div className="flex items-center justify-between pb-4 border-b border-[var(--card-border)]">
                 <div className="flex items-center gap-2">
-                  <button
-                    onClick={() => setActivePage(p => Math.max(0, p - 1))}
-                    disabled={activePage === 0}
-                    className="p-1.5 rounded-lg border border-[var(--card-border)] disabled:opacity-30 hover:bg-[var(--card-border)]/40 text-xs font-bold"
-                  >
-                    ◀ Prev
-                  </button>
                   <span className="text-xs font-bold text-[var(--foreground)]">
                     Page {activePage + 1} of {pages.filter(p => !p.deleted).length}
                   </span>
-                  <button
-                    onClick={() => setActivePage(p => Math.min(pages.length - 1, p + 1))}
-                    disabled={activePage >= pages.length - 1}
-                    className="p-1.5 rounded-lg border border-[var(--card-border)] disabled:opacity-30 hover:bg-[var(--card-border)]/40 text-xs font-bold"
-                  >
-                    Next ▶
-                  </button>
+                  {pages[activePage]?.deleted && (
+                    <span className="text-[10px] font-bold text-red-500 bg-red-500/10 px-2 py-0.5 rounded-full border border-red-500/20">
+                      Marked for Deletion
+                    </span>
+                  )}
                 </div>
 
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-1.5">
+                  <button
+                    onClick={() => setActivePage(Math.max(0, activePage - 1))}
+                    disabled={activePage === 0}
+                    className="px-2.5 py-1 rounded-lg border border-[var(--card-border)] text-xs font-bold disabled:opacity-30 hover:border-indigo-500"
+                  >
+                    ← Prev
+                  </button>
+                  <button
+                    onClick={() => setActivePage(Math.min(pages.length - 1, activePage + 1))}
+                    disabled={activePage >= pages.length - 1}
+                    className="px-2.5 py-1 rounded-lg border border-[var(--card-border)] text-xs font-bold disabled:opacity-30 hover:border-indigo-500"
+                  >
+                    Next →
+                  </button>
+                  <div className="h-4 w-[1px] bg-[var(--card-border)] mx-1" />
                   <button
                     onClick={() => setZoom(z => Math.max(0.6, z - 0.2))}
-                    className="w-7 h-7 rounded-lg border border-[var(--card-border)] flex items-center justify-center text-xs font-bold hover:bg-[var(--card-border)]/40"
+                    className="px-2 py-1 rounded-lg border border-[var(--card-border)] text-xs font-bold hover:border-indigo-500"
+                    title="Zoom Out"
                   >
                     −
                   </button>
-                  <span className="text-xs font-mono font-bold">{Math.round(zoom * 100)}%</span>
+                  <span className="text-xs font-semibold px-1 text-[var(--muted)]">{Math.round(zoom * 100)}%</span>
                   <button
                     onClick={() => setZoom(z => Math.min(2, z + 0.2))}
-                    className="w-7 h-7 rounded-lg border border-[var(--card-border)] flex items-center justify-center text-xs font-bold hover:bg-[var(--card-border)]/40"
+                    className="px-2 py-1 rounded-lg border border-[var(--card-border)] text-xs font-bold hover:border-indigo-500"
+                    title="Zoom In"
                   >
                     +
                   </button>
                 </div>
               </div>
 
-              <div className="w-full overflow-auto max-h-[600px] flex justify-center p-2 rounded-2xl bg-slate-950/20 border border-[var(--card-border)]/30">
-                <canvas ref={mainCanvasRef} className="rounded-xl shadow-2xl max-w-full h-auto" />
+              {/* Main Document Canvas Viewport */}
+              <div className="bg-slate-900/60 rounded-2xl p-4 flex items-center justify-center min-h-[500px] overflow-auto border border-[var(--card-border)] shadow-inner">
+                <canvas
+                  ref={mainCanvasRef}
+                  className="rounded-lg shadow-2xl max-w-full h-auto bg-white"
+                />
               </div>
             </div>
           </div>
         )}
       </div>
+
+      {/* Toast Notification */}
+      {toast && (
+        <div
+          className={`fixed bottom-6 right-6 z-50 px-5 py-3 rounded-2xl shadow-2xl border text-sm font-bold flex items-center gap-2 animate-scaleIn ${
+            toast.type === "success"
+              ? "bg-emerald-950/90 border-emerald-500/40 text-emerald-300"
+              : toast.type === "error"
+              ? "bg-red-950/90 border-red-500/40 text-red-300"
+              : "bg-indigo-950/90 border-indigo-500/40 text-indigo-300"
+          }`}
+        >
+          <span>{toast.type === "success" ? "✓" : toast.type === "error" ? "✕" : "ℹ"}</span>
+          <span>{toast.message}</span>
+        </div>
+      )}
     </div>
   );
 }

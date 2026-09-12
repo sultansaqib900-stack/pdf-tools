@@ -10,6 +10,8 @@ export default function Footer() {
             <h4 className="font-extrabold text-xs uppercase tracking-wider mb-4 text-indigo-400">Core Tools</h4>
             <div className="space-y-2 text-xs text-[var(--muted)] font-medium">
               <Link href="/studio" className="block text-indigo-400 font-bold hover:underline">⚡ PDF Studio Pipeline</Link>
+              <Link href="/recipes" className="block text-purple-400 font-bold hover:underline">⚡ PDF Recipes (Macros)</Link>
+              <Link href="/pii-guardian" className="block text-red-400 font-bold hover:underline">🛡️ PII Guardian</Link>
               <Link href="/compress" className="block hover:text-[var(--foreground)] hover:translate-x-0.5 transition-all">Compress PDF</Link>
               <Link href="/merge" className="block hover:text-[var(--foreground)] hover:translate-x-0.5 transition-all">Merge PDF</Link>
               <Link href="/split" className="block hover:text-[var(--foreground)] hover:translate-x-0.5 transition-all">Split PDF</Link>

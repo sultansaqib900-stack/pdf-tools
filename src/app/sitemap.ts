@@ -32,6 +32,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: es("/edit-pdf"), lastModified: new Date(), changeFrequency: "monthly", priority: 0.8 },
     { url: `${base}/tools`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.9 },
     { url: `${base}/studio`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.95 },
+    { url: `${base}/pii-guardian`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.95 },
+    { url: `${base}/recipes`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.95 },
     { url: `${base}/compress`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.8 },
     { url: `${base}/merge`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.8 },
     { url: `${base}/split`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.8 },
