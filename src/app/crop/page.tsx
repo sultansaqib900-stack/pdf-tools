@@ -41,8 +41,8 @@ export default function CropPage() {
   const [showTimer, setShowTimer] = useState(false);
   const [pageCount, setPageCount] = useState(0);
   const [previewBytes, setPreviewBytes] = useState<ArrayBuffer | null>(null);
+  const [outBytes, setOutBytes] = useState<ArrayBuffer | null>(null);
   const originalBytes = useRef<ArrayBuffer | null>(null);
-  const outBytesRef = useRef<ArrayBuffer | null>(null);
 
   useEffect(() => { trackToolVisit("crop"); }, []);
 
@@ -54,7 +54,7 @@ export default function CropPage() {
     setSuccess(false);
     setError(null);
     setPreviewBytes(null);
-    outBytesRef.current = null;
+    setOutBytes(null);
     const { PDFDocument } = await import("pdf-lib");
     const bytes = await f.arrayBuffer();
     originalBytes.current = bytes;
@@ -92,8 +92,8 @@ export default function CropPage() {
       }
 
       const pdfBytes = await pdfDoc.save({ useObjectStreams: true });
-      const outBytes = pdfBytes as unknown as ArrayBuffer;
-      outBytesRef.current = outBytes;
+      const croppedBuffer = pdfBytes as unknown as ArrayBuffer;
+      setOutBytes(croppedBuffer);
       setPreviewBytes(originalBytes.current);
 
       const blob = new Blob([pdfBytes as unknown as BlobPart], { type: "application/pdf" });
@@ -103,11 +103,11 @@ export default function CropPage() {
       a.download = `cropped-${file.name}`;
       a.click();
       URL.revokeObjectURL(url);
-      trackExport(file.name, "Crop PDF", outBytes.byteLength);
+      trackExport(file.name, "Crop PDF", croppedBuffer.byteLength);
       setSuccess(true);
     } catch { setError("Failed to crop PDF."); }
     setProcessing(false);
-  }, [file, top, bottom, left, right, unit, usage]);
+  }, [file, top, bottom, left, right, unit, usage, upsell, trackExport]);
 
   const process = useCallback(async () => {
     if (!isPremium()) {
@@ -208,8 +208,8 @@ export default function CropPage() {
 
         {error && <ErrorBanner message={error} onRetry={runCrop} onDismiss={() => setError(null)} />}
 
-        {previewBytes && outBytesRef.current && (
-          <BeforeAfterPreview beforeBytes={previewBytes} afterBytes={outBytesRef.current} labelBefore="Original" labelAfter="Cropped" />
+        {previewBytes && outBytes && (
+          <BeforeAfterPreview beforeBytes={previewBytes} afterBytes={outBytes} labelBefore="Original" labelAfter="Cropped" />
         )}
 
         <SuccessAnimation show={success} message="PDF cropped successfully!" />

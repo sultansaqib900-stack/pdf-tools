@@ -55,15 +55,7 @@ export default function ChatPDFPage() {
   const [aiMode, setAiMode] = useState<string>("qna");
   const chatEndRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    fetchChatRemaining();
-  }, []);
-
-  useEffect(() => {
-    chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
-
-  const fetchChatRemaining = async () => {
+  const fetchChatRemaining = useCallback(async () => {
     try {
       const clientId = getClientId();
       const res = await fetch(`/api/chat-pdf/remaining?clientId=${encodeURIComponent(clientId)}`);
@@ -72,7 +64,15 @@ export default function ChatPDFPage() {
     } catch {
       setChatRemaining(3);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    fetchChatRemaining();
+  }, [fetchChatRemaining]);
+
+  useEffect(() => {
+    chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
 
   const handleFile = useCallback(async (f: File | null) => {
     if (!f || f.type !== "application/pdf") return;

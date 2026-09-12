@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useRef, useEffect, useCallback } from "react";
-import { AnnotationStore, generateAnnotationId, type Annotation, type ToolType, ANNOTATION_COLORS } from "@/lib/pdfViewer/annotations";
+import Image from "next/image";
+import { AnnotationStore, generateAnnotationId, type Annotation, type ToolType, ANNOTATION_COLORS, type StickyNote } from "@/lib/pdfViewer/annotations";
 
 interface PdfViewerProps {
   file: File;
@@ -18,14 +19,25 @@ export default function PdfViewer({ file, onClose }: PdfViewerProps) {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [stickNoteText, setStickNoteText] = useState("");
   const [stickNotePos, setStickNotePos] = useState<{ x: number; y: number } | null>(null);
+  const [canUndo, setCanUndo] = useState(false);
+  const [canRedo, setCanRedo] = useState(false);
+  const [pageAnnotations, setPageAnnotations] = useState<Annotation[]>([]);
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const overlayRef = useRef<HTMLCanvasElement>(null);
   const annotStore = useRef(new AnnotationStore());
-  const annotState = useRef(0);
-  const [, forceUpdate] = useState(0);
   const drawingPath = useRef<{ x: number; y: number }[]>([]);
   const isDrawing = useRef(false);
+
+  const syncAnnotState = useCallback(() => {
+    setCanUndo(annotStore.current.canUndo());
+    setCanRedo(annotStore.current.canRedo());
+    setPageAnnotations(annotStore.current.getByPage(pageIndex));
+  }, [pageIndex]);
+
+  useEffect(() => {
+    setPageAnnotations(annotStore.current.getByPage(pageIndex));
+  }, [pageIndex]);
 
   useEffect(() => {
     let cancelled = false;
@@ -59,63 +71,68 @@ export default function PdfViewer({ file, onClose }: PdfViewerProps) {
     let cancelled = false;
     (async () => {
       const page = await doc.getPage(pageIndex + 1);
-      const vp = page.getViewport({ scale: zoom });
+      const viewport = page.getViewport({ scale: zoom * 1.5 });
       const canvas = canvasRef.current!;
-      canvas.width = vp.width;
-      canvas.height = vp.height;
+      canvas.width = viewport.width;
+      canvas.height = viewport.height;
       const ctx = canvas.getContext("2d")!;
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      await page.render({ canvas, canvasContext: ctx, viewport: vp }).promise;
-      if (!cancelled) renderOverlay();
+      await page.render({ canvasContext: ctx, viewport }).promise;
+      if (overlayRef.current) {
+        overlayRef.current.width = viewport.width;
+        overlayRef.current.height = viewport.height;
+      }
+      if (!cancelled) {
+        // Redraw overlay
+      }
     })();
     return () => { cancelled = true; };
   }, [doc, pageIndex, zoom]);
 
   const renderOverlay = useCallback(() => {
-    const canvas = overlayRef.current;
-    if (!canvas) return;
-    const pageCanvas = canvasRef.current;
-    if (!pageCanvas) return;
-    canvas.width = pageCanvas.width;
-    canvas.height = pageCanvas.height;
-    const ctx = canvas.getContext("2d")!;
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    const overlay = overlayRef.current;
+    if (!overlay) return;
+    const ctx = overlay.getContext("2d");
+    if (!ctx) return;
+    ctx.clearRect(0, 0, overlay.width, overlay.height);
 
-    annotStore.current.getByPage(pageIndex).forEach((ann) => {
-      if (ann.type === "highlight") {
-        ctx.fillStyle = ann.color;
-        ann.rects.forEach((r) => {
-          ctx.fillRect(r.x * zoom * 1, r.y * zoom * 1, r.width * zoom * 1, r.height * zoom * 1);
-        });
-      } else if (ann.type === "sticky") {
-        ctx.fillStyle = ann.color;
-        ctx.beginPath();
-        ctx.arc(ann.x * zoom, ann.y * zoom, 12, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.fillStyle = "#fff";
-        ctx.font = "12px sans-serif";
-        ctx.fillText("📌", ann.x * zoom - 8, ann.y * zoom + 4);
-      } else if (ann.type === "drawing") {
-        ctx.strokeStyle = ann.color;
-        ctx.lineWidth = ann.width;
+    const annots = annotStore.current.getByPage(pageIndex);
+    for (const a of annots) {
+      if (a.type === "highlight") {
+        ctx.fillStyle = (a.color || "#ffeb3b") + "80";
+        for (const r of a.rects) {
+          ctx.fillRect(r.x * zoom, r.y * zoom, r.width * zoom, r.height * zoom);
+        }
+      } else if (a.type === "drawing") {
+        ctx.strokeStyle = a.color || "#ff4444";
+        ctx.lineWidth = (a.width || 3) * zoom;
         ctx.lineCap = "round";
         ctx.lineJoin = "round";
-        ann.paths.forEach((path) => {
-          if (path.length < 2) return;
+        for (const path of a.paths) {
+          if (path.length < 2) continue;
           ctx.beginPath();
           ctx.moveTo(path[0].x * zoom, path[0].y * zoom);
           for (let i = 1; i < path.length; i++) {
             ctx.lineTo(path[i].x * zoom, path[i].y * zoom);
           }
           ctx.stroke();
-        });
+        }
+      } else if (a.type === "sticky") {
+        ctx.fillStyle = a.color || "#ffe082";
+        ctx.beginPath();
+        ctx.arc(a.x * zoom, a.y * zoom, 12 * zoom, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = "#333";
+        ctx.font = `${10 * zoom}px sans-serif`;
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText("📝", a.x * zoom, a.y * zoom);
       }
-    });
+    }
+
     if (isDrawing.current && drawingPath.current.length > 1) {
       ctx.strokeStyle = "#ff4444";
-      ctx.lineWidth = 3;
+      ctx.lineWidth = 3 * zoom;
       ctx.lineCap = "round";
-      ctx.lineJoin = "round";
       ctx.beginPath();
       ctx.moveTo(drawingPath.current[0].x * zoom, drawingPath.current[0].y * zoom);
       for (let i = 1; i < drawingPath.current.length; i++) {
@@ -125,7 +142,9 @@ export default function PdfViewer({ file, onClose }: PdfViewerProps) {
     }
   }, [pageIndex, zoom]);
 
-  useEffect(() => { renderOverlay(); }, [renderOverlay, annotState.current]);
+  useEffect(() => {
+    renderOverlay();
+  }, [renderOverlay, canUndo, canRedo]);
 
   const getPagePos = (e: React.MouseEvent<HTMLCanvasElement>) => {
     const rect = (e.target as HTMLCanvasElement).getBoundingClientRect();
@@ -151,11 +170,14 @@ export default function PdfViewer({ file, onClose }: PdfViewerProps) {
       isDrawing.current = false;
       if (drawingPath.current.length > 1) {
         annotStore.current.add({
-          type: "drawing", id: generateAnnotationId(), pageIndex,
-          paths: [drawingPath.current], color: "#ff4444", width: 3,
+          type: "drawing",
+          id: generateAnnotationId(),
+          pageIndex,
+          paths: [drawingPath.current],
+          color: "#ff4444",
+          width: 3,
         });
-        annotState.current++;
-        forceUpdate((n) => n + 1);
+        syncAnnotState();
       }
       drawingPath.current = [];
     }
@@ -175,38 +197,35 @@ export default function PdfViewer({ file, onClose }: PdfViewerProps) {
       return;
     }
     annotStore.current.add({
-      type: "sticky", id: generateAnnotationId(), pageIndex,
-      x: stickNotePos.x, y: stickNotePos.y,
-      text: stickNoteText, color: ANNOTATION_COLORS.yellow,
+      type: "sticky",
+      id: generateAnnotationId(),
+      pageIndex,
+      x: stickNotePos.x,
+      y: stickNotePos.y,
+      text: stickNoteText,
+      color: ANNOTATION_COLORS.yellow,
     });
-    annotState.current++;
-    forceUpdate((n) => n + 1);
+    syncAnnotState();
     setStickNotePos(null);
     setStickNoteText("");
   };
 
   const handleUndo = () => {
     annotStore.current.undo();
-    annotState.current++;
-    forceUpdate((n) => n + 1);
+    syncAnnotState();
   };
 
   const handleRedo = () => {
     annotStore.current.redo();
-    annotState.current++;
-    forceUpdate((n) => n + 1);
+    syncAnnotState();
   };
 
-  const pageAnnotations = annotStore.current.getByPage(pageIndex);
-
   return (
-    <div className="fixed inset-0 z-[200] bg-black/90 flex flex-col">
-      <div className="flex items-center justify-between px-4 py-2 bg-gray-900 text-white shrink-0">
-        <div className="flex items-center gap-2">
-          <button onClick={onClose} className="p-1.5 rounded-lg hover:bg-white/10 transition">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
-          </button>
-          <span className="text-sm font-medium truncate max-w-[200px]">{file.name}</span>
+    <div className="fixed inset-0 z-50 bg-gray-900 flex flex-col select-none">
+      <div className="h-14 bg-gray-800 text-white flex items-center justify-between px-4 border-b border-gray-700 shrink-0">
+        <div className="flex items-center gap-3">
+          <button onClick={onClose} className="p-1.5 rounded-lg hover:bg-white/10 transition text-sm">✕ Close</button>
+          <span className="text-sm font-medium truncate max-w-xs">{file.name}</span>
         </div>
         <div className="flex items-center gap-1">
           <button onClick={() => setSidebarOpen(!sidebarOpen)} className="p-1.5 rounded-lg hover:bg-white/10 transition" title="Toggle thumbnails">
@@ -217,13 +236,13 @@ export default function PdfViewer({ file, onClose }: PdfViewerProps) {
           <button onClick={() => setZoom((z) => Math.min(3, z + 0.25))} className="p-1.5 rounded-lg hover:bg-white/10 transition text-sm">+</button>
           <div className="w-px h-5 bg-white/20 mx-1" />
           <button onClick={() => setPageIndex(Math.max(0, pageIndex - 1))} disabled={pageIndex === 0} className="p-1.5 rounded-lg hover:bg-white/10 transition disabled:opacity-30">◀</button>
-          <span className="text-sm w-16 text-center">{pageIndex + 1} / {numPages}</span>
+          <span className="text-sm w-16 text-center">{pageIndex + 1} / {numPages || 1}</span>
           <button onClick={() => setPageIndex(Math.min(numPages - 1, pageIndex + 1))} disabled={pageIndex >= numPages - 1} className="p-1.5 rounded-lg hover:bg-white/10 transition disabled:opacity-30">▶</button>
           <div className="w-px h-5 bg-white/20 mx-1" />
-          <button onClick={handleUndo} disabled={!annotStore.current.canUndo()} className="p-1.5 rounded-lg hover:bg-white/10 transition disabled:opacity-30" title="Undo">
+          <button onClick={handleUndo} disabled={!canUndo} className="p-1.5 rounded-lg hover:bg-white/10 transition disabled:opacity-30" title="Undo">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M3 7v6h6"/><path d="M21 17a9 9 0 0 0-9-9 9 9 0 0 0-6 2.3L3 13"/></svg>
           </button>
-          <button onClick={handleRedo} disabled={!annotStore.current.canRedo()} className="p-1.5 rounded-lg hover:bg-white/10 transition disabled:opacity-30" title="Redo">
+          <button onClick={handleRedo} disabled={!canRedo} className="p-1.5 rounded-lg hover:bg-white/10 transition disabled:opacity-30" title="Redo">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 7v6h-6"/><path d="M3 17a9 9 0 0 1 9-9 9 9 0 0 1 6 2.3L21 13"/></svg>
           </button>
         </div>
@@ -247,9 +266,9 @@ export default function PdfViewer({ file, onClose }: PdfViewerProps) {
               <button
                 key={i}
                 onClick={() => setPageIndex(i)}
-                className={`w-full rounded-lg overflow-hidden border-2 transition ${i === pageIndex ? "border-indigo-500" : "border-transparent opacity-60 hover:opacity-100"}`}
+                className={`w-full rounded-lg overflow-hidden border-2 transition relative ${i === pageIndex ? "border-indigo-500" : "border-transparent opacity-60 hover:opacity-100"}`}
               >
-                <img src={t} alt={`Page ${i + 1}`} className="w-full" />
+                <Image src={t} alt={`Page ${i + 1}`} width={120} height={160} unoptimized className="w-full h-auto" />
               </button>
             ))}
           </div>
@@ -257,10 +276,10 @@ export default function PdfViewer({ file, onClose }: PdfViewerProps) {
 
         <div className="flex-1 overflow-auto flex items-start justify-center p-4">
           <div className="relative inline-block">
-            <canvas ref={canvasRef} className="shadow-2xl" />
+            <canvas ref={canvasRef} className="shadow-2xl rounded-lg" />
             <canvas
               ref={overlayRef}
-              className="absolute inset-0"
+              className="absolute inset-0 rounded-lg"
               style={{ cursor: tool === "highlight" ? "crosshair" : tool === "draw" ? "crosshair" : tool === "sticky" ? "pointer" : "default" }}
               onMouseDown={handleMouseDown}
               onMouseMove={handleMouseMove}
@@ -288,13 +307,21 @@ export default function PdfViewer({ file, onClose }: PdfViewerProps) {
       )}
 
       {pageAnnotations.length > 0 && (
-        <div className="absolute bottom-4 right-4 bg-gray-800/90 rounded-xl p-3 max-h-40 overflow-y-auto max-w-xs">
+        <div className="absolute bottom-4 right-4 bg-gray-800/90 rounded-xl p-3 max-h-40 overflow-y-auto max-w-xs shadow-xl border border-white/10">
           <p className="text-xs text-white/50 mb-1">Annotations on this page</p>
           {pageAnnotations.map((ann) => (
             <div key={ann.id} className="text-xs text-white/80 flex items-center gap-1 py-0.5">
               <span>{ann.type === "highlight" ? "🖍" : ann.type === "sticky" ? "📌" : "✏"}</span>
-              <span className="truncate">{ann.type === "sticky" ? (ann as any).text : ann.type}</span>
-              <button onClick={() => { annotStore.current.remove(ann.id); annotState.current++; forceUpdate((n) => n + 1); }} className="ml-auto text-red-400 hover:text-red-300">✕</button>
+              <span className="truncate">{ann.type === "sticky" ? (ann as StickyNote).text : ann.type}</span>
+              <button
+                onClick={() => {
+                  annotStore.current.remove(ann.id);
+                  syncAnnotState();
+                }}
+                className="ml-auto text-red-400 hover:text-red-300"
+              >
+                ✕
+              </button>
             </div>
           ))}
         </div>

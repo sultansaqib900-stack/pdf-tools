@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 
 interface ShareModalProps {
   open: boolean;
@@ -9,6 +9,16 @@ interface ShareModalProps {
 }
 
 function getPageMeta() {
+  if (typeof window === "undefined") {
+    return {
+      url: "https://allaboutpdfediting.xyz",
+      title: "PDFTools",
+      desc: "Free online PDF tools",
+      image: "",
+      summary: "I use PDFTools for all my PDF editing — 100% free, no uploads, no signup!",
+      tool: "",
+    };
+  }
   const url = window.location.href;
   const title = document.title;
   const desc =
@@ -91,22 +101,20 @@ const platforms = [
 
 export default function ShareModal({ open, onClose }: ShareModalProps) {
   const [copied, setCopied] = useState(false);
-  const canNativeShare = useState(() => {
-    if (typeof navigator === "undefined") return false;
-    return "share" in navigator;
-  })[0];
+  const canNativeShare = typeof navigator !== "undefined" && "share" in navigator;
 
-  useEffect(() => {
-    if (open) setCopied(false);
-  }, [open]);
+  const handleClose = useCallback(() => {
+    setCopied(false);
+    onClose();
+  }, [onClose]);
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
+      if (e.key === "Escape") handleClose();
     };
     if (open) document.addEventListener("keydown", handler);
     return () => document.removeEventListener("keydown", handler);
-  }, [open, onClose]);
+  }, [open, handleClose]);
 
   if (!open) return null;
 
@@ -118,7 +126,7 @@ export default function ShareModal({ open, onClose }: ShareModalProps) {
         await navigator.share({ title: "PDFTools - Free Online PDF Tools", text: summary, url });
       } catch {}
     }
-    onClose();
+    handleClose();
   };
 
   const handleCopy = async () => {
@@ -150,14 +158,14 @@ export default function ShareModal({ open, onClose }: ShareModalProps) {
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4"
-      onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-md p-4 animate-fadeIn"
+      onClick={(e) => { if (e.target === e.currentTarget) handleClose(); }}
     >
-      <div className="bg-[var(--card)] border border-[var(--card-border)] rounded-2xl w-full max-w-sm overflow-hidden shadow-2xl">
+      <div className="bg-[var(--card)] border border-[var(--card-border)] rounded-2xl w-full max-w-sm overflow-hidden shadow-2xl animate-scaleIn">
         <div className="flex items-center justify-between px-5 pt-5 pb-3">
-          <h3 className="text-lg font-bold text-[var(--foreground)]">Share</h3>
+          <h3 className="text-lg font-bold text-[var(--foreground)]">Share PDFTools</h3>
           <button
-            onClick={onClose}
+            onClick={handleClose}
             className="p-1.5 rounded-lg hover:bg-[var(--card-border)] text-[var(--muted)] transition"
           >
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
@@ -190,7 +198,7 @@ export default function ShareModal({ open, onClose }: ShareModalProps) {
               href={shareUrl(p.id)}
               target="_blank"
               rel="noopener noreferrer"
-              className={`${p.color} text-white rounded-xl p-3 flex items-center justify-center transition`}
+              className={`${p.color} text-white rounded-xl p-3 flex items-center justify-center transition hover:scale-105 active:scale-95`}
             >
               {p.icon}
             </a>
@@ -201,16 +209,16 @@ export default function ShareModal({ open, onClose }: ShareModalProps) {
           {canNativeShare && (
             <button
               onClick={handleNativeShare}
-              className="flex-1 py-2.5 rounded-xl bg-indigo-600 text-white text-sm font-medium hover:bg-indigo-700 transition"
+              className="flex-1 py-2.5 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-600 text-white text-sm font-semibold hover:opacity-95 transition active:scale-95 shadow-md shadow-indigo-500/20"
             >
               Share via...
             </button>
           )}
           <button
             onClick={handleCopy}
-            className="flex-1 py-2.5 rounded-xl border border-[var(--card-border)] text-[var(--foreground)] text-sm font-medium hover:bg-[var(--card-border)] transition"
+            className="flex-1 py-2.5 rounded-xl border border-[var(--card-border)] text-[var(--foreground)] text-sm font-semibold hover:bg-[var(--card-border)]/50 transition active:scale-95"
           >
-            {copied ? "Copied!" : "Copy Link"}
+            {copied ? "✓ Copied!" : "Copy Link"}
           </button>
         </div>
       </div>

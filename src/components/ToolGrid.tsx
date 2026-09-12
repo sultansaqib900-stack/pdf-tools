@@ -2,8 +2,9 @@
 
 import { useState, useMemo } from "react";
 import ToolCard from "@/components/ToolCard";
+import Link from "next/link";
 
-type Category = "All" | "Edit" | "Convert" | "Security" | "Organize" | "Extract" | "Premium";
+type Category = "All" | "Popular" | "Studio & AI" | "Edit" | "Convert" | "Security" | "Organize" | "Premium";
 
 interface ToolDef {
   title: string;
@@ -12,68 +13,67 @@ interface ToolDef {
   href: string;
   gradient: string;
   category: Category;
+  badge?: string;
 }
 
 const allTools: ToolDef[] = [
-  { title: "Compress PDF", description: "Reduce file size while keeping quality.", icon: "📦", href: "/compress", gradient: "bg-gradient-to-br from-blue-400 to-blue-600", category: "Edit" },
-  { title: "Merge PDF", description: "Combine multiple PDFs into one document.", icon: "🔗", href: "/merge", gradient: "bg-gradient-to-br from-emerald-400 to-emerald-600", category: "Edit" },
-  { title: "Chat with PDF", description: "Upload a PDF and ask AI questions about its content.", icon: "🤖", href: "/chat-pdf", gradient: "bg-gradient-to-br from-violet-500 to-fuchsia-600", category: "Extract" },
-  { title: "Fill PDF Form", description: "Fill form fields and download the completed PDF.", icon: "📋", href: "/fill-form", gradient: "bg-gradient-to-br from-lime-400 to-lime-600", category: "Edit" },
-  { title: "Flatten PDF", description: "Merge form fields and layers into page content.", icon: "📄", href: "/flatten-pdf", gradient: "bg-gradient-to-br from-stone-400 to-stone-600", category: "Edit" },
-  { title: "Reverse PDF Order", description: "Flip the entire page sequence of any PDF.", icon: "🔄", href: "/reverse-pdf", gradient: "bg-gradient-to-br from-cyan-400 to-cyan-600", category: "Organize" },
-  { title: "Split PDF", description: "Extract pages or split into separate files.", icon: "✂️", href: "/split", gradient: "bg-gradient-to-br from-purple-400 to-purple-600", category: "Edit" },
-  { title: "Delete Pages", description: "Remove unwanted pages from your PDF.", icon: "🗑️", href: "/delete-pages", gradient: "bg-gradient-to-br from-red-400 to-red-600", category: "Edit" },
-  { title: "Organize Pages", description: "Drag and drop to reorder PDF pages.", icon: "📑", href: "/organize", gradient: "bg-gradient-to-br from-fuchsia-400 to-fuchsia-600", category: "Organize" },
-  { title: "Crop PDF", description: "Remove unwanted margins from PDF pages.", icon: "🔲", href: "/crop", gradient: "bg-gradient-to-br from-rose-400 to-rose-600", category: "Edit" },
-  { title: "Edit PDF", description: "Add text boxes, shapes, and drawings to any PDF.", icon: "✏️", href: "/edit-pdf", gradient: "bg-gradient-to-br from-orange-400 to-orange-600", category: "Edit" },
-  { title: "Resize PDF", description: "Change page size to A4, Letter, Legal.", icon: "📐", href: "/resize", gradient: "bg-gradient-to-br from-blue-400 to-blue-600", category: "Edit" },
-  { title: "Image to PDF", description: "Convert JPG, PNG, and other images to PDF.", icon: "🖼️", href: "/image-to-pdf", gradient: "bg-gradient-to-br from-amber-400 to-amber-600", category: "Convert" },
-  { title: "Scan to PDF", description: "Scan documents with your camera and convert to PDF.", icon: "📷", href: "/scan-to-pdf", gradient: "bg-gradient-to-br from-sky-400 to-sky-600", category: "Convert" },
-  { title: "OCR PDF", description: "Extract text from scanned PDFs and images.", icon: "🔍", href: "/ocr-pdf", gradient: "bg-gradient-to-br from-purple-400 to-purple-600", category: "Extract" },
-  { title: "PDF to Word", description: "Convert PDF to editable Word DOCX files.", icon: "📄", href: "/pdf-to-word", gradient: "bg-gradient-to-br from-blue-500 to-blue-700", category: "Convert" },
-  { title: "Word to PDF", description: "Convert Word DOCX documents to PDF.", icon: "📝", href: "/word-to-pdf", gradient: "bg-gradient-to-br from-green-500 to-green-700", category: "Convert" },
-  { title: "Repair PDF", description: "Fix corrupted or damaged PDF files.", icon: "🔧", href: "/repair-pdf", gradient: "bg-gradient-to-br from-stone-500 to-stone-700", category: "Edit" },
-  { title: "PDF to PDF/A", description: "Convert PDF to archive format for preservation.", icon: "📦", href: "/pdf-to-pdfa", gradient: "bg-gradient-to-br from-amber-600 to-amber-800", category: "Convert" },
-  { title: "PDF to Images", description: "Extract all pages as high-quality images.", icon: "📸", href: "/pdf-to-images", gradient: "bg-gradient-to-br from-rose-400 to-rose-600", category: "Convert" },
-  { title: "PDF to Excel", description: "Extract tables from PDF as CSV using AI.", icon: "📊", href: "/pdf-to-excel", gradient: "bg-gradient-to-br from-emerald-500 to-emerald-700", category: "Convert" },
-  { title: "Word Counter", description: "Count words, characters, and pages.", icon: "📝", href: "/word-counter", gradient: "bg-gradient-to-br from-teal-400 to-teal-600", category: "Extract" },
-  { title: "Insert Blank Pages", description: "Add empty pages to any PDF.", icon: "📄", href: "/insert-blank", gradient: "bg-gradient-to-br from-sky-500 to-sky-700", category: "Edit" },
-  { title: "Annotate PDF", description: "Highlight, underline & strikethrough text.", icon: "🖍️", href: "/annotate", gradient: "bg-gradient-to-br from-amber-400 to-amber-600", category: "Edit" },
-  { title: "HTML to PDF", description: "Convert HTML markup to a downloadable PDF.", icon: "🌐", href: "/html-to-pdf", gradient: "bg-gradient-to-br from-sky-400 to-sky-600", category: "Convert" },
-  { title: "Redact PDF", description: "Permanently black out sensitive text and areas.", icon: "⬛", href: "/redact", gradient: "bg-gradient-to-br from-slate-600 to-slate-800", category: "Security" },
-  { title: "Text to PDF", description: "Convert plain text to a formatted PDF.", icon: "📝", href: "/text-to-pdf", gradient: "bg-gradient-to-br from-green-400 to-green-600", category: "Convert" },
-  { title: "Password Protect", description: "Encrypt your PDF with a password.", icon: "🔒", href: "/protect", gradient: "bg-gradient-to-br from-violet-400 to-violet-600", category: "Security" },
-  { title: "Unlock PDF", description: "Remove password protection from PDF files.", icon: "🔓", href: "/unlock", gradient: "bg-gradient-to-br from-orange-400 to-orange-600", category: "Security" },
-  { title: "e-Sign PDF", description: "Draw your signature and place it on any PDF.", icon: "✍️", href: "/sign", gradient: "bg-gradient-to-br from-pink-400 to-pink-600", category: "Security" },
-  { title: "Watermark PDF", description: "Add text watermarks to every page.", icon: "💧", href: "/watermark", gradient: "bg-gradient-to-br from-yellow-400 to-yellow-600", category: "Security" },
-  { title: "Extract Text", description: "Extract text content from any PDF.", icon: "📝", href: "/extract-text", gradient: "bg-gradient-to-br from-teal-400 to-teal-600", category: "Extract" },
-  { title: "Add Page Numbers", description: "Insert page numbers at any position.", icon: "🔢", href: "/add-page-numbers", gradient: "bg-gradient-to-br from-cyan-400 to-cyan-600", category: "Extract" },
-  { title: "Metadata Editor", description: "View and edit PDF title, author, subject.", icon: "📋", href: "/metadata", gradient: "bg-gradient-to-br from-indigo-400 to-indigo-600", category: "Extract" },
-  { title: "Rotate PDF", description: "Rotate pages by 90, 180, or 270 degrees.", icon: "🔄", href: "/rotate", gradient: "bg-gradient-to-br from-red-400 to-red-600", category: "Edit" },
-  { title: "Batch Process", description: "Process multiple PDFs at once (Premium).", icon: "⚙️", href: "/batch", gradient: "bg-gradient-to-br from-slate-400 to-slate-600", category: "Premium" },
-  { title: "PDF Diff", description: "Compare two PDFs side by side — see changes.", icon: "🔍", href: "/pdf-diff", gradient: "bg-gradient-to-br from-teal-400 to-cyan-600", category: "Premium" },
-  { title: "Certificate Generator", description: "Bulk-generate personalized PDF certificates.", icon: "🏆", href: "/certificate-generator", gradient: "bg-gradient-to-br from-purple-500 to-indigo-700", category: "Premium" },
-  { title: "PDF to Audio", description: "Listen to PDFs with text-to-speech.", icon: "🎧", href: "/pdf-to-audio", gradient: "bg-gradient-to-br from-rose-400 to-pink-600", category: "Premium" },
-  { title: "Form Data Extract", description: "Extract PDF form data to CSV.", icon: "📊", href: "/form-data-extract", gradient: "bg-gradient-to-br from-emerald-500 to-teal-700", category: "Premium" },
-  { title: "Bulk Rename", description: "Rename PDFs by title, author, or metadata.", icon: "🏷️", href: "/bulk-rename", gradient: "bg-gradient-to-br from-blue-400 to-indigo-600", category: "Premium" },
-  { title: "Booklet Creator", description: "Create N-up booklets for printing.", icon: "📖", href: "/booklet", gradient: "bg-gradient-to-br from-orange-400 to-red-600", category: "Premium" },
-  { title: "Search & Redact", description: "Auto-redact words across entire document.", icon: "⬛", href: "/search-redact", gradient: "bg-gradient-to-br from-slate-600 to-gray-900", category: "Premium" },
-  { title: "Color Inverter", description: "Invert, grayscale, or boost contrast.", icon: "🎨", href: "/pdf-inverter", gradient: "bg-gradient-to-br from-violet-400 to-purple-600", category: "Premium" },
-  { title: "PDF Vault", description: "Encrypted browser document storage.", icon: "🔐", href: "/vault", gradient: "bg-gradient-to-br from-cyan-400 to-blue-600", category: "Premium" },
-  { title: "QR Code Stamp", description: "Add QR codes to every PDF page.", icon: "📱", href: "/qr-stamp", gradient: "bg-gradient-to-br from-green-500 to-emerald-700", category: "Premium" },
-  { title: "Metadata Sanitizer", description: "Strip all hidden metadata from PDFs.", icon: "🧹", href: "/metadata-sanitizer", gradient: "bg-gradient-to-br from-yellow-500 to-orange-700", category: "Premium" },
-  { title: "Split by Bookmarks", description: "Extract chapters from PDF outline/bookmarks.", icon: "📑", href: "/split-by-bookmarks", gradient: "bg-gradient-to-br from-fuchsia-400 to-pink-600", category: "Premium" },
-  { title: "Bates Numbering", description: "Add sequential page numbers to every page.", icon: "🔢", href: "/bates-numbering", gradient: "bg-gradient-to-br from-amber-400 to-yellow-600", category: "Premium" },
+  { title: "PDF Studio Pipeline", description: "Multi-step studio: delete pages, rotate, sign, watermark, & compress without re-uploading.", icon: "⚡", href: "/studio", gradient: "bg-gradient-to-br from-indigo-500 via-purple-600 to-pink-500", category: "Studio & AI", badge: "Flagship" },
+  { title: "Chat with PDF (AI)", description: "Ask questions, generate bullet summaries, translate to Urdu, and extract insights.", icon: "🤖", href: "/chat-pdf", gradient: "bg-gradient-to-br from-violet-500 to-fuchsia-600", category: "Studio & AI" },
+  { title: "Compress PDF", description: "Reduce file size up to 90% while keeping crystal-clear quality.", icon: "📦", href: "/compress", gradient: "bg-gradient-to-br from-blue-500 to-indigo-600", category: "Popular" },
+  { title: "Merge PDF", description: "Combine multiple PDF documents and images in any custom order.", icon: "🔗", href: "/merge", gradient: "bg-gradient-to-br from-emerald-500 to-teal-600", category: "Popular" },
+  { title: "Split PDF", description: "Extract specific page ranges or split into individual single-page files.", icon: "✂️", href: "/split", gradient: "bg-gradient-to-br from-purple-500 to-pink-600", category: "Popular" },
+  { title: "Image to PDF", description: "Convert JPG, PNG, WEBP, and TIFF images to a polished PDF document.", icon: "🖼️", href: "/image-to-pdf", gradient: "bg-gradient-to-br from-amber-500 to-orange-600", category: "Convert" },
+  { title: "e-Sign PDF", description: "Draw, type, or upload your signature and place it anywhere on your PDF.", icon: "✍️", href: "/sign", gradient: "bg-gradient-to-br from-pink-500 to-rose-600", category: "Security" },
+  { title: "OCR PDF", description: "Extract searchable, selectable text from scanned PDFs and photos.", icon: "🔍", href: "/ocr-pdf", gradient: "bg-gradient-to-br from-purple-500 to-indigo-600", category: "Studio & AI" },
+  { title: "Delete Pages", description: "Visually select and remove unwanted pages from any PDF document.", icon: "🗑️", href: "/delete-pages", gradient: "bg-gradient-to-br from-red-500 to-rose-600", category: "Organize" },
+  { title: "Organize Pages", description: "Drag, drop, rotate, and reorder pages visually with instant preview.", icon: "📑", href: "/organize", gradient: "bg-gradient-to-br from-fuchsia-500 to-purple-600", category: "Organize" },
+  { title: "Edit PDF", description: "Add text boxes, shapes, freehand annotations, and sticky notes.", icon: "✏️", href: "/edit-pdf", gradient: "bg-gradient-to-br from-orange-500 to-amber-600", category: "Edit" },
+  { title: "PDF to Word", description: "Convert PDF documents into fully editable Microsoft Word DOCX files.", icon: "📄", href: "/pdf-to-word", gradient: "bg-gradient-to-br from-blue-600 to-blue-800", category: "Convert" },
+  { title: "Word to PDF", description: "Convert DOCX documents to standardized PDF formats in seconds.", icon: "📝", href: "/word-to-pdf", gradient: "bg-gradient-to-br from-green-500 to-emerald-700", category: "Convert" },
+  { title: "PDF to Excel", description: "Extract tabular financial data and tables into clean CSV & spreadsheets.", icon: "📊", href: "/pdf-to-excel", gradient: "bg-gradient-to-br from-emerald-500 to-teal-700", category: "Convert" },
+  { title: "Watermark PDF", description: "Stamp customized text or copyright watermarks with opacity and rotation.", icon: "💧", href: "/watermark", gradient: "bg-gradient-to-br from-cyan-500 to-blue-600", category: "Security" },
+  { title: "Password Protect", description: "Secure your confidential files with strong AES password encryption.", icon: "🔒", href: "/protect", gradient: "bg-gradient-to-br from-violet-500 to-purple-700", category: "Security" },
+  { title: "Unlock PDF", description: "Remove owner restrictions and passwords from your PDF files.", icon: "🔓", href: "/unlock", gradient: "bg-gradient-to-br from-amber-500 to-orange-600", category: "Security" },
+  { title: "Rotate PDF", description: "Fix upside down pages by rotating 90°, 180°, or 270° degrees.", icon: "🔄", href: "/rotate", gradient: "bg-gradient-to-br from-red-500 to-orange-600", category: "Organize" },
+  { title: "Crop PDF", description: "Trim white margins or crop pages to exact custom dimensions.", icon: "🔲", href: "/crop", gradient: "bg-gradient-to-br from-rose-500 to-pink-600", category: "Edit" },
+  { title: "Resize PDF", description: "Convert page size to standard A4, US Letter, Legal, or custom sizes.", icon: "📐", href: "/resize", gradient: "bg-gradient-to-br from-blue-500 to-indigo-600", category: "Edit" },
+  { title: "Add Page Numbers", description: "Insert sequential page numbering, headers, and footers.", icon: "🔢", href: "/add-page-numbers", gradient: "bg-gradient-to-br from-cyan-500 to-teal-600", category: "Organize" },
+  { title: "Fill PDF Form", description: "Type into AcroForm fields, check checkboxes, and download completed forms.", icon: "📋", href: "/fill-form", gradient: "bg-gradient-to-br from-lime-500 to-emerald-600", category: "Edit" },
+  { title: "Flatten PDF", description: "Make forms read-only and lock annotations permanently into page content.", icon: "📄", href: "/flatten-pdf", gradient: "bg-gradient-to-br from-stone-500 to-slate-700", category: "Security" },
+  { title: "PDF to Images", description: "Export each PDF page as high-resolution PNG or JPG image files.", icon: "📸", href: "/pdf-to-images", gradient: "bg-gradient-to-br from-rose-500 to-red-600", category: "Convert" },
+  { title: "Scan to PDF", description: "Use your device webcam or camera to scan paper documents to PDF.", icon: "📷", href: "/scan-to-pdf", gradient: "bg-gradient-to-br from-sky-500 to-blue-600", category: "Convert" },
+  { title: "HTML to PDF", description: "Render URLs or raw HTML markup directly into formatted PDFs.", icon: "🌐", href: "/html-to-pdf", gradient: "bg-gradient-to-br from-sky-400 to-indigo-600", category: "Convert" },
+  { title: "Text to PDF", description: "Convert plain text documents or code into clean PDF pages.", icon: "📝", href: "/text-to-pdf", gradient: "bg-gradient-to-br from-green-500 to-teal-600", category: "Convert" },
+  { title: "Repair PDF", description: "Rebuild corrupted headers and recover damaged PDF files.", icon: "🔧", href: "/repair-pdf", gradient: "bg-gradient-to-br from-stone-500 to-slate-800", category: "Edit" },
+  { title: "Redact PDF", description: "Permanently blackout confidential names, numbers, and SSNs.", icon: "⬛", href: "/redact", gradient: "bg-gradient-to-br from-slate-700 to-black", category: "Security" },
+  { title: "Word Counter", description: "Count words, characters, reading time, and page metrics in PDF.", icon: "📝", href: "/word-counter", gradient: "bg-gradient-to-br from-teal-500 to-emerald-600", category: "Convert" },
+  { title: "Insert Blank Pages", description: "Insert blank pages at any point for notes or double-sided printing.", icon: "📄", href: "/insert-blank", gradient: "bg-gradient-to-br from-sky-500 to-indigo-700", category: "Organize" },
+  { title: "Annotate PDF", description: "Highlight, underline, strikethrough, and add sticky notes.", icon: "🖍️", href: "/annotate", gradient: "bg-gradient-to-br from-amber-500 to-yellow-600", category: "Edit" },
+  { title: "Batch Process", description: "Process up to 20 files simultaneously with batch actions.", icon: "⚙️", href: "/batch", gradient: "bg-gradient-to-br from-slate-500 to-slate-800", category: "Premium" },
+  { title: "PDF Diff", description: "Compare two PDF documents side by side with highlighted additions/deletions.", icon: "🔍", href: "/pdf-diff", gradient: "bg-gradient-to-br from-teal-500 to-cyan-600", category: "Premium" },
+  { title: "Bates Numbering", description: "Add sequential legal Bates stamping with custom prefixes and digit padding.", icon: "🔢", href: "/bates-numbering", gradient: "bg-gradient-to-br from-amber-500 to-yellow-600", category: "Premium" },
+  { title: "Certificate Generator", description: "Generate bulk personalized PDF certificates from templates and CSV data.", icon: "🏆", href: "/certificate-generator", gradient: "bg-gradient-to-br from-purple-500 to-indigo-700", category: "Premium" },
+  { title: "PDF to Audio", description: "Natural text-to-speech audio reader with voice selection & speed controls.", icon: "🎧", href: "/pdf-to-audio", gradient: "bg-gradient-to-br from-rose-500 to-pink-600", category: "Premium" },
+  { title: "Form Data Extract", description: "Extract AcroForm responses into downloadable CSV spreadsheets.", icon: "📊", href: "/form-data-extract", gradient: "bg-gradient-to-br from-emerald-500 to-teal-700", category: "Premium" },
+  { title: "Bulk Rename", description: "Auto-rename dozens of PDFs by internal metadata tags and patterns.", icon: "🏷️", href: "/bulk-rename", gradient: "bg-gradient-to-br from-blue-500 to-indigo-600", category: "Premium" },
+  { title: "Booklet Creator", description: "Create 2-up saddle-stitch booklets and 2x2 / 4x4 print imposition layouts.", icon: "📖", href: "/booklet", gradient: "bg-gradient-to-br from-orange-500 to-red-600", category: "Premium" },
+  { title: "Search & Redact", description: "Auto-find and permanently redact words across entire documents.", icon: "⬛", href: "/search-redact", gradient: "bg-gradient-to-br from-slate-700 to-gray-950", category: "Premium" },
+  { title: "Color Inverter", description: "Convert PDFs to dark mode, ink-saving grayscale, or high contrast.", icon: "🎨", href: "/pdf-inverter", gradient: "bg-gradient-to-br from-violet-500 to-purple-600", category: "Premium" },
+  { title: "Secure Vault", description: "Client-encrypted browser document storage with master password.", icon: "🔐", href: "/vault", gradient: "bg-gradient-to-br from-cyan-500 to-blue-600", category: "Premium" },
+  { title: "QR Code Stamp", description: "Stamp scannable QR codes and URLs onto every page of your PDF.", icon: "📱", href: "/qr-stamp", gradient: "bg-gradient-to-br from-green-500 to-emerald-700", category: "Premium" },
+  { title: "Metadata Sanitizer", description: "Strip author names, dates, annotations, and hidden metadata.", icon: "🧹", href: "/metadata-sanitizer", gradient: "bg-gradient-to-br from-yellow-500 to-orange-700", category: "Premium" },
+  { title: "Split by Bookmarks", description: "Extract chapters and sections from PDF bookmark outline structure.", icon: "📑", href: "/split-by-bookmarks", gradient: "bg-gradient-to-br from-fuchsia-500 to-pink-600", category: "Premium" },
 ];
 
-const categories: { key: Category; label: string; color: string }[] = [
-  { key: "All", label: "All", color: "bg-indigo-500" },
-  { key: "Edit", label: "Edit", color: "bg-blue-500" },
-  { key: "Convert", label: "Convert", color: "bg-amber-500" },
-  { key: "Security", label: "Security", color: "bg-violet-500" },
-  { key: "Organize", label: "Organize", color: "bg-fuchsia-500" },
-  { key: "Extract", label: "Extract", color: "bg-teal-500" },
-  { key: "Premium", label: "Premium ⭐", color: "bg-gradient-to-r from-amber-500 to-orange-600" },
+const categories: { key: Category; label: string; icon: string }[] = [
+  { key: "All", label: "All Tools (40+)", icon: "✨" },
+  { key: "Popular", label: "Most Popular", icon: "🔥" },
+  { key: "Studio & AI", label: "Studio & AI", icon: "⚡" },
+  { key: "Edit", label: "Edit & Markup", icon: "✏️" },
+  { key: "Convert", label: "Convert", icon: "🔄" },
+  { key: "Security", label: "Security & Sign", icon: "🔒" },
+  { key: "Organize", label: "Organize Pages", icon: "📑" },
+  { key: "Premium", label: "Premium ⭐", icon: "👑" },
 ];
 
 export default function ToolGrid() {
@@ -83,7 +83,11 @@ export default function ToolGrid() {
   const filtered = useMemo(() => {
     let tools = allTools;
     if (category !== "All") {
-      tools = tools.filter((t) => t.category === category);
+      if (category === "Popular") {
+        tools = tools.filter((t) => t.category === "Popular" || t.category === "Studio & AI");
+      } else {
+        tools = tools.filter((t) => t.category === category);
+      }
     }
     if (!query.trim()) return tools;
     const q = query.toLowerCase();
@@ -95,60 +99,69 @@ export default function ToolGrid() {
     );
   }, [query, category]);
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter" && filtered.length > 0) {
-      window.location.href = filtered[0].href;
-    }
-  };
-
   return (
     <div>
-      <div className="relative w-full max-w-md mx-auto mb-6">
-        <input
-          type="text"
-          placeholder="Search tools..."
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          onKeyDown={handleKeyDown}
-          className="w-full px-4 py-2.5 pl-10 rounded-xl border border-[var(--card-border)] bg-[var(--card)] text-[var(--foreground)] placeholder:text-[var(--muted)] text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-        />
-        <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--muted)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-        </svg>
-        {query && (
-          <button
-            onClick={() => setQuery("")}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--muted)] hover:text-[var(--foreground)]"
-          >
-            &#10005;
-          </button>
-        )}
-      </div>
-
-      <div className="flex flex-wrap justify-center gap-2 mb-8">
+      {/* Category Pills Bar */}
+      <div className="flex flex-wrap items-center justify-center gap-2 mb-8">
         {categories.map((c) => (
           <button
             key={c.key}
             onClick={() => setCategory(c.key)}
-            className={`px-3.5 py-1.5 rounded-full text-xs font-medium transition ${
+            className={`px-4 py-2 rounded-2xl text-xs font-bold transition-all flex items-center gap-1.5 ${
               category === c.key
-                ? `${c.color} text-white`
-                : "bg-[var(--card)] text-[var(--muted)] border border-[var(--card-border)] hover:border-[var(--foreground)]"
+                ? c.key === "Premium"
+                  ? "bg-gradient-to-r from-amber-500 to-orange-600 text-white shadow-lg shadow-amber-500/25 scale-105"
+                  : "bg-indigo-600 text-white shadow-lg shadow-indigo-600/25 scale-105"
+                : "bg-[var(--card)] text-[var(--muted)] border border-[var(--card-border)] hover:border-indigo-500/50 hover:text-[var(--foreground)]"
             }`}
           >
-            {c.label}
+            <span>{c.icon}</span>
+            <span>{c.label}</span>
           </button>
         ))}
       </div>
 
+      {/* Flagship Studio Teaser Card (shown when category is All or Studio) */}
+      {(category === "All" || category === "Studio & AI") && !query && (
+        <div className="mb-8 p-6 sm:p-8 rounded-3xl bg-gradient-to-br from-indigo-950/60 via-purple-950/40 to-slate-900 border-2 border-indigo-500/40 shadow-2xl relative overflow-hidden group">
+          <div className="absolute top-0 right-0 -mr-20 -mt-20 w-80 h-80 bg-gradient-to-br from-indigo-500/20 via-purple-500/20 to-pink-500/20 rounded-full blur-3xl pointer-events-none group-hover:scale-125 transition-transform duration-700" />
+          
+          <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+            <div className="max-w-2xl">
+              <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-indigo-500/20 border border-indigo-500/40 text-indigo-300 text-xs font-extrabold mb-3">
+                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                NEW FLAGSHIP FEATURE
+              </div>
+              <h3 className="text-2xl sm:text-3xl font-extrabold text-white mb-2">
+                PDF Studio: One-Stop Multi-Operation Pipeline
+              </h3>
+              <p className="text-sm text-indigo-200/80 leading-relaxed">
+                Why upload 5 times to do 5 things? Delete pages, rotate orientation, add your digital signature, stamp watermarks, and compress all in one unified interactive workspace.
+              </p>
+            </div>
+
+            <Link
+              href="/studio"
+              className="px-8 py-4 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white font-extrabold text-sm rounded-2xl hover:opacity-95 transition-all shadow-xl shadow-indigo-500/30 flex items-center gap-2 shrink-0 group-hover:scale-105"
+            >
+              <span>⚡ Launch PDF Studio</span>
+              <span className="group-hover:translate-x-1 transition-transform">→</span>
+            </Link>
+          </div>
+        </div>
+      )}
+
+      {/* Tool Cards Grid */}
       {filtered.length === 0 ? (
-        <div className="text-center py-12 text-[var(--muted)]">
-          <p className="text-lg">No tools found</p>
+        <div className="text-center py-16 bg-[var(--card)] border border-[var(--card-border)] rounded-3xl p-8">
+          <div className="text-4xl mb-3">🔍</div>
+          <p className="text-lg font-bold text-[var(--foreground)]">No matching PDF tools found</p>
+          <p className="text-xs text-[var(--muted)] mt-1 mb-4">Try different search keywords or clear your active category filter.</p>
           <button
             onClick={() => { setQuery(""); setCategory("All"); }}
-            className="mt-2 text-sm text-indigo-500 hover:underline"
+            className="px-5 py-2.5 bg-indigo-600 text-white text-xs font-bold rounded-xl hover:bg-indigo-700 transition"
           >
-            Clear filters
+            Reset Filters
           </button>
         </div>
       ) : (

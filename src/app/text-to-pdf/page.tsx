@@ -54,7 +54,7 @@ export default function TextToPdfPage() {
 
       const words = text.split(/\s+/);
       let line = "";
-      let lines: string[] = [];
+      const lines: string[] = [];
 
       for (const word of words) {
         const testLine = line ? `${line} ${word}` : word;

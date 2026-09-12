@@ -12,6 +12,8 @@ import ProgressBar from "@/components/ProgressBar";
 import SuccessAnimation from "@/components/SuccessAnimation";
 import ErrorBanner from "@/components/ErrorBanner";
 import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
+import PipelineActionBar from "@/components/PipelineActionBar";
+import { getPipelineDocument } from "@/lib/pdfPipeline";
 
 import HowToJsonLd from "@/components/HowToJsonLd";
 import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
@@ -38,8 +40,19 @@ export default function WatermarkPage() {
   const [success, setSuccess] = useState(false);
   const [dragging, setDragging] = useState(false);
   const [showTimer, setShowTimer] = useState(false);
+  const [resultBytes, setResultBytes] = useState<Uint8Array | null>(null);
+  const [downloadUrl, setDownloadUrl] = useState<string | null>(null);
 
-  useEffect(() => { trackToolVisit("watermark"); }, []);
+  useEffect(() => {
+    trackToolVisit("watermark");
+    (async () => {
+      const pipelineDoc = await getPipelineDocument();
+      if (pipelineDoc && pipelineDoc.bytes) {
+        const f = new File([pipelineDoc.bytes as unknown as BlobPart], pipelineDoc.name, { type: "application/pdf" });
+        setFile(f);
+      }
+    })();
+  }, [trackToolVisit]);
 
   const handleFile = useCallback((f: File | null) => {
     if (!f || f.type !== "application/pdf") return;
@@ -47,7 +60,7 @@ export default function WatermarkPage() {
     if (!check.ok) { upsell.showUpsell("file-size"); return; }
     setFile(f);
     setSuccess(false);
-  }, []);
+  }, [upsell]);
 
   const runWatermark = useCallback(async () => {
     if (!file || !text.trim()) return;
@@ -79,20 +92,21 @@ export default function WatermarkPage() {
       }
 
       const pdfBytes = await pdfDoc.save({ useObjectStreams: true });
+      setResultBytes(pdfBytes);
       const blob = new Blob([pdfBytes as unknown as BlobPart], { type: "application/pdf" });
       const url = URL.createObjectURL(blob);
+      setDownloadUrl(url);
       const a = document.createElement("a");
       a.href = url;
       a.download = `watermarked-${file.name}`;
       a.click();
       trackExport(file.name, "Watermark PDF", bytes.byteLength);
-      URL.revokeObjectURL(url);
       setSuccess(true);
     } catch {
       setError("Failed to watermark PDF.");
     }
     setProcessing(false);
-  }, [file, text, opacity, position, rotation]);
+  }, [file, text, opacity, position, rotation, usage, upsell, trackExport]);
 
   const watermark = useCallback(async () => {
     if (!isPremium()) {
@@ -102,7 +116,7 @@ export default function WatermarkPage() {
       return;
     }
     runWatermark();
-    }, [usage, upsell, runWatermark])
+  }, [usage, upsell, runWatermark]);
 
   const restoreOriginal = useCallback(async () => {
     if (!originalBytes.current) return;
@@ -119,71 +133,95 @@ export default function WatermarkPage() {
     <div className="max-w-3xl mx-auto px-4 py-12">
       <SoftwareAppJsonLd
         name="Watermark PDF - Free Online Tool"
-        description="Add watermark to PDF files online for free. Add text watermarks to protect your documents."
+        description="Add text watermarks to PDF files online for free. Customize text, opacity, and position in your browser."
         url="https://allaboutpdfediting.xyz/watermark"
       />
-      <HowToJsonLd name="Add Watermark to PDF" description="Add text or image watermarks to every page of a PDF" steps={[{name:"Upload PDF",text:"Select the PDF to watermark"},{name:"Customize watermark",text:"Enter text adjust opacity size and position"},{name:"Download watermarked PDF",text:"Download the PDF with watermarks applied"}]} />
+      <HowToJsonLd name="Watermark PDF" description="Add customizable text watermarks to PDF pages" steps={[{name:"Upload PDF",text:"Select the PDF file to watermark"},{name:"Customize watermark",text:"Enter text set opacity rotation and position"},{name:"Apply and download",text:"Click Add Watermark and download your protected PDF"}]} />
       <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Watermark PDF", item: "https://allaboutpdfediting.xyz/watermark" }]} />
       <FaqPageJsonLd questions={rc?.faqs} />
-      <AiSummaryJsonLd name="Watermark PDF" summary="Add custom text watermarks to every page of PDF documents" category="Graphics" inputType="PDF" outputType="PDF" processing="client-side" price="free" features={["Text watermark","Opacity control","Position selection","Batch watermarking","Free tool"]} limits="Files up to 10MB" />
+      <AiSummaryJsonLd name="Watermark PDF" summary="Add custom text watermarks to PDF pages with full control over opacity position and rotation" category="UtilitiesApplication" inputType="PDF" outputType="PDF" processing="client-side" price="free" features={["Custom text watermark","Opacity control","Position and rotation options","Batch page watermarking","Free and private"]} limits="Files up to 10MB" />
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">Add Watermark to PDF</h1>
-        <p className="text-[var(--muted)]">Add text watermarks to every page of your PDF.</p>
+        <h1 className="text-3xl font-extrabold text-[var(--foreground)] mb-2">Watermark PDF</h1>
+        <p className="text-[var(--muted)]">Add custom text watermarks to your PDF pages.</p>
       </div>
 
       <ToolInfo
-        name="PDF Watermark"
-        description="Your file stays private. Watermarking happens locally in your browser — no uploads, no servers. Add text such as 'CONFIDENTIAL' or 'DRAFT' across your document pages."
+        name="Watermark PDF"
+        description="Add a customizable watermark (like 'CONFIDENTIAL' or 'DRAFT') across all pages of your PDF. Runs entirely in your browser — your files never leave your device."
       />
 
       <div className="mb-4">
         <UsageBar remaining={usage.remaining} unlimited={usage.unlimited} />
       </div>
 
-      <div className="bg-[var(--card)] rounded-xl border border-[var(--card-border)] p-8">
+      <div className="bg-[var(--card)] rounded-2xl border border-[var(--card-border)] p-6 sm:p-8 shadow-xl">
         <div
           onDrop={(e) => { e.preventDefault(); setDragging(false); handleFile(e.dataTransfer.files[0]); }}
           onDragOver={(e) => { e.preventDefault(); setDragging(true); }}
           onDragLeave={() => setDragging(false)}
-          className={`border-2 border-dashed rounded-xl p-10 text-center transition ${
-            dragging ? "border-indigo-500 bg-indigo-50 dark:bg-indigo-950/30" : "border-[var(--card-border)] bg-[var(--background)]"
+          className={`border-2 border-dashed rounded-2xl p-8 text-center transition-all ${
+            dragging ? "border-indigo-500 bg-indigo-500/10" : "border-[var(--card-border)] bg-[var(--background)]"
           }`}
         >
           <input type="file" accept="application/pdf" onChange={(e) => handleFile(e.target.files?.[0] ?? null)} className="hidden" id="fileInput" />
-          <label htmlFor="fileInput" className="cursor-pointer flex flex-col items-center gap-3">
-            <span className="text-5xl">💧</span>
-            <span className="text-indigo-500 font-medium hover:underline">
-              {file ? file.name : "Click to select or drag & drop a PDF"}
+          <label htmlFor="fileInput" className="cursor-pointer flex flex-col items-center gap-2">
+            <span className="text-4xl">💧</span>
+            <span className="text-indigo-500 font-bold text-sm hover:underline">
+              {file ? file.name : "Click to select a PDF"}
             </span>
-            {file && <span className="text-sm text-[var(--muted)]">{(file.size / 1024).toFixed(1)} KB</span>}
-            {!file && <span className="text-xs text-[var(--muted)]">Any PDF up to 10MB</span>}
+            <span className="text-xs text-[var(--muted)]">Supports PDF documents up to 10MB</span>
           </label>
         </div>
 
         <ProgressBar processing={processing} fileSize={file?.size} label="Adding watermark..." />
 
         {file && (
-          <div className="mt-6 space-y-5">
+          <div className="mt-6 space-y-4">
             <div>
-              <label className="block text-sm font-medium text-[var(--foreground)] mb-2">Watermark Text</label>
+              <label className="block text-sm font-semibold text-[var(--foreground)] mb-1">Watermark Text</label>
               <input
                 type="text"
                 value={text}
                 onChange={(e) => setText(e.target.value)}
-                className="w-full px-4 py-2.5 rounded-xl border border-[var(--card-border)] bg-[var(--background)] text-[var(--foreground)] text-sm outline-none focus:border-indigo-500 transition"
+                placeholder="e.g. CONFIDENTIAL"
+                className="w-full px-4 py-2.5 bg-[var(--background)] border border-[var(--card-border)] rounded-xl text-[var(--foreground)] focus:ring-2 focus:ring-indigo-500 outline-none"
               />
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
               <div>
-                <label className="block text-sm font-medium text-[var(--foreground)] mb-2">Opacity: {opacity}%</label>
-                <input type="range" min={5} max={80} value={opacity} onChange={(e) => setOpacity(Number(e.target.value))} className="w-full accent-indigo-600" />
+                <label className="block text-xs font-semibold text-[var(--foreground)] mb-1">Opacity: {opacity}%</label>
+                <input
+                  type="range"
+                  min="5"
+                  max="100"
+                  value={opacity}
+                  onChange={(e) => setOpacity(Number(e.target.value))}
+                  className="w-full accent-indigo-500"
+                />
               </div>
+
               <div>
-                <label className="block text-sm font-medium text-[var(--foreground)] mb-2">Position</label>
-                <select value={position} onChange={(e) => setPosition(e.target.value as any)} className="w-full px-3 py-2 rounded-xl border border-[var(--card-border)] bg-[var(--background)] text-[var(--foreground)] text-sm outline-none focus:border-indigo-500 transition">
-                  <option value="center">Center</option>
+                <label className="block text-xs font-semibold text-[var(--foreground)] mb-1">Rotation: {rotation}°</label>
+                <input
+                  type="range"
+                  min="0"
+                  max="90"
+                  value={rotation}
+                  onChange={(e) => setRotation(Number(e.target.value))}
+                  className="w-full accent-indigo-500"
+                />
+              </div>
+
+              <div className="col-span-2 sm:col-span-1">
+                <label className="block text-xs font-semibold text-[var(--foreground)] mb-1">Position</label>
+                <select
+                  value={position}
+                  onChange={(e) => setPosition(e.target.value as "center" | "diagonal" | "bottom")}
+                  className="w-full px-3 py-2 bg-[var(--background)] border border-[var(--card-border)] rounded-xl text-xs text-[var(--foreground)] focus:ring-2 focus:ring-indigo-500 outline-none"
+                >
                   <option value="diagonal">Diagonal</option>
+                  <option value="center">Center</option>
                   <option value="bottom">Bottom</option>
                 </select>
               </div>
@@ -198,19 +236,14 @@ export default function WatermarkPage() {
             <button
               onClick={watermark}
               disabled={!text.trim() || processing || showTimer}
-              className="mt-6 w-full py-3 bg-indigo-600 text-white font-medium rounded-xl hover:bg-indigo-700 disabled:opacity-40 disabled:cursor-not-allowed transition shadow-sm"
+              className="mt-6 w-full py-4 bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-bold rounded-2xl hover:opacity-95 disabled:opacity-40 disabled:cursor-not-allowed transition shadow-lg shadow-indigo-500/20 active:scale-[0.99]"
             >
-              {processing ? (
-                <span className="flex items-center justify-center gap-2">
-                  <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none"/><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
-                  Adding watermark...
-                </span>
-              ) : "Add Watermark"}
+              {processing ? "Adding watermark..." : "💧 Apply Watermark & Save"}
             </button>
 
             {!isPremium() && (
               <p className="mt-3 text-center text-xs text-[var(--muted)]">
-                Free users limited to 10MB &amp; 5s wait.{ " " }
+                Free users limited to 10MB files.{" "}
                 <a href="/premium" className="text-indigo-500 font-medium hover:underline">Upgrade for no limits</a>
               </p>
             )}
@@ -219,16 +252,23 @@ export default function WatermarkPage() {
 
         {error && <ErrorBanner message={error} onRetry={runWatermark} onDismiss={() => setError(null)} />}
 
-        <SuccessAnimation show={success} message="Watermark added!" onRestore={restoreOriginal} />
-      </div>
+        <SuccessAnimation show={success} message="Watermark added successfully!" onRestore={restoreOriginal} />
 
+        {success && (
+          <PipelineActionBar
+            pdfBytes={resultBytes}
+            filename={`watermarked-${file?.name || "document.pdf"}`}
+            downloadUrl={downloadUrl}
+            currentToolName="Watermark PDF"
+          />
+        )}
+      </div>
 
       <div className="max-w-3xl mx-auto mt-12 pt-8 border-t border-[var(--card-border)]">
         <h2 className="text-xl font-bold text-[var(--foreground)] mb-3">About Watermark PDF</h2>
         <div className="text-sm text-[var(--muted)] space-y-3 leading-relaxed">
           <p>Add text watermarks to PDF documents online for free. Protect your work by marking pages with text like "CONFIDENTIAL", "DRAFT", "DO NOT COPY", or your company name. Customize opacity, position, and rotation to suit your needs.</p>
           <p>All processing happens in your browser using pdf-lib — no uploads, no servers, complete privacy. Use it for internal documents, legal files, or any PDF you want to mark before sharing.</p>
-          <p>Keywords: add watermark to PDF online free, PDF watermark tool, mark PDF as confidential, draft watermark PDF free online.</p>
         </div>
       </div>
       <RelatedContent slug="watermark" />

@@ -21,6 +21,7 @@ import { getRelatedContent } from "@/lib/related-content";
 import UseCaseLinks from "@/components/UseCaseLinks";
 
 const rc = getRelatedContent("redact");
+const RENDER_SCALE = 1.5;
 
 interface Rect {
   id: string;
@@ -206,8 +207,6 @@ export default function RedactPage() {
       }
     };
   }, [pageImages, currentPage, rects]);
-
-  const RENDER_SCALE = 1.5;
 
   const runRedact = useCallback(async () => {
     if (!file || !pdfDoc || saving) return;

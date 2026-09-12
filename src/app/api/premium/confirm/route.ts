@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@vercel/kv";
-import { setPremiumStatus } from "@/lib/kv";
-import { setPremiumByEmail } from "@/lib/kv";
+import { setPremiumStatus, setPremiumByEmail } from "@/lib/kv";
 
 const kv = createClient({
   url: process.env.pdf_tools_KV_REST_API_URL || process.env.KV_REST_API_URL || "",
@@ -27,20 +26,26 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ ok: false, error: "Nonce mismatch" }, { status: 400 });
           }
           await kv.set(`pdftools:checkout:${nonce}`, JSON.stringify({ ...data, used: true }), { ex: 7200 });
+          await setPremiumStatus(clientId, true);
+          if (email) {
+            await setPremiumByEmail(email, clientId);
+          }
+          return NextResponse.json({ ok: true, premium: true });
         }
       } catch {
-        // KV unavailable — proceed anyway
+        // KV error during checkout validation
       }
     }
 
-    await setPremiumStatus(clientId, true);
-
     if (email) {
-      await setPremiumByEmail(email, clientId);
+      const isEmailPremium = await setPremiumByEmail(email, clientId);
+      if (isEmailPremium) {
+        return NextResponse.json({ ok: true, premium: true });
+      }
     }
 
-    return NextResponse.json({ ok: true, premium: true });
+    return NextResponse.json({ ok: false, error: "Invalid checkout session or email" }, { status: 400 });
   } catch {
-    return NextResponse.json({ ok: false }, { status: 500 });
+    return NextResponse.json({ ok: false, error: "Confirmation failed" }, { status: 500 });
   }
 }
