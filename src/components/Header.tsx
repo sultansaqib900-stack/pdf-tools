@@ -46,8 +46,8 @@ export default function Header() {
     { href: "/studio", label: "⚡ PDF Studio", highlight: true },
     { href: "/recipes", label: "⚡ Recipes" },
     { href: "/pii-guardian", label: "🛡️ PII Guardian" },
+    { href: "/vs/adobe-acrobat", label: "⚔️ vs Adobe" },
     { href: "/compress", label: "Compress" },
-    { href: "/merge", label: "Merge" },
   ];
 
   const toolCategories = [

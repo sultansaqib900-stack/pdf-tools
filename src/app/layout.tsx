@@ -23,6 +23,7 @@ import HreflangTags from "@/components/HreflangTags";
 import { Analytics } from "@vercel/analytics/react";
 import Script from "next/script";
 import { AuthProvider } from "@/components/AuthProvider";
+import PrivacyHUD from "@/components/PrivacyHUD";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://allaboutpdfediting.xyz"),
@@ -133,6 +134,7 @@ gtag('config', 'G-0YRS54VR4X');`}
         <EmbedModeDetector><InstallPrompt /></EmbedModeDetector>
         <EmbedModeDetector><CookieConsent /></EmbedModeDetector>
         <EmbedModeDetector><FeedbackWidget /></EmbedModeDetector>
+        <EmbedModeDetector><PrivacyHUD /></EmbedModeDetector>
         <EmbedModeDetector><Analytics /></EmbedModeDetector>
         </AuthProvider>
       </body>

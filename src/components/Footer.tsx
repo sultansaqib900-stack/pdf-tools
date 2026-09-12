@@ -68,8 +68,9 @@ export default function Footer() {
               <Link href="/pdf-tools-for-business" className="block hover:text-[var(--foreground)] hover:translate-x-0.5 transition-all">For Business</Link>
               <Link href="/blog" className="block hover:text-[var(--foreground)] hover:translate-x-0.5 transition-all">All 45+ Blog Guides</Link>
               <Link href="/ultimate-guide-to-pdf-editing" className="block hover:text-[var(--foreground)] hover:translate-x-0.5 transition-all">Ultimate PDF Guide</Link>
-              <Link href="/adobe-acrobat-alternative" className="block hover:text-[var(--foreground)] hover:translate-x-0.5 transition-all">Acrobat Alternative</Link>
-              <Link href="/ilovepdf-alternative" className="block hover:text-[var(--foreground)] hover:translate-x-0.5 transition-all">iLovePDF Alternative</Link>
+              <Link href="/vs/adobe-acrobat" className="block hover:text-[var(--foreground)] hover:translate-x-0.5 transition-all">⚔️ vs Adobe Acrobat Pro</Link>
+              <Link href="/vs/ilovepdf" className="block hover:text-[var(--foreground)] hover:translate-x-0.5 transition-all">⚔️ vs iLovePDF</Link>
+              <Link href="/vs/smallpdf" className="block hover:text-[var(--foreground)] hover:translate-x-0.5 transition-all">⚔️ vs SmallPDF</Link>
               <Link href="/es" className="block hover:text-[var(--foreground)] hover:translate-x-0.5 transition-all">🇪🇸 Español (Inicio)</Link>
               <Link href="/es/tools" className="block hover:text-[var(--foreground)] hover:translate-x-0.5 transition-all">🇪🇸 Herramientas PDF</Link>
             </div>
