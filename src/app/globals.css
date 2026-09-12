@@ -3,53 +3,87 @@
 
 :root,
 [data-theme="midnight"] {
-  --background: #0b1120;
-  --foreground: #f1f5f9;
-  --card: #171f2e;
-  --card-border: #2a3448;
-  --muted: #8899b4;
+  --background: #060913;
+  --foreground: #f8fafc;
+  --card: #0d1527;
+  --card-border: #1e293b;
+  --card-hover-border: #384561;
+  --muted: #94a3b8;
   --accent: #6366f1;
   --accent-hover: #818cf8;
   --gradient-from: #1e1b4b;
   --gradient-via: #312e81;
-  --gradient-to: #3730a3;
+  --gradient-to: #4338ca;
+  --glow-color: rgba(99, 102, 241, 0.25);
 }
 
 [data-theme="amber"] {
-  --background: #17120e;
+  --background: #0d0a07;
   --foreground: #fef3c7;
-  --card: #261f16;
-  --card-border: #3d3528;
-  --muted: #c9944a;
+  --card: #1c150e;
+  --card-border: #382c1e;
+  --card-hover-border: #57442d;
+  --muted: #d4a373;
   --accent: #f59e0b;
   --accent-hover: #fbbf24;
   --gradient-from: #451a03;
   --gradient-via: #78350f;
-  --gradient-to: #92400e;
+  --gradient-to: #b45309;
+  --glow-color: rgba(245, 158, 11, 0.25);
 }
 
 [data-theme="ocean"] {
-  --background: #080f14;
+  --background: #040d12;
   --foreground: #ccfbf1;
-  --card: #0f1f28;
-  --card-border: #1a2f3a;
+  --card: #091c24;
+  --card-border: #143542;
+  --card-hover-border: #1f4f61;
   --muted: #5eead4;
   --accent: #06b6d4;
   --accent-hover: #22d3ee;
   --gradient-from: #042f2e;
   --gradient-via: #0f766e;
   --gradient-to: #0e7490;
+  --glow-color: rgba(6, 182, 212, 0.25);
 }
 
 body {
-  background: var(--background);
+  background-color: var(--background);
+  background-image: 
+    radial-gradient(circle at 50% 0%, rgba(99, 102, 241, 0.12) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(168, 85, 247, 0.08) 0%, transparent 40%),
+    radial-gradient(circle at 10% 40%, rgba(6, 182, 212, 0.06) 0%, transparent 35%);
+  background-attachment: fixed;
   color: var(--foreground);
-  font-family: "Inter", Arial, Helvetica, sans-serif;
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   transition: background-color 0.3s, color 0.3s;
+  min-height: 100vh;
 }
 
-/* ── Existing keyframes (unchanged) ── */
+/* ── Modern Glassmorphism & SaaS Elevation ── */
+.glass-panel {
+  background: rgba(13, 21, 39, 0.75);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
 
+.glass-card {
+  background: rgba(13, 21, 39, 0.65);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.glass-card:hover {
+  border-color: rgba(99, 102, 241, 0.5);
+  transform: translateY(-4px);
+  box-shadow: 0 16px 36px -10px rgba(99, 102, 241, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+
+/* ── Keyframes ── */
 @keyframes successBounce {
   0% { transform: scale(0.9); opacity: 0; }
   50% { transform: scale(1.02); }
@@ -74,25 +108,16 @@ body {
   to { opacity: 1; transform: translateY(0); }
 }
 @keyframes slideUp {
-  from { opacity: 0; transform: translateY(8px); }
+  from { opacity: 0; transform: translateY(12px); }
   to { opacity: 1; transform: translateY(0); }
 }
 @keyframes pulseGlow {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(79,70,229,0.3); }
-  50% { box-shadow: 0 0 0 6px rgba(79,70,229,0); }
+  0%, 100% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.4); }
+  50% { box-shadow: 0 0 0 10px rgba(99, 102, 241, 0); }
 }
-
-/* ── New interactive / eye-catching keyframes ── */
-
 @keyframes float {
   0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-10px); }
-}
-@keyframes floatSlow {
-  0%, 100% { transform: translateY(0px) rotate(0deg); }
-  33% { transform: translateY(-6px) rotate(1deg); }
-  66% { transform: translateY(4px) rotate(-1deg); }
-  100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-8px); }
 }
 @keyframes shimmer {
   0% { background-position: -200% 0; }
@@ -104,142 +129,53 @@ body {
   100% { background-position: 0% 50%; }
 }
 @keyframes scaleIn {
-  from { opacity: 0; transform: scale(0.85); }
+  from { opacity: 0; transform: scale(0.92); }
   to { opacity: 1; transform: scale(1); }
 }
-@keyframes slideInRight {
-  from { opacity: 0; transform: translateX(20px); }
-  to { opacity: 1; transform: translateX(0); }
-}
-@keyframes slideInLeft {
-  from { opacity: 0; transform: translateX(-20px); }
-  to { opacity: 1; transform: translateX(0); }
-}
-@keyframes wiggle {
-  0%, 100% { transform: rotate(0deg); }
-  25% { transform: rotate(-5deg); }
-  75% { transform: rotate(5deg); }
-}
-@keyframes breathe {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.03); }
-}
-@keyframes borderGlow {
-  0%, 100% { border-color: var(--card-border); box-shadow: 0 0 0 0 rgba(79,70,229,0); }
-  50% { border-color: rgba(79,70,229,0.3); box-shadow: 0 0 12px 2px rgba(79,70,229,0.1); }
-}
-@keyframes spinner {
-  to { transform: rotate(360deg); }
-}
-@keyframes ripple {
-  to { transform: scale(4); opacity: 0; }
-}
-@keyframes cardLift {
-  0% { transform: translateY(0) scale(1); }
-  100% { transform: translateY(-6px) scale(1.02); }
-}
-@keyframes glowPulse {
-  0%, 100% { box-shadow: 0 0 8px rgba(79,70,229,0.2); }
-  50% { box-shadow: 0 0 20px rgba(79,70,229,0.4); }
-}
-@keyframes progressFill {
-  from { width: 0%; }
-}
 
-/* ── Utility classes ── */
+/* ── Utility Classes ── */
 .animate-successBounce { animation: successBounce 0.4s ease-out; }
 .animate-successScale { animation: successScale 0.5s ease-out; }
 .animate-successSparkle { animation: successSparkle 0.8s ease-out; }
 .animate-drawCheck { stroke-dasharray: 30; animation: drawCheck 0.4s ease-out 0.1s forwards; }
 .animate-fadeIn { animation: fadeIn 0.3s ease-out; }
-.animate-slideUp { animation: slideUp 0.3s ease-out; }
-.animate-pulseGlow { animation: pulseGlow 1.5s ease-in-out infinite; }
-.animate-float { animation: float 3s ease-in-out infinite; }
-.animate-floatSlow { animation: floatSlow 6s ease-in-out infinite; }
-.animate-shimmer { background-size: 200% 100%; animation: shimmer 2s linear infinite; }
-.animate-gradientShift { background-size: 200% 200%; animation: gradientShift 4s ease infinite; }
-.animate-scaleIn { animation: scaleIn 0.4s ease-out; }
-.animate-slideInRight { animation: slideInRight 0.4s ease-out; }
-.animate-slideInLeft { animation: slideInLeft 0.4s ease-out; }
-.animate-wiggle { animation: wiggle 0.4s ease-in-out; }
-.animate-breathe { animation: breathe 3s ease-in-out infinite; }
-.animate-borderGlow { animation: borderGlow 2s ease-in-out infinite; }
-.animate-spin { animation: spinner 1s linear infinite; }
-.animate-cardLift { animation: cardLift 0.3s ease-out forwards; }
-.animate-glowPulse { animation: glowPulse 2s ease-in-out infinite; }
-.animate-progressFill { animation: progressFill 1s ease-out forwards; }
-.animate-delay-100 { animation-delay: 100ms; }
-.animate-delay-200 { animation-delay: 200ms; }
-.animate-delay-300 { animation-delay: 300ms; }
-.animate-delay-400 { animation-delay: 400ms; }
-.animate-delay-500 { animation-delay: 500ms; }
-.animate-delay-600 { animation-delay: 600ms; }
+.animate-slideUp { animation: slideUp 0.4s ease-out; }
+.animate-pulseGlow { animation: pulseGlow 2s ease-in-out infinite; }
+.animate-float { animation: float 4s ease-in-out infinite; }
+.animate-shimmer { background-size: 200% 100%; animation: shimmer 2.5s linear infinite; }
+.animate-gradientShift { background-size: 200% 200%; animation: gradientShift 6s ease infinite; }
+.animate-scaleIn { animation: scaleIn 0.35s cubic-bezier(0.16, 1, 0.3, 1); }
 
-/* ── Scroll-triggered reveal helper (used via class, JS can add on intersection) ── */
-.reveal {
-  opacity: 0;
-  transform: translateY(16px);
-  transition: opacity 0.5s ease-out, transform 0.5s ease-out;
-}
-.reveal.visible {
-  opacity: 1;
-  transform: translateY(0);
+/* Text Gradients */
+.text-gradient-indigo {
+  background: linear-gradient(135deg, #ffffff 0%, #cbd5e1 40%, #818cf8 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
-/* ── Interactive state styles ── */
+.text-gradient-emerald {
+  background: linear-gradient(135deg, #ffffff 0%, #a7f3d0 40%, #34d399 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.text-gradient-purple {
+  background: linear-gradient(135deg, #ffffff 0%, #e9d5ff 40%, #c084fc 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Interactive States */
 * {
   -webkit-tap-highlight-color: transparent;
 }
 
-button:active:not(:disabled) {
-  transform: scale(0.97);
-}
-
+button:active:not(:disabled),
 a:active:not(.sr-only) {
-  transform: scale(0.97);
-}
-
-/* Card with hover lift */
-.card-hover {
-  transition: transform 0.2s ease-out, box-shadow 0.2s ease-out, border-color 0.2s ease-out;
-}
-.card-hover:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 8px 30px rgba(0,0,0,0.08);
-}
-.dark .card-hover:hover,
-[data-theme] .card-hover:hover {
-  box-shadow: 0 8px 30px rgba(0,0,0,0.3);
-}
-
-/* Gradient border trick */
-.gradient-border {
-  position: relative;
-  border-radius: 12px;
-}
-.gradient-border::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  padding: 1px;
-  background: linear-gradient(135deg, var(--accent), #a855f7, var(--accent));
-  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-  opacity: 0;
-  transition: opacity 0.3s;
-}
-.gradient-border:hover::before {
-  opacity: 1;
-}
-
-/* Text gradient */
-.text-gradient {
-  background: linear-gradient(135deg, var(--foreground) 0%, var(--accent) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  transform: scale(0.98);
 }
 
 html { scroll-behavior: smooth; }
@@ -250,8 +186,6 @@ html { scroll-behavior: smooth; }
 
 @media (max-width: 640px) {
   input, select, textarea, button, a { font-size: 16px !important; }
-  .touch-target { min-height: 44px; min-width: 44px; }
-  .mobile-bottom-pad { padding-bottom: env(safe-area-inset-bottom, 16px); }
 }
 
 *:focus-visible { outline: 2px solid #6366f1; outline-offset: 2px; border-radius: 8px; }
