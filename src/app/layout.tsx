@@ -24,7 +24,10 @@ import PrivacyHUD from "@/components/PrivacyHUD";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://allaboutpdfediting.xyz"),
-  title: "PDFTools - 52 Online PDF Tools",
+  title: {
+    default: "PDFTools — Free Online PDF Tools",
+    template: "%s | PDFTools",
+  },
   description:
     "39 core PDF tools with free access plus 13 professional tools for AI, automation, secure redaction, legal, and bulk workflows. Most file processing happens locally in your browser.",
   keywords: ["PDF tools", "compress PDF", "merge PDF", "split PDF", "free online PDF editor", "PDF converter", "sign PDF", "protect PDF", "PDF compressor", "merge PDF files", "split PDF pages", "PDF creator", "edit PDF", "PDF merger", "PDF splitter", "PDF comparison", "PDF audio", "PDF certificates", "PDF booklet", "PDF redact", "PDF metadata"],
