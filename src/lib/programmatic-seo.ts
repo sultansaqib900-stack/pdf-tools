@@ -7,6 +7,7 @@ export interface SeoPage {
   toolName: string;
   audience: string;
   painPoint: string;
+  painPoints: string[];
   benefit: string;
   faqs: { question: string; answer: string }[];
 }
@@ -245,7 +246,9 @@ export function getAllSeoPages(): SeoPage[] {
       const slug = generateSlug(tool.slug, uc.audience);
       const toolName = tool.name;
       const audienceLabel = uc.label.replace("for ", "");
-      const painPoint = uc.painPoints[Math.floor(Math.random() * uc.painPoints.length)];
+      // Keep output deterministic between builds. Random copy creates unstable HTML and
+      // makes search engines see unnecessary content changes on every deployment.
+      const painPoint = uc.painPoints[tool.slug.length % uc.painPoints.length];
       const faqs = getFaqs(tool.slug);
       const siteName = "PDFTools";
 
@@ -258,6 +261,7 @@ export function getAllSeoPages(): SeoPage[] {
         toolName: toolName,
         audience: uc.label,
         painPoint,
+        painPoints: uc.painPoints,
         benefit: uc.benefit,
         faqs: faqs.slice(0, 3),
       });
