@@ -1,17 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { kv } from "@/lib/kv";
+import { requestNetworkHash } from "@/lib/requestIdentity";
 
 interface RateLimitOptions {
   limit: number;
   window: number; // seconds
   identifier?: string; // endpoint namespace
   failClosed?: boolean;
-}
-
-function requestIp(req: NextRequest): string {
-  return req.headers.get("x-forwarded-for")?.split(",")[0]?.trim()
-    || req.headers.get("x-real-ip")?.trim()
-    || "anonymous";
 }
 
 const INCREMENT_WITH_TTL_SCRIPT = `
@@ -27,7 +22,7 @@ export async function rateLimit(
   options: RateLimitOptions,
 ): Promise<{ success: boolean; limit: number; remaining: number; reset: number }> {
   const { limit, window, identifier = "general", failClosed = false } = options;
-  const key = `pdftools:rate-limit:${identifier}:${requestIp(req)}`;
+  const key = `pdftools:rate-limit:${identifier}:${requestNetworkHash(req)}`;
   const fallbackReset = Date.now() + window * 1000;
 
   try {

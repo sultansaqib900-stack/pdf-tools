@@ -62,10 +62,14 @@ export async function POST(req: Request) {
     }
     const clientId = typeof customData.client_id === "string" ? customData.client_id : undefined;
     const nonce = typeof customData.checkout_nonce === "string" ? customData.checkout_nonce : undefined;
-    const orderId = String(attributes.identifier || event.data?.id || "");
+    const dataId = String(event.data?.id || "");
+    const orderId = String(
+      attributes.order_id
+      || (eventName.startsWith("order_") ? dataId || attributes.identifier || "" : ""),
+    );
     const subscriptionId = String(
       attributes.subscription_id
-      || (eventName.startsWith("subscription_") ? event.data?.id || "" : ""),
+      || (eventName.startsWith("subscription_") ? dataId : ""),
     );
     const subscriptionBinding = subscriptionId
       ? await getPremiumSubscriptionBinding(subscriptionId)

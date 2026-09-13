@@ -23,14 +23,22 @@ export const keys = {
   dailyGlobal: (date: string) => `${KV_PREFIX}stats:daily:${date}`,
 };
 
-interface PremiumEntitlement {
+interface PremiumGrant {
   active: boolean;
-  source: "lemon-squeezy";
   expiresAt?: string;
-  eventTimestamp?: string;
+  eventTimestamp: string;
   orderId?: string;
   subscriptionId?: string;
   variantId?: string;
+}
+
+interface PremiumEntitlement {
+  source: "lemon-squeezy";
+  grants: Record<string, PremiumGrant>;
+}
+
+interface LegacyPremiumEntitlement extends Partial<PremiumGrant> {
+  source?: string;
 }
 
 export interface PremiumSubscriptionBinding {
@@ -56,16 +64,108 @@ export async function setPremiumSubscriptionBinding(
   await kv.set(keys.premiumBySubscription(subscriptionId), binding);
 }
 
-function entitlementIsActive(value: unknown): boolean {
-  if (!value || typeof value !== "object") return false;
-  const entitlement = value as Partial<PremiumEntitlement>;
-  // Old boolean records could be created by the former self-issued-nonce and
-  // arbitrary-email flows, so they are not payment proof. Only structured
-  // records written from a verified Lemon Squeezy webhook are authoritative.
-  if (entitlement.active !== true || entitlement.source !== "lemon-squeezy") return false;
-  if (!entitlement.expiresAt) return true;
-  const expiresAt = Date.parse(entitlement.expiresAt);
+const ENTITLEMENT_RETENTION_SECONDS = 2 * 370 * 24 * 60 * 60;
+
+function grantStorageKey(details: Pick<PremiumGrant, "subscriptionId" | "orderId">): string {
+  if (details.subscriptionId) return `subscription:${details.subscriptionId}`;
+  if (details.orderId) return `order:${details.orderId}`;
+  return "unscoped";
+}
+
+function storedEventTimestamp(value: unknown): string {
+  return typeof value === "string" && Number.isFinite(Date.parse(value))
+    ? value
+    : new Date(0).toISOString();
+}
+
+function normalizeEntitlement(value: unknown): PremiumEntitlement | null {
+  if (!value || typeof value !== "object") return null;
+  const stored = value as Partial<PremiumEntitlement> & LegacyPremiumEntitlement;
+  // Boolean and non-Lemon records from the former self-issued confirmation
+  // flow are not payment proof. Only signed-webhook records are migrated.
+  if (stored.source !== "lemon-squeezy") return null;
+
+  if (stored.grants && typeof stored.grants === "object" && !Array.isArray(stored.grants)) {
+    const grants: Record<string, PremiumGrant> = {};
+    for (const [key, candidate] of Object.entries(stored.grants)) {
+      if (!candidate || typeof candidate !== "object") continue;
+      const grant = candidate as Partial<PremiumGrant>;
+      if (typeof grant.active !== "boolean") continue;
+      grants[key] = {
+        active: grant.active,
+        eventTimestamp: storedEventTimestamp(grant.eventTimestamp),
+        ...(grant.expiresAt ? { expiresAt: grant.expiresAt } : {}),
+        ...(grant.orderId ? { orderId: grant.orderId } : {}),
+        ...(grant.subscriptionId ? { subscriptionId: grant.subscriptionId } : {}),
+        ...(grant.variantId ? { variantId: grant.variantId } : {}),
+      };
+    }
+    return { source: "lemon-squeezy", grants };
+  }
+
+  // Transparently migrate structured records created by the immediately prior
+  // webhook implementation. Their Lemon source is authoritative; raw booleans
+  // and records marked as legacy remain rejected.
+  if (typeof stored.active === "boolean") {
+    const grant: PremiumGrant = {
+      active: stored.active,
+      eventTimestamp: storedEventTimestamp(stored.eventTimestamp),
+      ...(stored.expiresAt ? { expiresAt: stored.expiresAt } : {}),
+      ...(stored.orderId ? { orderId: stored.orderId } : {}),
+      ...(stored.subscriptionId ? { subscriptionId: stored.subscriptionId } : {}),
+      ...(stored.variantId ? { variantId: stored.variantId } : {}),
+    };
+    return {
+      source: "lemon-squeezy",
+      grants: { [grantStorageKey(grant)]: grant },
+    };
+  }
+
+  return null;
+}
+
+function grantIsActive(grant: PremiumGrant): boolean {
+  if (!grant.active) return false;
+  if (!grant.expiresAt) return true;
+  const expiresAt = Date.parse(grant.expiresAt);
   return Number.isFinite(expiresAt) && expiresAt > Date.now();
+}
+
+function entitlementIsActive(value: unknown): boolean {
+  const entitlement = normalizeEntitlement(value);
+  return Boolean(entitlement && Object.values(entitlement.grants).some(grantIsActive));
+}
+
+function matchingGrantKey(
+  grants: Record<string, PremiumGrant>,
+  details: Pick<PremiumGrant, "subscriptionId" | "orderId">,
+): string {
+  const exactKey = grantStorageKey(details);
+  if (grants[exactKey]) return exactKey;
+
+  for (const [key, grant] of Object.entries(grants)) {
+    if (details.subscriptionId && grant.subscriptionId === details.subscriptionId) return key;
+    if (details.orderId && grant.orderId === details.orderId) return key;
+  }
+  return exactKey;
+}
+
+function eventTime(value?: string): number {
+  const parsed = value ? Date.parse(value) : Number.NaN;
+  return Number.isFinite(parsed) ? parsed : Date.now();
+}
+
+async function writeEntitlement(key: string, entitlement: PremiumEntitlement): Promise<void> {
+  const latestExpiry = Object.values(entitlement.grants).reduce((latest, grant) => {
+    const parsed = grant.expiresAt ? Date.parse(grant.expiresAt) : Number.NaN;
+    return Number.isFinite(parsed) ? Math.max(latest, parsed) : latest;
+  }, 0);
+  const expiryRetention = latestExpiry > 0
+    ? Math.ceil((latestExpiry - Date.now()) / 1000) + 370 * 24 * 60 * 60
+    : 0;
+  await kv.set(key, entitlement, {
+    ex: Math.max(ENTITLEMENT_RETENTION_SECONDS, expiryRetention, 60),
+  });
 }
 
 export async function getPremiumStatusByEmail(email: string): Promise<boolean> {
@@ -133,18 +233,22 @@ export async function bindPremiumClient(clientId: string, email: string): Promis
   }
 }
 
+type PremiumGrantDetails = Partial<Omit<PremiumGrant, "active">>;
+
 export async function setPremiumByEmail(
   email: string,
   clientId?: string,
-  details: Omit<PremiumEntitlement, "active" | "source"> = {},
+  details: PremiumGrantDetails = {},
 ): Promise<boolean> {
   try {
     const key = keys.premiumByEmail(email);
-    const existing = await kv.get<PremiumEntitlement | boolean>(key);
-    const incomingTime = details.eventTimestamp ? Date.parse(details.eventTimestamp) : Date.now();
-    const existingTime = typeof existing === "object" && existing?.eventTimestamp
-      ? Date.parse(existing.eventTimestamp)
-      : Number.NEGATIVE_INFINITY;
+    const rawExisting = await kv.get<unknown>(key);
+    const entitlement = normalizeEntitlement(rawExisting) || {
+      source: "lemon-squeezy" as const,
+      grants: {},
+    };
+    const timestamp = details.eventTimestamp || new Date().toISOString();
+    const incomingTime = eventTime(timestamp);
 
     if (details.subscriptionId && details.variantId) {
       const bindingKey = keys.premiumBySubscription(details.subscriptionId);
@@ -160,37 +264,51 @@ export async function setPremiumByEmail(
         await kv.set(bindingKey, {
           email: normalizedEmail,
           variantId: details.variantId,
-          eventTimestamp: details.eventTimestamp || new Date().toISOString(),
+          eventTimestamp: timestamp,
         } satisfies PremiumSubscriptionBinding);
       }
     }
 
-    // Ignore delayed activation events older than a state already received.
+    const existingKey = matchingGrantKey(entitlement.grants, details);
+    const existingGrant = entitlement.grants[existingKey];
+    const existingTime = existingGrant
+      ? eventTime(existingGrant.eventTimestamp)
+      : Number.NEGATIVE_INFINITY;
+
+    // Ordering is scoped to this purchase. A late event for one subscription
+    // must not overwrite a newer, independent subscription on the same email.
     // At an equal timestamp, a revocation tombstone wins.
-    if (Number.isFinite(existingTime) && (
+    if (
       incomingTime < existingTime
-      || (incomingTime === existingTime && existing && typeof existing === "object" && !existing.active)
-    )) {
+      || (incomingTime === existingTime && existingGrant && !existingGrant.active)
+    ) {
       return true;
     }
 
-    const entitlement: PremiumEntitlement = {
+    const targetKey = details.subscriptionId
+      ? grantStorageKey({ subscriptionId: details.subscriptionId })
+      : existingKey;
+    const nextGrant: PremiumGrant = {
+      ...existingGrant,
       active: true,
-      source: "lemon-squeezy",
-      ...details,
-      eventTimestamp: details.eventTimestamp || new Date().toISOString(),
+      eventTimestamp: timestamp,
+      ...(details.expiresAt ? { expiresAt: details.expiresAt } : {}),
+      ...(details.orderId ? { orderId: details.orderId } : {}),
+      ...(details.subscriptionId ? { subscriptionId: details.subscriptionId } : {}),
+      ...(details.variantId ? { variantId: details.variantId } : {}),
     };
-    let ttlSeconds = 370 * 24 * 60 * 60;
-    if (entitlement.expiresAt) {
-      ttlSeconds = Math.max(60, Math.ceil((Date.parse(entitlement.expiresAt) - Date.now()) / 1000));
+    if (targetKey !== existingKey) delete entitlement.grants[existingKey];
+    // A subscription event carrying its order ID upgrades the provisional
+    // order grant instead of counting one purchase twice.
+    if (details.orderId) {
+      for (const [candidateKey, candidate] of Object.entries(entitlement.grants)) {
+        if (candidateKey !== targetKey && candidate.orderId === details.orderId) {
+          delete entitlement.grants[candidateKey];
+        }
+      }
     }
-    // Keep ordering history beyond access expiry so a delayed older event
-    // cannot reactivate a lapsed subscription after this record disappears.
-    const orderingTtlSeconds = Math.max(
-      2 * 370 * 24 * 60 * 60,
-      ttlSeconds + 370 * 24 * 60 * 60,
-    );
-    await kv.set(key, entitlement, { ex: orderingTtlSeconds });
+    entitlement.grants[targetKey] = nextGrant;
+    await writeEntitlement(key, entitlement);
 
     if (clientId) {
       await kv.set(keys.premiumByClientId(clientId), email.toLowerCase());
@@ -204,24 +322,45 @@ export async function setPremiumByEmail(
 export async function revokePremiumByEmail(
   email: string,
   clientId?: string,
-  details: Pick<PremiumEntitlement, "eventTimestamp" | "orderId" | "subscriptionId" | "variantId"> = {},
+  details: PremiumGrantDetails = {},
 ): Promise<void> {
   const key = keys.premiumByEmail(email);
-  const existing = await kv.get<PremiumEntitlement | boolean>(key);
-  const incomingTime = details.eventTimestamp ? Date.parse(details.eventTimestamp) : Date.now();
-  const existingTime = typeof existing === "object" && existing?.eventTimestamp
-    ? Date.parse(existing.eventTimestamp)
-    : Number.NEGATIVE_INFINITY;
-  if (Number.isFinite(existingTime) && incomingTime < existingTime) return;
-
-  const tombstone: PremiumEntitlement = {
-    active: false,
-    source: "lemon-squeezy",
-    ...details,
-    eventTimestamp: details.eventTimestamp || new Date().toISOString(),
+  const rawExisting = await kv.get<unknown>(key);
+  const entitlement = normalizeEntitlement(rawExisting) || {
+    source: "lemon-squeezy" as const,
+    grants: {},
   };
-  // Keep a terminal state long enough to reject delayed or replayed paid events.
-  await kv.set(key, tombstone, { ex: 2 * 370 * 24 * 60 * 60 });
+  const timestamp = details.eventTimestamp || new Date().toISOString();
+  const incomingTime = eventTime(timestamp);
+  const existingKey = matchingGrantKey(entitlement.grants, details);
+  const existingGrant = entitlement.grants[existingKey];
+  const existingTime = existingGrant
+    ? eventTime(existingGrant.eventTimestamp)
+    : Number.NEGATIVE_INFINITY;
+  if (incomingTime < existingTime) return;
+
+  const targetKey = details.subscriptionId
+    ? grantStorageKey({ subscriptionId: details.subscriptionId })
+    : existingKey;
+  const tombstone: PremiumGrant = {
+    ...existingGrant,
+    active: false,
+    eventTimestamp: timestamp,
+    ...(details.orderId ? { orderId: details.orderId } : {}),
+    ...(details.subscriptionId ? { subscriptionId: details.subscriptionId } : {}),
+    ...(details.variantId ? { variantId: details.variantId } : {}),
+  };
+  if (targetKey !== existingKey) delete entitlement.grants[existingKey];
+  if (details.orderId) {
+    for (const [candidateKey, candidate] of Object.entries(entitlement.grants)) {
+      if (candidateKey !== targetKey && candidate.orderId === details.orderId) {
+        delete entitlement.grants[candidateKey];
+      }
+    }
+  }
+  entitlement.grants[targetKey] = tombstone;
+  // Keep terminal purchase state long enough to reject delayed paid events.
+  await writeEntitlement(key, entitlement);
   if (clientId) await kv.set(keys.premiumByClientId(clientId), email.toLowerCase());
 }
 

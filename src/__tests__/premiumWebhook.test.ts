@@ -119,6 +119,36 @@ describe("Lemon Squeezy Premium webhook", () => {
     expect(kvMocks.bindPremiumUser).not.toHaveBeenCalled();
   });
 
+  it("correlates a subscription with the order that created its grant", async () => {
+    const payload = {
+      meta: { event_name: "subscription_created" },
+      data: {
+        id: "subscription-1",
+        attributes: {
+          order_id: "order-1",
+          user_email: "buyer@example.com",
+          variant_id: 1824885,
+          status: "active",
+          renews_at: "2026-03-01T00:00:00.000Z",
+          created_at: "2026-01-01T00:00:01.000Z",
+        },
+      },
+    };
+    const { POST } = await import("@/app/api/webhook/route");
+    const response = await POST(signedRequest(payload));
+
+    expect(response.status).toBe(200);
+    expect(kvMocks.setPremiumByEmail).toHaveBeenCalledWith(
+      "buyer@example.com",
+      undefined,
+      expect.objectContaining({
+        orderId: "order-1",
+        subscriptionId: "subscription-1",
+        variantId: "1824885",
+      }),
+    );
+  });
+
   it("uses the stored subscription mapping for renewal invoice events", async () => {
     kvMocks.getPremiumSubscriptionBinding.mockResolvedValue({
       email: "buyer@example.com",

@@ -1,4 +1,3 @@
-import { createHash } from "crypto";
 import { getAuthenticatedSession } from "@/lib/auth/request";
 import {
   bindPremiumClientForUser,
@@ -6,6 +5,7 @@ import {
   trackChatUsage,
 } from "@/lib/kv";
 import { validateString } from "@/lib/validation";
+import { requestNetworkHash } from "@/lib/requestIdentity";
 
 export interface RequestEntitlement {
   premium: boolean;
@@ -35,13 +35,6 @@ export async function resolveRequestEntitlement(
   };
 }
 
-function requestNetworkKey(request: Request): string {
-  const raw = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim()
-    || request.headers.get("x-real-ip")?.trim()
-    || "unknown";
-  return `network:${createHash("sha256").update(raw).digest("hex").slice(0, 24)}`;
-}
-
 /** Reserve free AI capacity before any billable provider request is created. */
 export async function reserveAiAllowance(
   request: Request,
@@ -58,7 +51,7 @@ export async function reserveAiAllowance(
 
   // Broader anonymous-network ceilings limit cost if client IDs are rotated.
   const networkLimit = kind === "chat" ? 12 : 4;
-  const network = await trackChatUsage(`${kind}:${requestNetworkKey(request)}`, networkLimit);
+  const network = await trackChatUsage(`${kind}:network:${requestNetworkHash(request)}`, networkLimit);
   return {
     ok: network.ok,
     premium: false,

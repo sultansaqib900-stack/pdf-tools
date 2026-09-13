@@ -1,3 +1,4 @@
+import { createHash } from "crypto";
 import { NextRequest } from "next/server";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
@@ -9,20 +10,25 @@ import { rateLimit, rateLimitResponse } from "@/lib/rate-limit";
 beforeEach(() => evalMock.mockReset());
 
 describe("rateLimit", () => {
-  it("reserves the counter and initial TTL in one namespaced Redis operation", async () => {
+  it("uses Vercel's canonical client IP, hashes it, and reserves the TTL atomically", async () => {
     evalMock.mockResolvedValue([3, 60]);
     const request = new NextRequest("https://example.com/api/test", {
-      headers: { "x-forwarded-for": "203.0.113.10" },
+      headers: {
+        "x-vercel-forwarded-for": "203.0.113.10",
+        "x-forwarded-for": "198.51.100.25",
+      },
     });
+    const networkHash = createHash("sha256").update("203.0.113.10").digest("hex").slice(0, 32);
 
     const result = await rateLimit(request, { limit: 5, window: 60, identifier: "test" });
 
     expect(result).toEqual(expect.objectContaining({ success: true, remaining: 2 }));
     expect(evalMock).toHaveBeenCalledWith(
       expect.stringContaining("INCR"),
-      ["pdftools:rate-limit:test:203.0.113.10"],
+      [`pdftools:rate-limit:test:${networkHash}`],
       ["60"],
     );
+    expect(JSON.stringify(evalMock.mock.calls)).not.toContain("198.51.100.25");
   });
 
   it("fails closed when requested and quota storage is unavailable", async () => {

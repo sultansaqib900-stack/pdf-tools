@@ -5,12 +5,14 @@ import { useState } from "react";
 export default function EmailSubscribe() {
   const [email, setEmail] = useState("");
   const [subscribed, setSubscribed] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email.trim()) return;
     setError("");
+    setSubmitting(true);
 
     try {
       const res = await fetch("/api/subscribe", {
@@ -26,11 +28,9 @@ export default function EmailSubscribe() {
         setError(data.error || "Failed to subscribe");
       }
     } catch {
-      const existing = JSON.parse(localStorage.getItem("pdftools_subscribers") || "[]");
-      existing.push({ email: email.trim(), date: new Date().toISOString() });
-      localStorage.setItem("pdftools_subscribers", JSON.stringify(existing));
-      setSubscribed(true);
-      setEmail("");
+      setError("Newsletter signup is temporarily unavailable. Please try again later.");
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -41,7 +41,7 @@ export default function EmailSubscribe() {
         Subscribe to know when we add new PDF tools. No spam, unsubscribe anytime.
       </p>
       {subscribed ? (
-        <p className="text-emerald-200 font-medium">&#10003; You&apos;re subscribed!</p>
+        <p className="text-emerald-200 font-medium">&#10003; Thanks! Check your inbox if confirmation is required.</p>
       ) : (
         <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
           <input
@@ -54,16 +54,15 @@ export default function EmailSubscribe() {
           />
           <button
             type="submit"
-            className="px-6 py-2.5 bg-white text-indigo-700 font-semibold rounded-lg text-sm hover:bg-indigo-50 transition"
+            disabled={submitting}
+            className="px-6 py-2.5 bg-white text-indigo-700 font-semibold rounded-lg text-sm hover:bg-indigo-50 disabled:opacity-60 disabled:cursor-not-allowed transition"
           >
-            Subscribe
+            {submitting ? "Subscribing…" : "Subscribe"}
           </button>
         </form>
       )}
       {error && <p className="text-xs text-red-200 mt-2">{error}</p>}
-      <p className="text-xs text-white/50 mt-3">
-        {!process.env.NEXT_PUBLIC_BUTTONDOWN ? "Subscribe via API when connected" : "Powered by Buttondown"}
-      </p>
+      <p className="text-xs text-white/50 mt-3">Newsletter delivery by Buttondown</p>
     </div>
   );
 }

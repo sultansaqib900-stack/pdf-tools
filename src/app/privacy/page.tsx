@@ -16,22 +16,22 @@ export default function PrivacyPage() {
 
         <h2 className="text-lg font-semibold text-[var(--foreground)] pt-2">2. Data Retention</h2>
         <p>
-          We do not collect, store, or retain any user files. No uploads means no data to delete.
-          No logs of file content are kept. The only data we track is anonymous usage counts (e.g.,
-          &quot;total files processed&quot;) for our live stats counter.
+          We do not collect, store, or retain user files, and no logs of file content are kept.
+          Operational records are limited to usage and abuse-prevention counters plus the optional
+          account, payment-entitlement, newsletter, and feedback data described below.
         </p>
 
         <h2 className="text-lg font-semibold text-[var(--foreground)] pt-2">3. Personal Information</h2>
         <p>
-          We do not require accounts or signups. We do not collect names, email addresses, or
-          any personally identifiable information unless you voluntarily subscribe to our email
-          newsletter (via Buttondown) — and even then, we only store your email for sending
-          tool updates.
+          Accounts are optional. If you create one, we store your email, optional display name,
+          a salted password hash (never your plaintext password), and revocable session records
+          in Upstash Redis for authentication and Premium recovery. If you voluntarily join the
+          newsletter, Buttondown stores your email for sending tool updates.
         </p>
         <p>
-          Premium subscribers&apos; email addresses are stored securely via Upstash Redis (our KV
-          database) solely for the purpose of verifying premium status. Payment data is handled
-          entirely by Lemon Squeezy — we never see or store credit card details.
+          Premium subscribers&apos; email addresses and verified subscription-entitlement records are
+          stored in Upstash Redis to restore paid access. Payment data is handled entirely by
+          Lemon Squeezy — we never see or store credit card details.
         </p>
 
         <h2 className="text-lg font-semibold text-[var(--foreground)] pt-2">4. Cookies & Tracking</h2>
@@ -45,8 +45,10 @@ export default function PrivacyPage() {
         </p>
         <p>
           A <strong>client ID</strong> (random UUID) is stored in your browser&apos;s localStorage
-          to track daily usage limits. This ID is anonymous and contains no personal information.
-          Premium status is also stored in localStorage for fast display.
+          to track daily usage limits. This ID contains no directly identifying information.
+          Premium status is also cached in localStorage for fast display. Short-lived abuse and
+          rate-limit counters use a one-way hash of the network address supplied by Vercel; the
+          raw address is not written to our application&apos;s Redis keys.
         </p>
         <p>
           No essential cookies are required for the core PDF tools to function.
@@ -54,9 +56,9 @@ export default function PrivacyPage() {
 
         <h2 className="text-lg font-semibold text-[var(--foreground)] pt-2">5. Chat with PDF &amp; AI Features</h2>
         <p>
-          Our Chat with PDF and AI OCR features send <strong>extracted text or page images</strong> to
-          Google&apos;s Gemini API for processing. The original PDF file is never transmitted — only
-          the text content (or rendered page images for OCR) that already exists in your browser.
+          Our Chat with PDF, AI OCR, and scanned-table extraction features send <strong>extracted
+          text or rendered page images</strong> to Google&apos;s Gemini API for processing. The original
+          PDF file is never transmitted; only the content needed for the AI request is sent.
         </p>
         <p>
           AI responses are generated in real-time and not stored. We track anonymous usage counts
@@ -77,7 +79,8 @@ export default function PrivacyPage() {
           <li><strong>Upstash Redis</strong> — Serverless KV store for premium verification and usage counters.</li>
           <li><strong>Lemon Squeezy</strong> — Payment processing for premium subscriptions.</li>
           <li><strong>Buttondown</strong> — Email newsletter delivery.</li>
-          <li><strong>Gemini API (Google AI)</strong> — Used for Chat with PDF and AI OCR features. Only the text you explicitly submit or extracted page images are sent to Google&apos;s API for processing. No raw PDF files are transmitted.</li>
+          <li><strong>Gemini API (Google AI)</strong> — Used for Chat with PDF, AI OCR, and scanned-table extraction. Only submitted text or rendered page images are sent; raw PDF files are not transmitted.</li>
+          <li><strong>Sentry (when enabled)</strong> — Error and performance monitoring. Session replay is disabled.</li>
         </ul>
 
         <h2 className="text-lg font-semibold text-[var(--foreground)] pt-2">8. Your Rights</h2>

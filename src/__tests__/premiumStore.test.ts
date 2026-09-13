@@ -67,6 +67,25 @@ describe("authoritative Premium store", () => {
     expect(await getPremiumStatus("structured-legacy-device")).toBe(false);
   });
 
+  it("migrates only prior structured Lemon Squeezy records", async () => {
+    storage.set(keys.premiumByEmail("verified@example.com"), {
+      active: true,
+      source: "lemon-squeezy",
+      expiresAt: future,
+      eventTimestamp: "2026-01-01T00:00:00.000Z",
+      subscriptionId: "subscription-verified",
+      variantId: "1824885",
+    });
+
+    expect(await getPremiumStatusByEmail("verified@example.com")).toBe(true);
+    await revokePremiumByEmail("verified@example.com", undefined, {
+      eventTimestamp: "2026-02-01T00:00:00.000Z",
+      subscriptionId: "subscription-verified",
+      variantId: "1824885",
+    });
+    expect(await getPremiumStatusByEmail("verified@example.com")).toBe(false);
+  });
+
   it("requires an explicit paid-checkout link before an account can restore access", async () => {
     await setPremiumByEmail("buyer@example.com", "checkout-device", {
       expiresAt: future,
@@ -86,10 +105,14 @@ describe("authoritative Premium store", () => {
     await setPremiumByEmail("buyer@example.com", "device", {
       expiresAt: future,
       eventTimestamp: "2026-01-01T00:00:00.000Z",
+      subscriptionId: "subscription-1",
+      variantId: "1824885",
     });
     await bindPremiumUser("user-1", "buyer@example.com");
     await revokePremiumByEmail("buyer@example.com", undefined, {
       eventTimestamp: "2026-02-01T00:00:00.000Z",
+      subscriptionId: "subscription-1",
+      variantId: "1824885",
     });
 
     expect(await getPremiumStatus("device")).toBe(false);
@@ -110,9 +133,67 @@ describe("authoritative Premium store", () => {
     await setPremiumByEmail("buyer@example.com", "device", {
       expiresAt: future,
       eventTimestamp: "2026-03-01T00:00:00.000Z",
+      subscriptionId: "subscription-1",
+      variantId: "1824885",
     });
     expect(await getPremiumStatus("device")).toBe(true);
     expect(await getPremiumStatusByUserId("user-1")).toBe(true);
+  });
+
+  it("keeps access while any independent verified purchase remains active", async () => {
+    await setPremiumByEmail("multi@example.com", "multi-device", {
+      expiresAt: future,
+      eventTimestamp: "2026-01-01T00:00:00.000Z",
+      orderId: "order-a",
+      subscriptionId: "subscription-a",
+      variantId: "1824885",
+    });
+    await setPremiumByEmail("multi@example.com", undefined, {
+      expiresAt: future,
+      eventTimestamp: "2026-01-02T00:00:00.000Z",
+      orderId: "order-b",
+      subscriptionId: "subscription-b",
+      variantId: "1824911",
+    });
+
+    await revokePremiumByEmail("multi@example.com", undefined, {
+      eventTimestamp: "2026-02-01T00:00:00.000Z",
+      orderId: "order-a",
+      subscriptionId: "subscription-a",
+      variantId: "1824885",
+    });
+    expect(await getPremiumStatus("multi-device")).toBe(true);
+
+    await revokePremiumByEmail("multi@example.com", undefined, {
+      eventTimestamp: "2026-02-02T00:00:00.000Z",
+      orderId: "order-b",
+      subscriptionId: "subscription-b",
+      variantId: "1824911",
+    });
+    expect(await getPremiumStatus("multi-device")).toBe(false);
+  });
+
+  it("correlates an order grant with its subscription lifecycle", async () => {
+    await setPremiumByEmail("correlated@example.com", "correlated-device", {
+      expiresAt: future,
+      eventTimestamp: "2026-01-01T00:00:00.000Z",
+      orderId: "order-1",
+      variantId: "1824885",
+    });
+    await setPremiumByEmail("correlated@example.com", undefined, {
+      expiresAt: future,
+      eventTimestamp: "2026-01-02T00:00:00.000Z",
+      orderId: "order-1",
+      subscriptionId: "subscription-1",
+      variantId: "1824885",
+    });
+    await revokePremiumByEmail("correlated@example.com", undefined, {
+      eventTimestamp: "2026-02-01T00:00:00.000Z",
+      orderId: "order-1",
+      variantId: "1824885",
+    });
+
+    expect(await getPremiumStatus("correlated-device")).toBe(false);
   });
 
   it("atomically rejects processing beyond the five-use free allowance", async () => {
