@@ -17,7 +17,7 @@ export default function VsAdobePage() {
     { feature: "1-Click PII Auto-Redaction", adobe: "Manual blackout drawing only", pdfTools: "Automated Regex & Pattern Detection", winner: "pdfTools" },
     { feature: "Macro Workflow Automation", adobe: "Complex Action Wizard", pdfTools: "1-Click PDF Recipes (The Zapier for PDFs)", winner: "pdfTools" },
     { feature: "Multi-Step Chained Workspace", adobe: "Bulky multi-window desktop app", pdfTools: "Lightweight In-Browser Studio", winner: "pdfTools" },
-    { feature: "Installation & System Load", adobe: "2.5 GB heavy desktop install", pdfTools: "Instant Web & Offline PWA (<1MB)", winner: "pdfTools" },
+    { feature: "Installation & System Load", adobe: "Large desktop installation", pdfTools: "Browser app with optional install shortcut", winner: "pdfTools" },
   ];
 
   return (

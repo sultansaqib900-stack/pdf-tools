@@ -9,7 +9,6 @@ import InstallPrompt from "@/components/InstallPrompt";
 import CookieConsent from "@/components/CookieConsent";
 import ClientIdProvider from "@/components/ClientIdProvider";
 import FeedbackWidget from "@/components/FeedbackWidget";
-import AdBlockDetector from "@/components/AdBlockDetector";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import EmbedModeDetector from "@/components/EmbedModeDetector";
 import EmbedModePoweredBy from "@/components/EmbedModePoweredBy";
@@ -68,20 +67,18 @@ export default function RootLayout({
     >
       <head>
         <meta name="color-scheme" content="light dark" />
-        <meta httpEquiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://pagead2.googlesyndication.com https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: blob: https:; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https://www.google-analytics.com https://generativelanguage.googleapis.com https://*.upstash.io https:; frame-src 'self' https:; worker-src 'self' blob:; manifest-src 'self'" />
+        <meta httpEquiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://cdnjs.cloudflare.com https://va.vercel-scripts.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: blob: https:; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https://www.google-analytics.com https://generativelanguage.googleapis.com https://*.upstash.io https:; frame-src 'self' https:; worker-src 'self' blob:; manifest-src 'self'" />
         <link rel="preconnect" href="https://www.googletagmanager.com" />
-        <link rel="preconnect" href="https://pagead2.googlesyndication.com" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" />
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
         <HreflangTags />
         <meta name="google-site-verification" content="N8odpQukXkhYSNhTcTrnMKWHWTi5D5h_Cre96ZVGlTw" />
-        <meta name="google-adsense-account" content="ca-pub-6315496314477761" />
-        <link rel="ads.txt" href="/ads.txt" />
         <ThemeScript />
-        <Script src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6315496314477761" strategy="afterInteractive" crossOrigin="anonymous" />
-        <script dangerouslySetInnerHTML={{ __html: `if("serviceWorker" in navigator){window.addEventListener("load",()=>{navigator.serviceWorker.register("/sw.js").catch(()=>{})})}` }} />
+        {process.env.NODE_ENV === "production" && (
+          <script dangerouslySetInnerHTML={{ __html: `if("serviceWorker" in navigator){window.addEventListener("load",()=>{navigator.serviceWorker.register("/sw.js").catch(()=>{})})}` }} />
+        )}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
@@ -129,7 +126,6 @@ gtag('config', 'G-0YRS54VR4X');`}
         <EmbedModeDetector><PremiumVerifier /></EmbedModeDetector>
         <EmbedModeDetector><Header /></EmbedModeDetector>
         <main id="main-content" className="flex-1"><ErrorBoundary>{children}</ErrorBoundary><EmbedModePoweredBy /></main>
-        <EmbedModeDetector><AdBlockDetector /></EmbedModeDetector>
         <EmbedModeDetector><Footer /></EmbedModeDetector>
         <EmbedModeDetector><InstallPrompt /></EmbedModeDetector>
         <EmbedModeDetector><CookieConsent /></EmbedModeDetector>

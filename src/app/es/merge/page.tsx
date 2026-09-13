@@ -1,5 +1,7 @@
 "use client";
 
+import { isPdfFile } from "@/lib/pdfBytes";
+
 import { useState, useCallback, useEffect, useRef } from "react";
 import ToolInfo from "@/components/ToolInfo";
 import FreeWaitTimer from "@/components/FreeWaitTimer";
@@ -8,7 +10,7 @@ import ProgressBar from "@/components/ProgressBar";
 import SuccessAnimation from "@/components/SuccessAnimation";
 import ErrorBanner from "@/components/ErrorBanner";
 import PremiumUpsell, { usePremiumUpsell } from "@/components/PremiumUpsell";
-import { isPremium, checkFileSize, checkBatchCount } from "@/lib/premium";
+import { isPremium, checkFileSize } from "@/lib/premium";
 import { useUsage } from "@/hooks/useUsage";
 import { useToolHistory } from "@/hooks/useToolHistory";
 import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
@@ -42,9 +44,7 @@ export default function EsMergePage() {
       const check = checkFileSize(f.size);
       if (!check.ok) { upsell.showUpsell("file-size"); return; }
     }
-    const countCheck = checkBatchCount(list.length);
-    if (!countCheck.ok) { upsell.showUpsell("file-size"); return; }
-    setFiles((prev) => [...prev, ...Array.from(list).filter((f) => f.type === "application/pdf")]);
+    setFiles((prev) => [...prev, ...Array.from(list).filter((f) => isPdfFile(f))]);
   }, []);
 
   const onDrop = useCallback((e: React.DragEvent) => {
@@ -68,7 +68,7 @@ export default function EsMergePage() {
       for (const file of files) {
         const bytes = await file.arrayBuffer();
         if (!originalBytes.current) { originalBytes.current = bytes; }
-        const pdf = await PDFDocument.load(bytes, { ignoreEncryption: true });
+        const pdf = await PDFDocument.load(bytes);
         const pages = await mergedPdf.copyPages(pdf, pdf.getPageIndices());
         pages.forEach((page) => mergedPdf.addPage(page));
       }
@@ -79,7 +79,7 @@ export default function EsMergePage() {
       a.href = url;
       a.download = "unidos.pdf";
       a.click();
-      URL.revokeObjectURL(url);
+      window.setTimeout(() => URL.revokeObjectURL(url), 60_000);
       trackExport(files[0]?.name || "unidos.pdf", "Merge PDF", mergedBytes.byteLength);
       setSuccess(true);
     } catch {
@@ -106,7 +106,7 @@ export default function EsMergePage() {
     a.href = url;
     a.download = `original-${files[0]?.name || "restaurado.pdf"}`;
     a.click();
-    URL.revokeObjectURL(url);
+    window.setTimeout(() => URL.revokeObjectURL(url), 60_000);
   }, [files]);
 
   const formatBytes = (b: number) =>
@@ -129,13 +129,13 @@ export default function EsMergePage() {
         description="Une varios PDF en un solo documento online gratis. Combina archivos PDF al instante en tu navegador."
         url="https://allaboutpdfediting.xyz/es/merge"
       />
-      <HowToJsonLd name="Unir PDF Online" description="Combina varios archivos PDF en un solo documento" steps={[{name:"Subir PDFs",text:"Selecciona dos o más archivos PDF para unir"},{name:"Ordenar",text:"Arrastra los archivos para establecer el orden deseado"},{name:"Descargar PDF",text:"Descarga el documento PDF combinado"}]} />
+      <HowToJsonLd name="Unir PDF Online" description="Combina varios archivos PDF en un solo documento" steps={[{name:"Subir PDFs",text:"Selecciona dos o más archivos PDF para unir"},{name:"Ordenar",text:"Usa las flechas para establecer el orden deseado"},{name:"Descargar PDF",text:"Descarga el documento PDF combinado"}]} />
       <BreadcrumbJsonLd items={[{ name: "Inicio", item: "https://allaboutpdfediting.xyz/es" }, { name: "Unir PDF", item: "https://allaboutpdfediting.xyz/es/merge" }]} />
       <FaqPageJsonLd questions={rc?.faqs} />
       <AiSummaryJsonLd name="Unir PDF" summary="Combina varios documentos PDF en un solo archivo con orden personalizable" category="Utilidades" inputType="PDF" outputType="PDF" processing="lado-del-cliente" price="free" features={["Combinar múltiples archivos","Orden personalizable","Arrastrar y soltar","Procesamiento gratuito","Sin subidas"]} limits="Archivos hasta 10MB" />
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">Unir PDF</h1>
-        <p className="text-[var(--muted)]">Combina varios PDF en un solo documento. Arrastra para reordenar.</p>
+        <p className="text-[var(--muted)]">Combina varios PDF en un solo documento. Usa las flechas para reordenar.</p>
       </div>
 
       <ToolInfo
@@ -174,7 +174,7 @@ export default function EsMergePage() {
         {files.length > 0 && (
           <div className="mt-5 space-y-2">
             <p className="text-sm font-medium text-[var(--muted)] mb-2">
-              {files.length} archivo{files.length > 1 ? "s" : ""} seleccionado{files.length > 1 ? "s" : ""} — arrastra para reordenar
+              {files.length} archivo{files.length > 1 ? "s" : ""} seleccionado{files.length > 1 ? "s" : ""} — usa las flechas para reordenar
               <button onClick={() => setFiles([])} className="ml-3 text-red-500 hover:text-red-600 text-xs">Limpiar todo</button>
             </p>
             {files.map((file, i) => (
@@ -236,7 +236,7 @@ export default function EsMergePage() {
       <div className="max-w-3xl mx-auto mt-12 pt-8 border-t border-[var(--card-border)]">
         <h2 className="text-xl font-bold text-[var(--foreground)] mb-3">Acerca de Unir PDF</h2>
         <div className="text-sm text-[var(--muted)] space-y-3 leading-relaxed">
-          <p>Con nuestra herramienta para unir PDF, puedes combinar documentos PDF en un solo archivo sin esfuerzo, perfecto para consolidar informes, facturas, contratos escaneados o cualquier colección de páginas relacionadas. Simplemente sube tus PDFs, arrastra para reordenarlos y haz clic en unir — la interfaz intuitiva te da control total sobre la secuencia final de páginas. La herramienta procesa todo localmente en tu navegador usando pdf-lib, por lo que tus documentos sensibles nunca tocan un servidor. Para unir PDF online gratis, solo selecciona varios PDFs, ordénalos en el orden deseado y descarga el resultado combinado en segundos. Todo se mantiene privado y seguro.</p>
+          <p>Con nuestra herramienta para unir PDF, puedes combinar documentos PDF en un solo archivo sin esfuerzo, perfecto para consolidar informes, facturas, contratos escaneados o cualquier colección de páginas relacionadas. Simplemente sube tus PDFs, usa las flechas para reordenarlos y haz clic en unir — la interfaz intuitiva te da control total sobre la secuencia final de páginas. La herramienta procesa todo localmente en tu navegador usando pdf-lib, por lo que tus documentos sensibles nunca tocan un servidor. Para unir PDF online gratis, solo selecciona varios PDFs, ordénalos en el orden deseado y descarga el resultado combinado en segundos. Todo se mantiene privado y seguro.</p>
         </div>
       </div>
 

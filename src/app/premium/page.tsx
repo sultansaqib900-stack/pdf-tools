@@ -14,7 +14,7 @@ const plans = [
     name: "Free",
     price: "$0",
     period: "forever",
-    features: ["Single file processing", "Max 10MB files", "All basic tools", "Ads supported", "1 download at a time"],
+    features: ["Single file processing", "Max 10MB files", "All basic tools", "No account required", "1 download at a time"],
     highlighted: false,
     checkoutUrl: null,
     planKey: null as string | null,
@@ -23,7 +23,7 @@ const plans = [
     name: "Premium Monthly",
     price: "$12",
     period: "/month",
-    features: ["Unlimited file processing", "Max 100MB files", "Batch processing up to 20 files", "No ads", "13 exclusive premium tools", "Priority email support", "API access", "All future tools"],
+    features: ["Unlimited file processing", "Max 100MB files", "Batch processing up to 20 files", "Unlimited AI questions", "13 exclusive premium tools", "Priority email support", "Future premium tools"],
     highlighted: true,
     checkoutUrl: LS_CONFIG.checkoutBaseUrls.premiumMonthly,
     planKey: "monthly",
@@ -43,10 +43,8 @@ const featureRows = [
   { feature: "File size limit", free: "10MB", monthly: "100MB", yearly: "100MB" },
   { feature: "Daily processing", free: "Limited", monthly: "Unlimited", yearly: "Unlimited" },
   { feature: "Batch processing", free: "—", monthly: "20 files", yearly: "20 files" },
-  { feature: "File types", free: "PDF only", monthly: "All formats", yearly: "All formats" },
-  { feature: "Ad-free experience", free: "—", monthly: "✓", yearly: "✓" },
+  { feature: "AI chat questions", free: "3/day", monthly: "Unlimited", yearly: "Unlimited" },
   { feature: "Priority support", free: "—", monthly: "Email", yearly: "Priority email" },
-  { feature: "API access", free: "—", monthly: "✓", yearly: "✓" },
   { feature: "Future tools", free: "—", monthly: "✓", yearly: "✓" },
 ];
 
@@ -135,11 +133,11 @@ export default function PremiumPage() {
         </div>
         <h1 className="text-4xl font-bold text-[var(--foreground)] mb-4">Go Premium</h1>
         <p className="text-lg text-[var(--muted)] max-w-2xl mx-auto">
-          Unlock unlimited access, batch processing, larger files, zero ads, and <strong>13 exclusive premium tools</strong>.
+          Unlock unlimited access, batch processing, larger files, unlimited AI questions, and <strong>13 exclusive premium tools</strong>.
         </p>
         {!LS_CONFIG.enabled && (
           <p className="mt-3 text-sm text-amber-500 bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800 inline-block px-4 py-2 rounded-lg">
-            Payments coming soon — AdSense ads covering costs in the meantime
+            Payments are temporarily unavailable. Please check back soon.
           </p>
         )}
       </div>

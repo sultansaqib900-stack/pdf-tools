@@ -1,5 +1,7 @@
 "use client";
 
+import { isPdfFile } from "@/lib/pdfBytes";
+
 import { useState, useCallback, useEffect, useRef } from "react";
 import ToolInfo from "@/components/ToolInfo";
 import FreeWaitTimer from "@/components/FreeWaitTimer";
@@ -48,7 +50,7 @@ export default function FillFormPage() {
   useEffect(() => { trackToolVisit("fill-form"); }, []);
 
   const handleFile = useCallback(async (f: File | null) => {
-    if (!f || f.type !== "application/pdf") return;
+    if (!f || !isPdfFile(f)) return;
     const check = checkFileSize(f.size);
     if (!check.ok) { upsell.showUpsell("file-size"); return; }
     setFile(f);
@@ -69,17 +71,32 @@ export default function FillFormPage() {
       for (const fld of rawFields) {
         let type: FieldEntry["type"] = "unknown";
         let options: string[] | undefined;
-        if (fld instanceof PDFTextField) type = "text";
-        else if (fld instanceof PDFCheckBox) type = "checkbox";
-        else if (fld instanceof PDFDropdown) { type = "dropdown"; options = fld.getOptions(); }
-        else if (fld instanceof PDFOptionList) { type = "list"; options = fld.getOptions(); }
-        else if (fld instanceof PDFRadioGroup) { type = "radio"; options = fld.getOptions(); }
-        else continue;
-        detected.push({ name: fld.getName(), type, options, value: "" });
+        let value = "";
+        if (fld instanceof PDFTextField) {
+          type = "text";
+          value = fld.getText() || "";
+        } else if (fld instanceof PDFCheckBox) {
+          type = "checkbox";
+          value = fld.isChecked() ? "checked" : "";
+        } else if (fld instanceof PDFDropdown) {
+          type = "dropdown";
+          options = fld.getOptions();
+          value = fld.getSelected()[0] || "";
+        } else if (fld instanceof PDFOptionList) {
+          type = "list";
+          options = fld.getOptions();
+          value = fld.getSelected()[0] || "";
+        } else if (fld instanceof PDFRadioGroup) {
+          type = "radio";
+          options = fld.getOptions();
+          value = fld.getSelected() || "";
+        } else continue;
+        detected.push({ name: fld.getName(), type, options, value });
       }
       setFields(detected);
-    } catch {
+    } catch (loadError) {
       setFields([]);
+      setError(loadError instanceof Error ? `Could not read form fields: ${loadError.message}` : "Could not read form fields from this PDF.");
     }
     setDetecting(false);
   }, []);
@@ -105,17 +122,17 @@ export default function FillFormPage() {
       const rawFields = form.getFields();
       for (const fld of rawFields) {
         const entry = fields.find((f) => f.name === fld.getName());
-        if (!entry || !entry.value) continue;
+        if (!entry) continue;
         if (fld instanceof PDFTextField) {
           fld.setText(entry.value);
         } else if (fld instanceof PDFCheckBox) {
           if (entry.value === "checked") fld.check(); else fld.uncheck();
         } else if (fld instanceof PDFDropdown) {
-          fld.select(entry.value);
+          if (entry.value) fld.select(entry.value); else fld.clear();
         } else if (fld instanceof PDFOptionList) {
-          fld.select([entry.value]);
+          if (entry.value) fld.select(entry.value); else fld.clear();
         } else if (fld instanceof PDFRadioGroup) {
-          fld.select(entry.value);
+          if (entry.value) fld.select(entry.value); else fld.clear();
         }
       }
       form.flatten();
@@ -127,7 +144,7 @@ export default function FillFormPage() {
       a.download = `filled-${file.name}`;
       a.click();
       trackExport(file.name, "Fill PDF Form", filledBytes.length);
-      URL.revokeObjectURL(url);
+      window.setTimeout(() => URL.revokeObjectURL(url), 60_000);
       setSuccess(true);
     } catch {
       setError("Failed to fill the form. The PDF may not contain fillable form fields.");
@@ -153,7 +170,7 @@ export default function FillFormPage() {
     a.href = url;
     a.download = `original-${file?.name || "restored.pdf"}`;
     a.click();
-    URL.revokeObjectURL(url);
+    window.setTimeout(() => URL.revokeObjectURL(url), 60_000);
   }, [file]);
 
   return (

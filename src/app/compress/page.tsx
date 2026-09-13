@@ -14,6 +14,8 @@ import { useToolHistory } from "@/hooks/useToolHistory";
 import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
 import PipelineActionBar from "@/components/PipelineActionBar";
 import { getPipelineDocument } from "@/lib/pdfPipeline";
+import { compressPdfBytes, type PdfCompressionMode } from "@/lib/pdfRaster";
+import { copyPdfBytes, createPdfFile, downloadBytes, isPdfFile } from "@/lib/pdfBytes";
 
 import HowToJsonLd from "@/components/HowToJsonLd";
 import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
@@ -39,7 +41,8 @@ export default function CompressPage() {
   const { trackToolVisit, trackExport } = useToolHistory();
   const [file, setFile] = useState<File | null>(null);
   const [processing, setProcessing] = useState(false);
-  const [result, setResult] = useState<{ size: number; originalSize: number } | null>(null);
+  const [result, setResult] = useState<{ size: number; originalSize: number; flattened: boolean } | null>(null);
+  const [compressionMode, setCompressionMode] = useState<PdfCompressionMode>("balanced");
   const [dragging, setDragging] = useState(false);
   const [showTimer, setShowTimer] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -48,25 +51,32 @@ export default function CompressPage() {
   const [downloadUrl, setDownloadUrl] = useState<string | null>(null);
   const originalBytes = useRef<ArrayBuffer | null>(null);
 
+  useEffect(() => () => {
+    if (downloadUrl) URL.revokeObjectURL(downloadUrl);
+  }, [downloadUrl]);
+
   useEffect(() => {
     trackToolVisit("compress");
     (async () => {
       const pipelineDoc = await getPipelineDocument();
       if (pipelineDoc && pipelineDoc.bytes) {
-        const f = new File([pipelineDoc.bytes as unknown as BlobPart], pipelineDoc.name, { type: "application/pdf" });
-        setFile(f);
+        setFile(createPdfFile(pipelineDoc.bytes, pipelineDoc.name));
       }
     })();
   }, [trackToolVisit]);
 
   const handleFile = useCallback((f: File | null) => {
-    if (f && f.type === "application/pdf") {
+    if (f && isPdfFile(f)) {
       const check = checkFileSize(f.size);
       if (!check.ok) { upsell.showUpsell("file-size"); return; }
       setFile(f);
       setResult(null);
+      setResultBytes(null);
+      setDownloadUrl(null);
       setError(null);
       setSuccess(false);
+    } else if (f) {
+      setError("Please select a valid PDF file.");
     }
   }, [upsell]);
 
@@ -90,32 +100,21 @@ export default function CompressPage() {
     const canProceed = await usage.checkAndTrack();
     if (!canProceed) { setProcessing(false); upsell.showUpsell("daily-limit"); return; }
     try {
-      const { PDFDocument } = await import("pdf-lib");
       const bytes = await file.arrayBuffer();
-      originalBytes.current = bytes;
-      const pdfDoc = await PDFDocument.load(bytes, { ignoreEncryption: true });
-      const compressedBytes = await pdfDoc.save({
-        useObjectStreams: true,
-        objectsPerTick: 100,
-      });
-      const compressed = new Uint8Array(compressedBytes);
-      setResult({ size: compressed.length, originalSize: bytes.byteLength });
-      setResultBytes(compressed);
-
-      const blob = new Blob([compressed.slice()], { type: "application/pdf" });
-      const url = URL.createObjectURL(blob);
-      setDownloadUrl(url);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `compressed-${file.name}`;
-      a.click();
-      trackExport(file.name, "Compress PDF", compressed.length);
+      originalBytes.current = bytes.slice(0);
+      const compressed = await compressPdfBytes(bytes, compressionMode);
+      setResult({ size: compressed.outputSize, originalSize: compressed.originalSize, flattened: compressed.flattened });
+      setResultBytes(copyPdfBytes(compressed.bytes));
+      downloadBytes(compressed.bytes, `compressed-${file.name}`);
+      setDownloadUrl(URL.createObjectURL(new Blob([copyPdfBytes(compressed.bytes).buffer as ArrayBuffer], { type: "application/pdf" })));
+      trackExport(file.name, `Compress PDF (${compressionMode})`, compressed.outputSize);
       setSuccess(true);
-    } catch {
-      setError("Failed to compress PDF. The file may be encrypted or corrupted.");
+    } catch (compressionError) {
+      setError(compressionError instanceof Error ? compressionError.message : "Failed to compress PDF. The file may be encrypted or corrupted.");
+    } finally {
+      setProcessing(false);
     }
-    setProcessing(false);
-  }, [file, usage, upsell, trackExport]);
+  }, [compressionMode, file, usage, upsell, trackExport]);
 
   const compress = useCallback(async () => {
     if (!file) return;
@@ -130,13 +129,7 @@ export default function CompressPage() {
 
   const restoreOriginal = useCallback(async () => {
     if (!originalBytes.current) return;
-    const blob = new Blob([originalBytes.current], { type: "application/pdf" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `original-${file?.name || "restored.pdf"}`;
-    a.click();
-    URL.revokeObjectURL(url);
+    downloadBytes(originalBytes.current, `original-${file?.name || "restored.pdf"}`);
   }, [file]);
 
   return (
@@ -146,13 +139,13 @@ export default function CompressPage() {
         description="Compress PDF files online for free while maintaining quality. Fast, secure, and client-side processing."
         url="https://allaboutpdfediting.xyz/compress"
       />
-      <HowToJsonLd name="Compress PDF" description="Reduce PDF file size without quality loss" steps={[{name:"Upload PDF",text:"Select or drop your PDF document"},{name:"Compress",text:"Click Compress to optimize file size"},{name:"Download",text:"Download your optimized smaller PDF"}]} />
+      <HowToJsonLd name="Compress PDF" description="Reduce PDF size with balanced, maximum, or lossless compression" steps={[{name:"Upload PDF",text:"Select or drop your PDF document"},{name:"Choose a mode",text:"Use visual compression for smaller files or Lossless to preserve interactive content"},{name:"Download",text:"Download the result; the original is kept if compression would make it larger"}]} />
       <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Compress PDF", item: "https://allaboutpdfediting.xyz/compress" }]} />
       <FaqPageJsonLd questions={rc?.faqs} />
-      <AiSummaryJsonLd name="Compress PDF" summary="Reduce PDF file size in browser without uploading files to server using stream optimization" category="UtilitiesApplication" inputType="PDF" outputType="PDF" processing="client-side" price="free" features={["Stream optimization","Instant in-browser compression","No file size degradation","100% private processing","Unlimited free usage"]} limits="Free: 10MB/file; Pro: 100MB/file" />
+      <AiSummaryJsonLd name="Compress PDF" summary="Reduce PDF size in the browser with selectable visual or lossless compression" category="UtilitiesApplication" inputType="PDF" outputType="PDF" processing="client-side" price="free" features={["Balanced compression","Maximum compression","Lossless optimization","Original retained when already smaller","Private local processing"]} limits="Free and premium file-size limits apply" />
       <div className="mb-8">
         <h1 className="text-3xl font-extrabold text-[var(--foreground)] mb-2">Compress PDF</h1>
-        <p className="text-[var(--muted)]">Reduce PDF file size without losing document quality.</p>
+        <p className="text-[var(--muted)]">Choose smaller visual output or lossless document optimization.</p>
       </div>
 
       <ToolInfo
@@ -189,6 +182,23 @@ export default function CompressPage() {
             {!file && <span className="text-xs text-[var(--muted)]">Max 50MB · 100% Private Client-Side</span>}
           </label>
         </div>
+
+        {file && (
+          <div className="mt-5 grid grid-cols-1 sm:grid-cols-3 gap-2">
+            {[
+              { id: "balanced" as PdfCompressionMode, label: "Balanced", detail: "Smaller, clear pages" },
+              { id: "maximum" as PdfCompressionMode, label: "Maximum", detail: "Smallest output" },
+              { id: "lossless" as PdfCompressionMode, label: "Lossless", detail: "Keeps text & forms" },
+            ].map((option) => (
+              <button key={option.id} type="button" onClick={() => setCompressionMode(option.id)} className={`p-3 rounded-xl border text-left ${compressionMode === option.id ? "border-indigo-500 bg-indigo-500/10" : "border-[var(--card-border)] bg-[var(--background)]"}`}>
+                <span className="block text-xs font-bold text-[var(--foreground)]">{option.label}</span>
+                <span className="block text-[10px] text-[var(--muted)]">{option.detail}</span>
+              </button>
+            ))}
+          </div>
+        )}
+
+        {file && compressionMode !== "lossless" && <p className="mt-2 text-[11px] text-[var(--muted)]">Balanced and Maximum rebuild pages as compressed images, so form fields and selectable text are flattened. Choose Lossless to preserve them.</p>}
 
         <ProgressBar processing={processing} fileSize={file?.size} label="Compressing PDF..." />
 
@@ -228,8 +238,9 @@ export default function CompressPage() {
                 />
               </div>
               <p className="mt-1.5 text-xs text-emerald-500 font-semibold">
-                🎉 {Math.max(0, Math.round((1 - result.size / result.originalSize) * 100))}% reduction in file size
+                {result.size < result.originalSize ? `🎉 ${Math.round((1 - result.size / result.originalSize) * 100)}% reduction in file size` : "This PDF was already optimized; a larger output was not used."}
               </p>
+              {result.flattened && <p className="mt-1 text-[11px] text-[var(--muted)]">Pages were flattened into compressed images for a smaller file.</p>}
             </div>
           </div>
         )}
@@ -249,7 +260,7 @@ export default function CompressPage() {
       <div className="max-w-3xl mx-auto mt-12 pt-8 border-t border-[var(--card-border)]">
         <h2 className="text-xl font-bold text-[var(--foreground)] mb-3">About Compress PDF</h2>
         <div className="text-sm text-[var(--muted)] space-y-3 leading-relaxed">
-          <p>Our free compress PDF tool lets you reduce PDF file size without sacrificing quality, making it easy to email documents or upload to websites. The compression works entirely in your browser using pdf-lib, which removes redundant data and optimizes object streams for maximum efficiency. You can achieve significant compression ratios depending on your file's content — images, fonts, and embedded elements all compress differently. For best results, compress PDF online free before sharing large attachments, as smaller files transfer faster and use less storage. Whether you are reducing scan quality or optimizing a presentation, this tool helps you make a smaller PDF while preserving readability. Since everything runs client-side, your files never leave your device, ensuring complete privacy and security.</p>
+          <p>Our PDF compressor offers three honest modes. Balanced and Maximum rebuild pages as optimized images for meaningful reductions on scans and image-heavy documents; Lossless optimizes object streams while preserving selectable text, links, and forms. If an attempted result is larger, the original bytes are kept instead. For best results, compress PDF online free before sharing large attachments, as smaller files transfer faster and use less storage. Whether you are reducing scan quality or optimizing a presentation, this tool helps you make a smaller PDF while preserving readability. Since everything runs client-side, your files never leave your device, ensuring complete privacy and security.</p>
         </div>
       </div>
 

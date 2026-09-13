@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useEffect, useRef } from "react";
+import { useState, useCallback, useEffect } from "react";
 import ToolInfo from "@/components/ToolInfo";
 import FreeWaitTimer from "@/components/FreeWaitTimer";
 import UsageBar from "@/components/UsageBar";
@@ -20,6 +20,7 @@ import FaqPageJsonLd from "@/components/FaqPageJsonLd";
 import RelatedContent from "@/components/RelatedContent";
 import { getRelatedContent } from "@/lib/related-content";
 import UseCaseLinks from "@/components/UseCaseLinks";
+import { downloadBytes } from "@/lib/pdfBytes";
 
 const rc = getRelatedContent("image-to-pdf");
 
@@ -33,21 +34,26 @@ export default function ImageToPdfPage() {
   const [showTimer, setShowTimer] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
-  const originalBytes = useRef<ArrayBuffer | null>(null);
 
   useEffect(() => { trackToolVisit("image-to-pdf"); }, []);
 
   const addImages = useCallback((list: FileList | null) => {
     if (!list) return;
-    for (const f of Array.from(list)) {
+    const selected = Array.from(list);
+    const supported = selected.filter((f) => f.type === "image/jpeg" || f.type === "image/png");
+    if (supported.length !== selected.length) {
+      setError("Only JPEG and PNG images are supported. Unsupported files were skipped.");
+    } else {
+      setError(null);
+    }
+    for (const f of supported) {
       const check = checkFileSize(f.size);
       if (!check.ok) { upsell.showUpsell("file-size"); return; }
     }
-    const newImages = Array.from(list)
-      .filter((f) => f.type.startsWith("image/"))
-      .map((file) => ({ file, preview: URL.createObjectURL(file) }));
+    const newImages = supported.map((file) => ({ file, preview: URL.createObjectURL(file) }));
     setImages((prev) => [...prev, ...newImages]);
-  }, []);
+    setSuccess(false);
+  }, [upsell]);
 
   const onDrop = useCallback((e: React.DragEvent) => {
     e.preventDefault();
@@ -62,6 +68,16 @@ export default function ImageToPdfPage() {
     });
   }, []);
 
+  const moveImage = useCallback((index: number, direction: -1 | 1) => {
+    setImages((prev) => {
+      const destination = index + direction;
+      if (destination < 0 || destination >= prev.length) return prev;
+      const next = [...prev];
+      [next[index], next[destination]] = [next[destination], next[index]];
+      return next;
+    });
+  }, []);
+
   const runConvert = useCallback(async () => {
     if (images.length === 0) return;
     setProcessing(true);
@@ -72,7 +88,6 @@ export default function ImageToPdfPage() {
       const pdfDoc = await PDFDocument.create();
       for (const { file } of images) {
         const imgBytes = await file.arrayBuffer();
-        if (!originalBytes.current) { originalBytes.current = imgBytes; }
         let image;
         if (file.type === "image/png") {
           image = await pdfDoc.embedPng(imgBytes);
@@ -83,13 +98,7 @@ export default function ImageToPdfPage() {
         page.drawImage(image, { x: 0, y: 0, width: image.width, height: image.height });
       }
       const pdfBytes = await pdfDoc.save({ useObjectStreams: true });
-      const blob = new Blob([pdfBytes.slice()], { type: "application/pdf" });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = "images.pdf";
-      a.click();
-      URL.revokeObjectURL(url);
+      downloadBytes(pdfBytes, "images.pdf");
       trackExport(images[0]?.file.name || "images.pdf", "Image to PDF", pdfBytes.byteLength);
       setSuccess(true);
     } catch (err) {
@@ -109,31 +118,20 @@ export default function ImageToPdfPage() {
     runConvert();
     }, [usage, upsell, runConvert])
 
-  const restoreOriginal = useCallback(async () => {
-    if (!originalBytes.current) return;
-    const blob = new Blob([originalBytes.current], { type: "application/pdf" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `original-${images[0]?.file.name || "restored.pdf"}`;
-    a.click();
-    URL.revokeObjectURL(url);
-  }, [images]);
-
   return (
     <div className="max-w-3xl mx-auto px-4 py-12">
       <SoftwareAppJsonLd
         name="Image to PDF - Free Online Converter"
-        description="Convert images to PDF online for free. Turn JPG, PNG, and other image formats into PDF documents instantly."
+        description="Combine JPEG and PNG images into a PDF, with one image per page, entirely in your browser."
         url="https://allaboutpdfediting.xyz/image-to-pdf"
       />
-      <HowToJsonLd name="Convert Image to PDF" description="Convert JPG PNG and other images to PDF documents" steps={[{name:"Upload images",text:"Select one or more images JPG PNG BMP WebP"},{name:"Arrange order",text:"Drag to reorder images as needed"},{name:"Download PDF",text:"Download your images combined into a PDF"}]} />
+      <HowToJsonLd name="Convert Image to PDF" description="Combine JPEG and PNG images into a PDF document" steps={[{name:"Upload images",text:"Select one or more JPEG or PNG images"},{name:"Arrange order",text:"Use the arrow controls to set the PDF page order"},{name:"Download PDF",text:"Download your images combined into one PDF"}]} />
       <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Image to PDF", item: "https://allaboutpdfediting.xyz/image-to-pdf" }]} />
       <FaqPageJsonLd questions={rc?.faqs} />
-      <AiSummaryJsonLd name="Image to PDF" summary="Convert images JPG PNG BMP to PDF documents with customizable page layout" category="Graphics" inputType="Image" outputType="PDF" processing="client-side" price="free" features={["Image to PDF conversion","Multi-image support","Page orientation","Free online tool","Client-side only"]} limits="Files up to 10MB" />
+      <AiSummaryJsonLd name="Image to PDF" summary="Combine JPEG and PNG images into a PDF with one page per image" category="Graphics" inputType="JPEG or PNG" outputType="PDF" processing="client-side" price="free" features={["JPEG and PNG conversion","Multi-image support","Order controls","Original pixel dimensions","Client-side only"]} limits="Each image up to 10MB" />
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">Image to PDF</h1>
-        <p className="text-[var(--muted)]">Convert JPG, PNG, and other images into a single PDF.</p>
+        <p className="text-[var(--muted)]">Combine JPEG and PNG images into a single PDF.</p>
       </div>
 
       <ToolInfo
@@ -157,7 +155,7 @@ export default function ImageToPdfPage() {
         >
           <input
             type="file"
-            accept="image/*"
+            accept="image/jpeg,image/png,.jpg,.jpeg,.png"
             multiple
             onChange={(e) => addImages(e.target.files)}
             className="hidden"
@@ -184,10 +182,14 @@ export default function ImageToPdfPage() {
               {images.map((img, i) => (
                 <div key={i} className="relative group">
                   <img src={img.preview} alt="" className="w-full h-24 object-cover rounded-lg border border-[var(--card-border)]" />
-                  <button onClick={() => removeImage(i)} className="absolute -top-2 -right-2 w-5 h-5 bg-red-500 text-white rounded-full text-xs opacity-0 group-hover:opacity-100 transition flex items-center justify-center">
+                  <button onClick={() => removeImage(i)} aria-label={`Remove ${img.file.name}`} className="absolute -top-2 -right-2 w-5 h-5 bg-red-500 text-white rounded-full text-xs opacity-0 group-hover:opacity-100 focus:opacity-100 transition flex items-center justify-center">
                     x
                   </button>
                   <p className="text-[10px] text-[var(--muted)] truncate mt-1">{img.file.name}</p>
+                  <div className="grid grid-cols-2 gap-1 mt-1">
+                    <button type="button" aria-label={`Move ${img.file.name} earlier`} disabled={i === 0} onClick={() => moveImage(i, -1)} className="text-[10px] border border-[var(--card-border)] rounded disabled:opacity-30">←</button>
+                    <button type="button" aria-label={`Move ${img.file.name} later`} disabled={i === images.length - 1} onClick={() => moveImage(i, 1)} className="text-[10px] border border-[var(--card-border)] rounded disabled:opacity-30">→</button>
+                  </div>
                 </div>
               ))}
             </div>
@@ -218,13 +220,13 @@ export default function ImageToPdfPage() {
 
         {error && <ErrorBanner message={error} onRetry={runConvert} onDismiss={() => setError(null)} />}
 
-        <SuccessAnimation show={success} message="PDF created!" onRestore={restoreOriginal} />
+        <SuccessAnimation show={success} message="PDF created!" />
       </div>
 
       <div className="max-w-3xl mx-auto mt-12 pt-8 border-t border-[var(--card-border)]">
         <h2 className="text-xl font-bold text-[var(--foreground)] mb-3">About Image to PDF</h2>
         <div className="text-sm text-[var(--muted)] space-y-3 leading-relaxed">
-          <p>Convert your images to PDF documents with our free image to PDF converter, designed for speed and simplicity. Whether you have JPG photos from your camera, PNG screenshots, or other image formats, you can combine them into a single PDF with just a few clicks. This is great for creating photo albums, digitizing handwritten notes, or converting scanned documents into a portable format that anyone can view. Our JPG to PDF converter works entirely in your browser using pdf-lib, so your images stay private and secure with no server uploads. Simply upload your images, preview them in the gallery, and download your PDF. Each image becomes a separate page preserving its original dimensions and quality — perfect for archiving or sharing.</p>
+          <p>Combine JPEG photos and PNG screenshots into one PDF in a chosen order. Each supported image becomes a separate page using its original pixel dimensions; JPEG bytes are embedded directly and PNG transparency is handled by pdf-lib. Unsupported formats are rejected instead of being misread as JPEG. Everything runs locally in your browser with no server upload.</p>
         </div>
       </div>
       <RelatedContent slug="image-to-pdf" />

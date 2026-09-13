@@ -1,12 +1,13 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
 import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 import { usePageMeta } from "@/hooks/usePageMeta";
 import HowToJsonLd from "@/components/HowToJsonLd";
 import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
 import PremiumGate from "@/components/PremiumGate";
+import { copyPdfBytes, isPdfFile } from "@/lib/pdfBytes";
 
 export default function SplitByBookmarksPage() {
   usePageMeta("Split PDF by Bookmarks - Extract Chapters | PDFTools Premium", "Split PDF documents into separate files based on bookmarks and outline structure. Extract chapters, sections, and parts automatically. Premium feature.");
@@ -18,7 +19,15 @@ export default function SplitByBookmarksPage() {
   const [downloadUrls, setDownloadUrls] = useState<string[]>([]);
   const fileRef = useRef<HTMLInputElement>(null);
 
+  useEffect(() => () => {
+    downloadUrls.forEach((url) => URL.revokeObjectURL(url));
+  }, [downloadUrls]);
+
   async function handleFile(f: File) {
+    if (!isPdfFile(f)) {
+      setError("Please select a valid PDF file.");
+      return;
+    }
     setFile(f);
     setError(null);
     setSplits([]);
@@ -29,41 +38,65 @@ export default function SplitByBookmarksPage() {
       if (!pdfjsLib.GlobalWorkerOptions.workerSrc) {
         pdfjsLib.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";
       }
-      const bytes = await f.arrayBuffer();
-      const pdf = await pdfjsLib.getDocument({ data: bytes }).promise;
-      const outline = await pdf.getOutline();
-      if (!outline || outline.length === 0) {
-        setError("No bookmarks found in this PDF. The document must have an outline/bookmark structure.");
-        setProcessing(false);
-        return;
-      }
+      const bytes = new Uint8Array(await f.arrayBuffer());
+      const loadingTask = pdfjsLib.getDocument({ data: copyPdfBytes(bytes) });
+      const pdf = await loadingTask.promise;
+      type OutlineItem = { title: string; dest: string | unknown[] | null; items: OutlineItem[] };
+      let outline: OutlineItem[] | null;
       const bookmarks: { title: string; page: number }[] = [];
-      async function walk(items: any[]) {
-        for (const item of items) {
-          if (item.dest) {
-            const dest = typeof item.dest === "string" ? await pdf.getDestination(item.dest) : item.dest;
-            if (dest) {
-              const pageIndex = await pdf.getPageIndex(dest[0]);
-              bookmarks.push({ title: item.title, page: pageIndex + 1 });
-            }
-          }
-          if (item.items?.length) await walk(item.items);
+      try {
+        outline = await pdf.getOutline();
+        if (!outline || outline.length === 0) {
+          throw new Error("No bookmarks found in this PDF. The document must have an outline/bookmark structure.");
         }
+
+        async function walk(items: typeof outline) {
+          if (!items) return;
+          for (const item of items) {
+            if (item.dest) {
+              try {
+                const destination = typeof item.dest === "string"
+                  ? await pdf.getDestination(item.dest)
+                  : item.dest;
+                if (destination?.[0]) {
+                  const pageIndex = await pdf.getPageIndex(destination[0]);
+                  bookmarks.push({ title: item.title || `Chapter ${bookmarks.length + 1}`, page: pageIndex + 1 });
+                }
+              } catch {
+                // Keep resolving the remaining bookmark destinations.
+              }
+            }
+            if (item.items?.length) await walk(item.items);
+          }
+        }
+        await walk(outline);
+      } finally {
+        await loadingTask.destroy();
       }
-      await walk(outline);
+
       if (bookmarks.length === 0) {
-        setError("Could not resolve bookmark page numbers. Try a different PDF.");
-        setProcessing(false);
-        return;
+        throw new Error("Bookmarks were found, but none pointed to a page in this PDF.");
       }
+
+      // Nested outlines may repeat a destination. Sort by page and keep one
+      // chapter boundary per page so ranges never overlap or run backwards.
+      bookmarks.sort((a, b) => a.page - b.page);
+      const boundaries = bookmarks.filter((bookmark, index, list) => index === 0 || bookmark.page !== list[index - 1].page);
       const { PDFDocument } = await import("pdf-lib");
-      const srcDoc = await PDFDocument.load(bytes);
+      const srcDoc = await PDFDocument.load(copyPdfBytes(bytes));
       const parts: { name: string; pageStart: number; pageEnd: number }[] = [];
-      for (let i = 0; i < bookmarks.length; i++) {
-        const start = bookmarks[i].page;
-        const end = i + 1 < bookmarks.length ? bookmarks[i + 1].page - 1 : srcDoc.getPageCount();
-        if (start <= end) {
-          parts.push({ name: bookmarks[i].title.replace(/[<>:"/\\|?*]/g, "_").slice(0, 50), pageStart: start, pageEnd: end });
+      if (boundaries[0].page > 1) {
+        parts.push({ name: "Front matter", pageStart: 1, pageEnd: boundaries[0].page - 1 });
+      }
+      for (let index = 0; index < boundaries.length; index += 1) {
+        const start = boundaries[index].page;
+        const end = index + 1 < boundaries.length ? boundaries[index + 1].page - 1 : srcDoc.getPageCount();
+        if (start <= end && start <= srcDoc.getPageCount()) {
+          parts.push({
+            name: boundaries[index].title.replace(/[<>:"/\\|?*]/g, "_").slice(0, 80) || `Chapter ${index + 1}`,
+            pageStart: start,
+            pageEnd: Math.min(end, srcDoc.getPageCount()),
+          });
         }
       }
       setSplits(parts);
@@ -79,8 +112,8 @@ export default function SplitByBookmarksPage() {
         urls.push(URL.createObjectURL(blob));
       }
       setDownloadUrls(urls);
-    } catch {
-      setError("Failed to process PDF. Try a different file.");
+    } catch (processError) {
+      setError(processError instanceof Error ? processError.message : "Failed to process PDF. Try a different file.");
     } finally {
       setProcessing(false);
     }
@@ -90,7 +123,7 @@ export default function SplitByBookmarksPage() {
     e.preventDefault();
     setDragging(false);
     const f = e.dataTransfer.files[0];
-    if (f && f.type === "application/pdf") handleFile(f);
+    if (f) void handleFile(f);
   }
 
   return (

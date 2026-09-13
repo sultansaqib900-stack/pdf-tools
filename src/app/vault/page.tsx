@@ -7,100 +7,113 @@ import { usePageMeta } from "@/hooks/usePageMeta";
 import HowToJsonLd from "@/components/HowToJsonLd";
 import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
 import PremiumGate from "@/components/PremiumGate";
-
-interface VaultItem {
-  id: string;
-  name: string;
-  size: number;
-  storedAt: number;
-  data: ArrayBuffer;
-}
+import { downloadBytes, isPdfFile } from "@/lib/pdfBytes";
+import {
+  addSecureVaultItem,
+  clearSecureVault,
+  hasSecureVault,
+  openOrCreateSecureVault,
+  removeSecureVaultItem,
+  type SecureVaultItem,
+} from "@/lib/secureVault";
 
 export default function VaultPage() {
   usePageMeta("Secure PDF Vault - Encrypted Document Storage | PDFTools Premium", "Store PDFs securely in your browser with AES-encrypted vault. Password-protected document storage. Premium.");
-  const [items, setItems] = useState<{ id: string; name: string; size: number; storedAt: number }[]>([]);
+  const [items, setItems] = useState<Omit<SecureVaultItem, "data">[]>([]);
   const [vaultPassword, setVaultPassword] = useState("");
   const [vaultUnlocked, setVaultUnlocked] = useState(false);
+  const [vaultExists, setVaultExists] = useState(false);
   const [processing, setProcessing] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState("");
-  const vaultRef = useRef<VaultItem[]>([]);
+  const vaultRef = useRef<SecureVaultItem[]>([]);
+  const keyRef = useRef<CryptoKey | null>(null);
 
   useEffect(() => {
-    queueMicrotask(() => {
-      try {
-        const stored = localStorage.getItem("pdftools_vault_index");
-        if (stored) setItems(JSON.parse(stored));
-      } catch {}
-    });
+    void hasSecureVault().then(setVaultExists).catch(() => setError("Encrypted browser storage is unavailable."));
   }, []);
 
-  const unlockVault = () => {
-    if (!vaultPassword.trim()) return;
-    try {
-      const raw = localStorage.getItem(`pdftools_vault_${vaultPassword}`);
-      if (raw) {
-        vaultRef.current = JSON.parse(raw, (key, val) => key === "data" ? new Uint8Array(val).buffer : val);
-      } else {
-        vaultRef.current = [];
-      }
-      setVaultUnlocked(true);
-      setItems(vaultRef.current.map(({ data, ...rest }) => rest));
-    } catch {
-      setError("Invalid password or corrupted vault.");
-    }
-  };
-
-  const addToVault = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const f = e.target.files?.[0];
-    if (!f || f.type !== "application/pdf") return;
+  const unlockVault = async () => {
+    if (!vaultPassword.trim() || processing) return;
     setProcessing(true);
+    setError(null);
+    setSuccess("");
     try {
-      const bytes = await f.arrayBuffer();
-      const id = crypto.randomUUID();
-      vaultRef.current.push({ id, name: f.name, size: f.size, storedAt: Date.now(), data: bytes });
-      saveVault();
-      setItems(vaultRef.current.map(({ data, ...rest }) => rest));
-      setSuccess(`Added "${f.name}" to vault`);
-    } catch {
-      setError("Failed to add file to vault.");
+      const session = await openOrCreateSecureVault(vaultPassword);
+      keyRef.current = session.key;
+      vaultRef.current = session.items;
+      setItems(session.items.map(({ data: _data, ...metadata }) => metadata));
+      setVaultUnlocked(true);
+      setVaultExists(true);
+      setVaultPassword("");
+      setSuccess(session.created ? "Encrypted vault created." : "Vault unlocked.");
+      // Remove the old, non-encrypted prototype index if this browser has one.
+      localStorage.removeItem("pdftools_vault_index");
+    } catch (unlockError) {
+      setError(unlockError instanceof Error ? unlockError.message : "Could not unlock this vault.");
+    } finally {
+      setProcessing(false);
     }
-    setProcessing(false);
   };
 
-  const saveVault = () => {
-    localStorage.setItem(`pdftools_vault_${vaultPassword}`, JSON.stringify(vaultRef.current));
-    localStorage.setItem("pdftools_vault_index", JSON.stringify(vaultRef.current.map(({ data, ...rest }) => rest)));
+  const lockVault = () => {
+    keyRef.current = null;
+    vaultRef.current = [];
+    setItems([]);
+    setVaultUnlocked(false);
+    setSuccess("");
+    setError(null);
+  };
+
+  const addToVault = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    event.target.value = "";
+    if (!file) return;
+    if (!isPdfFile(file)) { setError("Please choose a valid PDF file."); return; }
+    if (!keyRef.current) { setError("Lock and unlock the vault again before adding files."); return; }
+    setProcessing(true);
+    setError(null);
+    try {
+      const item = await addSecureVaultItem(keyRef.current, new Uint8Array(await file.arrayBuffer()), file.name);
+      vaultRef.current = [item, ...vaultRef.current];
+      setItems(vaultRef.current.map(({ data: _data, ...metadata }) => metadata));
+      setSuccess(`Encrypted and saved “${file.name}”.`);
+    } catch (storageError) {
+      setError(storageError instanceof Error ? storageError.message : "Failed to encrypt and save this file.");
+    } finally {
+      setProcessing(false);
+    }
   };
 
   const downloadFromVault = (id: string) => {
-    const item = vaultRef.current.find(i => i.id === id);
-    if (!item) return;
-    const blob = new Blob([item.data], { type: "application/pdf" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = item.name;
-    a.click();
-    URL.revokeObjectURL(url);
+    const item = vaultRef.current.find((candidate) => candidate.id === id);
+    if (item) downloadBytes(item.data, item.name);
   };
 
-  const removeFromVault = (id: string) => {
-    vaultRef.current = vaultRef.current.filter(i => i.id !== id);
-    saveVault();
-    setItems(prev => prev.filter(i => i.id !== id));
-    setSuccess("File removed from vault");
+  const removeFromVault = async (id: string) => {
+    try {
+      await removeSecureVaultItem(id);
+      vaultRef.current = vaultRef.current.filter((item) => item.id !== id);
+      setItems((current) => current.filter((item) => item.id !== id));
+      setSuccess("File removed from vault.");
+    } catch {
+      setError("Could not remove this file from encrypted storage.");
+    }
   };
 
-  const clearVault = () => {
-    if (confirm("Delete all files from vault?")) {
+  const clearVault = async () => {
+    if (!confirm("Permanently delete the encrypted vault and every file in it?")) return;
+    try {
+      await clearSecureVault();
+      keyRef.current = null;
       vaultRef.current = [];
-      localStorage.removeItem(`pdftools_vault_${vaultPassword}`);
-      localStorage.removeItem("pdftools_vault_index");
       setItems([]);
       setVaultUnlocked(false);
+      setVaultExists(false);
       setVaultPassword("");
-      setSuccess("Vault cleared");
+      setSuccess("Vault cleared.");
+    } catch {
+      setError("Could not clear encrypted browser storage.");
     }
   };
 
@@ -116,7 +129,7 @@ export default function VaultPage() {
         <SoftwareAppJsonLd name="Secure PDF Vault" description="Store PDFs in encrypted browser vault." url="https://allaboutpdfediting.xyz/vault" />
         <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Secure Vault", item: "https://allaboutpdfediting.xyz/vault" }]} />
         <HowToJsonLd name="Secure PDF Vault" description="Store and manage PDFs in an encrypted browser-based document vault" steps={[{name:"Set a master password",text:"Create a strong master password for your vault"},{name:"Upload PDFs",text:"Drag and drop PDFs into your encrypted vault"},{name:"Access anytime",text:"Open view and download your PDFs securely with password protection"}]} />
-        <AiSummaryJsonLd name="PDF Vault" summary="Store sensitive PDF documents in an encrypted browser-based vault with password protection" category="SecurityApplications" inputType="PDF" outputType="Storage" processing="client-side" price="premium" features={["Encrypted storage","Password protection","localStorage persistence","Browser-based vault","No server storage"]} limits="Premium subscribers" />
+        <AiSummaryJsonLd name="PDF Vault" summary="Store sensitive PDF documents in an encrypted browser-based vault with password protection" category="SecurityApplications" inputType="PDF" outputType="Storage" processing="client-side" price="premium" features={["AES-256-GCM encryption","PBKDF2 password key derivation","IndexedDB persistence","Browser-based vault","No server storage"]} limits="Premium subscribers; capacity depends on browser storage" />
         
         <div className="mb-8">
           <div className="flex items-center justify-between">
@@ -128,7 +141,10 @@ export default function VaultPage() {
               <p className="text-[var(--muted)]">{vaultUnlocked ? `${items.length} file(s) stored securely` : "Password-protected encrypted browser storage."}</p>
             </div>
             {vaultUnlocked && (
-              <button onClick={clearVault} className="text-xs text-red-500 hover:underline font-semibold">Clear entire vault</button>
+              <div className="flex gap-3">
+                <button onClick={lockVault} className="text-xs text-indigo-500 hover:underline font-semibold">Lock</button>
+                <button onClick={() => void clearVault()} className="text-xs text-red-500 hover:underline font-semibold">Clear entire vault</button>
+              </div>
             )}
           </div>
         </div>
@@ -136,10 +152,10 @@ export default function VaultPage() {
         {!vaultUnlocked ? (
           <div className="bg-[var(--card)] border border-[var(--card-border)] rounded-2xl p-8 text-center space-y-5 shadow-xl">
             <div className="w-16 h-16 rounded-2xl bg-amber-500/10 text-amber-500 flex items-center justify-center text-3xl mx-auto">🔐</div>
-            <p className="text-sm text-[var(--muted)] max-w-md mx-auto">Your vault stores PDFs encrypted directly inside your browser. Enter a master password to unlock or create your vault.</p>
-            <input type="password" value={vaultPassword} onChange={(e) => setVaultPassword(e.target.value)} placeholder="Enter master password" className="w-full max-w-xs mx-auto px-4 py-3 rounded-xl border border-[var(--card-border)] bg-[var(--background)] text-sm text-center outline-none focus:border-indigo-500 font-medium" onKeyDown={(e) => e.key === "Enter" && unlockVault()} />
+            <p className="text-sm text-[var(--muted)] max-w-md mx-auto">{vaultExists ? "Enter your master password. It never leaves this device." : "Create a vault with a master password of at least 8 characters. The password cannot be recovered."}</p>
+            <input type="password" autoComplete="current-password" minLength={8} value={vaultPassword} onChange={(e) => setVaultPassword(e.target.value)} placeholder="Master password (8+ characters)" className="w-full max-w-xs mx-auto px-4 py-3 rounded-xl border border-[var(--card-border)] bg-[var(--background)] text-sm text-center outline-none focus:border-indigo-500 font-medium" onKeyDown={(e) => { if (e.key === "Enter") void unlockVault(); }} />
             <div>
-              <button onClick={unlockVault} disabled={!vaultPassword.trim()} className="w-full max-w-xs mx-auto py-3.5 bg-gradient-to-r from-amber-500 to-orange-600 text-white font-bold rounded-xl hover:opacity-95 disabled:opacity-40 transition shadow-md shadow-amber-500/20">Unlock Vault</button>
+              <button onClick={() => void unlockVault()} disabled={vaultPassword.length < 8 || processing} className="w-full max-w-xs mx-auto py-3.5 bg-gradient-to-r from-amber-500 to-orange-600 text-white font-bold rounded-xl hover:opacity-95 disabled:opacity-40 transition shadow-md shadow-amber-500/20">{processing ? "Deriving encryption key…" : vaultExists ? "Unlock Vault" : "Create Encrypted Vault"}</button>
             </div>
           </div>
         ) : (
@@ -165,7 +181,7 @@ export default function VaultPage() {
                     </div>
                     <div className="flex gap-2 shrink-0">
                       <button onClick={() => downloadFromVault(item.id)} className="px-4 py-2 bg-indigo-600 text-white text-xs font-bold rounded-xl hover:bg-indigo-700 transition shadow-sm">Download</button>
-                      <button onClick={() => removeFromVault(item.id)} className="px-3 py-2 bg-red-500/10 text-red-500 text-xs font-bold rounded-xl hover:bg-red-500/20 transition">Delete</button>
+                      <button onClick={() => void removeFromVault(item.id)} className="px-3 py-2 bg-red-500/10 text-red-500 text-xs font-bold rounded-xl hover:bg-red-500/20 transition">Delete</button>
                     </div>
                   </div>
                 ))}

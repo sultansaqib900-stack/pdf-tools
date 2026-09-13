@@ -1,5 +1,7 @@
 "use client";
 
+import { isPdfFile } from "@/lib/pdfBytes";
+
 import { useState, useCallback, useEffect, useRef } from "react";
 import ToolInfo from "@/components/ToolInfo";
 import FreeWaitTimer from "@/components/FreeWaitTimer";
@@ -40,7 +42,7 @@ export default function RotatePage() {
   useEffect(() => { trackToolVisit("rotate"); }, []);
 
   const handleFile = useCallback(async (f: File | null) => {
-    if (!f || f.type !== "application/pdf") return;
+    if (!f || !isPdfFile(f)) return;
     const check = checkFileSize(f.size);
     if (!check.ok) { upsell.showUpsell("file-size"); return; }
     setFile(f);
@@ -48,7 +50,7 @@ export default function RotatePage() {
     const bytes = await f.arrayBuffer();
     originalBytes.current = bytes;
     const { PDFDocument } = await import("pdf-lib");
-    const pdf = await PDFDocument.load(bytes, { ignoreEncryption: true });
+    const pdf = await PDFDocument.load(bytes);
     setPageCount(pdf.getPageCount());
   }, []);
 
@@ -60,7 +62,7 @@ export default function RotatePage() {
     try {
       const { PDFDocument, degrees } = await import("pdf-lib");
       const bytes = await file.arrayBuffer();
-      const pdfDoc = await PDFDocument.load(bytes, { ignoreEncryption: true });
+      const pdfDoc = await PDFDocument.load(bytes);
       const pages = pdfDoc.getPages();
       for (const page of pages) {
         const current = page.getRotation().angle;
@@ -73,7 +75,7 @@ export default function RotatePage() {
       a.href = url;
       a.download = `rotated-${file.name}`;
       a.click();
-      URL.revokeObjectURL(url);
+      window.setTimeout(() => URL.revokeObjectURL(url), 60_000);
       trackExport(file.name, "Rotate PDF", rotatedBytes.byteLength);
       setSuccess(true);
     } catch {
@@ -100,7 +102,7 @@ export default function RotatePage() {
     a.href = url;
     a.download = `original-${file?.name || "restored.pdf"}`;
     a.click();
-    URL.revokeObjectURL(url);
+    window.setTimeout(() => URL.revokeObjectURL(url), 60_000);
   }, [file]);
 
   return (

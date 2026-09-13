@@ -25,6 +25,8 @@ export default function PdfDiffPage() {
   const [currentPage, setCurrentPage] = useState(0);
   const [totalPages, setTotalPages] = useState(1);
   const [sliderPosition, setSliderPosition] = useState(50); // percentage 0 - 100
+  const [visualAUrl, setVisualAUrl] = useState("");
+  const [visualBUrl, setVisualBUrl] = useState("");
 
   // Canvas refs for visual diff
   const canvasARef = useRef<HTMLCanvasElement>(null);
@@ -37,92 +39,118 @@ export default function PdfDiffPage() {
       pdfjsLib.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";
     }
     const bytes = await file.arrayBuffer();
-    const pdf = await pdfjsLib.getDocument({ data: bytes }).promise;
+    const loadingTask = pdfjsLib.getDocument({ data: bytes.slice(0) });
     const pages: string[] = [];
-    for (let i = 1; i <= pdf.numPages; i++) {
-      const page = await pdf.getPage(i);
-      const content = await page.getTextContent();
-      const text = content.items.map((item: any) => item.str ?? "").filter(Boolean).join(" ");
-      pages.push(text);
+    try {
+      const pdf = await loadingTask.promise;
+      for (let i = 1; i <= pdf.numPages; i++) {
+        const page = await pdf.getPage(i);
+        const content = await page.getTextContent();
+        pages.push(content.items.map((item) => ("str" in item ? item.str : "")).filter(Boolean).join(" "));
+        page.cleanup();
+      }
+    } finally {
+      await loadingTask.destroy();
     }
     return pages;
   };
 
-  // Render visual page comparison on canvases
-  const renderVisualPage = useCallback(async (pageIdx: number) => {
-    if (!docA || !docB) return;
+  const composeVisual = useCallback((position: number) => {
+    const composite = compositeCanvasRef.current;
+    const sourceA = canvasARef.current;
+    const sourceB = canvasBRef.current;
+    if (!composite || !sourceA || !sourceB || !sourceA.width || !sourceB.width) return;
+
+    composite.width = Math.max(sourceA.width, sourceB.width);
+    composite.height = Math.max(sourceA.height, sourceB.height);
+    const context = composite.getContext("2d");
+    if (!context) return;
+    context.fillStyle = "#ffffff";
+    context.fillRect(0, 0, composite.width, composite.height);
+    const splitX = composite.width * position / 100;
+
+    context.save();
+    context.beginPath();
+    context.rect(0, 0, splitX, composite.height);
+    context.clip();
+    context.drawImage(sourceA, 0, 0, composite.width, composite.height);
+    context.restore();
+
+    context.save();
+    context.beginPath();
+    context.rect(splitX, 0, composite.width - splitX, composite.height);
+    context.clip();
+    context.drawImage(sourceB, 0, 0, composite.width, composite.height);
+    context.restore();
+
+    context.strokeStyle = "#6366f1";
+    context.lineWidth = 3;
+    context.beginPath();
+    context.moveTo(splitX, 0);
+    context.lineTo(splitX, composite.height);
+    context.stroke();
+  }, []);
+
+  // Render source pages once per page change. Slider movement only recomposes
+  // the already-rendered canvases instead of reparsing both PDFs.
+  const renderVisualPage = useCallback(async (pageIndex: number) => {
+    if (!docA || !docB || !canvasARef.current || !canvasBRef.current) return;
+    let taskA: import("pdfjs-dist").PDFDocumentLoadingTask | null = null;
+    let taskB: import("pdfjs-dist").PDFDocumentLoadingTask | null = null;
     try {
-      const pdfjsLib = await import("pdfjs-dist");
-      if (!pdfjsLib.GlobalWorkerOptions.workerSrc) {
-        pdfjsLib.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";
-      }
-
+      const pdfjs = await import("pdfjs-dist");
+      if (!pdfjs.GlobalWorkerOptions.workerSrc) pdfjs.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";
       const [bytesA, bytesB] = await Promise.all([docA.arrayBuffer(), docB.arrayBuffer()]);
-      const [pdfA, pdfB] = await Promise.all([
-        pdfjsLib.getDocument({ data: bytesA }).promise,
-        pdfjsLib.getDocument({ data: bytesB }).promise,
+      taskA = pdfjs.getDocument({ data: bytesA.slice(0) });
+      taskB = pdfjs.getDocument({ data: bytesB.slice(0) });
+      const [pdfA, pdfB] = await Promise.all([taskA.promise, taskB.promise]);
+      setTotalPages(Math.max(pdfA.numPages, pdfB.numPages));
+      const pageNumber = pageIndex + 1;
+
+      const renderSource = async (pdf: typeof pdfA, canvas: HTMLCanvasElement, label: string) => {
+        if (pageNumber <= pdf.numPages) {
+          const page = await pdf.getPage(pageNumber);
+          const viewport = page.getViewport({ scale: 1.2 });
+          canvas.width = Math.max(1, Math.round(viewport.width));
+          canvas.height = Math.max(1, Math.round(viewport.height));
+          const context = canvas.getContext("2d");
+          if (!context) throw new Error("Canvas rendering is unavailable.");
+          await page.render({ canvas, canvasContext: context, viewport, background: "#ffffff" }).promise;
+          page.cleanup();
+        } else {
+          canvas.width = 800;
+          canvas.height = 1000;
+          const context = canvas.getContext("2d");
+          if (!context) throw new Error("Canvas rendering is unavailable.");
+          context.fillStyle = "#ffffff";
+          context.fillRect(0, 0, canvas.width, canvas.height);
+          context.fillStyle = "#64748b";
+          context.font = "28px sans-serif";
+          context.textAlign = "center";
+          context.fillText(`${label} has no page ${pageNumber}`, canvas.width / 2, canvas.height / 2);
+        }
+      };
+
+      await Promise.all([
+        renderSource(pdfA, canvasARef.current, "Original"),
+        renderSource(pdfB, canvasBRef.current, "Revised"),
       ]);
-
-      const maxP = Math.max(pdfA.numPages, pdfB.numPages);
-      setTotalPages(maxP);
-
-      const targetPageNum = pageIdx + 1;
-
-      // Render Doc A
-      if (canvasARef.current && targetPageNum <= pdfA.numPages) {
-        const pageA = await pdfA.getPage(targetPageNum);
-        const vpA = pageA.getViewport({ scale: 1.2 });
-        const cA = canvasARef.current;
-        cA.width = vpA.width;
-        cA.height = vpA.height;
-        const ctxA = cA.getContext("2d")!;
-        await pageA.render({ canvas: cA, canvasContext: ctxA, viewport: vpA }).promise;
-      }
-
-      // Render Doc B
-      if (canvasBRef.current && targetPageNum <= pdfB.numPages) {
-        const pageB = await pdfB.getPage(targetPageNum);
-        const vpB = pageB.getViewport({ scale: 1.2 });
-        const cB = canvasBRef.current;
-        cB.width = vpB.width;
-        cB.height = vpB.height;
-        const ctxB = cB.getContext("2d")!;
-        await pageB.render({ canvas: cB, canvasContext: ctxB, viewport: vpB }).promise;
-      }
-
-      // Render Split Composite Canvas
-      if (compositeCanvasRef.current && canvasARef.current && canvasBRef.current) {
-        const comp = compositeCanvasRef.current;
-        const cA = canvasARef.current;
-        const cB = canvasBRef.current;
-        comp.width = Math.max(cA.width, cB.width);
-        comp.height = Math.max(cA.height, cB.height);
-        const ctx = comp.getContext("2d")!;
-        ctx.clearRect(0, 0, comp.width, comp.height);
-
-        // Draw Left half from Doc A
-        const splitX = (comp.width * sliderPosition) / 100;
-        ctx.drawImage(cA, 0, 0, splitX, comp.height, 0, 0, splitX, comp.height);
-
-        // Draw Right half from Doc B
-        ctx.drawImage(cB, splitX, 0, comp.width - splitX, comp.height, splitX, 0, comp.width - splitX, comp.height);
-
-        // Draw vertical divider line
-        ctx.strokeStyle = "#6366f1";
-        ctx.lineWidth = 3;
-        ctx.beginPath();
-        ctx.moveTo(splitX, 0);
-        ctx.lineTo(splitX, comp.height);
-        ctx.stroke();
-      }
-    } catch {}
-  }, [docA, docB, sliderPosition]);
+      setVisualAUrl(canvasARef.current.toDataURL("image/png"));
+      setVisualBUrl(canvasBRef.current.toDataURL("image/png"));
+    } catch (renderError) {
+      setError(renderError instanceof Error ? `Could not render comparison: ${renderError.message}` : "Could not render the visual comparison.");
+    } finally {
+      await Promise.all([taskA?.destroy(), taskB?.destroy()]);
+    }
+  }, [docA, docB]);
 
   useEffect(() => {
-    if (docA && docB && diffs.length > 0) {
-      renderVisualPage(currentPage);
-    }
-  }, [docA, docB, diffs, currentPage, sliderPosition, renderVisualPage]);
+    if (docA && docB && diffs.length > 0) void renderVisualPage(currentPage);
+  }, [docA, docB, diffs, currentPage, renderVisualPage]);
+
+  useEffect(() => {
+    if (activeView === "slider") composeVisual(sliderPosition);
+  }, [activeView, sliderPosition, visualAUrl, visualBUrl, composeVisual]);
 
   const runDiff = async () => {
     if (!docA || !docB) return;
@@ -174,7 +202,7 @@ export default function PdfDiffPage() {
       <div className="max-w-5xl mx-auto px-4 py-12 space-y-8">
         <SoftwareAppJsonLd
           name="Visual PDF Diff - Compare PDF Documents"
-          description="Interactive split-screen visual comparison and redline diff engine for PDF files."
+          description="Rendered side-by-side and split-screen PDF comparison plus a heuristic extracted-text change list."
           url="https://allaboutpdfediting.xyz/pdf-diff"
         />
         <BreadcrumbJsonLd
@@ -200,7 +228,7 @@ export default function PdfDiffPage() {
           outputType="Diff"
           processing="client-side"
           price="premium"
-          features={["Split-screen slider", "Redline changelog", "Side by side visual canvases", "100% private"]}
+          features={["Split-screen slider", "Heuristic text-fragment change list", "Side-by-side rendered pages", "Client-side processing"]}
           limits="Files up to 50MB"
         />
 
@@ -212,14 +240,14 @@ export default function PdfDiffPage() {
             </span>
           </div>
           <p className="text-[var(--muted)] text-sm">
-            Drag the interactive split-screen slider to reveal shifted paragraphs, signature changes, and clause modifications.
+            Compare rendered pages with a split slider or side-by-side view, then review heuristic text-fragment additions and deletions.
           </p>
         </div>
 
         {/* Upload Deck */}
         <div className="grid md:grid-cols-2 gap-5">
           <div className={`p-6 rounded-3xl border-2 border-dashed text-center transition-all ${docA ? "border-emerald-500 bg-emerald-500/5" : "border-[var(--card-border)] bg-[var(--card)]"}`}>
-            <input type="file" accept=".pdf" id="fileDiffA" className="hidden" onChange={(e) => setDocA(e.target.files?.[0] || null)} />
+            <input type="file" accept=".pdf" id="fileDiffA" className="hidden" onChange={(e) => { setDocA(e.target.files?.[0] || null); setDiffs([]); setVisualAUrl(""); setVisualBUrl(""); }} />
             <label htmlFor="fileDiffA" className="cursor-pointer flex flex-col items-center gap-2">
               <span className="text-3xl">📄</span>
               <span className="text-sm font-bold text-[var(--foreground)]">
@@ -232,7 +260,7 @@ export default function PdfDiffPage() {
           </div>
 
           <div className={`p-6 rounded-3xl border-2 border-dashed text-center transition-all ${docB ? "border-emerald-500 bg-emerald-500/5" : "border-[var(--card-border)] bg-[var(--card)]"}`}>
-            <input type="file" accept=".pdf" id="fileDiffB" className="hidden" onChange={(e) => setDocB(e.target.files?.[0] || null)} />
+            <input type="file" accept=".pdf" id="fileDiffB" className="hidden" onChange={(e) => { setDocB(e.target.files?.[0] || null); setDiffs([]); setVisualAUrl(""); setVisualBUrl(""); }} />
             <label htmlFor="fileDiffB" className="cursor-pointer flex flex-col items-center gap-2">
               <span className="text-3xl">📑</span>
               <span className="text-sm font-bold text-[var(--foreground)]">
@@ -250,7 +278,7 @@ export default function PdfDiffPage() {
           disabled={!docA || !docB || processing}
           className="w-full py-4 bg-gradient-to-r from-indigo-500 via-purple-600 to-pink-500 text-white font-extrabold rounded-2xl hover:opacity-95 disabled:opacity-40 transition-all text-base shadow-xl shadow-indigo-500/25 active:scale-[0.99]"
         >
-          {processing ? "Analyzing Document Revisions..." : "⚡ Run Visual & Redline Comparison"}
+          {processing ? "Analyzing Document Revisions..." : "⚡ Run Visual & Heuristic Text Comparison"}
         </button>
 
         {error && (
@@ -293,6 +321,14 @@ export default function PdfDiffPage() {
                 ))}
               </div>
             </div>
+
+            {/* Off-screen source canvases stay mounted for every view mode. */}
+            <div className="hidden" aria-hidden="true">
+              <canvas ref={canvasARef} />
+              <canvas ref={canvasBRef} />
+            </div>
+
+            <p className="text-xs text-[var(--muted)]">The visual views show rendered pages. “Additions” and “deletions” are exact sentence-like text fragments from PDF.js extraction, not a semantic or legal redline; reordered or rewrapped text may be reported as changed.</p>
 
             {/* Page Navigation */}
             <div className="flex items-center justify-between text-xs">
@@ -347,14 +383,14 @@ export default function PdfDiffPage() {
                 <div className="space-y-2 text-center">
                   <p className="text-xs font-bold text-indigo-400">Original Document (v1)</p>
                   <div className="bg-slate-900/60 rounded-2xl p-2 flex items-center justify-center min-h-[350px] border border-[var(--card-border)]">
-                    <canvas ref={canvasARef} className="rounded max-w-full h-auto bg-white" />
+                    {visualAUrl && <img src={visualAUrl} alt={`Original PDF page ${currentPage + 1}`} className="rounded max-w-full h-auto bg-white" />}
                   </div>
                 </div>
 
                 <div className="space-y-2 text-center">
                   <p className="text-xs font-bold text-purple-400">Revised Document (v2)</p>
                   <div className="bg-slate-900/60 rounded-2xl p-2 flex items-center justify-center min-h-[350px] border border-[var(--card-border)]">
-                    <canvas ref={canvasBRef} className="rounded max-w-full h-auto bg-white" />
+                    {visualBUrl && <img src={visualBUrl} alt={`Revised PDF page ${currentPage + 1}`} className="rounded max-w-full h-auto bg-white" />}
                   </div>
                 </div>
               </div>

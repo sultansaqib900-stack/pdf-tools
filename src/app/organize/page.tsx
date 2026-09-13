@@ -1,5 +1,7 @@
 "use client";
 
+import { isPdfFile } from "@/lib/pdfBytes";
+
 import { useState, useCallback, useEffect, useRef } from "react";
 import ToolInfo from "@/components/ToolInfo";
 import FreeWaitTimer from "@/components/FreeWaitTimer";
@@ -42,7 +44,7 @@ export default function OrganizePage() {
   useEffect(() => { trackToolVisit("organize"); }, []);
 
   const handleFile = useCallback(async (f: File | null) => {
-    if (!f || f.type !== "application/pdf") return;
+    if (!f || !isPdfFile(f)) return;
     const check = checkFileSize(f.size);
     if (!check.ok) { upsell.showUpsell("file-size"); return; }
     setFile(f);
@@ -51,7 +53,7 @@ export default function OrganizePage() {
     const { PDFDocument } = await import("pdf-lib");
     const bytes = await f.arrayBuffer();
     originalBytes.current = bytes;
-    const pdf = await PDFDocument.load(bytes, { ignoreEncryption: true });
+    const pdf = await PDFDocument.load(bytes);
     const count = pdf.getPageCount();
     setPageCount(count);
     setOrder(Array.from({ length: count }, (_, i) => i));
@@ -104,7 +106,7 @@ export default function OrganizePage() {
       const { PDFDocument } = await import("pdf-lib");
       const bytes = await file.arrayBuffer();
       originalBytes.current = bytes;
-      const sourcePdf = await PDFDocument.load(bytes, { ignoreEncryption: true });
+      const sourcePdf = await PDFDocument.load(bytes);
       const newPdf = await PDFDocument.create();
       const pages = await newPdf.copyPages(sourcePdf, order);
       pages.forEach((p) => newPdf.addPage(p));
@@ -116,7 +118,7 @@ export default function OrganizePage() {
       a.href = url;
       a.download = `reorganized-${file.name}`;
       a.click();
-      URL.revokeObjectURL(url);
+      window.setTimeout(() => URL.revokeObjectURL(url), 60_000);
       trackExport(file.name, "Organize Pages", pdfBytes.length);
       setSuccess(true);
     } catch { setError("Failed to reorganize."); }
@@ -141,7 +143,7 @@ export default function OrganizePage() {
     a.href = url;
     a.download = `original-${file?.name || "restored.pdf"}`;
     a.click();
-    URL.revokeObjectURL(url);
+    window.setTimeout(() => URL.revokeObjectURL(url), 60_000);
   }, [file]);
 
   return (

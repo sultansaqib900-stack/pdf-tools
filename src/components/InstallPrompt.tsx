@@ -30,7 +30,7 @@ export default function InstallPrompt() {
         <span className="text-2xl">📄</span>
         <div className="flex-1">
           <p className="text-sm font-medium text-[var(--foreground)]">Install PDFTools</p>
-          <p className="text-xs text-[var(--muted)]">Use like an app, offline-ready</p>
+          <p className="text-xs text-[var(--muted)]">Install a convenient app shortcut</p>
         </div>
         <button
           onClick={handleInstall}

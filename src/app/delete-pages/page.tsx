@@ -1,5 +1,7 @@
 "use client";
 
+import { isPdfFile } from "@/lib/pdfBytes";
+
 import { useState, useCallback, useEffect, useRef } from "react";
 import ToolInfo from "@/components/ToolInfo";
 import FreeWaitTimer from "@/components/FreeWaitTimer";
@@ -42,7 +44,7 @@ export default function DeletePagesPage() {
   useEffect(() => { trackToolVisit("delete-pages"); }, []);
 
   const handleFile = useCallback(async (f: File | null) => {
-    if (!f || f.type !== "application/pdf") return;
+    if (!f || !isPdfFile(f)) return;
     const check = checkFileSize(f.size);
     if (!check.ok) { upsell.showUpsell("file-size"); return; }
     setFile(f);
@@ -51,7 +53,7 @@ export default function DeletePagesPage() {
     const { PDFDocument } = await import("pdf-lib");
     const bytes = await f.arrayBuffer();
     originalBytes.current = bytes;
-    const pdf = await PDFDocument.load(bytes, { ignoreEncryption: true });
+    const pdf = await PDFDocument.load(bytes);
     const count = pdf.getPageCount();
     setPages(Array.from({ length: count }, (_, i) => ({ index: i, checked: true })));
   }, []);
@@ -75,7 +77,7 @@ export default function DeletePagesPage() {
       const { PDFDocument } = await import("pdf-lib");
       const bytes = await file.arrayBuffer();
       originalBytes.current = bytes;
-      const sourcePdf = await PDFDocument.load(bytes, { ignoreEncryption: true });
+      const sourcePdf = await PDFDocument.load(bytes);
       const indicesToKeep = pages.filter((p) => p.checked).map((p) => p.index);
 
       if (indicesToKeep.length === 0) { setError("Select at least one page to keep."); setProcessing(false); return; }
@@ -117,7 +119,7 @@ export default function DeletePagesPage() {
     a.href = url;
     a.download = `original-${file?.name || "restored.pdf"}`;
     a.click();
-    URL.revokeObjectURL(url);
+    window.setTimeout(() => URL.revokeObjectURL(url), 60_000);
   }, [file]);
 
   return (

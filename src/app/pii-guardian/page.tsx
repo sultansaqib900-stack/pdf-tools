@@ -10,15 +10,15 @@ import ToolInfo from "@/components/ToolInfo";
 const piiFaqs = [
   {
     question: "How does the in-browser PII Guardian work?",
-    answer: "Our client-side engine scans your document using WebAssembly and PDF text streams directly in your browser. It looks for Social Security Numbers (SSNs), credit cards, IBANs, phone numbers, and emails using advanced regex pattern analysis. Zero files or text strings are ever sent over the network.",
+    answer: "PDF.js extracts selectable text locally in your browser, and deterministic regular expressions look for common SSN, card-number, IBAN, phone, email, currency, and IPv4 formats. Pattern matching can produce false positives or miss unusual formats, so every match must be reviewed before redaction.",
   },
   {
     question: "Is this redaction permanent or just visual?",
-    answer: "It is 100% permanent. Blackout rectangles are burned directly into the PDF object stream, preventing text selection, clipboard copying, and inspection in Adobe Acrobat or browser viewers.",
+    answer: "Selected matches are removed by rendering each page, applying opaque black boxes, and creating a new image-based PDF. The original text and content streams are not copied into that output, but you should still inspect the downloaded file before sharing it.",
   },
   {
-    question: "Can I use this for HIPAA, GDPR, and legal compliance?",
-    answer: "Yes. Because 100% of the scanning and stream modification happens inside your local device RAM, no protected health information (PHI) or personal data ever touches external cloud servers.",
+    question: "Does this tool guarantee HIPAA, GDPR, or legal compliance?",
+    answer: "No. Local processing reduces disclosure risk, but a browser tool and regex detector cannot certify a workflow or guarantee that every sensitive item was found. Compliance depends on your organization, procedures, review, and applicable law.",
   },
 ];
 
@@ -52,10 +52,10 @@ export default function PiiGuardianPage() {
           <span>🛡️</span> Zero-Server Local Privacy Shield
         </div>
         <h1 className="text-3xl sm:text-4xl font-extrabold text-[var(--foreground)] tracking-tight mb-3">
-          PII Guardian — 1-Click Auto-Redact
+          PII Guardian — Pattern Scan & Secure Redaction
         </h1>
         <p className="text-sm sm:text-base text-[var(--muted)] max-w-2xl">
-          Instantly scan and sanitize Social Security Numbers, credit cards, bank accounts, emails, and phone numbers before sharing. 100% offline-capable in your browser.
+          Scan selectable PDF text for common sensitive-data patterns, review the matches, and securely raster-redact the selected areas in your browser.
         </p>
       </div>
 
@@ -72,7 +72,7 @@ export default function PiiGuardianPage() {
       <div className="mt-16 pt-12 border-t border-[var(--card-border)] space-y-8">
         <div>
           <h2 className="text-2xl font-extrabold text-[var(--foreground)] mb-2">
-            Why PII Guardian Beats Adobe Acrobat &amp; Cloud Tools
+            How PII Guardian Works
           </h2>
           <p className="text-sm text-[var(--muted)]">
             Traditional tools force you to manually draw blackout boxes on every page, or upload sensitive documents to remote servers.
@@ -92,7 +92,7 @@ export default function PiiGuardianPage() {
             <span className="text-2xl">🔒</span>
             <h3 className="text-base font-bold text-[var(--foreground)]">True Zero-Knowledge</h3>
             <p className="text-xs text-[var(--muted)] leading-relaxed">
-              Compliant with HIPAA, GDPR, and strict legal NDAs. Processing stays 100% on your local hardware.
+              Processing stays in the browser, but results still require human review and this tool does not certify legal or regulatory compliance.
             </p>
           </div>
 
@@ -100,7 +100,7 @@ export default function PiiGuardianPage() {
             <span className="text-2xl">⬛</span>
             <h3 className="text-base font-bold text-[var(--foreground)]">True Stream Blackout</h3>
             <p className="text-xs text-[var(--muted)] leading-relaxed">
-              Blackouts cannot be removed by zooming or copying text. Text items are completely overwritten in the PDF binary.
+              Selected areas are blacked out before pages are rebuilt from pixels, so original text and content streams are excluded from the downloaded PDF.
             </p>
           </div>
         </div>

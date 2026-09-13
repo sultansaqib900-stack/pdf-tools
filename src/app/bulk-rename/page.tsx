@@ -7,6 +7,8 @@ import { usePageMeta } from "@/hooks/usePageMeta";
 import HowToJsonLd from "@/components/HowToJsonLd";
 import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
 import PremiumGate from "@/components/PremiumGate";
+import { createZipArchive } from "@/lib/archive";
+import { isPdfFile, downloadBytes } from "@/lib/pdfBytes";
 
 interface FileMeta {
   file: File;
@@ -17,7 +19,7 @@ interface FileMeta {
 }
 
 export default function BulkRenamePage() {
-  usePageMeta("Bulk Rename PDF Files - Auto-Rename by Metadata | PDFTools Premium", "Rename multiple PDF files at once based on their metadata - title, author, date. Batch PDF renamer. Premium.");
+  usePageMeta("Bulk Rename PDF Files - Auto-Rename by Metadata | PDFTools Premium", "Package multiple PDFs with filenames based on title, author, page count, and original filename metadata. Premium.");
   const [files, setFiles] = useState<FileMeta[]>([]);
   const [processing, setProcessing] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -34,20 +36,26 @@ export default function BulkRenamePage() {
       pdfjsLib.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";
     }
     for (const f of Array.from(selected)) {
-      if (f.type !== "application/pdf") continue;
+      if (!isPdfFile(f)) continue;
       try {
         const bytes = await f.arrayBuffer();
-        const pdf = await pdfjsLib.getDocument({ data: bytes }).promise;
-        const meta = await pdf.getMetadata();
-        const title = (meta as any).info?.Title || f.name.replace(".pdf", "");
-        const author = (meta as any).info?.Author || "Unknown";
-        metas.push({
-          file: f,
-          title,
-          author,
-          pages: pdf.numPages,
-          newName: f.name,
-        });
+        const loadingTask = pdfjsLib.getDocument({ data: bytes.slice(0) });
+        try {
+          const pdf = await loadingTask.promise;
+          const meta = await pdf.getMetadata();
+          const info = meta.info as { Title?: string; Author?: string };
+          const title = info.Title || f.name.replace(/\.pdf$/i, "");
+          const author = info.Author || "Unknown";
+          metas.push({
+            file: f,
+            title,
+            author,
+            pages: pdf.numPages,
+            newName: f.name,
+          });
+        } finally {
+          await loadingTask.destroy();
+        }
       } catch {
         metas.push({ file: f, title: f.name.replace(".pdf", ""), author: "Unknown", pages: 0, newName: f.name });
       }
@@ -69,17 +77,23 @@ export default function BulkRenamePage() {
     }));
   };
 
-  const downloadAll = () => {
-    for (const f of files) {
-      const blob = new Blob([f.file], { type: "application/pdf" });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = f.newName;
-      a.click();
-      URL.revokeObjectURL(url);
+  const downloadAll = async () => {
+    if (files.length === 0) return;
+    setProcessing(true);
+    setError(null);
+    try {
+      const entries = await Promise.all(files.map(async (item) => ({
+        name: item.newName,
+        bytes: await item.file.arrayBuffer(),
+      })));
+      const archive = createZipArchive(entries);
+      downloadBytes(archive, "renamed-pdfs.zip", "application/zip");
+      setSuccess(true);
+    } catch (archiveError) {
+      setError(archiveError instanceof Error ? archiveError.message : "Failed to build the renamed PDF archive.");
+    } finally {
+      setProcessing(false);
     }
-    setSuccess(true);
   };
 
   return (
@@ -138,16 +152,17 @@ export default function BulkRenamePage() {
 
               <button
                 onClick={downloadAll}
+                disabled={processing}
                 className="w-full py-4 bg-gradient-to-r from-amber-500 to-orange-600 text-white font-bold rounded-2xl hover:opacity-95 transition-all text-base shadow-lg shadow-amber-500/25 active:scale-[0.99]"
               >
-                ⚡ Rename & Download All ({files.length} files)
+                {processing ? "Building ZIP..." : `⚡ Download Renamed ZIP (${files.length} files)`}
               </button>
             </>
           )}
         </div>
 
-        {processing && <p className="text-center text-sm text-[var(--muted)] mt-4">Reading PDF metadata...</p>}
-        {success && <div className="mt-4 p-4 bg-emerald-500/10 border border-emerald-500/30 rounded-2xl text-center text-sm text-emerald-600 font-bold">✅ Files renamed and downloaded!</div>}
+        {processing && <p className="text-center text-sm text-[var(--muted)] mt-4">Reading metadata or building the ZIP archive...</p>}
+        {success && <div className="mt-4 p-4 bg-emerald-500/10 border border-emerald-500/30 rounded-2xl text-center text-sm text-emerald-600 font-bold">✅ Renamed PDFs packaged and downloaded as a ZIP!</div>}
         {error && <div className="mt-6 p-4 bg-red-500/10 border border-red-500/30 rounded-2xl text-red-500 text-sm">{error}</div>}
       </div>
     </PremiumGate>

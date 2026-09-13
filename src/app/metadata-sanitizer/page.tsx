@@ -7,6 +7,8 @@ import { usePageMeta } from "@/hooks/usePageMeta";
 import HowToJsonLd from "@/components/HowToJsonLd";
 import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
 import PremiumGate from "@/components/PremiumGate";
+import { downloadBytes, isPdfFile } from "@/lib/pdfBytes";
+import { sanitizePdf, type PdfMetadataSnapshot } from "@/lib/pdfSanitize";
 
 export default function MetadataSanitizerPage() {
   usePageMeta("PDF Metadata Sanitizer - Remove Hidden Data from PDF | PDFTools Premium", "Strip hidden metadata, author info, creation dates, and embedded data from PDFs. Privacy cleaner. Premium.");
@@ -14,7 +16,7 @@ export default function MetadataSanitizerPage() {
   const [processing, setProcessing] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
-  const [beforeMeta, setBeforeMeta] = useState<Record<string, string> | null>(null);
+  const [beforeMeta, setBeforeMeta] = useState<PdfMetadataSnapshot | null>(null);
 
   const sanitize = async () => {
     if (!file) return;
@@ -23,44 +25,16 @@ export default function MetadataSanitizerPage() {
     setSuccess(false);
     setBeforeMeta(null);
     try {
-      const { PDFDocument } = await import("pdf-lib");
-      const bytes = await file.arrayBuffer();
-      const pdfDoc = await PDFDocument.load(bytes);
-      const title = pdfDoc.getTitle() || "(none)";
-      const author = pdfDoc.getAuthor() || "(none)";
-      const subject = pdfDoc.getSubject() || "(none)";
-      const creator = pdfDoc.getCreator() || "(none)";
-      const producer = pdfDoc.getProducer() || "(none)";
-      setBeforeMeta({ title, author, subject, creator, producer });
-
-      const pages = pdfDoc.getPages();
-      for (const page of pages) {
-        for (const key of Object.keys(page.node as any)) {
-          if (key.startsWith("Annots")) {
-            delete (page.node as any)[key];
-          }
-        }
-      }
-
-      pdfDoc.setTitle("Untitled");
-      pdfDoc.setAuthor("");
-      pdfDoc.setSubject("");
-      pdfDoc.setCreator("PDFTools");
-      pdfDoc.setProducer("PDFTools");
-
-      const pdfBytes = await pdfDoc.save();
-      const blob = new Blob([pdfBytes as unknown as BlobPart], { type: "application/pdf" });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `sanitized-${file.name}`;
-      a.click();
-      URL.revokeObjectURL(url);
+      if (!isPdfFile(file)) throw new Error("Please select a valid PDF file.");
+      const sanitized = await sanitizePdf(await file.arrayBuffer());
+      setBeforeMeta(sanitized.before);
+      downloadBytes(sanitized.bytes, `sanitized-${file.name}`);
       setSuccess(true);
-    } catch {
-      setError("Failed to sanitize metadata. The file may be encrypted or corrupted.");
+    } catch (sanitizeError) {
+      setError(sanitizeError instanceof Error ? sanitizeError.message : "Failed to sanitize metadata. The file may be encrypted or corrupted.");
+    } finally {
+      setProcessing(false);
     }
-    setProcessing(false);
   };
 
   return (
@@ -72,7 +46,7 @@ export default function MetadataSanitizerPage() {
       <div className="max-w-3xl mx-auto px-4 py-12">
         <SoftwareAppJsonLd name="PDF Metadata Sanitizer" description="Strip hidden metadata from PDFs. Privacy cleaning tool." url="https://allaboutpdfediting.xyz/metadata-sanitizer" image="https://allaboutpdfediting.xyz/opengraph-image.png" aggregateRating={{ ratingValue: 4.7, bestRating: 5, ratingCount: 89 }} />
         <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Metadata Sanitizer", item: "https://allaboutpdfediting.xyz/metadata-sanitizer" }]} />
-        <HowToJsonLd name="Clean PDF Metadata" description="Strip all hidden metadata from PDF documents including author and software info" steps={[{name:"Upload PDF",text:"Upload the PDF document to sanitize"},{name:"Select metadata to remove",text:"Choose which metadata fields to strip"},{name:"Download cleaned PDF",text:"Download the PDF with all selected metadata removed"}]} />
+        <HowToJsonLd name="Clean PDF Metadata" description="Rebuild a PDF without original metadata, attachments, actions, forms, or annotations" steps={[{name:"Upload PDF",text:"Select the PDF document to sanitize"},{name:"Rebuild document",text:"Copy page content into a fresh PDF while excluding document-level metadata and interactive objects"},{name:"Download cleaned PDF",text:"Download the rebuilt sanitized PDF"}]} />
         <AiSummaryJsonLd name="Metadata Sanitizer" summary="Remove hidden metadata from PDFs including author creation date software info annotations and embedded files" category="SecurityApplications" inputType="PDF" outputType="PDF" processing="client-side" price="premium" features={["Author removal","Date stripping","Software info removal","Annotation cleaning","Embedded file removal"]} limits="Premium subscribers" />
         
         <div className="mb-8">

@@ -12,6 +12,9 @@ import ProgressBar from "@/components/ProgressBar";
 import SuccessAnimation from "@/components/SuccessAnimation";
 import ErrorBanner from "@/components/ErrorBanner";
 import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
+import { getPipelineDocument } from "@/lib/pdfPipeline";
+import { copyPdfBytes, createPdfFile, downloadBytes, isPdfFile } from "@/lib/pdfBytes";
+import { encryptPdf, getPdfEncryptionInfo } from "@/lib/pdfSecurity";
 
 import HowToJsonLd from "@/components/HowToJsonLd";
 import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
@@ -36,41 +39,50 @@ export default function ProtectPage() {
   const [dragging, setDragging] = useState(false);
   const [showTimer, setShowTimer] = useState(false);
 
-  useEffect(() => { trackToolVisit("protect"); }, []);
+  useEffect(() => {
+    trackToolVisit("protect");
+    let cancelled = false;
+    void getPipelineDocument().then((pipelineDoc) => {
+      if (!cancelled && pipelineDoc?.bytes) {
+        setFile(createPdfFile(pipelineDoc.bytes, pipelineDoc.name));
+      }
+    });
+    return () => { cancelled = true; };
+  }, [trackToolVisit]);
 
   const handleFile = useCallback((f: File | null) => {
-    if (!f || f.type !== "application/pdf") return;
+    if (!f) return;
+    if (!isPdfFile(f)) { setError("Please select a valid PDF file."); return; }
     const check = checkFileSize(f.size);
     if (!check.ok) { upsell.showUpsell("file-size"); return; }
     setFile(f);
     setSuccess(false);
-  }, []);
+    setError(null);
+  }, [upsell]);
 
   const runProtect = useCallback(async () => {
-    if (!file || !password) return;
+    if (!file) return;
+    if (password.length < 4 || !password.trim()) {
+      setError("Use a non-blank password of at least 4 characters.");
+      return;
+    }
     setProcessing(true);
     const canProceed = await usage.checkAndTrack();
     if (!canProceed) { setProcessing(false); upsell.showUpsell("daily-limit"); return; }
     try {
-      const { PDFDocument } = await import("pdf-lib");
       const bytes = await file.arrayBuffer();
-      originalBytes.current = bytes;
-      const pdfDoc = await PDFDocument.load(bytes, { ignoreEncryption: true });
-      const protectedBytes = await pdfDoc.save({
-        userPassword: password,
-        ownerPassword: password,
-      } as never);
-      const blob = new Blob([protectedBytes.slice()], { type: "application/pdf" });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `protected-${file.name}`;
-      a.click();
-      trackExport(file.name, "Password Protect", bytes.byteLength);
-      URL.revokeObjectURL(url);
+      originalBytes.current = bytes.slice(0);
+      const protectedBytes = await encryptPdf(bytes, password);
+      const output = copyPdfBytes(protectedBytes);
+      const encryption = await getPdfEncryptionInfo(output);
+      if (!encryption.encrypted || encryption.algorithm !== "AES-256") {
+        throw new Error("The protected output failed encryption verification.");
+      }
+      downloadBytes(output, `protected-${file.name}`);
+      trackExport(file.name, "AES-256 Password Protect", output.byteLength);
       setSuccess(true);
-    } catch {
-      setError("Failed to protect PDF. The file may be corrupted.");
+    } catch (protectError) {
+      setError(protectError instanceof Error ? protectError.message : "Failed to protect PDF. The file may be corrupted.");
     }
     setProcessing(false);
   }, [file, password]);
@@ -93,7 +105,7 @@ export default function ProtectPage() {
     a.href = url;
     a.download = `original-${file?.name || "restored.pdf"}`;
     a.click();
-    URL.revokeObjectURL(url);
+    window.setTimeout(() => URL.revokeObjectURL(url), 60_000);
   }, [file]);
 
   return (
@@ -114,7 +126,7 @@ export default function ProtectPage() {
 
       <ToolInfo
         name="Password Protect"
-        description="Your file stays private. Password encryption is applied locally in your browser using pdf-lib — no uploads, no servers. Set a password and download your protected PDF instantly."
+        description="Your file stays private. AES-256 password encryption is applied locally with the Web Crypto API — no uploads or servers. The output is verified as encrypted before it downloads."
       />
 
       <div className="mb-4">
@@ -147,7 +159,8 @@ export default function ProtectPage() {
           <div className="mt-6">
             <label className="block text-sm font-medium text-[var(--foreground)] mb-2">Enter Password</label>
             <input
-              type="text"
+              type="password"
+              autoComplete="new-password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Enter a password to protect the PDF"
@@ -162,7 +175,7 @@ export default function ProtectPage() {
           <>
             <button
               onClick={protect}
-              disabled={!password || processing || showTimer}
+              disabled={password.length < 4 || !password.trim() || processing || showTimer}
               className="mt-6 w-full py-3 bg-indigo-600 text-white font-medium rounded-xl hover:bg-indigo-700 disabled:opacity-40 disabled:cursor-not-allowed transition shadow-sm"
             >
               {processing ? (
@@ -184,13 +197,13 @@ export default function ProtectPage() {
 
         {error && <ErrorBanner message={error} onRetry={runProtect} onDismiss={() => setError(null)} />}
 
-        <SuccessAnimation show={success} message="Password added!" onRestore={restoreOriginal} />
+        <SuccessAnimation show={success} message="AES-256 password protection added!" onRestore={restoreOriginal} />
       </div>
 
       <div className="max-w-3xl mx-auto mt-12 pt-8 border-t border-[var(--card-border)]">
         <h2 className="text-xl font-bold text-[var(--foreground)] mb-3">About Password Protect</h2>
         <div className="text-sm text-[var(--muted)] space-y-3 leading-relaxed">
-          <p>Secure your sensitive documents by adding a password with our protect tool, keeping your files safe from unauthorized access. To password protect PDF online free, upload your file, enter a strong password, and download the encrypted version instantly. The encryption is applied entirely in your browser using pdf-lib, so your document never leaves your device and no data is transmitted over the network. This is essential for protecting confidential business reports, personal financial documents, legal contracts, or any PDF that contains sensitive information. Once protected, the password must be entered to open the file, giving you full control over who can view it. Encrypt PDF file securely with our fully client-side tool — no data transmission, no server storage, complete privacy guaranteed.</p>
+          <p>Secure your sensitive documents by adding a password with our protect tool, keeping your files safe from unauthorized access. To password protect PDF online free, upload your file, enter a strong password, and download the encrypted version instantly. AES-256 encryption is applied entirely in your browser with the Web Crypto API, and the result is checked before download, so your document never leaves your device and no data is transmitted over the network. This is essential for protecting confidential business reports, personal financial documents, legal contracts, or any PDF that contains sensitive information. Once protected, the password must be entered to open the file, giving you full control over who can view it. Encrypt PDF file securely with our fully client-side tool — no data transmission, no server storage, complete privacy guaranteed.</p>
         </div>
       </div>
       <RelatedContent slug="protect" />

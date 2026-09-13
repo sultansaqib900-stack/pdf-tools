@@ -190,7 +190,7 @@ export default function UltimateGuidePage() {
           </div>
           <div className="border border-[var(--card-border)] rounded-xl p-4">
             <h3 className="font-semibold text-[var(--foreground)] mb-1"><Link href="/sign" className="text-indigo-500 hover:underline">Sign PDF</Link></h3>
-            <p className="text-xs text-[var(--muted)]">Add your signature and initials to PDF documents. Draw, type, or upload an image of your signature.</p>
+            <p className="text-xs text-[var(--muted)]">Add a visible signature mark to PDF documents by drawing with a mouse, pen, or touchscreen.</p>
           </div>
           <div className="border border-[var(--card-border)] rounded-xl p-4">
             <h3 className="font-semibold text-[var(--foreground)] mb-1"><Link href="/fill-form" className="text-indigo-500 hover:underline">Fill PDF Forms</Link></h3>

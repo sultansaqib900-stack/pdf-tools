@@ -26,7 +26,7 @@ const defaultQuestions: QA[] = [
   },
   {
     question: "How is PDFTools free?",
-    answer: "We display non-intrusive ads to cover costs. Premium subscriptions remove ads and unlock advanced features.",
+    answer: "Core tools have a free tier, while Premium subscriptions fund development and unlock larger limits and advanced workflows. No advertising scripts are currently loaded.",
   },
 ];
 
