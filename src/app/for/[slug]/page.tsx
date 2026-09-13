@@ -31,6 +31,13 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   return {
     title: page.title,
     description: page.description,
+    // These are useful landing pages for visitors arriving from internal links,
+    // but the audience/tool matrix is intentionally not indexed. This avoids
+    // presenting hundreds of near-duplicate doorway pages to Google.
+    robots: {
+      index: false,
+      follow: true,
+    },
     openGraph: {
       title: page.title,
       description: page.description,
@@ -106,6 +113,18 @@ export default async function SeoPage({ params }: { params: Promise<{ slug: stri
               expensive software or subscriptions.
             </p>
           </div>
+        </section>
+
+        {/* Audience-specific tasks make each use-case page genuinely useful rather than a thin doorway page. */}
+        <section className="mb-12">
+          <h2 className="text-2xl font-bold text-[var(--foreground)] mb-4">Common PDF tasks for {page.audience.replace("for ", "")}</h2>
+          <ul className="grid sm:grid-cols-3 gap-3">
+            {page.painPoints.map((task) => (
+              <li key={task} className="p-4 rounded-xl border border-[var(--card-border)] bg-[var(--card)] text-sm text-[var(--muted)] leading-relaxed">
+                <span className="block text-indigo-500 font-bold mb-2">PDF task</span>{task.charAt(0).toUpperCase() + task.slice(1)}.
+              </li>
+            ))}
+          </ul>
         </section>
 
         {/* Tool features */}
