@@ -57,9 +57,9 @@ export default function BlogPost() {
         <p>Scanned PDFs (image-based without selectable text) are not supported — the document must contain extractable text.</p>
 
         <div className="bg-[var(--card)] border border-[var(--card-border)] rounded-xl p-6 mt-6">
-          <p className="font-semibold text-[var(--foreground)] mb-1">Premium Feature</p>
-          <p className="text-sm text-[var(--muted)] mb-3">PDF to audio conversion is a premium feature with advanced voice controls. Upgrade to listen to your documents hands-free.</p>
-          <a href="/premium" className="inline-block px-5 py-2.5 bg-amber-600 text-white font-medium rounded-xl text-sm hover:bg-amber-700 transition">Upgrade to Premium →</a>
+          <p className="font-semibold text-[var(--foreground)] mb-1">Free Tool</p>
+          <p className="text-sm text-[var(--muted)] mb-3">The PDF to Audio reader is free and uses the speech-synthesis voices available in your browser. It provides live playback rather than MP3 export.</p>
+          <a href="/pdf-to-audio" className="inline-block px-5 py-2.5 bg-indigo-600 text-white font-medium rounded-xl text-sm hover:bg-indigo-700 transition">Open Free Tool →</a>
         </div>
       </div>
     </article>

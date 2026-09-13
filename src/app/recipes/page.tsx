@@ -14,7 +14,7 @@ const recipesFaqs = [
   },
   {
     question: "Can I create custom automation workflows?",
-    answer: "Yes! Use the Custom Recipe Builder tab to select your own sequence of operations, give it a name, and save it directly in your browser for recurring daily tasks.",
+    answer: "Custom Recipe Builder, all professional presets, and multi-file queues are Premium features. Free users can run the Academic Submission and Executive Signoff starter recipes on one PDF at a time.",
   },
   {
     question: "Do files get uploaded to the cloud when executing macros?",
@@ -55,7 +55,7 @@ export default function RecipesPage() {
           1-Click PDF Automation Recipes
         </h1>
         <p className="text-sm sm:text-base text-[var(--muted)]">
-          Chain repetitive operations (Bates stamping, PII redaction, watermarking, flattening, &amp; compression) into instant 1-click workflows.
+          Try two one-file starter workflows free. Premium unlocks every professional preset, custom macros, and multi-file automation queues.
         </p>
       </div>
 

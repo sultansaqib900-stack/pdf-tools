@@ -4,7 +4,7 @@ import { rateLimit, rateLimitResponse } from "@/lib/rate-limit";
 import { validateString } from "@/lib/validation";
 
 export async function GET(req: NextRequest) {
-  const { success, reset } = await rateLimit(req, { limit: 100, window: 60 });
+  const { success, reset } = await rateLimit(req, { limit: 100, window: 60, identifier: "usage-check" });
   if (!success) {
     return rateLimitResponse(reset);
   }

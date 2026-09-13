@@ -14,6 +14,11 @@ import {
 import PipelineActionBar from "@/components/PipelineActionBar";
 import { getPipelineDocument } from "@/lib/pdfPipeline";
 import { createPdfFile, isPdfFile, sanitizeDownloadFilename } from "@/lib/pdfBytes";
+import { STARTER_RECIPE_IDS } from "@/lib/toolCatalog";
+import { checkFileSize } from "@/lib/premium";
+import { usePremiumStatus } from "@/hooks/usePremiumStatus";
+import PremiumUpsell, { usePremiumUpsell } from "@/components/PremiumUpsell";
+import { useUsage } from "@/hooks/useUsage";
 
 interface RecipeResult {
   name: string;
@@ -35,7 +40,12 @@ const CUSTOM_ACTIONS: RecipeActionType[] = [
   "protect",
 ];
 
+const STARTER_RECIPES = new Set<string>(STARTER_RECIPE_IDS);
+
 export default function RecipeRunner() {
+  const { premium, ready: premiumReady } = usePremiumStatus();
+  const upsell = usePremiumUpsell();
+  const usage = useUsage("recipes");
   const [recipes, setRecipes] = useState<PdfRecipe[]>(DEFAULT_RECIPES);
   const [selectedRecipe, setSelectedRecipe] = useState<PdfRecipe>(DEFAULT_RECIPES[0]);
   const [files, setFiles] = useState<File[]>([]);
@@ -53,6 +63,8 @@ export default function RecipeRunner() {
   const [customDesc, setCustomDesc] = useState("");
   const [customActions, setCustomActions] = useState<RecipeActionType[]>(["watermark", "compress"]);
 
+  const isStarterRecipe = STARTER_RECIPES.has(selectedRecipe.id);
+  const recipeAvailable = premiumReady && (premium || isStarterRecipe);
   const needsPassword = selectedRecipe.actions.some((action) => action.type === "protect");
   const successfulResults = useMemo(
     () => results.filter((result): result is RecipeResult & { bytes: Uint8Array; url: string } => Boolean(result.bytes && result.url)),
@@ -81,6 +93,22 @@ export default function RecipeRunner() {
 
   const replaceFiles = (incoming: File[]) => {
     const pdfs = incoming.filter(isPdfFile);
+    const oversized = pdfs.find((file) => !checkFileSize(file.size).ok);
+    if (oversized) {
+      setError(checkFileSize(oversized.size).message || "This PDF exceeds your file-size limit.");
+      upsell.showUpsell("file-size");
+      return;
+    }
+    if (premium && pdfs.length > 20) {
+      setFiles(pdfs.slice(0, 20));
+      setError("Premium recipe queues support up to 20 PDFs at a time.");
+      return;
+    }
+    if (!premium && pdfs.length > 1) {
+      setFiles(pdfs.slice(0, 1));
+      setError("Starter recipes process one PDF at a time. Premium unlocks multi-file recipe queues.");
+      return;
+    }
     setFiles(pdfs);
     setStepLogs([]);
     setResults([]);
@@ -89,8 +117,30 @@ export default function RecipeRunner() {
 
   const handleRunRecipe = async () => {
     if (files.length === 0 || !selectedRecipe) return;
+    const oversized = files.find((file) => !checkFileSize(file.size).ok);
+    if (oversized) {
+      setError(checkFileSize(oversized.size).message);
+      upsell.showUpsell("file-size");
+      return;
+    }
+    if (!recipeAvailable) {
+      upsell.showUpsell("premium-only", "Free accounts include the Academic & Grant Submission and Executive & Client Confidential starter recipes. Upgrade for every preset, custom macros, and multi-file queues.");
+      return;
+    }
+    if (!premium && files.length > 1) {
+      setError("Starter recipes process one PDF at a time.");
+      return;
+    }
+    if (premium && files.length > 20) {
+      setError("Premium recipe queues support up to 20 PDFs at a time.");
+      return;
+    }
     if (needsPassword && recipePassword.length < 4) {
       setError("Enter a password of at least 4 characters for the AES-256 protection step.");
+      return;
+    }
+    if (!(await usage.checkAndTrack())) {
+      upsell.showUpsell("daily-limit", "You've used today's free processing allowance. Premium unlocks unlimited recipe runs.");
       return;
     }
 
@@ -147,6 +197,10 @@ export default function RecipeRunner() {
   };
 
   const handleCreateCustomRecipe = () => {
+    if (!premium) {
+      upsell.showUpsell("premium-only", "Custom automation macros are included with Premium. Try either free starter recipe from the Presets tab.");
+      return;
+    }
     if (!customName.trim() || customActions.length === 0) return;
     const actions = [...customActions];
     // Encrypted output cannot be edited by a subsequent recipe operation.
@@ -189,6 +243,14 @@ export default function RecipeRunner() {
     });
   };
 
+  if (!premiumReady) {
+    return (
+      <div className="p-8 rounded-3xl border border-[var(--card-border)] bg-[var(--card)] text-center text-sm text-[var(--muted)] animate-pulse">
+        Checking recipe access…
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-8">
       <div className="flex items-center justify-center p-1.5 bg-[var(--card)] border border-[var(--card-border)] rounded-2xl w-fit max-w-full mx-auto overflow-x-auto">
@@ -201,12 +263,21 @@ export default function RecipeRunner() {
         </button>
         <button
           type="button"
-          onClick={() => setActiveTab("custom")}
+          onClick={() => {
+            if (premium) setActiveTab("custom");
+            else upsell.showUpsell("premium-only", "Premium unlocks custom automation macros. Two starter recipes remain free.");
+          }}
           className={`px-5 sm:px-6 py-2.5 rounded-xl text-xs sm:text-sm font-extrabold transition-all whitespace-nowrap ${activeTab === "custom" ? "bg-indigo-600 text-white shadow-md shadow-indigo-500/20" : "text-[var(--muted)] hover:text-[var(--foreground)]"}`}
         >
           🛠️ Custom Builder
         </button>
       </div>
+
+      {!premium && (
+        <div className="p-4 rounded-2xl border border-emerald-500/30 bg-emerald-500/10 text-sm text-emerald-600 dark:text-emerald-400 text-center">
+          <strong>Free starter access:</strong> run Academic &amp; Grant Submission or Executive &amp; Client Confidential on one PDF at a time. Premium unlocks all presets, custom macros, and multi-file queues.
+        </div>
+      )}
 
       {error && (
         <div role="alert" className="p-4 rounded-2xl border border-red-500/30 bg-red-500/10 text-sm text-red-500 flex items-start justify-between gap-3">
@@ -220,18 +291,27 @@ export default function RecipeRunner() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {recipes.map((recipe) => {
               const selected = selectedRecipe.id === recipe.id;
+              const available = premiumReady && (premium || STARTER_RECIPES.has(recipe.id));
               return (
                 <button
                   type="button"
                   key={recipe.id}
-                  onClick={() => { setSelectedRecipe(recipe); setStepLogs([]); setResults([]); setError(null); }}
+                  onClick={() => {
+                    if (!available) {
+                      upsell.showUpsell("premium-only", `${recipe.name} is a Premium automation recipe. Try Academic & Grant Submission or Executive & Client Confidential for free.`);
+                      return;
+                    }
+                    setSelectedRecipe(recipe); setStepLogs([]); setResults([]); setError(null);
+                  }}
                   aria-pressed={selected}
-                  className={`p-5 rounded-3xl border transition-all flex flex-col justify-between text-left relative overflow-hidden group ${selected ? "border-indigo-500 bg-gradient-to-br from-indigo-500/10 via-[var(--card)] to-purple-500/10 shadow-xl shadow-indigo-500/10 ring-2 ring-indigo-500/30" : "border-[var(--card-border)] bg-[var(--card)] hover:border-indigo-500/40"}`}
+                  className={`p-5 rounded-3xl border transition-all flex flex-col justify-between text-left relative overflow-hidden group ${!available ? "border-amber-500/20 bg-[var(--card)] opacity-75" : selected ? "border-indigo-500 bg-gradient-to-br from-indigo-500/10 via-[var(--card)] to-purple-500/10 shadow-xl shadow-indigo-500/10 ring-2 ring-indigo-500/30" : "border-[var(--card-border)] bg-[var(--card)] hover:border-indigo-500/40"}`}
                 >
                   <span className="w-full">
                     <span className="flex items-center justify-between mb-3">
                       <span className="text-3xl">{recipe.icon}</span>
-                      <span className="text-[10px] font-extrabold px-2.5 py-1 rounded-full bg-indigo-500/20 text-indigo-400 border border-indigo-500/30">{recipe.badge}</span>
+                      <span className={`text-[10px] font-extrabold px-2.5 py-1 rounded-full border ${available ? "bg-emerald-500/15 text-emerald-500 border-emerald-500/30" : "bg-amber-500/15 text-amber-500 border-amber-500/30"}`}>
+                        {available && !premium ? "Free starter" : available ? recipe.badge : "🔒 Premium"}
+                      </span>
                     </span>
                     <span className="block text-base font-extrabold text-[var(--foreground)] mb-1.5 group-hover:text-indigo-400 transition">{recipe.name}</span>
                     <span className="block text-xs text-[var(--muted)] leading-relaxed mb-4">{recipe.description}</span>
@@ -266,7 +346,7 @@ export default function RecipeRunner() {
               <input
                 type="file"
                 accept="application/pdf,.pdf"
-                multiple
+                multiple={premium}
                 id="recipeFileInput"
                 className="hidden"
                 onChange={(event) => replaceFiles(Array.from(event.target.files ?? []))}
@@ -318,10 +398,10 @@ export default function RecipeRunner() {
             <button
               type="button"
               onClick={handleRunRecipe}
-              disabled={running || files.length === 0 || (needsPassword && recipePassword.length < 4)}
+              disabled={running || files.length === 0 || !recipeAvailable || (needsPassword && recipePassword.length < 4)}
               className="w-full py-4 bg-gradient-to-r from-indigo-500 via-purple-600 to-pink-500 text-white font-extrabold rounded-2xl hover:opacity-95 disabled:opacity-40 transition-all shadow-xl shadow-indigo-500/25 text-base active:scale-[0.99]"
             >
-              {running ? `Running recipe${currentFile ? ` on ${currentFile}` : ""}…` : `⚡ Run “${selectedRecipe.name}” on ${files.length || 0} PDF${files.length === 1 ? "" : "s"}`}
+              {!recipeAvailable ? "🔒 Premium recipe" : running ? `Running recipe${currentFile ? ` on ${currentFile}` : ""}…` : `⚡ Run “${selectedRecipe.name}” on ${files.length || 0} PDF${files.length === 1 ? "" : "s"}`}
             </button>
           </div>
         </>
@@ -387,6 +467,12 @@ export default function RecipeRunner() {
           currentToolName={selectedRecipe.name}
         />
       )}
+      <PremiumUpsell
+        show={upsell.state.show}
+        mode={upsell.state.mode}
+        message={upsell.state.message}
+        onClose={upsell.hideUpsell}
+      />
     </div>
   );
 }

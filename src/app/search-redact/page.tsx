@@ -7,6 +7,7 @@ import { usePageMeta } from "@/hooks/usePageMeta";
 import HowToJsonLd from "@/components/HowToJsonLd";
 import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
 import PremiumGate from "@/components/PremiumGate";
+import { checkFileSize } from "@/lib/premium";
 import { secureRedactPdf, type PdfRedactionArea } from "@/lib/pdfRaster";
 import { copyPdfBytes, downloadBytes, isPdfFile } from "@/lib/pdfBytes";
 import { findPositionedTextMatches, type PositionedTextItem } from "@/lib/textSearch";
@@ -52,6 +53,8 @@ export default function SearchRedactPage() {
     setSuccess(false);
     try {
       if (!isPdfFile(file)) throw new Error("Please select a valid PDF file.");
+      const sizeCheck = checkFileSize(file.size);
+      if (!sizeCheck.ok) throw new Error(sizeCheck.message);
       const terms = Array.from(new Set(searchTerms.split(",").map((term) => term.trim()).filter(Boolean)));
       const bytes = new Uint8Array(await file.arrayBuffer());
       const pdfjsLib = await import("pdfjs-dist");

@@ -91,7 +91,8 @@ const PII_PATTERNS: Record<PiiType, { regex: RegExp; label: string; mask: (v: st
 export async function scanPdfForPii(
   pdfBytes: Uint8Array | ArrayBuffer,
   activeTypes: PiiType[] = ["ssn", "creditCard", "email", "phone", "currency", "iban", "ipAddress"],
-  customTerms: string[] = []
+  customTerms: string[] = [],
+  maxPages: number = Number.POSITIVE_INFINITY,
 ): Promise<PiiScanResult> {
   if (typeof globalThis !== "undefined") {
     if (typeof (globalThis as any).DOMMatrix === "undefined") {
@@ -111,7 +112,7 @@ export async function scanPdfForPii(
   // copy prevents the caller's pipeline bytes from becoming detached.
   const loadingTask = pdfjsLib.getDocument({ data: copyPdfBytes(pdfBytes) });
   const pdf = await loadingTask.promise;
-  const totalPages = pdf.numPages;
+  const totalPages = Math.min(pdf.numPages, Math.max(1, Math.floor(maxPages)));
 
   const matches: PiiMatch[] = [];
   const byTypeCount: Record<PiiType, number> = {
@@ -125,7 +126,7 @@ export async function scanPdfForPii(
   };
 
   try {
-    for (let pageIdx = 0; pageIdx < pdf.numPages; pageIdx++) {
+    for (let pageIdx = 0; pageIdx < totalPages; pageIdx++) {
       const page = await pdf.getPage(pageIdx + 1);
     const content = await page.getTextContent();
 

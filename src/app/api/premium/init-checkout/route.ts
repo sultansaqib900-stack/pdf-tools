@@ -1,32 +1,38 @@
 import { NextRequest, NextResponse } from "next/server";
 import crypto from "crypto";
-import { createClient } from "@vercel/kv";
-
-const kv = createClient({
-  url: process.env.pdf_tools_KV_REST_API_URL || process.env.KV_REST_API_URL || "",
-  token: process.env.pdf_tools_KV_REST_API_TOKEN || process.env.KV_REST_API_TOKEN || "",
-});
+import { setCheckoutRecord } from "@/lib/kv";
+import { rateLimit, rateLimitResponse } from "@/lib/rate-limit";
+import { validateString } from "@/lib/validation";
+import { getAuthenticatedSession } from "@/lib/auth/request";
 
 export async function POST(req: NextRequest) {
+  if (!process.env.LEMONSQUEEZY_WEBHOOK_SECRET) {
+    return NextResponse.json({ ok: false, error: "Payments are temporarily unavailable." }, { status: 503 });
+  }
+  const { success, reset } = await rateLimit(req, { limit: 10, window: 60, identifier: "premium-checkout" });
+  if (!success) return rateLimitResponse(reset);
+
   try {
-    const { clientId, plan } = await req.json();
+    const body = await req.json();
+    const clientId = validateString(body.clientId, 100);
+    const plan = body.plan === "monthly" || body.plan === "yearly" ? body.plan : null;
     if (!clientId || !plan) {
-      return NextResponse.json({ ok: false, error: "clientId and plan required" }, { status: 400 });
-    }
-    if (plan !== "monthly" && plan !== "yearly") {
-      return NextResponse.json({ ok: false, error: "plan must be 'monthly' or 'yearly'" }, { status: 400 });
+      return NextResponse.json({ ok: false, error: "A valid clientId and plan are required." }, { status: 400 });
     }
 
+    const session = await getAuthenticatedSession(req);
     const nonce = crypto.randomBytes(24).toString("hex");
+    await setCheckoutRecord(nonce, {
+      clientId,
+      plan,
+      paid: false,
+      used: false,
+      ...(session ? { accountUserId: session.userId, accountEmail: session.email } : {}),
+    });
 
-    try {
-      await kv.set(`pdftools:checkout:${nonce}`, JSON.stringify({ clientId, plan, used: false }), { ex: 7200 });
-    } catch {
-      // KV not available — return nonce anyway, confirm will fail gracefully
-    }
-
-    return NextResponse.json({ ok: true, nonce });
+    return NextResponse.json({ ok: true, nonce, email: session?.email });
   } catch {
-    return NextResponse.json({ ok: false, error: "Failed to initialize checkout" }, { status: 500 });
+    // Checkout must fail closed if a pending record cannot be persisted.
+    return NextResponse.json({ ok: false, error: "Checkout could not be initialized. Please try again." }, { status: 503 });
   }
 }

@@ -10,7 +10,8 @@ import ProgressBar from "@/components/ProgressBar";
 import SuccessAnimation from "@/components/SuccessAnimation";
 import ErrorBanner from "@/components/ErrorBanner";
 import PremiumUpsell, { usePremiumUpsell } from "@/components/PremiumUpsell";
-import { isPremium, checkFileSize } from "@/lib/premium";
+import { useAuth } from "@/components/AuthProvider";
+import { getClientId, isPremium, checkFileSize } from "@/lib/premium";
 import { useUsage } from "@/hooks/useUsage";
 import { useToolHistory } from "@/hooks/useToolHistory";
 import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
@@ -29,6 +30,7 @@ const rc = getRelatedContent("pdf-to-excel");
 export default function PdfToExcelPage() {
   const usage = useUsage();
   const upsell = usePremiumUpsell();
+  const { token } = useAuth();
   const { trackToolVisit, trackExport } = useToolHistory();
   const [file, setFile] = useState<File | null>(null);
   const [processing, setProcessing] = useState(false);
@@ -161,8 +163,11 @@ export default function PdfToExcelPage() {
 
         const response = await fetch("/api/extract-tables", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ pages }),
+          headers: {
+            "Content-Type": "application/json",
+            ...(token ? { authorization: `Bearer ${token}` } : {}),
+          },
+          body: JSON.stringify({ pages, clientId: getClientId() }),
         });
         const data = await response.json() as { ok?: boolean; csv?: string; error?: string };
         if (!response.ok || !data.ok || !data.csv?.trim()) {
@@ -180,7 +185,7 @@ export default function PdfToExcelPage() {
     } finally {
       setProcessing(false);
     }
-  }, [file, allowAiFallback, usage, upsell, trackExport]);
+  }, [file, allowAiFallback, usage, upsell, trackExport, token]);
 
   const extract = useCallback(async () => {
     if (!file) return;
@@ -250,7 +255,7 @@ export default function PdfToExcelPage() {
         processing="client-side by default; optional opt-in Gemini fallback for scanned pages"
         price="free"
         features={["Baseline row grouping", "Horizontal text ordering", "CSV preview", "Opt-in scanned-page AI fallback"]}
-        limits="Complex layouts require manual review; AI fallback sends up to the first 3 pages to Google Gemini"
+        limits="Complex layouts require manual review; one free AI fallback per day sends up to the first 3 pages to Google Gemini; Premium removes the daily AI limit"
       />
       <canvas ref={canvasRef} className="hidden" />
 
@@ -312,7 +317,7 @@ export default function PdfToExcelPage() {
 
         <label className="flex items-start gap-3 p-4 rounded-2xl border border-amber-500/30 bg-amber-500/5 cursor-pointer">
           <input type="checkbox" checked={allowAiFallback} onChange={(event) => setAllowAiFallback(event.target.checked)} className="mt-0.5 accent-amber-500" />
-          <span className="text-xs text-[var(--muted)] leading-relaxed"><strong className="text-[var(--foreground)]">Optional scanned-page AI fallback:</strong> if no selectable text exists, send rendered images of up to the first 3 pages through this site&apos;s server to the configured Google Gemini API. Leave off to keep processing entirely local.</span>
+          <span className="text-xs text-[var(--muted)] leading-relaxed"><strong className="text-[var(--foreground)]">Optional scanned-page AI fallback:</strong> if no selectable text exists, send rendered images of up to the first 3 pages through this site&apos;s server to the configured Google Gemini API. Free includes one table-extraction preview per day; Premium removes the daily AI limit. Leave off to keep processing entirely local.</span>
         </label>
 
         <ProgressBar processing={processing} fileSize={file?.size} label="Extracting positioned text into CSV rows..." />
@@ -426,7 +431,7 @@ export default function PdfToExcelPage() {
         <h2 className="text-xl font-bold text-[var(--foreground)] mb-3">About Positioned PDF Text Extraction</h2>
         <div className="text-sm text-[var(--muted)] space-y-3 leading-relaxed">
           <p>The local heuristic groups text items with nearby vertical baselines into rows and orders each row by horizontal position. This works for many simple text-based tables, but PDFs do not store a universal table model, so merged cells, wrapped rows, and decorative layouts can be grouped incorrectly. Review every row before relying on the CSV.</p>
-          <p>Scanned pages have no selectable text. If you explicitly enable the AI fallback, images of up to the first three pages are sent through this site&apos;s API to the configured Google Gemini service; otherwise no page content is uploaded.</p>
+          <p>Scanned pages have no selectable text. If you explicitly enable the AI fallback, images of up to the first three pages are sent through this site&apos;s API to the configured Google Gemini service; otherwise no page content is uploaded. Free access includes one AI table-extraction preview per day, while Premium removes the daily AI limit.</p>
         </div>
       </div>
       <RelatedContent slug="pdf-to-excel" />

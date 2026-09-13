@@ -1,9 +1,35 @@
 // === PREMIUM & USAGE STATE MANAGEMENT ===
-// Uses localStorage for fast client-side checks + server-side KV for verification.
-// Falls back to localStorage when API is unavailable.
+// Premium entitlement is verified by the server. Browser storage contains only
+// an anonymous device ID and is never trusted as proof of payment.
 
-const STORAGE_KEY = "pdftools_premium";
 const CLIENT_ID_KEY = "pdftools_client_id";
+
+export interface PremiumSnapshot {
+  premium: boolean;
+  ready: boolean;
+}
+
+const SERVER_PREMIUM_SNAPSHOT: PremiumSnapshot = { premium: false, ready: false };
+let premiumSnapshot: PremiumSnapshot = SERVER_PREMIUM_SNAPSHOT;
+let premiumRequestVersion = 0;
+const premiumListeners = new Set<() => void>();
+
+function emitPremiumChange(): void {
+  for (const listener of premiumListeners) listener();
+}
+
+export function subscribePremium(listener: () => void): () => void {
+  premiumListeners.add(listener);
+  return () => premiumListeners.delete(listener);
+}
+
+export function getPremiumSnapshot(): PremiumSnapshot {
+  return premiumSnapshot;
+}
+
+export function getServerPremiumSnapshot(): PremiumSnapshot {
+  return SERVER_PREMIUM_SNAPSHOT;
+}
 
 export function getClientId(): string {
   if (typeof window === "undefined") return "";
@@ -15,66 +41,96 @@ export function getClientId(): string {
   return id;
 }
 
-let _isPremiumVal: boolean | undefined;
-
 export function isPremium(): boolean {
-  if (typeof window === "undefined") return false;
-  if (_isPremiumVal === undefined) {
-    _isPremiumVal = localStorage.getItem(STORAGE_KEY) === "true";
-  }
-  return _isPremiumVal;
+  return premiumSnapshot.ready && premiumSnapshot.premium;
 }
 
-export function setPremium(value: boolean): void {
-  if (typeof window === "undefined") return;
-  localStorage.setItem(STORAGE_KEY, value ? "true" : "false");
-  _isPremiumVal = value;
+/** Update the in-memory UI cache after a trusted server response. */
+export function setPremium(value: boolean, ready = true): void {
+  const next = { premium: value, ready };
+  if (next.premium === premiumSnapshot.premium && next.ready === premiumSnapshot.ready) return;
+  premiumSnapshot = next;
+  emitPremiumChange();
 }
 
-export async function verifyPremiumServer(email?: string): Promise<boolean> {
+export function markPremiumChecking(): void {
+  setPremium(false, false);
+}
+
+function authHeaders(token?: string): Record<string, string> {
+  return token ? { authorization: `Bearer ${token}` } : {};
+}
+
+export async function verifyPremiumServer(token?: string): Promise<boolean> {
+  const requestVersion = ++premiumRequestVersion;
   const clientId = getClientId();
-  if (!clientId && !email) return isPremium();
+  if (!clientId) {
+    if (requestVersion === premiumRequestVersion) setPremium(false);
+    return false;
+  }
+
+  if (!premiumSnapshot.ready) markPremiumChecking();
   try {
-    const params = new URLSearchParams();
-    if (clientId) params.set("clientId", clientId);
-    if (email) params.set("email", email);
-    const res = await fetch(`/api/premium/verify?${params}`);
+    const res = await fetch(`/api/premium/verify?clientId=${encodeURIComponent(clientId)}`, {
+      headers: authHeaders(token),
+      cache: "no-store",
+    });
+    if (!res.ok) {
+      if (requestVersion === premiumRequestVersion) setPremium(false);
+      return false;
+    }
     const data = await res.json();
-    if (data.premium) setPremium(true);
-    return data.premium;
+    const premium = data.premium === true;
+    if (requestVersion === premiumRequestVersion) setPremium(premium);
+    return premium;
   } catch {
-    return isPremium();
+    // Payment state fails closed. A network failure must never grant access.
+    if (requestVersion === premiumRequestVersion) setPremium(false);
+    return false;
   }
 }
 
-export async function confirmPremium(nonce?: string, email?: string): Promise<boolean> {
+export async function confirmPremium(nonce?: string, token?: string): Promise<boolean> {
+  const requestVersion = ++premiumRequestVersion;
   const clientId = getClientId();
+  if (!clientId || !nonce) {
+    if (requestVersion === premiumRequestVersion) setPremium(false);
+    return false;
+  }
+
   try {
     const res = await fetch("/api/premium/confirm", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ clientId, nonce, email }),
+      headers: { "Content-Type": "application/json", ...authHeaders(token) },
+      body: JSON.stringify({ clientId, nonce }),
     });
+    if (!res.ok) return false;
     const data = await res.json();
-    if (data.premium) setPremium(true);
-    return data.premium;
+    const premium = data.premium === true;
+    if (premium && requestVersion === premiumRequestVersion) setPremium(true);
+    return premium;
   } catch {
-    setPremium(true);
-    return true;
+    return false;
   }
 }
 
-export async function claimPremium(email: string): Promise<boolean> {
+/** Bind this device to the authenticated user's verified purchase. */
+export async function claimPremium(token: string): Promise<boolean> {
+  const requestVersion = ++premiumRequestVersion;
   const clientId = getClientId();
+  if (!clientId || !token) return false;
+
   try {
     const res = await fetch("/api/premium/claim", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email: email.trim(), clientId }),
+      headers: { "Content-Type": "application/json", ...authHeaders(token) },
+      body: JSON.stringify({ clientId }),
     });
+    if (!res.ok) return false;
     const data = await res.json();
-    if (data.premium) setPremium(true);
-    return data.premium;
+    const premium = data.premium === true;
+    if (premium && requestVersion === premiumRequestVersion) setPremium(true);
+    return premium;
   } catch {
     return false;
   }
@@ -87,7 +143,7 @@ export async function peekUsage(): Promise<{ ok: boolean; remaining: number }> {
     const data = await res.json();
     return { ok: data.ok, remaining: data.remaining ?? 0 };
   } catch {
-    return { ok: true, remaining: 5 };
+    return { ok: true, remaining: FREE_LIMITS.maxDailyUses };
   }
 }
 
@@ -102,7 +158,7 @@ export async function trackUsage(): Promise<{ ok: boolean; remaining: number }> 
     const data = await res.json();
     return { ok: data.ok, remaining: data.remaining ?? 0 };
   } catch {
-    return { ok: true, remaining: 5 };
+    return { ok: true, remaining: FREE_LIMITS.maxDailyUses };
   }
 }
 
@@ -110,15 +166,14 @@ export async function getTotalProcessed(): Promise<number> {
   try {
     const res = await fetch("/api/usage/stats");
     const data = await res.json();
-    return data.total || 0;
+    return typeof data.total === "number" && data.total >= 0 ? data.total : 0;
   } catch {
-    return 12430;
+    return 0;
   }
 }
 
-export const UNLIMITED_TOOLS = [
-  "compress", "image-to-pdf", "split", "unlock",
-] as const;
+// Every free tool uses the same transparent daily allowance. Premium removes it.
+export const UNLIMITED_TOOLS = [] as const;
 
 export function isUnlimited(tool: string): boolean {
   return (UNLIMITED_TOOLS as readonly string[]).includes(tool);
@@ -127,7 +182,7 @@ export function isUnlimited(tool: string): boolean {
 export const FREE_LIMITS = {
   maxFileSize: 10 * 1024 * 1024,
   maxDailyUses: 5,
-  waitSeconds: 2,
+  waitSeconds: 0,
 } as const;
 
 export const PREMIUM_LIMITS = {
@@ -144,7 +199,7 @@ export function checkFileSize(size: number): { ok: boolean; message: string } {
   const limits = getLimits();
   if (size > limits.maxFileSize) {
     const maxMB = limits.maxFileSize / 1024 / 1024;
-    return { ok: false, message: `File too large. Free tier supports up to ${maxMB}MB. Upgrade to Premium for up to 100MB.` };
+    return { ok: false, message: `File too large. This tier supports up to ${maxMB}MB. Premium supports up to 100MB.` };
   }
   return { ok: true, message: "" };
 }

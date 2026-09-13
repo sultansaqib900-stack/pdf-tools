@@ -7,6 +7,7 @@ import { usePageMeta } from "@/hooks/usePageMeta";
 import HowToJsonLd from "@/components/HowToJsonLd";
 import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
 import PremiumGate from "@/components/PremiumGate";
+import { checkFileSize } from "@/lib/premium";
 
 interface DiffBlock {
   page: number;
@@ -154,6 +155,8 @@ export default function PdfDiffPage() {
 
   const runDiff = async () => {
     if (!docA || !docB) return;
+    const oversized = [docA, docB].find((file) => !checkFileSize(file.size).ok);
+    if (oversized) { setError(checkFileSize(oversized.size).message); return; }
     setProcessing(true);
     setError(null);
     try {

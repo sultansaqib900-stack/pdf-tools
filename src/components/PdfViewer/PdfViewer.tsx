@@ -47,7 +47,7 @@ export default function PdfViewer({ file, onClose }: PdfViewerProps) {
         GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";
       }
       const buf = await file.arrayBuffer();
-      const pdf = await getDocument(buf).promise;
+      const pdf = await getDocument({ data: buf }).promise;
       if (cancelled) return;
       setDoc(pdf);
       setNumPages(pdf.numPages);

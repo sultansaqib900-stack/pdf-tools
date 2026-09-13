@@ -2,24 +2,11 @@
 
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
+import { PREMIUM_TOOLS, PREMIUM_TOOL_COUNT, type ToolDefinition } from "@/lib/toolCatalog";
 
-const premiumFeatures = [
-  { icon: "🔍", title: "PDF Diff", desc: "Compare two PDF documents side by side and see exactly what changed — word by word, page by page.", href: "/pdf-diff", color: "from-teal-400 to-cyan-600" },
-  { icon: "🏆", title: "Certificate Generator", desc: "Create personalized PDF certificates in bulk. Upload a template + CSV, generate 100s of certificates instantly.", href: "/certificate-generator", color: "from-purple-500 to-indigo-700" },
-  { icon: "🎧", title: "PDF to Audio", desc: "Convert any PDF to spoken audio. Listen to documents while commuting, exercising, or multitasking.", href: "/pdf-to-audio", color: "from-rose-400 to-pink-600" },
-  { icon: "📊", title: "Form Data Extraction", desc: "Extract filled PDF form fields to CSV. Process survey responses, applications, and forms in bulk.", href: "/form-data-extract", color: "from-emerald-500 to-teal-700" },
-  { icon: "🏷️", title: "Bulk Rename", desc: "Rename dozens of PDFs at once using their embedded metadata — title, author, page count.", href: "/bulk-rename", color: "from-blue-400 to-indigo-600" },
-  { icon: "📖", title: "Booklet Creator", desc: "Convert PDFs into printable booklets, N-up grids, and saddle-stitch layouts for professional printing.", href: "/booklet", color: "from-orange-400 to-red-600" },
-  { icon: "⬛", title: "Search & Redact", desc: "Auto-redact specific words or phrases across your entire document. Perfect for compliance and privacy.", href: "/search-redact", color: "from-slate-600 to-gray-900" },
-  { icon: "🎨", title: "Color Inverter", desc: "Transform PDF colors — dark mode reading, grayscale printing, or high-contrast accessibility.", href: "/pdf-inverter", color: "from-violet-400 to-purple-600" },
-  { icon: "🔐", title: "PDF Vault", desc: "Store sensitive PDFs in an encrypted browser vault with password protection. Never lose track of documents.", href: "/vault", color: "from-cyan-400 to-blue-600" },
-  { icon: "📱", title: "QR Code Stamp", desc: "Add QR codes to every page of your PDF. Link to websites, payments, or any content.", href: "/qr-stamp", color: "from-green-500 to-emerald-700" },
-  { icon: "🧹", title: "Metadata Sanitizer", desc: "Strip all hidden metadata — author, creation date, software info, annotations, and embedded files.", href: "/metadata-sanitizer", color: "from-yellow-500 to-orange-700" },
-  { icon: "📑", title: "Split by Bookmarks", desc: "Extract chapters, sections, and parts from your PDF based on its bookmark outline.", href: "/split-by-bookmarks", color: "from-fuchsia-400 to-pink-600" },
-  { icon: "🔢", title: "Bates Numbering", desc: "Add sequential page numbers and custom labels to every page. Essential for legal documents.", href: "/bates-numbering", color: "from-amber-400 to-yellow-600" },
-];
+const premiumFeatures = PREMIUM_TOOLS;
 
-function FeatureCard({ feature, index }: { feature: typeof premiumFeatures[0]; index: number }) {
+function FeatureCard({ feature, index }: { feature: ToolDefinition; index: number }) {
   const ref = useRef<HTMLAnchorElement>(null);
   const [visible, setVisible] = useState(false);
 
@@ -44,7 +31,7 @@ function FeatureCard({ feature, index }: { feature: typeof premiumFeatures[0]; i
       }}
     >
       <div className="flex items-start gap-4">
-        <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${feature.color} flex items-center justify-center text-2xl shadow-sm shrink-0 group-hover:scale-110 group-hover:shadow-md transition-all duration-300`}>
+        <div className={`w-12 h-12 rounded-xl ${feature.gradient} flex items-center justify-center text-2xl shadow-sm shrink-0 group-hover:scale-110 group-hover:shadow-md transition-all duration-300`}>
           {feature.icon}
         </div>
         <div>
@@ -52,7 +39,7 @@ function FeatureCard({ feature, index }: { feature: typeof premiumFeatures[0]; i
             <h3 className="font-bold text-[var(--foreground)] group-hover:text-amber-600 transition text-sm">{feature.title}</h3>
             <span className="text-[10px] font-bold text-amber-500">⭐</span>
           </div>
-          <p className="text-xs text-[var(--muted)] mt-1 leading-relaxed">{feature.desc}</p>
+          <p className="text-xs text-[var(--muted)] mt-1 leading-relaxed">{feature.description}</p>
         </div>
       </div>
     </Link>
@@ -75,7 +62,7 @@ export default function PremiumFeatureShowcase() {
             Supercharge Your PDF Workflow
           </h2>
           <p className="text-lg text-[var(--muted)] max-w-2xl mx-auto">
-            Exclusive tools you won&apos;t find in any free PDF editor. Document comparison, AI audio, bulk certificates, and more.
+            {PREMIUM_TOOL_COUNT} professional tools for AI assistance, secure redaction, automation, legal work, and bulk document processing.
           </p>
         </div>
 

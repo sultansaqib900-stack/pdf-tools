@@ -9,7 +9,7 @@ export default function LiveStats() {
     fetch("/api/usage/stats")
       .then((r) => r.json())
       .then((d) => setTotal(d.total))
-      .catch(() => setTotal(12430));
+      .catch(() => setTotal(0));
   }, []);
 
   return (

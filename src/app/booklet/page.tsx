@@ -8,6 +8,7 @@ import { usePageMeta } from "@/hooks/usePageMeta";
 import HowToJsonLd from "@/components/HowToJsonLd";
 import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
 import PremiumGate from "@/components/PremiumGate";
+import { checkFileSize } from "@/lib/premium";
 import { downloadBytes } from "@/lib/pdfBytes";
 
 type Layout = "booklet" | "2x2" | "4x4";
@@ -22,6 +23,8 @@ export default function BookletPage() {
 
   const generate = async () => {
     if (!file) return;
+    const sizeCheck = checkFileSize(file.size);
+    if (!sizeCheck.ok) { setError(sizeCheck.message); return; }
     setProcessing(true);
     setError(null);
     setSuccess(false);

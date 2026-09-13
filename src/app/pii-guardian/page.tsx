@@ -14,7 +14,7 @@ const piiFaqs = [
   },
   {
     question: "Is this redaction permanent or just visual?",
-    answer: "Selected matches are removed by rendering each page, applying opaque black boxes, and creating a new image-based PDF. The original text and content streams are not copied into that output, but you should still inspect the downloaded file before sharing it.",
+    answer: "Permanent redacted export is a Premium feature. Selected matches are removed by rendering each page, applying opaque black boxes, and creating a new image-based PDF. Free users can safely preview masked pattern matches on page 1 without modifying the source file.",
   },
   {
     question: "Does this tool guarantee HIPAA, GDPR, or legal compliance?",
@@ -35,8 +35,8 @@ export default function PiiGuardianPage() {
         description="Detect and blackout confidential PII data in 3 clicks"
         steps={[
           { name: "Upload PDF", text: "Select or drag your PDF into the zero-knowledge scanner" },
-          { name: "1-Click Scan", text: "Click Scan for PII to automatically detect SSNs, cards, and emails" },
-          { name: "Blackout & Download", text: "Review detected sensitive items and burn permanent blackout rectangles" },
+          { name: "Scan", text: "Preview masked matches on page 1 free, or scan all pages with Premium" },
+          { name: "Review and Export", text: "Review matches; Premium can burn permanent blackouts and export a new PDF" },
         ]}
       />
       <BreadcrumbJsonLd
@@ -55,7 +55,7 @@ export default function PiiGuardianPage() {
           PII Guardian — Pattern Scan & Secure Redaction
         </h1>
         <p className="text-sm sm:text-base text-[var(--muted)] max-w-2xl">
-          Scan selectable PDF text for common sensitive-data patterns, review the matches, and securely raster-redact the selected areas in your browser.
+          Preview masked sensitive-data matches on page 1 for free. Premium scans the full document and securely raster-redacts selected areas in your browser.
         </p>
       </div>
 
@@ -84,7 +84,7 @@ export default function PiiGuardianPage() {
             <span className="text-2xl">⚡</span>
             <h3 className="text-base font-bold text-[var(--foreground)]">1-Click Auto-Detection</h3>
             <p className="text-xs text-[var(--muted)] leading-relaxed">
-              No need to skim hundreds of pages manually. Our regex engine flags all sensitive patterns in seconds.
+              The free preview checks page 1; Premium checks every page. The regex engine flags supported patterns for human review.
             </p>
           </div>
 

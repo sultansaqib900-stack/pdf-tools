@@ -7,6 +7,7 @@ import { usePageMeta } from "@/hooks/usePageMeta";
 import HowToJsonLd from "@/components/HowToJsonLd";
 import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
 import PremiumGate from "@/components/PremiumGate";
+import { checkFileSize } from "@/lib/premium";
 import { createZipArchive } from "@/lib/archive";
 import { isPdfFile, downloadBytes } from "@/lib/pdfBytes";
 
@@ -28,6 +29,10 @@ export default function BulkRenamePage() {
 
   const handleFiles = async (selected: FileList | null) => {
     if (!selected) return;
+    const incoming = Array.from(selected);
+    if (incoming.length > 20) { setError("Select up to 20 PDFs per rename batch."); return; }
+    const oversized = incoming.find((file) => !checkFileSize(file.size).ok);
+    if (oversized) { setError(checkFileSize(oversized.size).message); return; }
     setProcessing(true);
     setError(null);
     const metas: FileMeta[] = [];

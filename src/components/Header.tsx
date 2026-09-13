@@ -3,8 +3,9 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState, lazy, Suspense, useEffect } from "react";
-import { isPremium } from "@/lib/premium";
 import { useAuth } from "@/components/AuthProvider";
+import { usePremiumStatus } from "@/hooks/usePremiumStatus";
+import { PREMIUM_TOOLS, PREMIUM_TOOL_COUNT, TOOL_CATALOG } from "@/lib/toolCatalog";
 
 const ShareModal = lazy(() => import("./ShareModal"));
 const ExportHistory = lazy(() => import("./ExportHistory"));
@@ -14,7 +15,7 @@ export default function Header() {
   const pathname = usePathname() || "/";
   const [theme, setTheme] = useState("midnight");
   const [menuOpen, setMenuOpen] = useState(false);
-  const [premium, setPremiumState] = useState(false);
+  const { premium } = usePremiumStatus();
   const [shareOpen, setShareOpen] = useState(false);
   const [premiumMenu, setPremiumMenu] = useState(false);
   const [resourcesMenu, setResourcesMenu] = useState(false);
@@ -22,7 +23,6 @@ export default function Header() {
   const [themeMenu, setThemeMenu] = useState(false);
 
   useEffect(() => {
-    setPremiumState(isPremium());
     const currentTheme = document.documentElement.getAttribute("data-theme") || "midnight";
     setTheme(currentTheme);
   }, []);
@@ -44,8 +44,8 @@ export default function Header() {
 
   const navLinks = [
     { href: "/studio", label: "⚡ PDF Studio", highlight: true },
-    { href: "/recipes", label: "⚡ Recipes" },
-    { href: "/pii-guardian", label: "🛡️ PII Guardian" },
+    { href: "/recipes", label: "⭐ Recipes" },
+    { href: "/pii-guardian", label: "⭐ PII Guardian" },
     { href: "/vs/adobe-acrobat", label: "⚔️ vs Adobe" },
     { href: "/compress", label: "Compress" },
   ];
@@ -90,7 +90,7 @@ export default function Header() {
     {
       name: "Security & Sign",
       links: [
-        { href: "/pii-guardian", label: "🛡️ PII Guardian (Auto-Redact)" },
+        { href: "/pii-guardian", label: "⭐ PII Guardian (Free Preview)" },
         { href: "/protect", label: "Protect PDF" },
         { href: "/unlock", label: "Unlock PDF" },
         { href: "/sign", label: "Sign PDF" },
@@ -102,31 +102,21 @@ export default function Header() {
     {
       name: "Extract & AI",
       links: [
-        { href: "/recipes", label: "⚡ PDF Automation Recipes" },
+        { href: "/recipes", label: "⭐ Automation Recipes (Preview)" },
         { href: "/extract-text", label: "Extract Text" },
         { href: "/ocr-pdf", label: "OCR PDF" },
-        { href: "/chat-pdf", label: "Chat with PDF (AI)" },
+        { href: "/chat-pdf", label: "⭐ Chat with PDF (3 Free/Day)" },
         { href: "/fill-form", label: "Fill PDF Form" },
-        { href: "/batch", label: "Batch Process" },
+        { href: "/batch", label: "⭐ Batch Process" },
       ],
     },
   ];
 
-  const premiumLinks = [
-    { href: "/pdf-diff", label: "PDF Diff" },
-    { href: "/certificate-generator", label: "Certificates" },
-    { href: "/pdf-to-audio", label: "PDF to Audio" },
-    { href: "/form-data-extract", label: "Form Data" },
-    { href: "/bulk-rename", label: "Bulk Rename" },
-    { href: "/booklet", label: "Booklet" },
-    { href: "/search-redact", label: "Search Redact" },
-    { href: "/pdf-inverter", label: "Inverter" },
-    { href: "/vault", label: "Vault" },
-    { href: "/qr-stamp", label: "QR Stamp" },
-    { href: "/metadata-sanitizer", label: "Sanitizer" },
-    { href: "/split-by-bookmarks", label: "Split Bookmarks" },
-    { href: "/bates-numbering", label: "Bates Numbering" },
-  ];
+  const premiumLinks = PREMIUM_TOOLS.map((tool) => ({
+    href: tool.href,
+    label: tool.title,
+    hasFreePreview: tool.hasFreePreview,
+  }));
 
   return (
     <header className="w-full border-b border-[var(--card-border)] bg-[var(--background)]/85 backdrop-blur-xl sticky top-0 z-50 transition-all duration-300">
@@ -183,7 +173,7 @@ export default function Header() {
 
           <div className="relative" onMouseEnter={() => setPremiumMenu(true)} onMouseLeave={() => setPremiumMenu(false)}>
             <button className="text-amber-500 hover:text-amber-600 px-3 py-1.5 rounded-xl transition-all font-bold flex items-center gap-1.5 bg-amber-500/10 border border-amber-500/20">
-              ⭐ Premium (13 Tools)
+              ⭐ Premium ({PREMIUM_TOOL_COUNT} Tools)
               <svg className={`w-3.5 h-3.5 transition-transform duration-200 ${premiumMenu ? "rotate-180" : ""}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
             </button>
             {premiumMenu && (
@@ -196,7 +186,7 @@ export default function Header() {
                       onClick={() => setPremiumMenu(false)}
                       className="block px-3 py-2 text-xs font-semibold text-[var(--muted)] hover:text-amber-500 hover:bg-amber-500/10 rounded-xl transition-all"
                     >
-                      ⭐ {link.label}
+                      ⭐ {link.label}{link.hasFreePreview ? " · Preview" : ""}
                     </Link>
                   ))}
                 </div>
@@ -357,7 +347,7 @@ export default function Header() {
                   {link.label}
                 </Link>
               ))}
-              <Link href="/tools" onClick={() => setMenuOpen(false)} className="block p-2 rounded-xl bg-[var(--background)] text-xs font-medium text-indigo-500 transition border border-[var(--card-border)]">All 40+ Tools →</Link>
+              <Link href="/tools" onClick={() => setMenuOpen(false)} className="block p-2 rounded-xl bg-[var(--background)] text-xs font-medium text-indigo-500 transition border border-[var(--card-border)]">All {TOOL_CATALOG.length} Tools →</Link>
               <Link href="/premium" onClick={() => setMenuOpen(false)} className="block p-2 rounded-xl bg-[var(--background)] text-xs font-medium text-amber-500 transition border border-[var(--card-border)]">Premium Tier →</Link>
             </div>
           </div>

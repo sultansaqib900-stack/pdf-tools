@@ -7,6 +7,7 @@ import { usePageMeta } from "@/hooks/usePageMeta";
 import HowToJsonLd from "@/components/HowToJsonLd";
 import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
 import PremiumGate from "@/components/PremiumGate";
+import { checkFileSize } from "@/lib/premium";
 import { copyPdfBytes, downloadBytes, isPdfFile, sanitizeDownloadFilename } from "@/lib/pdfBytes";
 import { parseCsv } from "@/lib/csv";
 
@@ -74,6 +75,8 @@ export default function CertificateGeneratorPage() {
   const handleTemplate = (file: File | null) => {
     if (!file) return;
     if (!isPdfFile(file)) { setError("Please choose a valid PDF template."); return; }
+    const sizeCheck = checkFileSize(file.size);
+    if (!sizeCheck.ok) { setError(sizeCheck.message); return; }
     setTemplate(file);
     setError(null);
     setSuccess(false);
@@ -82,6 +85,7 @@ export default function CertificateGeneratorPage() {
   const handleCsv = async (file: File | null) => {
     if (!file) return;
     if (!/\.csv$/i.test(file.name)) { setError("Please choose a CSV data file."); return; }
+    if (file.size > 5 * 1024 * 1024) { setError("CSV files are limited to 5MB."); return; }
     try {
       const parsed = parseCsv(await file.text());
       setCsvData(file);
@@ -97,6 +101,8 @@ export default function CertificateGeneratorPage() {
 
   const generate = async () => {
     if (!template || !csvData) return;
+    const sizeCheck = checkFileSize(template.size);
+    if (!sizeCheck.ok) { setError(sizeCheck.message); return; }
     setGenerating(true);
     setProgress(0);
     setGeneratedCount(0);

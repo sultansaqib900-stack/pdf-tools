@@ -5,7 +5,7 @@ import { validateString } from "@/lib/validation";
 
 export async function POST(req: NextRequest) {
   // Rate limit: 100 requests per minute per IP
-  const { success, reset } = await rateLimit(req, { limit: 100, window: 60 });
+  const { success, reset } = await rateLimit(req, { limit: 100, window: 60, identifier: "usage-track" });
   if (!success) {
     return rateLimitResponse(reset);
   }
@@ -18,7 +18,7 @@ export async function POST(req: NextRequest) {
     }
 
     const usage = await incrementDailyUsage(clientId);
-    return NextResponse.json({ ok: true, ...usage });
+    return NextResponse.json(usage);
   } catch {
     return NextResponse.json({ ok: false, error: "Invalid request" }, { status: 400 });
   }

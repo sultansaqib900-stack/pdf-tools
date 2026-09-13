@@ -7,6 +7,7 @@ import { usePageMeta } from "@/hooks/usePageMeta";
 import HowToJsonLd from "@/components/HowToJsonLd";
 import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
 import PremiumGate from "@/components/PremiumGate";
+import { checkFileSize } from "@/lib/premium";
 import { downloadBytes, isPdfFile } from "@/lib/pdfBytes";
 import { sanitizePdf, type PdfMetadataSnapshot } from "@/lib/pdfSanitize";
 
@@ -26,6 +27,8 @@ export default function MetadataSanitizerPage() {
     setBeforeMeta(null);
     try {
       if (!isPdfFile(file)) throw new Error("Please select a valid PDF file.");
+      const sizeCheck = checkFileSize(file.size);
+      if (!sizeCheck.ok) throw new Error(sizeCheck.message);
       const sanitized = await sanitizePdf(await file.arrayBuffer());
       setBeforeMeta(sanitized.before);
       downloadBytes(sanitized.bytes, `sanitized-${file.name}`);

@@ -26,13 +26,13 @@ import PrivacyHUD from "@/components/PrivacyHUD";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://allaboutpdfediting.xyz"),
-  title: "PDFTools - Free Online PDF Tools | Compress, Merge, Split & More",
+  title: "PDFTools - 52 Online PDF Tools",
   description:
-    "40+ free online PDF tools including premium features: compress, merge, split, convert images, extract text, compare PDFs, generate certificates, convert PDF to audio, create booklets, and more. 100% free, no uploads, all processing happens in your browser.",
+    "39 core PDF tools with free access plus 13 professional tools for AI, automation, secure redaction, legal, and bulk workflows. Most file processing happens locally in your browser.",
   keywords: ["PDF tools", "compress PDF", "merge PDF", "split PDF", "free online PDF editor", "PDF converter", "sign PDF", "protect PDF", "PDF compressor", "merge PDF files", "split PDF pages", "PDF creator", "edit PDF", "PDF merger", "PDF splitter", "PDF comparison", "PDF audio", "PDF certificates", "PDF booklet", "PDF redact", "PDF metadata"],
   openGraph: {
-    title: "PDFTools - Free Online PDF Tools",
-    description: "40+ free and premium PDF tools. Compress, merge, split, compare, convert to audio, generate certificates, and more. No uploads. 100% free.",
+    title: "PDFTools - 52 Online PDF Tools",
+    description: "39 core tools with a free tier and 13 professional workflows for automation, AI, redaction, legal work, and bulk processing.",
     url: "https://allaboutpdfediting.xyz",
     siteName: "PDFTools",
     type: "website",
@@ -41,8 +41,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "PDFTools - Free Online PDF Tools",
-    description: "40+ free and premium PDF tools. Compress, merge, split, compare, convert to audio, and more. No uploads. 100% free.",
+    title: "PDFTools - 52 Online PDF Tools",
+    description: "Free core PDF editing and conversion plus professional AI, automation, redaction, legal, and bulk workflows.",
     images: ["https://allaboutpdfediting.xyz/opengraph-image.png"],
   },
   manifest: "/manifest.json",

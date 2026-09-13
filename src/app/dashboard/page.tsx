@@ -6,9 +6,11 @@ import { useRouter } from "next/navigation";
 import { useToolHistory } from "@/hooks/useToolHistory";
 import { listFiles, deleteFile, type StoredFile } from "@/lib/fileStore";
 import Link from "next/link";
+import { usePremiumStatus } from "@/hooks/usePremiumStatus";
 
 export default function DashboardPage() {
   const { user, loading, logout } = useAuth();
+  const { premium: isPremium } = usePremiumStatus();
   const router = useRouter();
   const [files, setFiles] = useState<StoredFile[]>([]);
   const { exportHistory, clearHistory } = useToolHistory();
@@ -48,7 +50,6 @@ export default function DashboardPage() {
   if (loading) return <div className="flex justify-center py-20"><p className="text-[var(--muted)]">Loading...</p></div>;
   if (!user) return null;
 
-  const isPremium = user.premium === true;
   const remaining = 5 - usageCount;
 
   const quickActions = [

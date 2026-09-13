@@ -1,19 +1,21 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getPremiumStatus, getPremiumStatusByEmail } from "@/lib/kv";
+import { resolveRequestEntitlement } from "@/lib/premiumServer";
+import { rateLimit, rateLimitResponse } from "@/lib/rate-limit";
 
 export async function GET(req: NextRequest) {
-  const clientId = req.nextUrl.searchParams.get("clientId");
-  const email = req.nextUrl.searchParams.get("email");
+  const { success, reset } = await rateLimit(req, { limit: 60, window: 60, identifier: "premium-verify" });
+  if (!success) return rateLimitResponse(reset);
 
-  if (email) {
-    const emailPremium = await getPremiumStatusByEmail(email);
-    if (emailPremium) return NextResponse.json({ premium: true });
+  const entitlement = await resolveRequestEntitlement(
+    req,
+    req.nextUrl.searchParams.get("clientId"),
+  );
+  if (!entitlement) {
+    return NextResponse.json({ premium: false, error: "Invalid clientId" }, { status: 400 });
   }
 
-  if (!clientId) {
-    return NextResponse.json({ premium: false });
-  }
-
-  const premium = await getPremiumStatus(clientId);
-  return NextResponse.json({ premium });
+  return NextResponse.json(
+    { premium: entitlement.premium },
+    { headers: { "Cache-Control": "private, no-store" } },
+  );
 }

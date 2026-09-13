@@ -12,6 +12,11 @@ import { encryptPdf, getPdfEncryptionInfo } from "@/lib/pdfSecurity";
 import { compressPdfBytes } from "@/lib/pdfRaster";
 import { canvasToImageBytes } from "@/lib/imageBytes";
 import { locateSignatureOnPdfPage } from "@/lib/pdfSignature";
+import { STARTER_RECIPE_IDS } from "@/lib/toolCatalog";
+import { checkFileSize } from "@/lib/premium";
+import { usePremiumStatus } from "@/hooks/usePremiumStatus";
+import PremiumUpsell, { usePremiumUpsell } from "@/components/PremiumUpsell";
+import { useUsage } from "@/hooks/useUsage";
 
 type ActiveTab = "pages" | "pii" | "recipes" | "sign" | "watermark" | "protect" | "compress";
 
@@ -22,12 +27,16 @@ interface PageMetaInfo {
   deleted: boolean;
 }
 
+const STUDIO_STARTER_RECIPES = new Set<string>(STARTER_RECIPE_IDS);
 const SIGNATURE_PAD_WIDTH = 380;
 const SIGNATURE_PAD_HEIGHT = 150;
 const SIGNATURE_PDF_WIDTH = 150;
 const SIGNATURE_PDF_HEIGHT = SIGNATURE_PDF_WIDTH * SIGNATURE_PAD_HEIGHT / SIGNATURE_PAD_WIDTH;
 
 export default function StudioPage() {
+  const { premium, ready: premiumReady } = usePremiumStatus();
+  const upsell = usePremiumUpsell();
+  const usage = useUsage("studio");
   const [pdfBytes, setPdfBytes] = useState<Uint8Array | null>(null);
   const [docName, setDocName] = useState<string>("document.pdf");
   const [pages, setPages] = useState<PageMetaInfo[]>([]);
@@ -139,9 +148,15 @@ export default function StudioPage() {
 
   // Initial load from pipeline or file drop
   useEffect(() => {
+    if (!premiumReady) return;
     let cancelled = false;
     void getPipelineDocument().then(async (activePipeline) => {
       if (cancelled || !activePipeline?.bytes) return;
+      const sizeCheck = checkFileSize(activePipeline.bytes.byteLength);
+      if (!sizeCheck.ok) {
+        if (!cancelled) showError(sizeCheck.message);
+        return;
+      }
       try {
         await loadPdfData(activePipeline.bytes, activePipeline.name);
         if (!cancelled) {
@@ -152,14 +167,31 @@ export default function StudioPage() {
       }
     });
     return () => { cancelled = true; };
-  }, [loadPdfData, showError]);
+  }, [loadPdfData, premiumReady, showError]);
 
   // Handle local file selection
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const selected = event.target.files?.[0];
     if (!selected) return;
+    if (!premiumReady) {
+      showError("Checking your account tier. Please try again in a moment.");
+      event.target.value = "";
+      return;
+    }
     if (!isPdfFile(selected)) {
       showError("Please select a valid PDF file.");
+      event.target.value = "";
+      return;
+    }
+    const sizeCheck = checkFileSize(selected.size);
+    if (!sizeCheck.ok) {
+      showError(sizeCheck.message || "This PDF exceeds your file-size limit.");
+      upsell.showUpsell("file-size");
+      event.target.value = "";
+      return;
+    }
+    if (!(await usage.checkAndTrack())) {
+      upsell.showUpsell("daily-limit");
       event.target.value = "";
       return;
     }
@@ -288,16 +320,25 @@ export default function StudioPage() {
   // PII Scanning & Redaction Step inside Studio
   const handleScanPii = async () => {
     if (!pdfBytes) return;
+    if (!premiumReady) {
+      showError("Checking your account tier. Please try again in a moment.");
+      return;
+    }
     setPiiScanning(true);
     setPiiMatches([]);
     try {
-      const result = await scanPdfForPii(pdfBytes);
+      const result = await scanPdfForPii(
+        pdfBytes,
+        undefined,
+        [],
+        premium ? Number.POSITIVE_INFINITY : 1,
+      );
       setPiiMatches(result.matches);
       setPiiScanned(true);
       if (result.matches.length > 0) {
-        success(`Found ${result.matches.length} sensitive items in document.`);
+        success(`Found ${result.matches.length} sensitive item${result.matches.length === 1 ? "" : "s"}${premium ? " in the document" : " in the page-1 preview"}.`);
       } else {
-        success("No sensitive items detected!");
+        success(premium ? "No sensitive items detected." : "No sensitive items detected on page 1. Premium scans every page.");
       }
     } catch {
       showError("PII scan failed.");
@@ -308,6 +349,10 @@ export default function StudioPage() {
 
   const handleApplyPiiRedactions = async () => {
     if (!pdfBytes || piiMatches.length === 0) return;
+    if (!premium) {
+      upsell.showUpsell("premium-only", "Studio includes a free masked PII preview for page 1. Premium unlocks full-document scanning and permanent redacted export.");
+      return;
+    }
     const selected = piiMatches.filter(m => m.selected);
     if (selected.length === 0) {
       showError("No items selected for redaction.");
@@ -330,6 +375,14 @@ export default function StudioPage() {
   // Run Recipe Step inside Studio
   const handleExecuteRecipeInStudio = async (recipe: PdfRecipe) => {
     if (!pdfBytes) return;
+    if (!premiumReady) {
+      showError("Checking your account tier. Please try again in a moment.");
+      return;
+    }
+    if (!premium && !STUDIO_STARTER_RECIPES.has(recipe.id)) {
+      upsell.showUpsell("premium-only", `${recipe.name} is a Premium recipe. Academic & Grant Submission and Executive & Client Confidential are available as free starters.`);
+      return;
+    }
     const createsProtectedOutput = recipe.actions.some((action) => action.type === "protect");
     if (createsProtectedOutput && recipePassword.length < 4) {
       showError("Enter a password of at least 4 characters before running this protected recipe.");
@@ -906,23 +959,23 @@ export default function StudioPage() {
                       <span>🛡️</span> PII &amp; Secrets Auto-Redactor
                     </h3>
                     <p className="text-xs text-[var(--muted)]">
-                      Scan in-memory document for SSNs, credit cards, emails, and phone numbers.
+                      {premium ? "Scan the in-memory document for SSNs, cards, emails, and phone numbers." : "Free preview scans page 1 and masks findings. Premium scans and redacts the full document."}
                     </p>
                   </div>
 
                   {!piiScanned ? (
                     <button
                       onClick={handleScanPii}
-                      disabled={piiScanning}
+                      disabled={piiScanning || !premiumReady}
                       className="w-full py-3.5 bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 text-white text-xs font-extrabold rounded-xl hover:opacity-95 disabled:opacity-40 transition shadow-md shadow-indigo-500/20 active:scale-[0.99]"
                     >
-                      {piiScanning ? "Scanning Active Document..." : "⚡ 1-Click Scan for PII Data"}
+                      {!premiumReady ? "Checking Account Tier..." : piiScanning ? "Scanning Active Document..." : premium ? "⚡ Scan Full Document for PII" : "⚡ Preview Page 1 for PII"}
                     </button>
                   ) : (
                     <div className="space-y-3">
                       <div className="p-3 bg-[var(--background)] rounded-xl border border-[var(--card-border)] flex items-center justify-between text-xs">
                         <span className="font-bold text-[var(--foreground)]">
-                          Found {piiMatches.length} Sensitive Item(s)
+                          Found {piiMatches.length} Sensitive Item(s){premium ? "" : " on Page 1"}
                         </span>
                         <button
                           onClick={handleScanPii}
@@ -959,12 +1012,12 @@ export default function StudioPage() {
                             disabled={processing}
                             className="w-full py-3 bg-gradient-to-r from-red-600 via-rose-600 to-amber-600 text-white text-xs font-extrabold rounded-xl hover:opacity-95 disabled:opacity-40 transition shadow-md shadow-red-500/20 active:scale-[0.99]"
                           >
-                            {processing ? "Applying Redactions..." : `⬛ Burn Permanent Blackouts (${piiMatches.filter(m => m.selected).length})`}
+                            {processing ? "Applying Redactions..." : premium ? `⬛ Burn Permanent Blackouts (${piiMatches.filter(m => m.selected).length})` : "🔒 Upgrade to Export Redacted PDF"}
                           </button>
                         </>
                       ) : (
                         <p className="text-xs text-emerald-400 font-bold text-center py-4">
-                          ✓ Document is clean! No PII found.
+                          {premium ? "✓ Document is clean! No PII found." : "✓ No PII found on page 1. Upgrade to scan the remaining pages."}
                         </p>
                       )}
                     </div>
@@ -1010,15 +1063,20 @@ export default function StudioPage() {
                             <div className="flex items-center gap-1.5">
                               <span className="text-base">{recipe.icon}</span>
                               <h4 className="text-xs font-bold text-[var(--foreground)]">{recipe.name}</h4>
+                              {!premium && (
+                                <span className={`text-[9px] font-bold ${STUDIO_STARTER_RECIPES.has(recipe.id) ? "text-emerald-500" : "text-amber-500"}`}>
+                                  {STUDIO_STARTER_RECIPES.has(recipe.id) ? "FREE STARTER" : "PREMIUM"}
+                                </span>
+                              )}
                             </div>
                             <p className="text-[10px] text-[var(--muted)] mt-1 line-clamp-2">{recipe.description}</p>
                           </div>
                           <button
                             onClick={() => handleExecuteRecipeInStudio(recipe)}
-                            disabled={processing || (recipe.actions.some((action) => action.type === "protect") && recipePassword.length < 4)}
+                            disabled={!premiumReady || processing || ((premium || STUDIO_STARTER_RECIPES.has(recipe.id)) && recipe.actions.some((action) => action.type === "protect") && recipePassword.length < 4)}
                             className="px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-[10px] font-bold shrink-0 transition disabled:opacity-40"
                           >
-                            Run Macro
+                            {!premium && !STUDIO_STARTER_RECIPES.has(recipe.id) ? "🔒 Upgrade" : "Run Macro"}
                           </button>
                         </div>
                       </div>
@@ -1415,6 +1473,12 @@ export default function StudioPage() {
           <span>{toast.message}</span>
         </div>
       )}
+      <PremiumUpsell
+        show={upsell.state.show}
+        mode={upsell.state.mode}
+        message={upsell.state.message}
+        onClose={upsell.hideUpsell}
+      />
     </div>
   );
 }

@@ -78,6 +78,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const logout = () => {
+    if (token) {
+      void fetch("/api/auth/logout", {
+        method: "POST",
+        headers: { authorization: `Bearer ${token}` },
+        keepalive: true,
+      });
+    }
     setToken(null);
     setUser(null);
   };

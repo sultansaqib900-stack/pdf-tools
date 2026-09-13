@@ -6,10 +6,13 @@ import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 import { usePageMeta } from "@/hooks/usePageMeta";
 import HowToJsonLd from "@/components/HowToJsonLd";
 import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
-import PremiumGate from "@/components/PremiumGate";
+import { isPdfFile } from "@/lib/pdfBytes";
+import { checkFileSize } from "@/lib/premium";
+import { useUsage } from "@/hooks/useUsage";
 
 export default function QrStampPage() {
-  usePageMeta("Add QR Code to PDF - QR Code Stamping Tool | PDFTools Premium", "Add QR codes and barcodes to any PDF page. Choose position, size, and data. Premium stamping tool.");
+  const usage = useUsage("qr-stamp");
+  usePageMeta("Add QR Code to PDF - QR Code Stamping Tool | PDFTools", "Add QR codes and barcodes to any PDF page. Choose position, size, and data. Free browser-based stamping tool.");
   const [file, setFile] = useState<File | null>(null);
   const [qrData, setQrData] = useState("https://allaboutpdfediting.xyz");
   const [position, setPosition] = useState<"bottom-right" | "bottom-left" | "top-right" | "top-left">("bottom-right");
@@ -29,6 +32,10 @@ export default function QrStampPage() {
 
   const stamp = async () => {
     if (!file || !qrData.trim()) return;
+    if (!isPdfFile(file)) { setError("Please select a valid PDF file."); return; }
+    const sizeCheck = checkFileSize(file.size);
+    if (!sizeCheck.ok) { setError(sizeCheck.message); return; }
+    if (!(await usage.checkAndTrack())) { setError("Daily free processing limit reached. Upgrade to Premium for unlimited processing."); return; }
     setProcessing(true);
     setError(null);
     setSuccess(false);
@@ -84,28 +91,22 @@ export default function QrStampPage() {
   };
 
   return (
-    <PremiumGate
-      title="Dynamic QR Code & Barcode PDF Stamper"
-      description="Embed interactive, scannable QR codes and URLs directly onto every page of your PDF documents."
-      icon="📱"
-    >
       <div className="max-w-3xl mx-auto px-4 py-12">
-        <SoftwareAppJsonLd name="QR Code PDF Stamping" description="Add QR codes and barcodes to any PDF page. Premium." url="https://allaboutpdfediting.xyz/qr-stamp" image="https://allaboutpdfediting.xyz/opengraph-image.png" aggregateRating={{ ratingValue: 4.6, bestRating: 5, ratingCount: 112 }} />
+        <SoftwareAppJsonLd name="QR Code PDF Stamping" description="Add QR codes and barcodes to any PDF page. Free." url="https://allaboutpdfediting.xyz/qr-stamp" image="https://allaboutpdfediting.xyz/opengraph-image.png" aggregateRating={{ ratingValue: 4.6, bestRating: 5, ratingCount: 112 }} />
         <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "QR Stamp", item: "https://allaboutpdfediting.xyz/qr-stamp" }]} />
         <HowToJsonLd name="Add QR Code to PDF" description="Add QR codes to every page of a PDF document" steps={[{name:"Upload PDF",text:"Upload the PDF document to stamp with QR codes"},{name:"Enter URL or text",text:"Type the URL or text to encode in the QR code"},{name:"Download stamped PDF",text:"Download the PDF with QR codes added to each page"}]} />
-        <AiSummaryJsonLd name="QR Code Stamp" summary="Add QR codes to every page of PDF documents with customizable position and size" category="Graphics" inputType="PDF+Text" outputType="PDF" processing="client-side" price="premium" features={["QR code generation","Position customization","Size adjustment","No external APIs"]} limits="Premium subscribers" />
+        <AiSummaryJsonLd name="QR Code Stamp" summary="Add QR codes to every page of PDF documents with customizable position and size" category="Graphics" inputType="PDF+Text" outputType="PDF" processing="client-side" price="free" features={["QR code generation","Position customization","Size adjustment","No external APIs"]} limits="10MB free or 100MB Premium; limited daily free processing" />
         
         <div className="mb-8">
           <div className="flex items-center gap-3 mb-2">
             <h1 className="text-3xl font-extrabold text-[var(--foreground)]">QR Code Stamp</h1>
-            <span className="text-xs font-bold bg-gradient-to-r from-amber-500 to-orange-600 text-white px-3 py-1 rounded-full shadow-sm">Premium</span>
           </div>
           <p className="text-[var(--muted)]">Add QR codes to every page of your PDF. Link to websites, documents, or any text content.</p>
         </div>
 
         <div className="bg-[var(--card)] border border-[var(--card-border)] rounded-2xl p-6 sm:p-8 space-y-6 shadow-xl">
           <div className="border-2 border-dashed border-[var(--card-border)] hover:border-indigo-500/50 rounded-2xl p-6 text-center">
-            <input type="file" accept=".pdf" onChange={(e) => setFile(e.target.files?.[0] || null)} className="text-sm file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:bg-indigo-600 file:text-white file:text-xs file:font-semibold w-full cursor-pointer" />
+            <input type="file" accept="application/pdf,.pdf" onChange={(e) => { const selected = e.target.files?.[0] || null; if (!selected) return; const sizeCheck = checkFileSize(selected.size); if (!isPdfFile(selected)) setError("Please select a valid PDF file."); else if (!sizeCheck.ok) setError(sizeCheck.message); else { setFile(selected); setError(null); setSuccess(false); } }} className="text-sm file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:bg-indigo-600 file:text-white file:text-xs file:font-semibold w-full cursor-pointer" />
             {file && <p className="text-xs text-emerald-600 font-semibold mt-2">Selected: {file.name} ({(file.size / 1024).toFixed(0)} KB)</p>}
           </div>
 
@@ -142,6 +143,5 @@ export default function QrStampPage() {
         {success && <div className="mt-4 p-4 bg-emerald-500/10 border border-emerald-500/30 rounded-2xl text-center text-sm text-emerald-600 font-bold">✅ QR code stamped and downloaded!</div>}
         {error && <div className="mt-6 p-4 bg-red-500/10 border border-red-500/30 rounded-2xl text-red-500 text-sm">{error}</div>}
       </div>
-    </PremiumGate>
   );
 }

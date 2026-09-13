@@ -7,6 +7,7 @@ import { usePageMeta } from "@/hooks/usePageMeta";
 import HowToJsonLd from "@/components/HowToJsonLd";
 import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
 import PremiumGate from "@/components/PremiumGate";
+import { checkFileSize } from "@/lib/premium";
 import { escapeCsvCell } from "@/lib/csv";
 import { isPdfFile } from "@/lib/pdfBytes";
 
@@ -20,6 +21,9 @@ export default function FormDataExtractPage() {
 
   const extract = async () => {
     if (files.length === 0) return;
+    if (files.length > 20) { setError("Select up to 20 PDFs per extraction batch."); return; }
+    const oversized = files.find((file) => !checkFileSize(file.size).ok);
+    if (oversized) { setError(checkFileSize(oversized.size).message); return; }
     setExtracting(true);
     setError(null);
     setSuccess(false);
@@ -102,7 +106,7 @@ export default function FormDataExtractPage() {
           <div>
             <label className="block text-sm font-bold text-[var(--foreground)] mb-2">Upload filled PDF forms</label>
             <div className="border-2 border-dashed border-[var(--card-border)] hover:border-indigo-500/50 rounded-2xl p-6 text-center">
-              <input type="file" accept="application/pdf,.pdf" multiple onChange={(e) => { const selected = Array.from(e.target.files || []); const valid = selected.filter(isPdfFile); setFiles(valid); setCsvResult(""); setSuccess(false); setError(valid.length === selected.length ? null : "Some non-PDF files were ignored."); }} className="text-sm file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:bg-indigo-600 file:text-white file:text-xs file:font-semibold w-full cursor-pointer" />
+              <input type="file" accept="application/pdf,.pdf" multiple onChange={(e) => { const selected = Array.from(e.target.files || []); const pdfs = selected.filter(isPdfFile); const valid = pdfs.filter((file) => checkFileSize(file.size).ok).slice(0, 20); setFiles(valid); setCsvResult(""); setSuccess(false); setError(valid.length === selected.length ? null : "Some invalid or oversized PDFs were ignored."); }} className="text-sm file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:bg-indigo-600 file:text-white file:text-xs file:font-semibold w-full cursor-pointer" />
               {files.length > 0 && <p className="text-xs text-emerald-600 font-semibold mt-2">{files.length} file(s) selected</p>}
             </div>
           </div>

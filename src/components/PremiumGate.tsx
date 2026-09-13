@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect, useState, ReactNode } from "react";
+import { ReactNode } from "react";
 import Link from "next/link";
-import { isPremium } from "@/lib/premium";
+import { usePremiumStatus } from "@/hooks/usePremiumStatus";
+import { PREMIUM_TOOL_COUNT } from "@/lib/toolCatalog";
 
 interface PremiumGateProps {
   title: string;
@@ -17,16 +18,10 @@ export default function PremiumGate({
   icon = "⭐",
   children,
 }: PremiumGateProps) {
-  const [mounted, setMounted] = useState(false);
-  const [premiumUser, setPremiumUser] = useState(false);
+  const { premium: premiumUser, ready } = usePremiumStatus();
 
-  useEffect(() => {
-    setMounted(true);
-    setPremiumUser(isPremium());
-  }, []);
-
-  // During SSR and initial mount, render a smooth skeleton shell to avoid hydration mismatch
-  if (!mounted) {
+  // Keep the gated content hidden until the server has verified this device or account.
+  if (!ready) {
     return (
       <div className="max-w-4xl mx-auto px-4 py-12 animate-pulse">
         <div className="h-8 bg-[var(--card-border)]/50 rounded-xl w-64 mb-4"></div>
@@ -70,7 +65,7 @@ export default function PremiumGate({
           <div className="mt-8 pt-6 border-t border-amber-500/20 grid grid-cols-3 gap-2 text-center text-xs text-[var(--muted)]">
             <div>✓ Instant Activation</div>
             <div>✓ 100MB File Limit</div>
-            <div>✓ 13 Exclusive Tools</div>
+            <div>✓ {PREMIUM_TOOL_COUNT} Pro Tools</div>
           </div>
         </div>
       </div>

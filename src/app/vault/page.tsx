@@ -6,8 +6,9 @@ import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 import { usePageMeta } from "@/hooks/usePageMeta";
 import HowToJsonLd from "@/components/HowToJsonLd";
 import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
-import PremiumGate from "@/components/PremiumGate";
 import { downloadBytes, isPdfFile } from "@/lib/pdfBytes";
+import { checkFileSize } from "@/lib/premium";
+import { useUsage } from "@/hooks/useUsage";
 import {
   addSecureVaultItem,
   clearSecureVault,
@@ -17,8 +18,13 @@ import {
   type SecureVaultItem,
 } from "@/lib/secureVault";
 
+function vaultMetadata({ id, name, size, storedAt }: SecureVaultItem): Omit<SecureVaultItem, "data"> {
+  return { id, name, size, storedAt };
+}
+
 export default function VaultPage() {
-  usePageMeta("Secure PDF Vault - Encrypted Document Storage | PDFTools Premium", "Store PDFs securely in your browser with AES-encrypted vault. Password-protected document storage. Premium.");
+  const usage = useUsage("vault");
+  usePageMeta("Secure PDF Vault - Encrypted Document Storage | PDFTools", "Store PDFs securely in your browser with AES-encrypted vault. Password-protected local document storage.");
   const [items, setItems] = useState<Omit<SecureVaultItem, "data">[]>([]);
   const [vaultPassword, setVaultPassword] = useState("");
   const [vaultUnlocked, setVaultUnlocked] = useState(false);
@@ -42,7 +48,7 @@ export default function VaultPage() {
       const session = await openOrCreateSecureVault(vaultPassword);
       keyRef.current = session.key;
       vaultRef.current = session.items;
-      setItems(session.items.map(({ data: _data, ...metadata }) => metadata));
+      setItems(session.items.map(vaultMetadata));
       setVaultUnlocked(true);
       setVaultExists(true);
       setVaultPassword("");
@@ -70,13 +76,16 @@ export default function VaultPage() {
     event.target.value = "";
     if (!file) return;
     if (!isPdfFile(file)) { setError("Please choose a valid PDF file."); return; }
+    const sizeCheck = checkFileSize(file.size);
+    if (!sizeCheck.ok) { setError(sizeCheck.message); return; }
     if (!keyRef.current) { setError("Lock and unlock the vault again before adding files."); return; }
+    if (!(await usage.checkAndTrack())) { setError("Daily free processing limit reached. Upgrade to Premium for unlimited processing."); return; }
     setProcessing(true);
     setError(null);
     try {
       const item = await addSecureVaultItem(keyRef.current, new Uint8Array(await file.arrayBuffer()), file.name);
       vaultRef.current = [item, ...vaultRef.current];
-      setItems(vaultRef.current.map(({ data: _data, ...metadata }) => metadata));
+      setItems(vaultRef.current.map(vaultMetadata));
       setSuccess(`Encrypted and saved “${file.name}”.`);
     } catch (storageError) {
       setError(storageError instanceof Error ? storageError.message : "Failed to encrypt and save this file.");
@@ -120,23 +129,17 @@ export default function VaultPage() {
   const formatSize = (bytes: number) => bytes < 1024 * 1024 ? `${(bytes / 1024).toFixed(0)} KB` : `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
 
   return (
-    <PremiumGate
-      title="Client-Encrypted PDF Document Vault"
-      description="Store sensitive PDFs locally in your browser with password-protected client encryption. No server uploads."
-      icon="🔐"
-    >
       <div className="max-w-3xl mx-auto px-4 py-12">
         <SoftwareAppJsonLd name="Secure PDF Vault" description="Store PDFs in encrypted browser vault." url="https://allaboutpdfediting.xyz/vault" />
         <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Secure Vault", item: "https://allaboutpdfediting.xyz/vault" }]} />
         <HowToJsonLd name="Secure PDF Vault" description="Store and manage PDFs in an encrypted browser-based document vault" steps={[{name:"Set a master password",text:"Create a strong master password for your vault"},{name:"Upload PDFs",text:"Drag and drop PDFs into your encrypted vault"},{name:"Access anytime",text:"Open view and download your PDFs securely with password protection"}]} />
-        <AiSummaryJsonLd name="PDF Vault" summary="Store sensitive PDF documents in an encrypted browser-based vault with password protection" category="SecurityApplications" inputType="PDF" outputType="Storage" processing="client-side" price="premium" features={["AES-256-GCM encryption","PBKDF2 password key derivation","IndexedDB persistence","Browser-based vault","No server storage"]} limits="Premium subscribers; capacity depends on browser storage" />
+        <AiSummaryJsonLd name="PDF Vault" summary="Store sensitive PDF documents in an encrypted browser-based vault with password protection" category="SecurityApplications" inputType="PDF" outputType="Storage" processing="client-side" price="free" features={["AES-256-GCM encryption","PBKDF2 password key derivation","IndexedDB persistence","Browser-based vault","No server storage"]} limits="10MB per file free or 100MB Premium; capacity depends on browser storage" />
         
         <div className="mb-8">
           <div className="flex items-center justify-between">
             <div>
               <div className="flex items-center gap-3 mb-2">
                 <h1 className="text-3xl font-extrabold text-[var(--foreground)]">Secure PDF Vault</h1>
-                <span className="text-xs font-bold bg-gradient-to-r from-amber-500 to-orange-600 text-white px-3 py-1 rounded-full shadow-sm">Premium</span>
               </div>
               <p className="text-[var(--muted)]">{vaultUnlocked ? `${items.length} file(s) stored securely` : "Password-protected encrypted browser storage."}</p>
             </div>
@@ -194,6 +197,5 @@ export default function VaultPage() {
         {success && <div className="mt-4 p-4 bg-emerald-500/10 border border-emerald-500/30 rounded-2xl text-center text-sm text-emerald-600 font-bold">{success}</div>}
         {error && <div className="mt-6 p-4 bg-red-500/10 border border-red-500/30 rounded-2xl text-red-500 text-sm">{error}</div>}
       </div>
-    </PremiumGate>
   );
 }

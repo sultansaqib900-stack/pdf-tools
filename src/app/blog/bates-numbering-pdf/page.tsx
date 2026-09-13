@@ -58,7 +58,7 @@ export default function BlogPost() {
         </ul>
 
         <h2 className="text-xl font-bold text-[var(--foreground)] pt-4">Premium Feature</h2>
-        <p>Bates numbering is a <strong>premium feature</strong> available to PDFTools Premium subscribers. Premium also unlocks document comparison, bulk certificate generation, PDF-to-audio conversion, and more. <a href="/premium" className="text-indigo-500 hover:underline font-medium">Learn more about Premium →</a></p>
+        <p>Bates numbering is a <strong>premium feature</strong> available to PDFTools Premium subscribers. Premium also unlocks document comparison, batch workflows, bulk certificate generation, metadata sanitization, and more. <a href="/premium" className="text-indigo-500 hover:underline font-medium">Learn more about Premium →</a></p>
 
         <div className="bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-950/20 dark:to-orange-950/20 border border-amber-200/50 dark:border-amber-800/30 rounded-xl p-6 mt-6">
           <p className="font-bold text-[var(--foreground)] mb-1">Need Bates numbering?</p>

@@ -7,6 +7,7 @@ import { usePageMeta } from "@/hooks/usePageMeta";
 import HowToJsonLd from "@/components/HowToJsonLd";
 import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
 import PremiumGate from "@/components/PremiumGate";
+import { checkFileSize } from "@/lib/premium";
 import { copyPdfBytes, isPdfFile } from "@/lib/pdfBytes";
 
 export default function SplitByBookmarksPage() {
@@ -28,6 +29,8 @@ export default function SplitByBookmarksPage() {
       setError("Please select a valid PDF file.");
       return;
     }
+    const sizeCheck = checkFileSize(f.size);
+    if (!sizeCheck.ok) { setError(sizeCheck.message); return; }
     setFile(f);
     setError(null);
     setSplits([]);

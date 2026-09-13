@@ -7,7 +7,8 @@ import ProgressBar from "@/components/ProgressBar";
 import SuccessAnimation from "@/components/SuccessAnimation";
 import ErrorBanner from "@/components/ErrorBanner";
 import PremiumUpsell, { usePremiumUpsell } from "@/components/PremiumUpsell";
-import { isPremium, checkFileSize } from "@/lib/premium";
+import { checkFileSize } from "@/lib/premium";
+import { usePremiumStatus } from "@/hooks/usePremiumStatus";
 import { useUsage } from "@/hooks/useUsage";
 import { useToolHistory } from "@/hooks/useToolHistory";
 import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
@@ -42,6 +43,7 @@ const ops: { value: Operation["type"]; label: string }[] = [
 ];
 
 export default function BatchPage() {
+  const { premium, ready: premiumReady } = usePremiumStatus();
   const usage = useUsage();
   const upsell = usePremiumUpsell();
   const { trackToolVisit, trackExport } = useToolHistory();
@@ -65,6 +67,7 @@ export default function BatchPage() {
   }, [results]);
 
   const addOp = () => {
+    if (operations.length >= 20) { setError("Premium batch queues support up to 20 files at a time."); return; }
     const id = crypto.randomUUID();
     setOperations((prev) => [...prev, { id, type: "compress", file: null, compressionMode: "balanced" }]);
   };
@@ -84,7 +87,9 @@ export default function BatchPage() {
   };
 
   const runBatch = useCallback(async () => {
-    if (!operations.length || !isPremium()) { setError("Batch processing requires Premium."); return; }
+    if (!premiumReady) { setError("Checking your Premium access. Please try again in a moment."); return; }
+    if (!operations.length || !premium) { setError("Batch processing requires Premium."); return; }
+    if (operations.length > 20) { setError("Premium batch queues support up to 20 files at a time."); return; }
     if (operations.some((operation) => operation.type === "protect" && (operation.password?.length ?? 0) < 4)) {
       setError("Every password-protection operation needs a password of at least 4 characters.");
       return;
@@ -151,7 +156,7 @@ export default function BatchPage() {
       setError("Some files could not be processed. Review the results below.");
     }
     setProcessing(false);
-  }, [operations, results, trackExport, upsell, usage]);
+  }, [operations, premium, premiumReady, trackExport, upsell, usage]);
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-12">
@@ -227,7 +232,7 @@ export default function BatchPage() {
 
         <ProgressBar processing={processing} label="Processing batch..." />
 
-        {!isPremium() && (
+        {premiumReady && !premium && (
           <div className="mt-6 p-5 bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800 rounded-xl text-center">
             <p className="text-amber-800 dark:text-amber-300 font-semibold mb-2">Premium Feature</p>
             <p className="text-sm text-amber-600 dark:text-amber-400">Batch processing requires a Premium plan.</p>
@@ -235,7 +240,7 @@ export default function BatchPage() {
           </div>
         )}
 
-        {isPremium() && operations.length > 0 && (
+        {premiumReady && premium && operations.length > 0 && (
           <button
             onClick={runBatch}
             disabled={processing || operations.some((op) => !op.file)}

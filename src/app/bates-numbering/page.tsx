@@ -9,6 +9,7 @@ import { usePageMeta } from "@/hooks/usePageMeta";
 import HowToJsonLd from "@/components/HowToJsonLd";
 import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
 import PremiumGate from "@/components/PremiumGate";
+import { checkFileSize } from "@/lib/premium";
 
 export default function BatesNumberingPage() {
   usePageMeta("Add Bates Numbering to PDF - Sequential Page Numbers | PDFTools Premium", "Add sequential Bates numbers, letters, or custom labels to every page of your PDF. Perfect for legal documents, discovery, and document indexing. Premium feature.");
@@ -26,6 +27,8 @@ export default function BatesNumberingPage() {
 
   async function handleProcess() {
     if (!file) return;
+    const sizeCheck = checkFileSize(file.size);
+    if (!sizeCheck.ok) { setError(sizeCheck.message); return; }
     setProcessing(true);
     setError(null);
     try {

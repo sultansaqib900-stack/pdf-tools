@@ -1,20 +1,61 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
-import { rateLimitResponse } from "@/lib/rate-limit";
+import { NextRequest } from "next/server";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
-describe("rateLimitResponse", () => {
-  it("returns 429 with rate limit headers", () => {
-    const reset = Date.now() + 60000;
-    const res = rateLimitResponse(reset);
+const evalMock = vi.hoisted(() => vi.fn());
+vi.mock("@/lib/kv", () => ({ kv: { eval: evalMock } }));
 
-    expect(res.status).toBe(429);
-    expect(res.headers.get("X-RateLimit-Limit")).toBe("10");
-    expect(res.headers.get("X-RateLimit-Remaining")).toBe("0");
-    expect(res.headers.get("Retry-After")).toBeTruthy();
+import { rateLimit, rateLimitResponse } from "@/lib/rate-limit";
+
+beforeEach(() => evalMock.mockReset());
+
+describe("rateLimit", () => {
+  it("reserves the counter and initial TTL in one namespaced Redis operation", async () => {
+    evalMock.mockResolvedValue([3, 60]);
+    const request = new NextRequest("https://example.com/api/test", {
+      headers: { "x-forwarded-for": "203.0.113.10" },
+    });
+
+    const result = await rateLimit(request, { limit: 5, window: 60, identifier: "test" });
+
+    expect(result).toEqual(expect.objectContaining({ success: true, remaining: 2 }));
+    expect(evalMock).toHaveBeenCalledWith(
+      expect.stringContaining("INCR"),
+      ["pdftools:rate-limit:test:203.0.113.10"],
+      ["60"],
+    );
   });
 
-  it("returns a JSON error body", async () => {
-    const res = rateLimitResponse(Date.now() + 60000);
-    const body = await res.json();
+  it("fails closed when requested and quota storage is unavailable", async () => {
+    evalMock.mockResolvedValue(undefined);
+    const errorSpy = vi.spyOn(console, "error").mockImplementation(() => undefined);
+    const request = new NextRequest("https://example.com/api/test");
+    const result = await rateLimit(request, {
+      limit: 5,
+      window: 60,
+      identifier: "test",
+      failClosed: true,
+    });
+
+    expect(result.success).toBe(false);
+    expect(result.remaining).toBe(0);
+    errorSpy.mockRestore();
+  });
+});
+
+describe("rateLimitResponse", () => {
+  it("returns 429 with accurate rate limit headers", () => {
+    const reset = Date.now() + 60_000;
+    const response = rateLimitResponse(reset, 20);
+
+    expect(response.status).toBe(429);
+    expect(response.headers.get("X-RateLimit-Limit")).toBe("20");
+    expect(response.headers.get("X-RateLimit-Remaining")).toBe("0");
+    expect(Number(response.headers.get("Retry-After"))).toBeGreaterThan(0);
+  });
+
+  it("returns a generic JSON error body", async () => {
+    const response = rateLimitResponse(Date.now() + 60_000);
+    const body = await response.json();
     expect(body.error).toContain("Too many requests");
   });
 });
