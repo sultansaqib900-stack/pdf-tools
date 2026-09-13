@@ -6,10 +6,13 @@ import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 import { usePageMeta } from "@/hooks/usePageMeta";
 import HowToJsonLd from "@/components/HowToJsonLd";
 import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
-import PremiumGate from "@/components/PremiumGate";
+import { checkFileSize } from "@/lib/premium";
+import { isPdfFile } from "@/lib/pdfBytes";
+import { useUsage } from "@/hooks/useUsage";
 
 export default function PdfToAudioPage() {
-  usePageMeta("PDF to Audio - Convert PDF to MP3 Online | PDFTools Premium", "Convert PDF documents to spoken audio. Listen to your PDFs on the go. Premium text-to-speech with MP3 download.");
+  const usage = useUsage("pdf-to-audio");
+  usePageMeta("PDF Text-to-Speech Reader | PDFTools", "Extract text from a PDF and read it aloud with voices provided by your browser. Playback only; no MP3 export.");
   const [file, setFile] = useState<File | null>(null);
   const [text, setText] = useState("");
   const [playing, setPlaying] = useState(false);
@@ -35,8 +38,18 @@ export default function PdfToAudioPage() {
     return () => window.speechSynthesis.removeEventListener("voiceschanged", loadVoices);
   }, [voice]);
 
+  useEffect(() => () => {
+    if (typeof window !== "undefined" && "speechSynthesis" in window) {
+      window.speechSynthesis.cancel();
+    }
+  }, []);
+
   const extractAndSpeak = async () => {
     if (!file) return;
+    if (!isPdfFile(file)) { setError("Please select a valid PDF file."); return; }
+    const sizeCheck = checkFileSize(file.size);
+    if (!sizeCheck.ok) { setError(sizeCheck.message); return; }
+    if (!(await usage.checkAndTrack())) { setError("Daily free processing limit reached. Upgrade to Premium for unlimited processing."); return; }
     setGenerating(true);
     setError(null);
     try {
@@ -45,19 +58,26 @@ export default function PdfToAudioPage() {
         pdfjsLib.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";
       }
       const bytes = await file.arrayBuffer();
-      const pdf = await pdfjsLib.getDocument({ data: bytes }).promise;
+      const loadingTask = pdfjsLib.getDocument({ data: bytes.slice(0) });
       let fullText = "";
-      for (let i = 1; i <= pdf.numPages; i++) {
-        setProgress(Math.round((i / pdf.numPages) * 100));
-        const page = await pdf.getPage(i);
-        const content = await page.getTextContent();
-        const pageText = content.items.map((item: any) => item.str ?? "").filter(Boolean).join(" ");
-        fullText += pageText + "\n\n";
+      try {
+        const pdf = await loadingTask.promise;
+        for (let i = 1; i <= pdf.numPages; i++) {
+          setProgress(Math.round((i / pdf.numPages) * 100));
+          const page = await pdf.getPage(i);
+          const content = await page.getTextContent();
+          const pageText = content.items.map((item) => ("str" in item ? item.str : "")).filter(Boolean).join(" ");
+          fullText += pageText + "\n\n";
+          page.cleanup();
+        }
+      } finally {
+        await loadingTask.destroy();
       }
-      setText(fullText);
+      if (!fullText.trim()) throw new Error("No selectable text was found. This reader does not run OCR on scanned pages.");
+      setText(fullText.trim());
       setSuccess(true);
-    } catch {
-      setError("Failed to extract text. The file may be encrypted, scanned, or corrupted.");
+    } catch (extractError) {
+      setError(extractError instanceof Error ? extractError.message : "Failed to extract text from the PDF.");
     }
     setGenerating(false);
     setProgress(0);
@@ -71,16 +91,50 @@ export default function PdfToAudioPage() {
       setPlaying(true);
       return;
     }
+
     window.speechSynthesis.cancel();
-    const utterance = new SpeechSynthesisUtterance(text);
-    const selectedVoice = voices.find(v => v.name === voice);
-    if (selectedVoice) utterance.voice = selectedVoice;
-    utterance.rate = rate;
-    utterance.onend = () => { setPlaying(false); setPaused(false); };
-    utterance.onpause = () => setPaused(true);
-    utteranceRef.current = utterance;
-    window.speechSynthesis.speak(utterance);
+    const chunks: string[] = [];
+    const words = text.split(/\s+/).filter(Boolean);
+    let chunk = "";
+    for (const word of words) {
+      if (chunk && `${chunk} ${word}`.length > 1400) {
+        chunks.push(chunk);
+        chunk = word;
+      } else {
+        chunk = chunk ? `${chunk} ${word}` : word;
+      }
+    }
+    if (chunk) chunks.push(chunk);
+
+    const selectedVoice = voices.find((candidate) => candidate.name === voice);
+    let chunkIndex = 0;
+    const playNext = () => {
+      if (chunkIndex >= chunks.length) {
+        utteranceRef.current = null;
+        setPlaying(false);
+        setPaused(false);
+        return;
+      }
+      const utterance = new SpeechSynthesisUtterance(chunks[chunkIndex]);
+      chunkIndex += 1;
+      if (selectedVoice) utterance.voice = selectedVoice;
+      utterance.rate = rate;
+      utterance.onend = playNext;
+      utterance.onerror = (event) => {
+        utteranceRef.current = null;
+        setPlaying(false);
+        setPaused(false);
+        if (event.error !== "canceled" && event.error !== "interrupted") {
+          setError("Browser text-to-speech playback stopped unexpectedly.");
+        }
+      };
+      utterance.onpause = () => setPaused(true);
+      utteranceRef.current = utterance;
+      window.speechSynthesis.speak(utterance);
+    };
     setPlaying(true);
+    setPaused(false);
+    playNext();
   }, [text, voice, rate, voices, paused]);
 
   const pause = () => {
@@ -99,28 +153,22 @@ export default function PdfToAudioPage() {
   };
 
   return (
-    <PremiumGate
-      title="PDF to Audio & Natural Text-to-Speech Player"
-      description="Extract text from any document and listen seamlessly with customizable speech synthesis voices and speed controls."
-      icon="🎧"
-    >
       <div className="max-w-3xl mx-auto px-4 py-12">
-        <SoftwareAppJsonLd name="PDF to Audio Converter" description="Convert PDF documents to spoken audio with natural-sounding voices. Premium TTS." url="https://allaboutpdfediting.xyz/pdf-to-audio" image="https://allaboutpdfediting.xyz/opengraph-image.png" aggregateRating={{ ratingValue: 4.7, bestRating: 5, ratingCount: 256 }} />
+        <SoftwareAppJsonLd name="PDF Text-to-Speech Reader" description="Extract selectable PDF text and read it aloud with voices installed in the browser. Playback only; no audio-file export." url="https://allaboutpdfediting.xyz/pdf-to-audio" image="https://allaboutpdfediting.xyz/opengraph-image.png" aggregateRating={{ ratingValue: 4.7, bestRating: 5, ratingCount: 256 }} />
         <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "PDF to Audio", item: "https://allaboutpdfediting.xyz/pdf-to-audio" }]} />
-        <HowToJsonLd name="Convert PDF to Audio" description="Convert any PDF document to spoken audio with text-to-speech" steps={[{name:"Upload PDF",text:"Select a PDF document with text content"},{name:"Choose voice and speed",text:"Select from available voices and adjust playback speed"},{name:"Listen or download",text:"Play the audio directly in your browser or download as an audio file"}]} />
-        <AiSummaryJsonLd name="PDF to Audio" summary="Convert PDF documents to spoken audio using text-to-speech technology with customizable voices" category="MediaApplications" inputType="PDF" outputType="Audio" processing="client-side" price="premium" features={["Text-to-speech conversion","Multiple voice options","Speed control","Play/pause/stop controls","No server uploads"]} limits="Premium subscribers" />
+        <HowToJsonLd name="Read PDF Aloud" description="Extract selectable PDF text and play it with browser text-to-speech" steps={[{name:"Upload PDF",text:"Select a PDF document with selectable text"},{name:"Extract text",text:"Read the document's embedded text with PDF.js"},{name:"Choose voice and listen",text:"Select an available browser voice and adjust playback speed"}]} />
+        <AiSummaryJsonLd name="PDF Text-to-Speech Reader" summary="Read selectable PDF text aloud using the browser's speech-synthesis voices" category="MediaApplications" inputType="PDF with selectable text" outputType="Live speech playback" processing="client-side" price="free" features={["Embedded-text extraction","Browser voice selection","Speed control","Play pause and stop controls","No audio-file export"]} limits="10MB free or 100MB Premium; scanned pages require OCR first" />
         
         <div className="mb-8">
           <div className="flex items-center gap-3 mb-2">
             <h1 className="text-3xl font-extrabold text-[var(--foreground)]">PDF to Audio Reader</h1>
-            <span className="text-xs font-bold bg-gradient-to-r from-amber-500 to-orange-600 text-white px-3 py-1 rounded-full shadow-sm">Premium</span>
           </div>
-          <p className="text-[var(--muted)]">Extract text from any PDF and listen to it through natural-sounding voices.</p>
+          <p className="text-[var(--muted)]">Extract selectable PDF text and listen with voices supplied by your browser.</p>
         </div>
 
         <div className="bg-[var(--card)] border border-[var(--card-border)] rounded-2xl p-6 sm:p-8 space-y-6 shadow-xl">
           <div className="border-2 border-dashed border-[var(--card-border)] hover:border-indigo-500/50 rounded-2xl p-6 text-center">
-            <input type="file" accept=".pdf" onChange={(e) => setFile(e.target.files?.[0] || null)} className="text-sm file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:bg-indigo-600 file:text-white file:text-xs file:font-semibold w-full cursor-pointer" />
+            <input type="file" accept="application/pdf,.pdf" onChange={(e) => { const selected = e.target.files?.[0] || null; if (!selected) return; const sizeCheck = checkFileSize(selected.size); if (!isPdfFile(selected)) setError("Please select a valid PDF file."); else if (!sizeCheck.ok) setError(sizeCheck.message); else { setFile(selected); setError(null); setSuccess(false); setText(""); } }} className="text-sm file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:bg-indigo-600 file:text-white file:text-xs file:font-semibold w-full cursor-pointer" />
             {file && <p className="text-xs text-emerald-600 font-semibold mt-2">Selected: {file.name} ({(file.size / 1024).toFixed(0)} KB)</p>}
           </div>
 
@@ -173,6 +221,5 @@ export default function PdfToAudioPage() {
         )}
         {error && <div className="mt-6 p-4 bg-red-500/10 border border-red-500/30 rounded-2xl text-red-500 text-sm">{error}</div>}
       </div>
-    </PremiumGate>
   );
 }

@@ -17,7 +17,7 @@ export default function SignupPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
-    if (password.length < 6) { setError("Password must be at least 6 characters"); return; }
+    if (password.length < 8) { setError("Password must be at least 8 characters"); return; }
     setBusy(true);
     const err = await signup(email, password, name || undefined);
     setBusy(false);
@@ -40,7 +40,7 @@ export default function SignupPage() {
           className="w-full px-4 py-3 rounded-xl border border-[var(--card-border)] bg-[var(--card)] text-[var(--foreground)] outline-none focus:border-indigo-500"
         />
         <input
-          type="password" placeholder="Password (min 6 chars)" required value={password}
+          type="password" placeholder="Password (min 8 chars)" required minLength={8} maxLength={128} value={password}
           onChange={(e) => setPassword(e.target.value)}
           className="w-full px-4 py-3 rounded-xl border border-[var(--card-border)] bg-[var(--card)] text-[var(--foreground)] outline-none focus:border-indigo-500"
         />

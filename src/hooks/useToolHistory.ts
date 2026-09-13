@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useCallback, useSyncExternalStore } from "react";
 
 export interface HistoryEntry {
   path: string;
@@ -18,6 +18,14 @@ export interface ExportEntry {
 
 const RECENT_KEY = "pdftools:recent";
 const EXPORT_KEY = "pdftools:exports";
+const HISTORY_EVENT = "pdftools:history-change";
+const EMPTY_RECENT: HistoryEntry[] = [];
+const EMPTY_EXPORTS: ExportEntry[] = [];
+
+let recentCacheRaw: string | null | undefined;
+let recentCache: HistoryEntry[] = EMPTY_RECENT;
+let exportCacheRaw: string | null | undefined;
+let exportCache: ExportEntry[] = EMPTY_EXPORTS;
 
 function getLabel(path: string): string {
   const map: Record<string, string> = {
@@ -54,33 +62,61 @@ function getLabel(path: string): string {
   return map[path] || path.replace(/-/g, " ");
 }
 
+function safelyParse<T>(raw: string | null, fallback: T[]): T[] {
+  if (!raw) return fallback;
+  try {
+    const parsed: unknown = JSON.parse(raw);
+    return Array.isArray(parsed) ? parsed as T[] : fallback;
+  } catch {
+    return fallback;
+  }
+}
+
+function getRecentSnapshot(): HistoryEntry[] {
+  if (typeof window === "undefined") return EMPTY_RECENT;
+  const raw = localStorage.getItem(RECENT_KEY);
+  if (raw !== recentCacheRaw) {
+    recentCacheRaw = raw;
+    recentCache = safelyParse(raw, EMPTY_RECENT);
+  }
+  return recentCache;
+}
+
+function getExportSnapshot(): ExportEntry[] {
+  if (typeof window === "undefined") return EMPTY_EXPORTS;
+  const raw = localStorage.getItem(EXPORT_KEY);
+  if (raw !== exportCacheRaw) {
+    exportCacheRaw = raw;
+    exportCache = safelyParse(raw, EMPTY_EXPORTS);
+  }
+  return exportCache;
+}
+
+function subscribeToHistory(onStoreChange: () => void): () => void {
+  window.addEventListener(HISTORY_EVENT, onStoreChange);
+  window.addEventListener("storage", onStoreChange);
+  return () => {
+    window.removeEventListener(HISTORY_EVENT, onStoreChange);
+    window.removeEventListener("storage", onStoreChange);
+  };
+}
+
+function writeHistory(key: string, value: unknown): void {
+  localStorage.setItem(key, JSON.stringify(value));
+  window.dispatchEvent(new Event(HISTORY_EVENT));
+}
+
 export function useToolHistory() {
-  const [recentTools, setRecentTools] = useState<HistoryEntry[]>(() => {
-    if (typeof window === "undefined") return [];
-    try {
-      const r = localStorage.getItem(RECENT_KEY);
-      return r ? JSON.parse(r) : [];
-    } catch {
-      return [];
-    }
-  });
-  const [exportHistory, setExportHistory] = useState<ExportEntry[]>(() => {
-    if (typeof window === "undefined") return [];
-    try {
-      const e = localStorage.getItem(EXPORT_KEY);
-      return e ? JSON.parse(e) : [];
-    } catch {
-      return [];
-    }
-  });
+  // useSyncExternalStore supplies empty server snapshots for hydration, then
+  // reads localStorage after hydration. This prevents header/page mismatches and
+  // keeps every hook instance synchronized after an export.
+  const recentTools = useSyncExternalStore(subscribeToHistory, getRecentSnapshot, () => EMPTY_RECENT);
+  const exportHistory = useSyncExternalStore(subscribeToHistory, getExportSnapshot, () => EMPTY_EXPORTS);
 
   const trackToolVisit = useCallback((path: string) => {
-    setRecentTools((prev) => {
-      const filtered = prev.filter((t) => t.path !== path);
-      const next = [{ path, label: getLabel(path), timestamp: Date.now() }, ...filtered].slice(0, 10);
-      try { localStorage.setItem(RECENT_KEY, JSON.stringify(next)); } catch {}
-      return next;
-    });
+    const filtered = getRecentSnapshot().filter((tool) => tool.path !== path);
+    const next = [{ path, label: getLabel(path), timestamp: Date.now() }, ...filtered].slice(0, 10);
+    try { writeHistory(RECENT_KEY, next); } catch {}
   }, []);
 
   const trackExport = useCallback((fileName: string, tool: string, size: number) => {
@@ -91,19 +127,15 @@ export function useToolHistory() {
       size,
       date: new Date().toISOString(),
     };
-    setExportHistory((prev) => {
-      const next = [entry, ...prev].slice(0, 50);
-      try { localStorage.setItem(EXPORT_KEY, JSON.stringify(next)); } catch {}
-      return next;
-    });
+    const next = [entry, ...getExportSnapshot()].slice(0, 50);
+    try { writeHistory(EXPORT_KEY, next); } catch {}
   }, []);
 
   const clearHistory = useCallback(() => {
-    setRecentTools([]);
-    setExportHistory([]);
     try {
       localStorage.removeItem(RECENT_KEY);
       localStorage.removeItem(EXPORT_KEY);
+      window.dispatchEvent(new Event(HISTORY_EVENT));
     } catch {}
   }, []);
 

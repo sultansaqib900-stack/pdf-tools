@@ -1,13 +1,13 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "PDFTools - Herramientas PDF Gratuitas | Comprimir, Unir, Dividir y Más",
+  title: "PDFTools - 52 Herramientas PDF | 39 Gratuitas y 13 Profesionales",
   description:
-    "Más de 40 herramientas PDF gratuitas incluyendo funciones premium: comprimir, unir, dividir, convertir imágenes, extraer texto, comparar PDFs, generar certificados, convertir PDF a audio, crear folletos y más. 100% gratis, sin subidas, todo el procesamiento ocurre en tu navegador.",
+    "52 herramientas PDF: 39 herramientas principales con acceso gratuito y 13 herramientas profesionales Premium para IA, automatización, redacción segura, trabajo legal y procesamiento por lotes. La mayoría del procesamiento se realiza localmente en tu navegador.",
   keywords: ["herramientas PDF", "comprimir PDF", "unir PDF", "dividir PDF", "editor PDF gratis", "convertir PDF"],
   openGraph: {
-    title: "PDFTools - Herramientas PDF Gratuitas",
-    description: "Más de 40 herramientas PDF gratuitas. Comprime, une, divide, compara, convierte a audio, genera certificados y más. Sin subidas. 100% gratis.",
+    title: "PDFTools - 52 Herramientas PDF",
+    description: "39 herramientas con acceso gratuito y 13 herramientas profesionales Premium. La mayoría del procesamiento permanece en tu navegador.",
     url: "https://allaboutpdfediting.xyz/es",
     siteName: "PDFTools",
     type: "website",
@@ -16,8 +16,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "PDFTools - Herramientas PDF Gratuitas",
-    description: "Más de 40 herramientas PDF gratuitas. Comprime, une, divide y más. Sin subidas. 100% gratis.",
+    title: "PDFTools - 52 Herramientas PDF",
+    description: "39 herramientas con acceso gratuito y 13 herramientas profesionales Premium.",
     images: ["https://allaboutpdfediting.xyz/opengraph-image.png"],
   },
 };

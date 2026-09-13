@@ -44,7 +44,7 @@ export default function BlogPost() {
         <p>Not all PDFs have bookmarks. Scanned documents, image-only PDFs, and files exported without an outline structure won&apos;t work. In those cases, consider using a <a href="/split" className="text-indigo-500 hover:underline">manual page range splitter</a> instead. If your document has bookmarks but the tool reports none, the PDF may have a damaged or non-standard outline — try re-saving from your PDF editor first.</p>
 
         <h2 className="text-xl font-bold text-[var(--foreground)] pt-4">Premium Feature</h2>
-        <p>Split by bookmarks is a <strong>premium feature</strong> available to PDFTools Premium subscribers. Premium also unlocks document comparison, bulk certificate generation, PDF-to-audio conversion, and more. <a href="/premium" className="text-indigo-500 hover:underline font-medium">Learn more about Premium →</a></p>
+        <p>Split by bookmarks is a <strong>premium feature</strong> available to PDFTools Premium subscribers. Premium also unlocks document comparison, batch workflows, bulk certificate generation, metadata sanitization, and more. <a href="/premium" className="text-indigo-500 hover:underline font-medium">Learn more about Premium →</a></p>
 
         <div className="bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-950/20 dark:to-orange-950/20 border border-amber-200/50 dark:border-amber-800/30 rounded-xl p-6 mt-6">
           <p className="font-bold text-[var(--foreground)] mb-1">Ready to split your PDF?</p>

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { getRelatedContent, type ToolRelatedContent } from "@/lib/related-content";
+import { TOOL_CATALOG } from "@/lib/toolCatalog";
 
 interface Props {
   slug: string;
@@ -18,7 +19,7 @@ function FlagshipWorkflowBanner() {
               Need Multi-Step Processing?
             </h4>
             <p className="text-xs text-[var(--muted)] mt-0.5">
-              Combine delete pages, e-sign, PII auto-redaction, watermarks, and compression in one continuous session.
+              Combine page organization, e-signing, a PII privacy preview, watermarks, and compression in one continuous session.
             </p>
           </div>
         </div>
@@ -48,7 +49,7 @@ function RelatedToolsSection({ data }: { data: ToolRelatedContent }) {
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-lg font-extrabold text-[var(--foreground)]">Related PDF Tools</h3>
         <Link href="/tools" className="text-xs font-bold text-indigo-400 hover:underline">
-          View All 40+ Tools →
+          View All {TOOL_CATALOG.length} Tools →
         </Link>
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5">

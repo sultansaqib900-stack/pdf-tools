@@ -1,11 +1,13 @@
 "use client";
 
+import { isPdfFile } from "@/lib/pdfBytes";
+
 import { useState, useCallback, useRef, useEffect } from "react";
 import ToolInfo from "@/components/ToolInfo";
-import UsageBar from "@/components/UsageBar";
 import PremiumUpsell, { usePremiumUpsell } from "@/components/PremiumUpsell";
-import { isPremium, getClientId } from "@/lib/premium";
-import { useUsage } from "@/hooks/useUsage";
+import { checkFileSize, getClientId } from "@/lib/premium";
+import { usePremiumStatus } from "@/hooks/usePremiumStatus";
+import { useAuth } from "@/components/AuthProvider";
 import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
 
 import HowToJsonLd from "@/components/HowToJsonLd";
@@ -39,8 +41,9 @@ const RobotIcon = () => (
 );
 
 export default function ChatPDFPage() {
-  const usage = useUsage();
   const upsell = usePremiumUpsell();
+  const { premium, ready: premiumReady } = usePremiumStatus();
+  const { token } = useAuth();
   const [file, setFile] = useState<File | null>(null);
   const [extracting, setExtracting] = useState(false);
   const [extractError, setExtractError] = useState("");
@@ -51,20 +54,22 @@ export default function ChatPDFPage() {
   const [dragging, setDragging] = useState(false);
   const [chatRemaining, setChatRemaining] = useState<number | null>(null);
   const [ocrRunning, setOcrRunning] = useState(false);
-  const [pdfPages, setPdfPages] = useState<number>(0);
   const [aiMode, setAiMode] = useState<string>("qna");
   const chatEndRef = useRef<HTMLDivElement>(null);
 
   const fetchChatRemaining = useCallback(async () => {
     try {
       const clientId = getClientId();
-      const res = await fetch(`/api/chat-pdf/remaining?clientId=${encodeURIComponent(clientId)}`);
+      const res = await fetch(`/api/chat-pdf/remaining?clientId=${encodeURIComponent(clientId)}`, {
+        headers: token ? { authorization: `Bearer ${token}` } : {},
+        cache: "no-store",
+      });
       const data = await res.json();
       setChatRemaining(data.remaining);
     } catch {
-      setChatRemaining(3);
+      setChatRemaining(0);
     }
-  }, []);
+  }, [token]);
 
   useEffect(() => {
     fetchChatRemaining();
@@ -75,22 +80,21 @@ export default function ChatPDFPage() {
   }, [messages]);
 
   const handleFile = useCallback(async (f: File | null) => {
-    if (!f || f.type !== "application/pdf") return;
-    if (f.size > 20 * 1024 * 1024) { upsell.showUpsell("file-size"); return; }
+    if (!f || !isPdfFile(f)) return;
+    const sizeCheck = checkFileSize(f.size);
+    if (!sizeCheck.ok) { upsell.showUpsell("file-size", sizeCheck.message); return; }
     setFile(f);
     setPdfText("");
     setMessages([]);
     setExtractError("");
     setExtracting(true);
-    setPdfPages(0);
 
     try {
       const pdfjsLib = await import("pdfjs-dist");
       pdfjsLib.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";
 
       const bytes = await f.arrayBuffer();
-      const pdf = await pdfjsLib.getDocument({ data: bytes }).promise;
-      setPdfPages(pdf.numPages);
+      const pdf = await pdfjsLib.getDocument({ data: bytes.slice(0) }).promise;
       let fullText = "";
 
       for (let i = 1; i <= pdf.numPages; i++) {
@@ -109,16 +113,20 @@ export default function ChatPDFPage() {
         setMessages([{ role: "assistant", text: `I've read "${f.name}" (${pdf.numPages} pages). Ask me anything about it!` }]);
         setExtractError("");
       }
-    } catch (e) {
+    } catch {
       setExtractError("Failed to extract text. The file may be corrupted or image-based.");
       setPdfText("__error__");
       setMessages([{ role: "assistant", text: "Failed to extract text from this PDF. Click the button below to try AI OCR." }]);
     }
     setExtracting(false);
-  }, []);
+  }, [upsell]);
 
   const runOcr = useCallback(async () => {
     if (!file || ocrRunning) return;
+    if (!premiumReady) {
+      setMessages((previous) => [...previous, { role: "assistant", text: "Checking your AI allowance. Please try again in a moment." }]);
+      return;
+    }
     setOcrRunning(true);
     setMessages((prev) => [...prev, { role: "assistant", text: `Running AI OCR on ${file.name}... This may take a moment.` }]);
 
@@ -127,7 +135,11 @@ export default function ChatPDFPage() {
       pdfjsLib.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";
 
       const bytes = await file.arrayBuffer();
-      const pdf = await pdfjsLib.getDocument({ data: bytes }).promise;
+      const pdf = await pdfjsLib.getDocument({ data: bytes.slice(0) }).promise;
+      const pageLimit = premium ? 25 : 3;
+      if (pdf.numPages > pageLimit) {
+        throw new Error(`${premium ? "Premium" : "Free"} AI OCR supports up to ${pageLimit} pages per request.`);
+      }
       const scale = 2;
       const pageImages: string[] = [];
 
@@ -137,15 +149,17 @@ export default function ChatPDFPage() {
         const canvas = document.createElement("canvas");
         canvas.width = viewport.width;
         canvas.height = viewport.height;
-        const ctx = canvas.getContext("2d")!;
         await page.render({ canvas: canvas, viewport }).promise;
         pageImages.push(canvas.toDataURL("image/jpeg", 0.85).split(",")[1]);
       }
 
       const res = await fetch("/api/chat-pdf/ocr", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ pages: pageImages, fileName: file.name }),
+        headers: {
+          "Content-Type": "application/json",
+          ...(token ? { authorization: `Bearer ${token}` } : {}),
+        },
+        body: JSON.stringify({ pages: pageImages, fileName: file.name, clientId: getClientId() }),
       });
       const data = await res.json();
 
@@ -157,11 +171,11 @@ export default function ChatPDFPage() {
       } else {
         setMessages((prev) => [...prev, { role: "assistant", text: data.error || "OCR failed to read this PDF." }]);
       }
-    } catch {
-      setMessages((prev) => [...prev, { role: "assistant", text: "OCR processing failed. Try a different PDF." }]);
+    } catch (error) {
+      setMessages((prev) => [...prev, { role: "assistant", text: error instanceof Error ? error.message : "OCR processing failed. Try a different PDF." }]);
     }
     setOcrRunning(false);
-  }, [file, ocrRunning]);
+  }, [file, ocrRunning, premium, premiumReady, token]);
 
   const askQuestion = useCallback(async (overrideMode?: string) => {
     const mode = overrideMode || aiMode;
@@ -175,41 +189,34 @@ export default function ChatPDFPage() {
     try {
       const res = await fetch("/api/chat-pdf", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          ...(token ? { authorization: `Bearer ${token}` } : {}),
+        },
         body: JSON.stringify({
           text: pdfText,
           question: needsQuestion ? q : "",
-          history: messages.map((m) => ({ role: m.role, text: m.text })),
+          history: messages.slice(-10).map((m) => ({ role: m.role, text: m.text })),
           mode,
+          clientId: getClientId(),
         }),
       });
       const data = await res.json();
       if (data.ok) {
         setMessages((prev) => [...prev, { role: "assistant", text: data.answer }]);
+        if (typeof data.remaining === "number") setChatRemaining(data.remaining);
       } else {
+        if (res.status === 429) {
+          setChatRemaining(0);
+          upsell.showUpsell("daily-limit", "You've used all 3 free AI requests today. Upgrade to Premium for unlimited AI.");
+        }
         setMessages((prev) => [...prev, { role: "assistant", text: data.error || "Failed to get answer." }]);
       }
     } catch {
       setMessages((prev) => [...prev, { role: "assistant", text: "Connection error. Check internet and try again." }]);
     }
     setAnswering(false);
-
-    if (!isPremium()) {
-      const clientId = getClientId();
-      try {
-        const res = await fetch("/api/chat-pdf/track", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ clientId }),
-        });
-        const data = await res.json();
-        setChatRemaining(data.remaining);
-        if (data.remaining <= 0) {
-          upsell.showUpsell("daily-limit", "You've used all 3 free AI chat questions today. Upgrade to Premium for unlimited questions.");
-        }
-      } catch {}
-    }
-  }, [question, pdfText, answering, messages, extractError, aiMode]);
+  }, [question, pdfText, answering, messages, extractError, aiMode, token, upsell]);
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); askQuestion(); }
@@ -253,7 +260,7 @@ export default function ChatPDFPage() {
               {file ? file.name : "Upload a PDF to start chatting"}
             </span>
             {file && <span className="text-sm text-[var(--muted)]">{(file.size / 1024).toFixed(1)} KB</span>}
-            {!file && <span className="text-xs text-[var(--muted)]">PDF up to 20MB</span>}
+            {!file && <span className="text-xs text-[var(--muted)]">PDF up to 10MB free / 100MB Premium</span>}
           </label>
         </div>
       )}
@@ -273,7 +280,7 @@ export default function ChatPDFPage() {
               <span className="font-medium text-sm text-[var(--foreground)]">{file?.name}</span>
             </div>
             <div className="flex items-center gap-3">
-              {!isPremium() && chatRemaining !== null && (
+              {!premium && chatRemaining !== null && (
                 <span className="text-xs text-[var(--muted)]">{chatRemaining}/3 questions left</span>
               )}
               <button
@@ -365,17 +372,17 @@ export default function ChatPDFPage() {
                   placeholder={
                     extractError
                       ? "No text available to ask about"
-                      : chatRemaining !== null && chatRemaining <= 0 && !isPremium()
+                      : chatRemaining !== null && chatRemaining <= 0 && !premium
                       ? "Daily limit reached. Upgrade to Premium."
                       : "Ask a question about the PDF..."
                   }
-                  disabled={!!extractError || (chatRemaining !== null && chatRemaining <= 0 && !isPremium())}
+                  disabled={!!extractError || (chatRemaining !== null && chatRemaining <= 0 && !premium)}
                   rows={2}
                   className="flex-1 px-4 py-2.5 rounded-xl border border-[var(--card-border)] bg-[var(--background)] text-[var(--foreground)] text-sm outline-none focus:border-indigo-500 transition resize-none"
                 />
                 <button
                   onClick={() => askQuestion()}
-                  disabled={!question.trim() || answering || !!extractError || (chatRemaining !== null && chatRemaining <= 0 && !isPremium())}
+                  disabled={!question.trim() || answering || !!extractError || (chatRemaining !== null && chatRemaining <= 0 && !premium)}
                   className="px-5 py-2.5 bg-indigo-600 text-white font-medium rounded-xl hover:bg-indigo-700 disabled:opacity-40 disabled:cursor-not-allowed transition shrink-0 self-end"
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 2 11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
@@ -387,7 +394,7 @@ export default function ChatPDFPage() {
                 Result will appear in the chat above.
               </p>
             )}
-            {!isPremium() && chatRemaining !== null && chatRemaining <= 0 && (
+            {!premium && chatRemaining !== null && chatRemaining <= 0 && (
               <p className="text-center text-xs text-[var(--muted)]">
                 Free limit reached.{ " " }
                 <a href="/premium" className="text-indigo-500 font-medium hover:underline">Upgrade for unlimited AI</a>

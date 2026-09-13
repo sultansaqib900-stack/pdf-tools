@@ -34,7 +34,7 @@ const qas = [
   },
   {
     q: "How do I sign a PDF without printing?",
-    a: "Our free e-sign tool lets you draw, type, or upload a signature and place it anywhere on your PDF. No account needed, no document uploads. Download the signed PDF immediately.",
+    a: "Our free e-sign tool lets you draw a visible signature with a mouse, pen, or touchscreen and stamps it near the bottom of the last PDF page. No account or document upload is needed.",
   },
   {
     q: "How do I convert an image to PDF?",
@@ -54,7 +54,7 @@ const qas = [
   },
   {
     q: "How do I convert a PDF to audio?",
-    a: "Premium PDF to Audio tool converts any PDF to spoken audio using text-to-speech. Choose from multiple voices, adjust playback speed, and listen to documents hands-free. Supports pause, resume, and section skipping.",
+    a: "The free PDF to Audio reader extracts selectable PDF text and plays it with speech-synthesis voices available in your browser. You can adjust playback speed and pause or resume live listening; it does not export an MP3 file.",
   },
   {
     q: "How do I remove metadata from a PDF?",

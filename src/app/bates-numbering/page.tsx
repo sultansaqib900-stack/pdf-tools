@@ -1,5 +1,7 @@
 "use client";
 
+import { isPdfFile } from "@/lib/pdfBytes";
+
 import { useState, useRef } from "react";
 import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
 import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
@@ -7,6 +9,7 @@ import { usePageMeta } from "@/hooks/usePageMeta";
 import HowToJsonLd from "@/components/HowToJsonLd";
 import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
 import PremiumGate from "@/components/PremiumGate";
+import { checkFileSize } from "@/lib/premium";
 
 export default function BatesNumberingPage() {
   usePageMeta("Add Bates Numbering to PDF - Sequential Page Numbers | PDFTools Premium", "Add sequential Bates numbers, letters, or custom labels to every page of your PDF. Perfect for legal documents, discovery, and document indexing. Premium feature.");
@@ -24,6 +27,8 @@ export default function BatesNumberingPage() {
 
   async function handleProcess() {
     if (!file) return;
+    const sizeCheck = checkFileSize(file.size);
+    if (!sizeCheck.ok) { setError(sizeCheck.message); return; }
     setProcessing(true);
     setError(null);
     try {
@@ -80,7 +85,7 @@ export default function BatesNumberingPage() {
     e.preventDefault();
     setDragging(false);
     const f = e.dataTransfer.files[0];
-    if (f && f.type === "application/pdf") setFile(f);
+    if (f && isPdfFile(f)) setFile(f);
   }
 
   return (

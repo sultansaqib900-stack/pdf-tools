@@ -20,6 +20,7 @@ import FaqPageJsonLd from "@/components/FaqPageJsonLd";
 import RelatedContent from "@/components/RelatedContent";
 import { getRelatedContent } from "@/lib/related-content";
 import UseCaseLinks from "@/components/UseCaseLinks";
+import { isPdfFile, downloadBytes } from "@/lib/pdfBytes";
 
 const rc = getRelatedContent("annotate");
 
@@ -72,7 +73,7 @@ export default function AnnotatePage() {
   useEffect(() => { trackToolVisit("annotate"); }, []);
 
   const handleFile = useCallback(async (f: File | null) => {
-    if (!f || f.type !== "application/pdf") return;
+    if (!f || !isPdfFile(f)) return;
     const check = checkFileSize(f.size);
     if (!check.ok) { upsell.showUpsell("file-size"); return; }
     setError(null);
@@ -86,7 +87,7 @@ export default function AnnotatePage() {
     const { PDFDocument } = await import("pdf-lib");
     const bytes = await f.arrayBuffer();
     pdfBytesRef.current = bytes;
-    const doc = await PDFDocument.load(bytes, { ignoreEncryption: true });
+    const doc = await PDFDocument.load(bytes);
     setPdfDoc(doc);
 
     const pageData: PageData[] = doc.getPages().map((_: any, i: number) => ({
@@ -110,17 +111,23 @@ export default function AnnotatePage() {
       if (!GlobalWorkerOptions.workerSrc && !GlobalWorkerOptions.workerPort) {
         GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";
       }
-      const pdfData = await getDocument({ data: pdfBytesRef.current!.slice(0) }).promise;
-      const pdfPage = await pdfData.getPage(currentPage + 1);
-      const vp = pdfPage.getViewport({ scale: 1.5 });
-      canvas.width = vp.width;
-      canvas.height = vp.height;
-      await pdfPage.render({ canvas: canvas, viewport: vp }).promise;
-      setPageImages((prev) => {
-        const next = [...prev];
-        next[currentPage] = canvas.toDataURL();
-        return next;
-      });
+      const loadingTask = getDocument({ data: pdfBytesRef.current!.slice(0) });
+      try {
+        const pdfData = await loadingTask.promise;
+        const pdfPage = await pdfData.getPage(currentPage + 1);
+        const vp = pdfPage.getViewport({ scale: 1.5 });
+        canvas.width = vp.width;
+        canvas.height = vp.height;
+        await pdfPage.render({ canvas: canvas, viewport: vp }).promise;
+        setPageImages((prev) => {
+          const next = [...prev];
+          next[currentPage] = canvas.toDataURL();
+          return next;
+        });
+        pdfPage.cleanup();
+      } finally {
+        await loadingTask.destroy();
+      }
     };
     renderPage();
   }, [file, pdfDoc, currentPage]);
@@ -130,8 +137,8 @@ export default function AnnotatePage() {
     if (!canvas) return { x: 0, y: 0 };
     const rect = canvas.getBoundingClientRect();
     return {
-      x: e.clientX - rect.left,
-      y: e.clientY - rect.top,
+      x: (e.clientX - rect.left) * (canvas.width / Math.max(rect.width, 1)),
+      y: (e.clientY - rect.top) * (canvas.height / Math.max(rect.height, 1)),
     };
   }, []);
 
@@ -278,67 +285,75 @@ export default function AnnotatePage() {
   }, [pageImages, currentPage, rects]);
 
   const runAnnotate = useCallback(async () => {
-    if (!file || !pdfDoc || saving) return;
+    if (!file || !pdfDoc || saving || !pdfBytesRef.current) return;
     setSaving(true);
     setError(null);
     const canProceed = await usage.checkAndTrack();
     if (!canProceed) { setSaving(false); upsell.showUpsell("daily-limit"); return; }
-    try {
-      const { PDFDocument, rgb } = await import("pdf-lib");
-      const bytes = pdfBytesRef.current!.slice(0);
-      const outDoc = await PDFDocument.load(bytes, { ignoreEncryption: true });
-      const allRects = rects;
-      const canvas = canvasRef.current;
-      if (!canvas) { setError("Rendering error. Please try again."); setSaving(false); return; }
-      const scale = outDoc.getPage(0).getWidth() / canvas.width;
 
-      for (let i = 0; i < allRects.length; i++) {
-        const pageRects = allRects[i] || [];
+    let coordinateTask: import("pdfjs-dist").PDFDocumentLoadingTask | null = null;
+    try {
+      const [{ PDFDocument, rgb }, pdfjs] = await Promise.all([
+        import("pdf-lib"),
+        import("pdfjs-dist"),
+      ]);
+      if (!pdfjs.GlobalWorkerOptions.workerSrc) pdfjs.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";
+      const bytes = pdfBytesRef.current.slice(0);
+      const outDoc = await PDFDocument.load(bytes.slice(0));
+      coordinateTask = pdfjs.getDocument({ data: bytes.slice(0) });
+      const coordinatePdf = await coordinateTask.promise;
+
+      for (let pageIndex = 0; pageIndex < rects.length; pageIndex += 1) {
+        const pageRects = rects[pageIndex] || [];
         if (pageRects.length === 0) continue;
-        const page = outDoc.getPage(i);
-        for (const r of pageRects) {
-          if (r.mode === "highlight") {
+        const page = outDoc.getPage(pageIndex);
+        const coordinatePage = await coordinatePdf.getPage(pageIndex + 1);
+        const viewport = coordinatePage.getViewport({ scale: 1.5 });
+        const mapPoint = (x: number, y: number) => viewport.convertToPdfPoint(x, y) as [number, number];
+        const lineWidth = (() => {
+          const first = mapPoint(0, 0);
+          const second = mapPoint(2, 0);
+          return Math.max(0.5, Math.hypot(second[0] - first[0], second[1] - first[1]));
+        })();
+
+        for (const rect of pageRects) {
+          if (rect.mode === "highlight") {
+            const first = mapPoint(rect.x, rect.y);
+            const second = mapPoint(rect.x + rect.w, rect.y + rect.h);
             page.drawRectangle({
-              x: r.x * scale,
-              y: page.getHeight() - (r.y + r.h) * scale,
-              width: r.w * scale,
-              height: r.h * scale,
+              x: Math.min(first[0], second[0]),
+              y: Math.min(first[1], second[1]),
+              width: Math.abs(second[0] - first[0]),
+              height: Math.abs(second[1] - first[1]),
               color: rgb(1, 1, 0),
               opacity: 0.3,
             });
-          } else if (r.mode === "underline") {
+          } else {
+            const viewportY = rect.mode === "underline" ? rect.y + rect.h : rect.y + rect.h / 2;
+            const start = mapPoint(rect.x, viewportY);
+            const end = mapPoint(rect.x + rect.w, viewportY);
             page.drawLine({
-              start: { x: r.x * scale, y: page.getHeight() - (r.y + r.h) * scale },
-              end: { x: (r.x + r.w) * scale, y: page.getHeight() - (r.y + r.h) * scale },
-              thickness: 2,
-              color: rgb(0, 0.6, 0),
-            });
-          } else if (r.mode === "strikethrough") {
-            page.drawLine({
-              start: { x: r.x * scale, y: page.getHeight() - (r.y + r.h / 2) * scale },
-              end: { x: (r.x + r.w) * scale, y: page.getHeight() - (r.y + r.h / 2) * scale },
-              thickness: 2,
-              color: rgb(1, 0, 0),
+              start: { x: start[0], y: start[1] },
+              end: { x: end[0], y: end[1] },
+              thickness: lineWidth,
+              color: rect.mode === "underline" ? rgb(0, 0.6, 0) : rgb(1, 0, 0),
             });
           }
         }
+        coordinatePage.cleanup();
       }
 
       const outBytes = await outDoc.save({ useObjectStreams: true });
-      const blob = new Blob([outBytes as unknown as BlobPart], { type: "application/pdf" });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `annotated-${file.name}`;
-      a.click();
-      URL.revokeObjectURL(url);
-      trackExport(`annotated-${file.name}`, "annotate", blob.size);
+      downloadBytes(outBytes, `annotated-${file.name}`);
+      trackExport(`annotated-${file.name}`, "annotate", outBytes.byteLength);
       setSuccess(true);
-    } catch {
-      setError("Failed to annotate PDF. The file may be encrypted or corrupted.");
+    } catch (annotationError) {
+      setError(annotationError instanceof Error ? `Failed to annotate PDF: ${annotationError.message}` : "Failed to annotate PDF.");
+    } finally {
+      if (coordinateTask) await coordinateTask.destroy();
+      setSaving(false);
     }
-    setSaving(false);
-  }, [file, pdfDoc, rects, saving, usage]);
+  }, [file, pdfDoc, rects, saving, usage, upsell, trackExport]);
 
   const process = useCallback(async () => {
     if (!isPremium()) {
@@ -360,10 +375,10 @@ export default function AnnotatePage() {
         description="Highlight, underline, and strikethrough text in PDF files. Free online PDF annotation tool."
         url="https://allaboutpdfediting.xyz/annotate"
       />
-      <HowToJsonLd name="Annotate PDF Online" description="Highlight underline strikethrough and add comments to PDFs" steps={[{name:"Upload PDF",text:"Select the PDF document to annotate"},{name:"Add annotations",text:"Highlight text underline or strikethrough content"},{name:"Download annotated PDF",text:"Download the PDF with your annotations saved"}]} />
+      <HowToJsonLd name="Annotate PDF Online" description="Add visual highlights, underlines, and strikethroughs to PDFs" steps={[{name:"Upload PDF",text:"Select the PDF document to annotate"},{name:"Draw visual markup",text:"Drag rectangles over content to highlight, underline, or strike it"},{name:"Download annotated PDF",text:"Download the PDF with the visual markup burned onto its pages"}]} />
       <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Annotate PDF", item: "https://allaboutpdfediting.xyz/annotate" }]} />
       <FaqPageJsonLd questions={rc?.faqs} />
-      <AiSummaryJsonLd name="Annotate PDF" summary="Add highlights underlines strikethroughs and comments to PDF documents" category="Graphics" inputType="PDF" outputType="PDF" processing="client-side" price="free" features={["Highlight text","Underline text","Strikethrough","Comment notes","Free browser tool"]} limits="Files up to 10MB" />
+      <AiSummaryJsonLd name="Annotate PDF" summary="Burn visual highlight rectangles, underline lines, and strikethrough lines onto PDF pages" category="Graphics" inputType="PDF" outputType="PDF" processing="client-side" price="free" features={["Highlight overlays","Underline overlays","Strikethrough overlays","Rotated-page coordinate mapping","Client-side tool"]} limits="Files up to 10MB" />
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">Annotate PDF</h1>
         <p className="text-[var(--muted)]">Highlight, underline, or strikethrough text in your PDF documents.</p>
@@ -459,8 +474,8 @@ export default function AnnotatePage() {
                 onMouseMove={handleMouseMove}
                 onMouseUp={handleMouseUp}
                 onMouseLeave={() => { if (isDrawing) setIsDrawing(false); setDrawStart(null); }}
-                className="w-full"
-                style={{ cursor: modeConfig.cursor, maxHeight: "70vh", objectFit: "contain" }}
+                className="block max-w-full h-auto mx-auto"
+                style={{ cursor: modeConfig.cursor }}
               />
             </div>
 

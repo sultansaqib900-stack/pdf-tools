@@ -39,7 +39,6 @@ const translations: Record<Locale, TranslationDict> = {
     "premium.feature": "Premium Feature",
     "premium.cta": "Upgrade to Premium",
     "search.placeholder": "Search tools...",
-    "ad.label": "Advertisement",
   },
   es: {
     "nav.home": "Inicio",
@@ -70,7 +69,6 @@ const translations: Record<Locale, TranslationDict> = {
     "premium.feature": "Función Premium",
     "premium.cta": "Actualizar a Premium",
     "search.placeholder": "Buscar herramientas...",
-    "ad.label": "Anuncio",
   },
 };
 

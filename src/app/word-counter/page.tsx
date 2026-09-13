@@ -1,5 +1,7 @@
 "use client";
 
+import { isPdfFile } from "@/lib/pdfBytes";
+
 import { useState, useCallback, useEffect, useRef } from "react";
 import ToolInfo from "@/components/ToolInfo";
 import FreeWaitTimer from "@/components/FreeWaitTimer";
@@ -37,7 +39,7 @@ export default function WordCounterPage() {
   useEffect(() => { trackToolVisit("word-counter"); }, []);
 
   const handleFile = useCallback((f: File | null) => {
-    if (!f || f.type !== "application/pdf") return;
+    if (!f || !isPdfFile(f)) return;
     const check = checkFileSize(f.size);
     if (!check.ok) { upsell.showUpsell("file-size"); return; }
     setFile(f);
@@ -56,18 +58,27 @@ export default function WordCounterPage() {
       const pdfjsLib = await import("pdfjs-dist");
       pdfjsLib.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";
       const bytes = await file.arrayBuffer();
-      const pdf = await pdfjsLib.getDocument({ data: bytes }).promise;
-      let fullText = "";
-      for (let i = 1; i <= pdf.numPages; i++) {
-        const page = await pdf.getPage(i);
-        const content = await page.getTextContent();
-        fullText += content.items.map((item) => ("str" in item ? (item as { str: string }).str : "")).join(" ") + " ";
+      const loadingTask = pdfjsLib.getDocument({ data: bytes.slice(0) });
+      let pageCount = 0;
+      const pageTexts: string[] = [];
+      try {
+        const pdf = await loadingTask.promise;
+        pageCount = pdf.numPages;
+        for (let i = 1; i <= pdf.numPages; i++) {
+          const page = await pdf.getPage(i);
+          const content = await page.getTextContent();
+          pageTexts.push(content.items.map((item) => ("str" in item ? item.str : "")).join(" "));
+          page.cleanup();
+        }
+      } finally {
+        await loadingTask.destroy();
       }
+      const fullText = pageTexts.join("\n");
       const words = fullText.trim() ? fullText.trim().split(/\s+/).length : 0;
       const chars = fullText.length;
       const charsNoSpace = fullText.replace(/\s/g, "").length;
-      const readingTime = Math.ceil(words / 200);
-      setResult({ words, chars, charsNoSpace, pages: pdf.numPages, readingTime });
+      const readingTime = words === 0 ? 0 : Math.ceil(words / 200);
+      setResult({ words, chars, charsNoSpace, pages: pageCount, readingTime });
       setSuccess(true);
     } catch {
       setError("Failed to count words. The file may be encrypted or corrupted.");
@@ -92,10 +103,10 @@ export default function WordCounterPage() {
         description="Count words, characters, and pages in any PDF file. Free online PDF word counter."
         url="https://allaboutpdfediting.xyz/word-counter"
       />
-      <HowToJsonLd name="PDF Word Counter" description="Count words characters pages in PDF documents" steps={[{name:"Upload PDF",text:"Select the PDF to analyze"},{name:"View statistics",text:"See word count character count and page count"},{name:"Copy results",text:"Copy statistics to clipboard for reporting"}]} />
+      <HowToJsonLd name="PDF Word Counter" description="Count extracted words and characters plus PDF pages" steps={[{name:"Upload PDF",text:"Select a PDF with selectable text"},{name:"Extract text",text:"PDF.js reads text items from each page locally"},{name:"View statistics",text:"See extracted word and character counts, page count, and estimated reading time"}]} />
       <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Word Counter", item: "https://allaboutpdfediting.xyz/word-counter" }]} />
       <FaqPageJsonLd questions={rc?.faqs} />
-      <AiSummaryJsonLd name="Word Counter" summary="Count words characters pages and paragraphs in PDF documents" category="Utilities" inputType="PDF" outputType="Statistics" processing="client-side" price="free" features={["Word count","Character count","Page count","Paragraph count","Free tool"]} limits="Files up to 10MB" />
+      <AiSummaryJsonLd name="Word Counter" summary="Count words and characters extracted from selectable PDF text, plus pages and estimated reading time" category="Utilities" inputType="PDF with selectable text" outputType="Statistics" processing="client-side" price="free" features={["Extracted word count","Extracted character count","Page count","Reading-time estimate","Client-side tool"]} limits="Scanned pages without a text layer count as zero text" />
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">PDF Word Counter</h1>
         <p className="text-[var(--muted)]">Count words, characters, and pages in any PDF document.</p>

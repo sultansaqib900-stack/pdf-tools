@@ -1,8 +1,6 @@
 export const LS_CONFIG = {
   storeSlug: "khanbrand",
 
-  apiKey: "",
-
   variants: {
     premiumMonthly: "1824885",
     premiumYearly: "1824911",
@@ -14,14 +12,32 @@ export const LS_CONFIG = {
   },
 
   redirectBaseUrl: "https://allaboutpdfediting.xyz/premium",
-
   enabled: true,
-};
+} as const;
 
-export function buildCheckoutUrl(plan: "monthly" | "yearly", nonce: string): string {
+export function buildCheckoutUrl(
+  plan: "monthly" | "yearly",
+  nonce: string,
+  clientId: string,
+  email?: string,
+): string {
   const base = plan === "monthly"
     ? LS_CONFIG.checkoutBaseUrls.premiumMonthly
     : LS_CONFIG.checkoutBaseUrls.premiumYearly;
-  const redirect = `${LS_CONFIG.redirectBaseUrl}?success=true&nonce=${nonce}`;
-  return `${base}?checkout[redirect_url]=${encodeURIComponent(redirect)}`;
+  const redirect = `${LS_CONFIG.redirectBaseUrl}?payment=confirming&nonce=${encodeURIComponent(nonce)}`;
+  const url = new URL(base);
+  url.searchParams.set("checkout[redirect_url]", redirect);
+  url.searchParams.set("checkout[custom][client_id]", clientId);
+  url.searchParams.set("checkout[custom][checkout_nonce]", nonce);
+  url.searchParams.set("checkout[custom][plan]", plan);
+  if (email) {
+    url.searchParams.set("checkout[email]", email);
+    url.searchParams.set("checkout[custom][account_email]", email);
+  }
+  return url.toString();
+}
+
+export function isConfiguredVariant(variantId: unknown): boolean {
+  const value = String(variantId ?? "");
+  return value === LS_CONFIG.variants.premiumMonthly || value === LS_CONFIG.variants.premiumYearly;
 }

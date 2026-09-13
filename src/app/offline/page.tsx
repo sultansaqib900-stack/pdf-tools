@@ -10,14 +10,11 @@ export default function OfflinePage() {
       </div>
       <h1 className="text-3xl font-bold text-[var(--foreground)] mb-3">You&apos;re offline</h1>
       <p className="text-[var(--muted)] mb-8 leading-relaxed">
-        PDFTools needs an internet connection to process files.
-        The following tools are cached and available offline:
+        The requested page is not available from the local cache. If a PDF tool
+        is already open in another tab, its in-browser work can usually continue,
+        but opening a new tool or loading code that has not been used before may
+        require a connection.
       </p>
-      <ul className="text-sm text-[var(--muted)] space-y-2 mb-8">
-        <li>&#10003; Compress PDF</li>
-        <li>&#10003; Merge PDF</li>
-        <li>&#10003; Split PDF</li>
-      </ul>
       <div className="flex justify-center gap-3">
         <Link href="/" className="px-5 py-2.5 bg-indigo-600 text-white font-medium rounded-xl hover:bg-indigo-700 transition text-sm">
           Go Home

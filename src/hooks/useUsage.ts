@@ -19,7 +19,7 @@ export function useUsage(toolName?: string) {
   const unlimited = !isPremium() && isUnlimited(tool);
 
   useEffect(() => {
-    getTotalProcessed().then(setTotalProcessed).catch(() => setTotalProcessed(12430));
+    getTotalProcessed().then(setTotalProcessed).catch(() => setTotalProcessed(0));
   }, []);
 
   const checkAndTrack = useCallback(async (): Promise<boolean> => {
@@ -35,7 +35,8 @@ export function useUsage(toolName?: string) {
 
     const result = await trackUsage();
     setRemaining(result.remaining);
-    return true;
+    if (!result.ok) trackEvent("tool_limit_reached", { tool });
+    return result.ok;
   }, [tool, unlimited]);
 
   const peekUsage = useCallback(async (): Promise<number> => {

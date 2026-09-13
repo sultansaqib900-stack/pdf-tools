@@ -1,5 +1,8 @@
 "use client";
 
+import { downloadBytes, isPdfFile } from "@/lib/pdfBytes";
+import { createZipArchive } from "@/lib/archive";
+
 import { useState, useCallback, useEffect, useRef } from "react";
 import ToolInfo from "@/components/ToolInfo";
 import FreeWaitTimer from "@/components/FreeWaitTimer";
@@ -41,14 +44,14 @@ export default function EsSplitPage() {
   useEffect(() => { trackToolVisit("split"); }, []);
 
   const handleFile = useCallback(async (f: File | null) => {
-    if (!f || f.type !== "application/pdf") return;
+    if (!f || !isPdfFile(f)) return;
     const check = checkFileSize(f.size);
     if (!check.ok) { upsell.showUpsell("file-size"); return; }
     setFile(f);
     const bytes = await f.arrayBuffer();
     originalBytes.current = bytes;
     const { PDFDocument: PDFDoc } = await import("pdf-lib");
-    const pdf = await PDFDoc.load(bytes, { ignoreEncryption: true });
+    const pdf = await PDFDoc.load(bytes);
     const count = pdf.getPageCount();
     setPageCount(count);
     setEndPage(count);
@@ -63,42 +66,40 @@ export default function EsSplitPage() {
     try {
       const { PDFDocument } = await import("pdf-lib");
       const bytes = await file.arrayBuffer();
-      const sourcePdf = await PDFDocument.load(bytes, { ignoreEncryption: true });
+      const sourcePdf = await PDFDocument.load(bytes);
 
       if (mode === "all") {
-        for (let i = 0; i < sourcePdf.getPageCount(); i++) {
+        const outputFiles: { name: string; bytes: Uint8Array }[] = [];
+        const padding = String(sourcePdf.getPageCount()).length;
+        for (let i = 0; i < sourcePdf.getPageCount(); i += 1) {
           const newPdf = await PDFDocument.create();
           const [page] = await newPdf.copyPages(sourcePdf, [i]);
           newPdf.addPage(page);
-          const pdfBytes = await newPdf.save({ useObjectStreams: true });
-          const blob = new Blob([pdfBytes.slice()], { type: "application/pdf" });
-          const url = URL.createObjectURL(blob);
-          const a = document.createElement("a");
-          a.href = url;
-          a.download = `pagina-${i + 1}-${file.name}`;
-          a.click();
-          URL.revokeObjectURL(url);
+          outputFiles.push({
+            name: `pagina-${String(i + 1).padStart(padding, "0")}.pdf`,
+            bytes: await newPdf.save({ useObjectStreams: true }),
+          });
         }
-        trackExport(file.name, "Split PDF", sourcePdf.getPageCount());
+        const archive = createZipArchive(outputFiles);
+        const baseName = file.name.replace(/\.pdf$/i, "") || "paginas";
+        downloadBytes(archive, `${baseName}-paginas.zip`, "application/zip");
+        trackExport(file.name, "Dividir PDF", archive.byteLength);
       } else {
-        const s = Math.max(0, startPage - 1);
-        const e = Math.min(sourcePdf.getPageCount() - 1, endPage - 1);
+        if (startPage > endPage) {
+          throw new Error("La primera página no puede estar después de la última.");
+        }
+        const s = startPage - 1;
+        const e = endPage - 1;
         const newPdf = await PDFDocument.create();
         const pages = await newPdf.copyPages(sourcePdf, Array.from({ length: e - s + 1 }, (_, i) => s + i));
-        pages.forEach((p) => newPdf.addPage(p));
+        pages.forEach((page) => newPdf.addPage(page));
         const pdfBytes = await newPdf.save({ useObjectStreams: true });
-        const blob = new Blob([pdfBytes.slice()], { type: "application/pdf" });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = `paginas-${startPage}-${endPage}-${file.name}`;
-        a.click();
-        URL.revokeObjectURL(url);
-        trackExport(file.name, "Split PDF", pdfBytes.byteLength);
+        downloadBytes(pdfBytes, `paginas-${startPage}-${endPage}-${file.name}`);
+        trackExport(file.name, "Dividir PDF", pdfBytes.byteLength);
       }
       setSuccess(true);
-    } catch {
-      setError("No se pudo dividir el PDF. El archivo puede estar encriptado o corrupto.");
+    } catch (splitError) {
+      setError(splitError instanceof Error ? splitError.message : "No se pudo dividir el PDF. El archivo puede estar encriptado o corrupto.");
     }
     setProcessing(false);
   }, [file, mode, startPage, endPage]);
@@ -121,7 +122,7 @@ export default function EsSplitPage() {
     a.href = url;
     a.download = `original-${file?.name || "restaurado.pdf"}`;
     a.click();
-    URL.revokeObjectURL(url);
+    window.setTimeout(() => URL.revokeObjectURL(url), 60_000);
   }, [file]);
 
   return (
@@ -131,10 +132,10 @@ export default function EsSplitPage() {
         description="Divide archivos PDF online gratis. Extrae páginas de documentos PDF al instante en tu navegador."
         url="https://allaboutpdfediting.xyz/es/split"
       />
-      <HowToJsonLd name="Dividir PDF Online" description="Separa páginas PDF en varios archivos o extrae páginas específicas" steps={[{name:"Subir PDF",text:"Selecciona el archivo PDF para dividir"},{name:"Elegir método",text:"Selecciona rangos de páginas o divide cada página"},{name:"Descargar archivos",text:"Descarga los archivos PDF individuales"}]} />
+      <HowToJsonLd name="Dividir PDF Online" description="Separa páginas PDF en varios archivos o extrae páginas específicas" steps={[{name:"Subir PDF",text:"Selecciona el archivo PDF para dividir"},{name:"Elegir método",text:"Selecciona un rango continuo o divide cada página"},{name:"Descargar",text:"Descarga el PDF extraído o un ZIP con PDFs de una página"}]} />
       <BreadcrumbJsonLd items={[{ name: "Inicio", item: "https://allaboutpdfediting.xyz/es" }, { name: "Dividir PDF", item: "https://allaboutpdfediting.xyz/es/split" }]} />
       <FaqPageJsonLd questions={rc?.faqs} />
-      <AiSummaryJsonLd name="Dividir PDF" summary="Separa páginas PDF en varios documentos o extrae rangos de páginas específicos" category="Utilidades" inputType="PDF" outputType="PDF" processing="lado-del-cliente" price="free" features={["Extraer rango de páginas","Dividir cada página","Múltiples archivos de salida","Procesamiento local","Gratis"]} limits="Archivos hasta 10MB" />
+      <AiSummaryJsonLd name="Dividir PDF" summary="Separa páginas PDF en varios documentos o extrae rangos de páginas específicos" category="Utilidades" inputType="PDF" outputType="PDF o ZIP" processing="lado-del-cliente" price="free" features={["Extraer rango de páginas","Dividir cada página","Múltiples archivos de salida","Procesamiento local","Gratis"]} limits="Archivos hasta 10MB" />
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">Dividir PDF</h1>
         <p className="text-[var(--muted)]">Extrae páginas o divide en archivos separados.</p>

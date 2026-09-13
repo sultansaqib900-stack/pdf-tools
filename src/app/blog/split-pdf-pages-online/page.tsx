@@ -48,7 +48,7 @@ export default function BlogPost() {
           <li><strong>No uploads:</strong> All processing happens locally in your browser. Your files never leave your device.</li>
           <li><strong>Private and secure:</strong> Zero data transmission — perfect for sensitive documents.</li>
           <li><strong>Fast:</strong> Powered by pdf-lib WebAssembly for instant client-side processing.</li>
-          <li><strong>Works offline:</strong> Once loaded, the PWA works without an internet connection.</li>
+          <li><strong>Local processing:</strong> Once the splitter and its required code are loaded, the active workflow runs in your browser without uploading the PDF.</li>
         </ul>
 
         <h2 className="text-xl font-bold text-[var(--foreground)] pt-4">Frequently Asked Questions</h2>

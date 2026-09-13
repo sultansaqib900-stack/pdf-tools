@@ -32,7 +32,7 @@ export default function TermsPage() {
         <h2 className="text-lg font-semibold text-[var(--foreground)] pt-2">4. Premium Subscriptions</h2>
         <p>
           Premium subscriptions are processed via Lemon Squeezy. Payments are non-refundable except
-          where required by applicable law. Premium benefits include unlimited daily usage, no ads,
+          where required by applicable law. Premium benefits include unlimited daily usage,
           larger file sizes (up to 100MB), batch processing, and unlimited AI chat questions.
         </p>
         <p>
@@ -76,7 +76,7 @@ export default function TermsPage() {
         </p>
 
         <p className="text-xs text-[var(--muted)] pt-4 border-t border-[var(--card-border)]">
-          Last updated: June 2026
+          Last updated: September 2026
         </p>
       </div>
     </div>

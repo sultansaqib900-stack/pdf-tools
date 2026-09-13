@@ -1,5 +1,7 @@
 "use client";
 
+import { isPdfFile } from "@/lib/pdfBytes";
+
 import { usePageMeta } from "@/hooks/usePageMeta";
 import ToolGrid from "@/components/ToolGrid";
 import ToolSearch from "@/components/ToolSearch";
@@ -26,7 +28,7 @@ function AnimatedHero() {
     e.preventDefault();
     setIsDragging(false);
     const f = e.dataTransfer.files?.[0];
-    if (!f || f.type !== "application/pdf") return;
+    if (!f || !isPdfFile(f)) return;
     setUploading(true);
     const ab = await f.arrayBuffer();
     await setPipelineDocument(new Uint8Array(ab), f.name);
@@ -35,7 +37,7 @@ function AnimatedHero() {
 
   const handleFileSelect = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
     const f = e.target.files?.[0];
-    if (!f || f.type !== "application/pdf") return;
+    if (!f || !isPdfFile(f)) return;
     setUploading(true);
     const ab = await f.arrayBuffer();
     await setPipelineDocument(new Uint8Array(ab), f.name);
@@ -114,13 +116,13 @@ function AnimatedHero() {
             href="/recipes"
             className="px-6 py-4 bg-purple-600/15 border border-purple-500/30 text-purple-400 hover:text-purple-300 font-extrabold text-sm rounded-2xl transition-all"
           >
-            ⚡ 1-Click Recipes
+            ⭐ Recipes · Free Preview
           </Link>
           <Link
             href="/pii-guardian"
             className="px-6 py-4 bg-red-600/15 border border-red-500/30 text-red-400 hover:text-red-300 font-extrabold text-sm rounded-2xl transition-all"
           >
-            🛡️ PII Auto-Redact
+            ⭐ PII Scan · Free Preview
           </Link>
           <Link
             href="/vs/adobe-acrobat"
@@ -134,7 +136,7 @@ function AnimatedHero() {
         <div className="flex flex-wrap justify-center gap-3 text-xs text-[var(--muted)]">
           {[
             { icon: "🔒", label: "100% Client-Side Privacy" },
-            { icon: "⚡", label: "WebAssembly Acceleration" },
+            { icon: "⚡", label: "Local Browser Processing" },
             { icon: "🆓", label: "No Signup Required" },
             { icon: "📁", label: "Zero Server Uploads" },
           ].map((badge) => (
@@ -174,8 +176,8 @@ function SectionReveal({ children, className = "" }: { children: React.ReactNode
 
 export default function Home() {
   usePageMeta(
-    "PDFTools - Free Online PDF Editor | Compress, Merge, Split, Convert & Premium PDF Tools",
-    "40+ free online PDF tools including premium features: document comparison, certificate generation, PDF-to-audio, booklet creation, QR codes, and more. 100% free, no uploads, all processing happens in your browser."
+    "PDFTools - Free Online PDF Editor | 52 Online PDF Tools",
+    "39 core PDF tools with free access plus 13 professional tools for AI, automation, redaction, legal, and bulk workflows. Most document processing stays in your browser."
   );
 
   return (
@@ -219,7 +221,7 @@ export default function Home() {
                 🛡️
               </div>
               <span className="text-[10px] font-extrabold uppercase px-2.5 py-0.5 rounded-full bg-red-500/20 text-red-300 border border-red-500/30">
-                Killer Feature
+                Premium · Free Scan Preview
               </span>
               <h3 className="text-lg font-extrabold text-[var(--foreground)] mt-2 mb-1 group-hover:text-red-400 transition">
                 PII Guardian Auto-Redact
@@ -238,7 +240,7 @@ export default function Home() {
                 ⚡
               </div>
               <span className="text-[10px] font-extrabold uppercase px-2.5 py-0.5 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/30">
-                Zapier for PDFs
+                Premium · 2 Free Recipes
               </span>
               <h3 className="text-lg font-extrabold text-[var(--foreground)] mt-2 mb-1 group-hover:text-purple-400 transition">
                 1-Click Workflow Recipes
@@ -277,7 +279,7 @@ export default function Home() {
                 <div className="space-y-2 opacity-75 text-slate-300">
                   <div className="p-2.5 rounded-xl bg-slate-900/60 border border-red-500/10">1. Upload PDF to server &amp; wait for slow queue</div>
                   <div className="p-2.5 rounded-xl bg-slate-900/60 border border-red-500/10">2. Delete pages &amp; download result to hard drive</div>
-                  <div className="p-2.5 rounded-xl bg-slate-900/60 border border-red-500/10">3. Re-upload same file to add digital signature</div>
+                  <div className="p-2.5 rounded-xl bg-slate-900/60 border border-red-500/10">3. Re-upload same file to add a visible e-signature</div>
                   <div className="p-2.5 rounded-xl bg-slate-900/60 border border-red-500/10">4. Download again, re-upload for compression</div>
                   <div className="p-2.5 rounded-xl bg-slate-900/60 border border-red-500/10">5. 10 minutes wasted + files stored on random servers</div>
                 </div>
@@ -410,7 +412,7 @@ export default function Home() {
           { question: "Is PDFTools truly free?", answer: "Yes! All core tools (Compress, Merge, Split, e-Sign, Watermark, Delete Pages, Rotate) are 100% free with generous daily limits. Premium plans are available for heavy batch operations." },
           { question: "Are my PDF files uploaded to your servers?", answer: "No! All PDF processing, page reordering, OCR, and compression happens locally inside your web browser using WebAssembly. Your files never leave your computer." },
           { question: "What is the PDF Studio Pipeline?", answer: "PDF Studio is our flagship workspace that lets you perform multi-step edits (delete pages -> rotate -> sign -> watermark -> compress) on a single document without downloading and re-uploading at each step." },
-          { question: "What is the PII Guardian?", answer: "PII Guardian is a 1-click in-browser privacy scanner that automatically detects and burns blackout redactions for Social Security Numbers, credit cards, emails, and phone numbers before sharing." },
+          { question: "What is the PII Guardian?", answer: "PII Guardian detects common sensitive-data patterns locally. Free users can preview first-page matches; Premium can scan and securely raster-redact complete documents after review." },
         ]}
       />
     </div>

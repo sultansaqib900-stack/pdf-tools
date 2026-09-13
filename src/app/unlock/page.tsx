@@ -12,6 +12,8 @@ import ProgressBar from "@/components/ProgressBar";
 import SuccessAnimation from "@/components/SuccessAnimation";
 import ErrorBanner from "@/components/ErrorBanner";
 import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
+import { decryptPdf, getPdfEncryptionInfo } from "@/lib/pdfSecurity";
+import { downloadBytes, isPdfFile } from "@/lib/pdfBytes";
 
 import HowToJsonLd from "@/components/HowToJsonLd";
 import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
@@ -39,12 +41,14 @@ export default function UnlockPage() {
   useEffect(() => { trackToolVisit("unlock"); }, []);
 
   const handleFile = useCallback((f: File | null) => {
-    if (!f || f.type !== "application/pdf") return;
+    if (!f) return;
+    if (!isPdfFile(f)) { setError("Please select a valid PDF file."); return; }
     const check = checkFileSize(f.size);
     if (!check.ok) { upsell.showUpsell("file-size"); return; }
     setFile(f);
     setSuccess(false);
-  }, []);
+    setError(null);
+  }, [upsell]);
 
   const runUnlock = useCallback(async () => {
     if (!file || !password) return;
@@ -52,22 +56,21 @@ export default function UnlockPage() {
     const canProceed = await usage.checkAndTrack();
     if (!canProceed) { setProcessing(false); upsell.showUpsell("daily-limit"); return; }
     try {
-      const { PDFDocument } = await import("pdf-lib");
       const bytes = await file.arrayBuffer();
-      originalBytes.current = bytes;
-      const pdfDoc = await PDFDocument.load(bytes, { password } as any);
-      const unlockedBytes = await pdfDoc.save({ useObjectStreams: true });
-      const blob = new Blob([unlockedBytes as unknown as BlobPart], { type: "application/pdf" });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `unlocked-${file.name}`;
-      a.click();
-      trackExport(file.name, "Unlock PDF", bytes.byteLength);
-      URL.revokeObjectURL(url);
+      originalBytes.current = bytes.slice(0);
+      const encryption = await getPdfEncryptionInfo(bytes);
+      if (!encryption.encrypted) {
+        throw new Error("This PDF is not password protected.");
+      }
+      const unlockedBytes = await decryptPdf(bytes, password);
+      downloadBytes(unlockedBytes, `unlocked-${file.name}`);
+      trackExport(file.name, "Unlock PDF", unlockedBytes.byteLength);
       setSuccess(true);
-    } catch {
-      setError("Failed to unlock. The password may be incorrect or the file is not password-protected.");
+    } catch (unlockError) {
+      const message = unlockError instanceof Error ? unlockError.message : "Failed to unlock the PDF.";
+      setError(/incorrect password/i.test(message)
+        ? "Incorrect password. Check it and try again."
+        : message);
     }
     setProcessing(false);
   }, [file, password]);
@@ -84,13 +87,7 @@ export default function UnlockPage() {
 
   const restoreOriginal = useCallback(async () => {
     if (!originalBytes.current) return;
-    const blob = new Blob([originalBytes.current], { type: "application/pdf" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `original-${file?.name || "restored.pdf"}`;
-    a.click();
-    URL.revokeObjectURL(url);
+    downloadBytes(originalBytes.current, `original-${file?.name || "restored.pdf"}`);
   }, [file]);
 
   return (
@@ -111,7 +108,7 @@ export default function UnlockPage() {
 
       <ToolInfo
         name="Unlock PDF"
-        description="Your file stays private. Password removal happens locally in your browser using pdf-lib — no uploads, no servers. Provide the password and download the unlocked PDF instantly."
+        description="Your file stays private. Password validation and decryption happen locally with the Web Crypto API — no uploads or servers. Provide the known password and download an unencrypted PDF."
       />
 
       <div className="mb-4">
@@ -189,7 +186,7 @@ export default function UnlockPage() {
         <h2 className="text-xl font-bold text-[var(--foreground)] mb-3">About Unlock PDF</h2>
         <div className="text-sm text-[var(--muted)] space-y-3 leading-relaxed">
           <p>Remove password protection from PDF files online for free. If you have a PDF that requires a password to view, you can unlock it using this tool. Perfect for when you've forgotten the password on your own document or received a password-protected file from a trusted source.</p>
-          <p>All processing happens in your browser using pdf-lib — no uploads, no servers, complete privacy. Simply provide the correct password and download the unlocked version instantly.</p>
+          <p>All password validation and decryption happen in your browser with the Web Crypto API — no uploads, no servers, complete privacy. Simply provide the correct password and download the unlocked version instantly.</p>
           <p>Keywords: unlock PDF online free, remove PDF password, decrypt PDF file, remove PDF protection online free.</p>
         </div>
       </div>

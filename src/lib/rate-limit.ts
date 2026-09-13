@@ -1,62 +1,67 @@
 import { NextRequest, NextResponse } from "next/server";
-import { kv } from "@vercel/kv";
+import { kv } from "@/lib/kv";
+import { requestNetworkHash } from "@/lib/requestIdentity";
 
 interface RateLimitOptions {
   limit: number;
-  window: number; // in seconds
-  identifier?: string;
+  window: number; // seconds
+  identifier?: string; // endpoint namespace
+  failClosed?: boolean;
 }
+
+const INCREMENT_WITH_TTL_SCRIPT = `
+  local count = redis.call("INCR", KEYS[1])
+  if count == 1 then
+    redis.call("EXPIRE", KEYS[1], ARGV[1])
+  end
+  return { count, redis.call("TTL", KEYS[1]) }
+`;
 
 export async function rateLimit(
   req: NextRequest,
-  options: RateLimitOptions
+  options: RateLimitOptions,
 ): Promise<{ success: boolean; limit: number; remaining: number; reset: number }> {
-  const { limit, window, identifier } = options;
-  
-  // Use IP address or custom identifier
-  const ip = req.headers.get("x-forwarded-for")?.split(",")[0] || 
-             req.headers.get("x-real-ip") || 
-             "anonymous";
-  const key = `rate-limit:${identifier || ip}`;
-  
+  const { limit, window, identifier = "general", failClosed = false } = options;
+  const key = `pdftools:rate-limit:${identifier}:${requestNetworkHash(req)}`;
+  const fallbackReset = Date.now() + window * 1000;
+
   try {
-    const now = Date.now();
-    const windowStart = now - (window * 1000);
-    
-    // Get current requests
-    const data = await kv.get<{ count: number; reset: number }>(key);
-    
-    if (!data || data.reset < windowStart) {
-      // Reset window
-      await kv.set(key, { count: 1, reset: now + (window * 1000) }, { px: window * 1000 });
-      return { success: true, limit, remaining: limit - 1, reset: now + (window * 1000) };
-    }
-    
-    if (data.count >= limit) {
-      return { success: false, limit, remaining: 0, reset: data.reset };
-    }
-    
-    // Increment count
-    await kv.set(key, { count: data.count + 1, reset: data.reset }, { px: window * 1000 });
-    return { success: true, limit, remaining: limit - data.count - 1, reset: data.reset };
+    // Incrementing and assigning the first TTL must be atomic. If EXPIRE were
+    // a separate request, a transient failure could leave a permanent counter.
+    const [count, ttl] = await kv.eval<[string], [number, number]>(
+      INCREMENT_WITH_TTL_SCRIPT,
+      [key],
+      [String(window)],
+    );
+    const reset = Date.now() + (ttl > 0 ? ttl : window) * 1000;
+    return {
+      success: count <= limit,
+      limit,
+      remaining: Math.max(0, limit - count),
+      reset,
+    };
   } catch (error) {
-    // If KV fails, allow request (fail open)
     console.error("Rate limit error:", error);
-    return { success: true, limit, remaining: limit - 1, reset: Date.now() + (window * 1000) };
+    return {
+      success: !failClosed,
+      limit,
+      remaining: failClosed ? 0 : Math.max(0, limit - 1),
+      reset: fallbackReset,
+    };
   }
 }
 
-export function rateLimitResponse(reset: number) {
+export function rateLimitResponse(reset: number, limit = 10) {
   return NextResponse.json(
     { error: "Too many requests. Please try again later." },
-    { 
+    {
       status: 429,
       headers: {
-        "X-RateLimit-Limit": "10",
+        "X-RateLimit-Limit": String(limit),
         "X-RateLimit-Remaining": "0",
         "X-RateLimit-Reset": new Date(reset).toISOString(),
-        "Retry-After": Math.ceil((reset - Date.now()) / 1000).toString(),
+        "Retry-After": Math.max(1, Math.ceil((reset - Date.now()) / 1000)).toString(),
       },
-    }
+    },
   );
 }

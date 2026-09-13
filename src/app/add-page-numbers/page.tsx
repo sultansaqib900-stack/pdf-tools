@@ -1,5 +1,7 @@
 "use client";
 
+import { isPdfFile } from "@/lib/pdfBytes";
+
 import { useState, useCallback, useEffect, useRef } from "react";
 import ToolInfo from "@/components/ToolInfo";
 import FreeWaitTimer from "@/components/FreeWaitTimer";
@@ -41,14 +43,14 @@ export default function AddPageNumbersPage() {
   useEffect(() => { trackToolVisit("add-page-numbers"); }, []);
 
   const handleFile = useCallback(async (f: File | null) => {
-    if (!f || f.type !== "application/pdf") return;
+    if (!f || !isPdfFile(f)) return;
     const check = checkFileSize(f.size);
     if (!check.ok) { upsell.showUpsell("file-size"); return; }
     setFile(f);
     setSuccess(false);
     const bytes = await f.arrayBuffer();
     const { PDFDocument } = await import("pdf-lib");
-    const pdf = await PDFDocument.load(bytes, { ignoreEncryption: true });
+    const pdf = await PDFDocument.load(bytes);
     setPageCount(pdf.getPageCount());
   }, []);
 
@@ -61,7 +63,7 @@ export default function AddPageNumbersPage() {
       const { PDFDocument, rgb, StandardFonts } = await import("pdf-lib");
       const bytes = await file.arrayBuffer();
       originalBytes.current = bytes;
-      const pdfDoc = await PDFDocument.load(bytes, { ignoreEncryption: true });
+      const pdfDoc = await PDFDocument.load(bytes);
       const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
       const pages = pdfDoc.getPages();
 
@@ -101,7 +103,7 @@ export default function AddPageNumbersPage() {
       a.download = `numbered-${file.name}`;
       a.click();
       trackExport(file.name, "Add Page Numbers", bytes.byteLength);
-      URL.revokeObjectURL(url);
+      window.setTimeout(() => URL.revokeObjectURL(url), 60_000);
       setSuccess(true);
     } catch {
       setError("Failed to add page numbers.");
@@ -127,7 +129,7 @@ export default function AddPageNumbersPage() {
     a.href = url;
     a.download = `original-${file?.name || "restored.pdf"}`;
     a.click();
-    URL.revokeObjectURL(url);
+    window.setTimeout(() => URL.revokeObjectURL(url), 60_000);
   }, [file]);
 
   const positions = [

@@ -45,7 +45,7 @@ export default function BlogPost() {
         <p>That's it. No account, no upload, no waiting. Your document never leaves your device.</p>
 
         <h2 className="text-xl font-bold text-[var(--foreground)] pt-4">Is It Legal?</h2>
-        <p>Yes. Electronic signatures are legally binding in most countries under e-signature laws including the ESIGN Act (US), eIDAS (EU), and IT Act (India). While our tool provides a drawn signature (not a digital certificate), this is legally sufficient for most business agreements, consent forms, and contracts.</p>
+        <p>A drawn mark can be one part of an electronic-signature process, but this tool only places a visible image and does not verify identity or create a certificate-based digital signature. Whether that is sufficient depends on the document, evidence surrounding consent, and the laws in your jurisdiction; seek qualified advice for important agreements.</p>
 
         <h2 className="text-xl font-bold text-[var(--foreground)] pt-4">When to Use e-Signing</h2>
         <ul className="list-disc pl-5 space-y-2">
@@ -60,7 +60,7 @@ export default function BlogPost() {
         <p>Most e-sign platforms upload your documents to their servers. Our tool processes everything locally using pdf-lib — a battle-tested PDF library that runs in your browser. Your file never touches a server. This means:</p>
         <ul className="list-disc pl-5 space-y-2">
           <li>100% private — no data transmission</li>
-          <li>Works offline if you've loaded the page once</li>
+          <li>Processes locally after the required signing code has loaded</li>
           <li>No file size limits for premium users</li>
           <li>Free for basic use</li>
         </ul>

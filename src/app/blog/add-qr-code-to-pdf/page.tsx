@@ -56,9 +56,9 @@ export default function BlogPost() {
         </ul>
 
         <div className="bg-[var(--card)] border border-[var(--card-border)] rounded-xl p-6 mt-6">
-          <p className="font-semibold text-[var(--foreground)] mb-1">Premium Feature</p>
-          <p className="text-sm text-[var(--muted)] mb-3">The QR code stamp tool is a premium feature. Upgrade to add QR codes to every page of your PDF documents.</p>
-          <a href="/premium" className="inline-block px-5 py-2.5 bg-amber-600 text-white font-medium rounded-xl text-sm hover:bg-amber-700 transition">Upgrade to Premium →</a>
+          <p className="font-semibold text-[var(--foreground)] mb-1">Free Tool</p>
+          <p className="text-sm text-[var(--muted)] mb-3">The QR Code Stamp tool is free for individual PDFs, with a 10MB free-tier limit and up to 100MB on Premium.</p>
+          <a href="/qr-stamp" className="inline-block px-5 py-2.5 bg-indigo-600 text-white font-medium rounded-xl text-sm hover:bg-indigo-700 transition">Open Free Tool →</a>
         </div>
       </div>
     </article>

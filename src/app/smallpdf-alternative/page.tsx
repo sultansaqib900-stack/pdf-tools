@@ -38,7 +38,7 @@ export default function SmallPDFAltPage() {
             <li className="flex items-center gap-2"><span className="text-emerald-500">✓</span> No signup required</li>
             <li className="flex items-center gap-2"><span className="text-emerald-500">✓</span> 100% free (Premium optional)</li>
             <li className="flex items-center gap-2"><span className="text-emerald-500">✓</span> 24+ tools + AI Chat</li>
-            <li className="flex items-center gap-2"><span className="text-emerald-500">✓</span> Works offline-ready</li>
+            <li className="flex items-center gap-2"><span className="text-emerald-500">✓</span> Installable web app</li>
           </ul>
         </div>
       </div>

@@ -8,6 +8,7 @@ interface ToolCardProps {
   gradient: string;
   category?: string;
   badge?: string;
+  hasFreePreview?: boolean;
 }
 
 const badgeStyles: Record<string, string> = {
@@ -19,7 +20,7 @@ const badgeStyles: Record<string, string> = {
   Premium: "bg-gradient-to-r from-amber-500 to-orange-600 text-white border-amber-400/40 font-extrabold",
 };
 
-export default function ToolCard({ title, description, icon, href, gradient, category, badge }: ToolCardProps) {
+export default function ToolCard({ title, description, icon, href, gradient, category, badge, hasFreePreview }: ToolCardProps) {
   const isPremium = category === "Premium";
   const isFlagship = badge === "Flagship" || badge === "Killer Feature";
 
@@ -49,9 +50,14 @@ export default function ToolCard({ title, description, icon, href, gradient, cat
                 {badge}
               </span>
             )}
-            {category && !badge && (
+            {category && (!badge || isPremium) && (
               <span className={`text-[10px] uppercase tracking-wider px-2.5 py-1 rounded-full border shadow-sm ${badgeStyles[category] || "bg-indigo-500/15 text-indigo-400 border-indigo-500/30"}`}>
                 {isPremium ? "⭐ Premium" : category}
+              </span>
+            )}
+            {hasFreePreview && (
+              <span className="text-[10px] uppercase font-extrabold px-2.5 py-1 rounded-full border border-emerald-500/30 bg-emerald-500/10 text-emerald-500">
+                Free preview
               </span>
             )}
           </div>

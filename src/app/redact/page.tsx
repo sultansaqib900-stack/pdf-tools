@@ -11,6 +11,8 @@ import PremiumUpsell, { usePremiumUpsell } from "@/components/PremiumUpsell";
 import { isPremium, checkFileSize } from "@/lib/premium";
 import { useUsage } from "@/hooks/useUsage";
 import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
+import { secureRedactPdf, type PdfRedactionArea } from "@/lib/pdfRaster";
+import { isPdfFile, downloadBytes } from "@/lib/pdfBytes";
 
 import HowToJsonLd from "@/components/HowToJsonLd";
 import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
@@ -59,7 +61,7 @@ export default function RedactPage() {
   const containerRef = useRef<HTMLDivElement>(null);
 
   const handleFile = useCallback(async (f: File | null) => {
-    if (!f || f.type !== "application/pdf") return;
+    if (!f || !isPdfFile(f)) return;
     const check = checkFileSize(f.size);
     if (!check.ok) { upsell.showUpsell("file-size"); return; }
     setError(null);
@@ -73,7 +75,7 @@ export default function RedactPage() {
     const { PDFDocument } = await import("pdf-lib");
     const bytes = await f.arrayBuffer();
     pdfBytesRef.current = bytes;
-    const doc = await PDFDocument.load(bytes, { ignoreEncryption: true });
+    const doc = await PDFDocument.load(bytes);
     setPdfDoc(doc);
 
     const pageData: PageData[] = doc.getPages().map((_: any, i: number) => ({
@@ -97,17 +99,23 @@ export default function RedactPage() {
       if (!GlobalWorkerOptions.workerSrc && !GlobalWorkerOptions.workerPort) {
         GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";
       }
-      const pdfData = await getDocument({ data: pdfBytesRef.current!.slice(0) }).promise;
-      const pdfPage = await pdfData.getPage(currentPage + 1);
-      const vp = pdfPage.getViewport({ scale: RENDER_SCALE });
-      canvas.width = vp.width;
-      canvas.height = vp.height;
-      await pdfPage.render({ canvas: canvas, viewport: vp }).promise;
-      setPageImages((prev) => {
-        const next = [...prev];
-        next[currentPage] = canvas.toDataURL();
-        return next;
-      });
+      const loadingTask = getDocument({ data: pdfBytesRef.current!.slice(0) });
+      try {
+        const pdfData = await loadingTask.promise;
+        const pdfPage = await pdfData.getPage(currentPage + 1);
+        const vp = pdfPage.getViewport({ scale: RENDER_SCALE });
+        canvas.width = vp.width;
+        canvas.height = vp.height;
+        await pdfPage.render({ canvas: canvas, viewport: vp }).promise;
+        setPageImages((prev) => {
+          const next = [...prev];
+          next[currentPage] = canvas.toDataURL();
+          return next;
+        });
+        pdfPage.cleanup();
+      } finally {
+        await loadingTask.destroy();
+      }
     };
     renderPage();
   }, [file, pdfDoc, currentPage]);
@@ -117,8 +125,8 @@ export default function RedactPage() {
     if (!canvas) return { x: 0, y: 0 };
     const rect = canvas.getBoundingClientRect();
     return {
-      x: e.clientX - rect.left,
-      y: e.clientY - rect.top,
+      x: (e.clientX - rect.left) * (canvas.width / Math.max(rect.width, 1)),
+      y: (e.clientY - rect.top) * (canvas.height / Math.max(rect.height, 1)),
     };
   }, []);
 
@@ -215,40 +223,42 @@ export default function RedactPage() {
     const canProceed = await usage.checkAndTrack();
     if (!canProceed) { setSaving(false); upsell.showUpsell("daily-limit"); return; }
     try {
-      const { PDFDocument, rgb } = await import("pdf-lib");
       const bytes = pdfBytesRef.current!.slice(0);
-      const outDoc = await PDFDocument.load(bytes, { ignoreEncryption: true });
-      const allRects = rects;
-
-      for (let i = 0; i < allRects.length; i++) {
-        const pageRects = allRects[i] || [];
-        if (pageRects.length === 0) continue;
-        const page = outDoc.getPage(i);
-        for (const r of pageRects) {
-          page.drawRectangle({
-            x: r.x / RENDER_SCALE,
-            y: page.getHeight() - (r.y + r.h) / RENDER_SCALE,
-            width: r.w / RENDER_SCALE,
-            height: r.h / RENDER_SCALE,
-            color: rgb(0, 0, 0),
-          });
+      const pdfjs = await import("pdfjs-dist");
+      if (!pdfjs.GlobalWorkerOptions.workerSrc) pdfjs.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";
+      const coordinateTask = pdfjs.getDocument({ data: bytes.slice(0) });
+      const areas: PdfRedactionArea[] = [];
+      try {
+        const coordinatePdf = await coordinateTask.promise;
+        for (let pageIndex = 0; pageIndex < rects.length; pageIndex += 1) {
+          if (!rects[pageIndex]?.length) continue;
+          const page = await coordinatePdf.getPage(pageIndex + 1);
+          const viewport = page.getViewport({ scale: RENDER_SCALE });
+          for (const rect of rects[pageIndex]) {
+            const first = viewport.convertToPdfPoint(rect.x, rect.y);
+            const second = viewport.convertToPdfPoint(rect.x + rect.w, rect.y + rect.h);
+            areas.push({
+              pageIndex,
+              x: Math.min(first[0], second[0]),
+              y: Math.min(first[1], second[1]),
+              width: Math.abs(second[0] - first[0]),
+              height: Math.abs(second[1] - first[1]),
+            });
+          }
+          page.cleanup();
         }
+      } finally {
+        await coordinateTask.destroy();
       }
-
-      const outBytes = await outDoc.save({ useObjectStreams: true });
-      const blob = new Blob([outBytes as unknown as BlobPart], { type: "application/pdf" });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `redacted-${file.name}`;
-      a.click();
-      URL.revokeObjectURL(url);
+      if (areas.length === 0) throw new Error("Draw at least one area to redact.");
+      const outBytes = await secureRedactPdf(bytes, areas);
+      downloadBytes(outBytes, `redacted-${file.name}`);
       setSuccess(true);
     } catch (e) {
       setError("Failed to redact PDF: " + (e instanceof Error ? e.message : "unknown error"));
     }
     setSaving(false);
-  }, [file, pdfDoc, rects, saving, usage]);
+  }, [file, pages, pdfDoc, rects, saving, usage, upsell]);
 
   const process = useCallback(async () => {
     if (!isPremium()) {
@@ -347,8 +357,7 @@ export default function RedactPage() {
                 onMouseMove={handleMouseMove}
                 onMouseUp={handleMouseUp}
                 onMouseLeave={() => { if (isDrawing) setIsDrawing(false); setDrawStart(null); }}
-                className="w-full cursor-crosshair"
-                style={{ maxHeight: "70vh", objectFit: "contain" }}
+                className="block max-w-full h-auto mx-auto cursor-crosshair"
               />
             </div>
 

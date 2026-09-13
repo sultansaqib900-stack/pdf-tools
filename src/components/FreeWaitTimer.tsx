@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 
+/** Compatibility hook for tool flows that once imposed an artificial wait. */
 export default function FreeWaitTimer({ onDone }: { onDone: () => void }) {
   const doneRef = useRef(onDone);
 
@@ -10,8 +11,7 @@ export default function FreeWaitTimer({ onDone }: { onDone: () => void }) {
   });
 
   useEffect(() => {
-    const id = setTimeout(() => doneRef.current(), 2000);
-    return () => clearTimeout(id);
+    doneRef.current();
   }, []);
 
   return null;

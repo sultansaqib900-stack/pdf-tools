@@ -4,6 +4,9 @@ import { useState, useCallback, useEffect } from "react";
 import { scanPdfForPii, redactSelectedPii, type PiiMatch, type PiiType } from "@/lib/piiScanner";
 import PipelineActionBar from "@/components/PipelineActionBar";
 import { getPipelineDocument } from "@/lib/pdfPipeline";
+import { checkFileSize } from "@/lib/premium";
+import { usePremiumStatus } from "@/hooks/usePremiumStatus";
+import PremiumUpsell, { usePremiumUpsell } from "@/components/PremiumUpsell";
 
 interface PiiGuardianProps {
   initialFile?: File | null;
@@ -11,6 +14,8 @@ interface PiiGuardianProps {
 }
 
 export default function PiiGuardian({ initialFile, onRedactionComplete }: PiiGuardianProps) {
+  const { premium, ready: premiumReady } = usePremiumStatus();
+  const upsell = usePremiumUpsell();
   const [file, setFile] = useState<File | null>(initialFile || null);
   const [scanning, setScanning] = useState(false);
   const [redacting, setRedacting] = useState(false);
@@ -36,6 +41,16 @@ export default function PiiGuardian({ initialFile, onRedactionComplete }: PiiGua
 
   const handleScan = useCallback(async () => {
     if (!file) return;
+    if (!premiumReady) {
+      setError("Checking your account tier. Please try again in a moment.");
+      return;
+    }
+    const sizeCheck = checkFileSize(file.size);
+    if (!sizeCheck.ok) {
+      setError(sizeCheck.message || "This PDF exceeds your file-size limit.");
+      upsell.showUpsell("file-size");
+      return;
+    }
     setScanning(true);
     setError(null);
     setScanned(false);
@@ -50,7 +65,12 @@ export default function PiiGuardian({ initialFile, onRedactionComplete }: PiiGua
         .filter(Boolean);
 
       const activeTypes: PiiType[] = ["ssn", "creditCard", "email", "phone", "currency", "iban", "ipAddress"];
-      const result = await scanPdfForPii(bytes, activeTypes, customTermsList);
+      const result = await scanPdfForPii(
+        bytes,
+        activeTypes,
+        premium ? customTermsList : [],
+        premium ? Number.POSITIVE_INFINITY : 1,
+      );
 
       setMatches(result.matches);
       setScanned(true);
@@ -59,7 +79,7 @@ export default function PiiGuardian({ initialFile, onRedactionComplete }: PiiGua
     } finally {
       setScanning(false);
     }
-  }, [file, customKeywords]);
+  }, [file, customKeywords, premium, premiumReady, upsell]);
 
   const toggleMatch = (id: string) => {
     setMatches((prev) => prev.map((m) => (m.id === id ? { ...m, selected: !m.selected } : m)));
@@ -71,6 +91,10 @@ export default function PiiGuardian({ initialFile, onRedactionComplete }: PiiGua
 
   const handleRedact = async () => {
     if (!file || matches.length === 0) return;
+    if (!premium) {
+      upsell.showUpsell("premium-only", "Your free PII preview scans and masks findings on page 1. Premium unlocks full-document scanning and permanent redacted PDF export.");
+      return;
+    }
     const selected = matches.filter((m) => m.selected);
     if (selected.length === 0) {
       setError("No items selected for redaction.");
@@ -118,7 +142,14 @@ export default function PiiGuardian({ initialFile, onRedactionComplete }: PiiGua
           onChange={(e) => {
             const f = e.target.files?.[0];
             if (f) {
+              const sizeCheck = checkFileSize(f.size);
+              if (!sizeCheck.ok) {
+                setError(sizeCheck.message || "This PDF exceeds your file-size limit.");
+                upsell.showUpsell("file-size");
+                return;
+              }
               setFile(f);
+              setError(null);
               setScanned(false);
               setMatches([]);
               setResultBytes(null);
@@ -142,20 +173,27 @@ export default function PiiGuardian({ initialFile, onRedactionComplete }: PiiGua
         </label>
       </div>
 
+      {premiumReady && !premium && (
+        <div className="p-4 rounded-2xl border border-emerald-500/30 bg-emerald-500/10 text-sm text-emerald-600 dark:text-emerald-400 text-center">
+          <strong>Free privacy preview:</strong> scan page 1 and review masked findings. Premium scans the full document and unlocks permanent redacted export.
+        </div>
+      )}
+
       {/* Custom Keyword Scanner Input */}
       <div className="bg-[var(--card)] border border-[var(--card-border)] rounded-2xl p-5 space-y-3">
         <div className="flex items-center justify-between">
           <label className="text-xs font-bold uppercase tracking-wider text-[var(--foreground)] flex items-center gap-2">
             <span>🔍</span> Optional Custom Keywords to Target
           </label>
-          <span className="text-[10px] text-[var(--muted)]">Comma separated</span>
+          <span className="text-[10px] text-[var(--muted)]">{premium ? "Comma separated" : "Premium"}</span>
         </div>
         <input
           type="text"
           value={customKeywords}
           onChange={(e) => setCustomKeywords(e.target.value)}
-          placeholder="e.g. John Doe, Project Falcon, Internal Confidential, Salary"
-          className="w-full px-4 py-2.5 rounded-xl border border-[var(--card-border)] bg-[var(--background)] text-xs text-[var(--foreground)] focus:ring-2 focus:ring-indigo-500 outline-none"
+          disabled={!premium}
+          placeholder={premium ? "e.g. John Doe, Project Falcon, Internal Confidential, Salary" : "Custom keyword matching is included with Premium"}
+          className="w-full disabled:opacity-50 px-4 py-2.5 rounded-xl border border-[var(--card-border)] bg-[var(--background)] text-xs text-[var(--foreground)] focus:ring-2 focus:ring-indigo-500 outline-none"
         />
       </div>
 
@@ -163,10 +201,12 @@ export default function PiiGuardian({ initialFile, onRedactionComplete }: PiiGua
       {file && !scanned && (
         <button
           onClick={handleScan}
-          disabled={scanning}
+          disabled={scanning || !premiumReady}
           className="w-full py-4 bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 text-white font-extrabold rounded-2xl hover:opacity-95 disabled:opacity-50 transition-all shadow-xl shadow-indigo-500/25 flex items-center justify-center gap-2 text-base active:scale-[0.99]"
         >
-          {scanning ? (
+          {!premiumReady ? (
+            <>Checking account tier…</>
+          ) : scanning ? (
             <>
               <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
@@ -175,7 +215,7 @@ export default function PiiGuardian({ initialFile, onRedactionComplete }: PiiGua
               Deep Scanning Document for PII &amp; Secrets...
             </>
           ) : (
-            <>⚡ 1-Click Scan for PII (Zero Server Upload)</>
+            <>⚡ {premium ? "Scan Full Document for PII" : "Preview Page 1 for PII"} (Zero Upload)</>
           )}
         </button>
       )}
@@ -192,7 +232,7 @@ export default function PiiGuardian({ initialFile, onRedactionComplete }: PiiGua
                 </h3>
               </div>
               <p className="text-xs text-[var(--muted)] mt-0.5">
-                Review below and select which items to permanently black out.
+                {premium ? "Review below and select which items to permanently black out." : "Masked page-1 preview only; the source values remain untouched."}
               </p>
             </div>
 
@@ -215,8 +255,8 @@ export default function PiiGuardian({ initialFile, onRedactionComplete }: PiiGua
           {matches.length === 0 ? (
             <div className="py-12 text-center text-[var(--muted)]">
               <span className="text-4xl block mb-2">🎉</span>
-              <p className="text-base font-bold text-emerald-400">No PII Found!</p>
-              <p className="text-xs mt-1">This document does not appear to contain standard SSNs, credit cards, or emails.</p>
+              <p className="text-base font-bold text-emerald-400">{premium ? "No PII Found!" : "No PII Found on Page 1"}</p>
+              <p className="text-xs mt-1">{premium ? "This document does not appear to contain standard SSNs, credit cards, or emails." : "Upgrade to scan every remaining page before treating the document as clean."}</p>
             </div>
           ) : (
             <div className="space-y-3 max-h-96 overflow-y-auto pr-1">
@@ -269,7 +309,7 @@ export default function PiiGuardian({ initialFile, onRedactionComplete }: PiiGua
               {redacting ? (
                 <>Burning Blackout Rectangles into PDF Stream...</>
               ) : (
-                <>⬛ Burn Permanent Blackouts ({selectedCount} Selected)</>
+                <>{premium ? `⬛ Burn Permanent Blackouts (${selectedCount} Selected)` : "🔒 Upgrade to Export a Permanently Redacted PDF"}</>
               )}
             </button>
           )}
@@ -297,6 +337,12 @@ export default function PiiGuardian({ initialFile, onRedactionComplete }: PiiGua
           currentToolName="PII Guardian"
         />
       )}
+      <PremiumUpsell
+        show={upsell.state.show}
+        mode={upsell.state.mode}
+        message={upsell.state.message}
+        onClose={upsell.hideUpsell}
+      />
     </div>
   );
 }

@@ -1,5 +1,7 @@
 "use client";
 
+import { isPdfFile } from "@/lib/pdfBytes";
+
 import { useState, useCallback, useEffect, useRef } from "react";
 import ToolInfo from "@/components/ToolInfo";
 import FreeWaitTimer from "@/components/FreeWaitTimer";
@@ -42,7 +44,7 @@ export default function MetadataPage() {
   useEffect(() => { trackToolVisit("metadata"); }, []);
 
   const handleFile = useCallback(async (f: File | null) => {
-    if (!f || f.type !== "application/pdf") return;
+    if (!f || !isPdfFile(f)) return;
     const check = checkFileSize(f.size);
     if (!check.ok) { upsell.showUpsell("file-size"); return; }
     setFile(f);
@@ -52,7 +54,7 @@ export default function MetadataPage() {
     const { PDFDocument } = await import("pdf-lib");
     const bytes = await f.arrayBuffer();
     originalBytes.current = bytes;
-    const pdf = await PDFDocument.load(bytes, { ignoreEncryption: true });
+    const pdf = await PDFDocument.load(bytes);
     setTitle(pdf.getTitle() || "");
     setAuthor(pdf.getAuthor() || "");
     setSubject(pdf.getSubject() || "");
@@ -70,11 +72,11 @@ export default function MetadataPage() {
       const { PDFDocument } = await import("pdf-lib");
       const bytes = await file.arrayBuffer();
       originalBytes.current = bytes;
-      const pdf = await PDFDocument.load(bytes, { ignoreEncryption: true });
-      if (title) pdf.setTitle(title);
-      if (author) pdf.setAuthor(author);
-      if (subject) pdf.setSubject(subject);
-      if (keywords) pdf.setKeywords(keywords.split(",").map((k) => k.trim()));
+      const pdf = await PDFDocument.load(bytes);
+      pdf.setTitle(title);
+      pdf.setAuthor(author);
+      pdf.setSubject(subject);
+      pdf.setKeywords(keywords.split(",").map((keyword) => keyword.trim()).filter(Boolean));
 
       const pdfBytes = await pdf.save({ useObjectStreams: true });
       const blob = new Blob([pdfBytes as unknown as BlobPart], { type: "application/pdf" });
@@ -83,7 +85,7 @@ export default function MetadataPage() {
       a.href = url;
       a.download = `metadata-${file.name}`;
       a.click();
-      URL.revokeObjectURL(url);
+      window.setTimeout(() => URL.revokeObjectURL(url), 60_000);
       trackExport(file.name, "Metadata Editor", pdfBytes.length);
       setSuccess(true);
     } catch { setError("Failed to edit metadata."); }
@@ -108,7 +110,7 @@ export default function MetadataPage() {
     a.href = url;
     a.download = `original-${file?.name || "restored.pdf"}`;
     a.click();
-    URL.revokeObjectURL(url);
+    window.setTimeout(() => URL.revokeObjectURL(url), 60_000);
   }, [file]);
 
   return (

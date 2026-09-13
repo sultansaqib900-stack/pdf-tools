@@ -54,9 +54,9 @@ export default function BlogPost() {
         </ul>
 
         <div className="bg-[var(--card)] border border-[var(--card-border)] rounded-xl p-6 mt-6">
-          <p className="font-semibold text-[var(--foreground)] mb-1">Premium Feature</p>
-          <p className="text-sm text-[var(--muted)] mb-3">The PDF color inverter is a premium tool with dark mode, grayscale, and high-contrast options. Upgrade for accessible document reading.</p>
-          <a href="/premium" className="inline-block px-5 py-2.5 bg-amber-600 text-white font-medium rounded-xl text-sm hover:bg-amber-700 transition">Upgrade to Premium →</a>
+          <p className="font-semibold text-[var(--foreground)] mb-1">Free Tool</p>
+          <p className="text-sm text-[var(--muted)] mb-3">The PDF Color Inverter is free for individual PDFs and includes dark mode, grayscale, and high-contrast rendering.</p>
+          <a href="/pdf-inverter" className="inline-block px-5 py-2.5 bg-indigo-600 text-white font-medium rounded-xl text-sm hover:bg-indigo-700 transition">Open Free Tool →</a>
         </div>
       </div>
     </article>

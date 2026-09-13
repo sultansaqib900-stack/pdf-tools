@@ -1,5 +1,7 @@
 "use client";
 
+import { isPdfFile } from "@/lib/pdfBytes";
+
 import { useState, useCallback, useEffect, useRef } from "react";
 import ToolInfo from "@/components/ToolInfo";
 import FreeWaitTimer from "@/components/FreeWaitTimer";
@@ -61,7 +63,7 @@ export default function PdfToWordPage() {
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url; a.download = file.name.replace(/\.pdf$/i, ".docx"); a.click();
-      URL.revokeObjectURL(url);
+      window.setTimeout(() => URL.revokeObjectURL(url), 60_000);
       trackExport(file.name, "PDF to Word", bytes.byteLength);
     } catch {
       setError("Conversion failed. Try a different PDF.");
@@ -72,7 +74,7 @@ export default function PdfToWordPage() {
 
   const handleFile = useCallback((f: File | null) => {
     if (!f) return;
-    if (f.type !== "application/pdf") { setError("Please upload a PDF file."); return; }
+    if (!isPdfFile(f)) { setError("Please upload a PDF file."); return; }
     const check = checkFileSize(f.size);
     if (!check.ok) { upsell.showUpsell("file-size"); return; }
     setFile(f); setError(null);

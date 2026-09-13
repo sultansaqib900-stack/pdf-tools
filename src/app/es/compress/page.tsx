@@ -19,6 +19,8 @@ import FaqPageJsonLd from "@/components/FaqPageJsonLd";
 import RelatedContent from "@/components/RelatedContent";
 import { getRelatedContent } from "@/lib/related-content";
 import UseCaseLinks from "@/components/UseCaseLinks";
+import { compressPdfBytes } from "@/lib/pdfRaster";
+import { downloadBytes, isPdfFile } from "@/lib/pdfBytes";
 
 const rc = getRelatedContent("compress");
 
@@ -38,7 +40,7 @@ export default function EsCompressPage() {
   useEffect(() => { trackToolVisit("compress"); }, []);
 
   const handleFile = useCallback((f: File | null) => {
-    if (f && f.type === "application/pdf") {
+    if (f && isPdfFile(f)) {
       const check = checkFileSize(f.size);
       if (!check.ok) { upsell.showUpsell("file-size"); return; }
       setFile(f);
@@ -68,31 +70,19 @@ export default function EsCompressPage() {
     const canProceed = await usage.checkAndTrack();
     if (!canProceed) { setProcessing(false); upsell.showUpsell("daily-limit"); return; }
     try {
-      const { PDFDocument } = await import("pdf-lib");
       const bytes = await file.arrayBuffer();
-      originalBytes.current = bytes;
-      const pdfDoc = await PDFDocument.load(bytes, { ignoreEncryption: true });
-      const compressedBytes = await pdfDoc.save({
-        useObjectStreams: true,
-        objectsPerTick: 100,
-      });
-      const compressed = new Uint8Array(compressedBytes);
-      setResult({ size: compressed.length, originalSize: bytes.byteLength });
-
-      const blob = new Blob([compressed.slice()], { type: "application/pdf" });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `comprimido-${file.name}`;
-      a.click();
-      URL.revokeObjectURL(url);
-      trackExport(file.name, "Compress PDF", compressed.length);
+      originalBytes.current = bytes.slice(0);
+      const compressed = await compressPdfBytes(bytes, "balanced");
+      setResult({ size: compressed.outputSize, originalSize: compressed.originalSize });
+      downloadBytes(compressed.bytes, `comprimido-${file.name}`);
+      trackExport(file.name, "Compress PDF (balanced)", compressed.outputSize);
       setSuccess(true);
-    } catch {
-      setError("No se pudo comprimir el PDF. El archivo puede estar encriptado o corrupto.");
+    } catch (compressionError) {
+      setError(compressionError instanceof Error ? compressionError.message : "No se pudo comprimir el PDF. El archivo puede estar encriptado o corrupto.");
+    } finally {
+      setProcessing(false);
     }
-    setProcessing(false);
-  }, [file, usage]);
+  }, [file, trackExport, upsell, usage]);
 
   const compress = useCallback(async () => {
     if (!file) return;
@@ -107,13 +97,7 @@ export default function EsCompressPage() {
 
   const restoreOriginal = useCallback(async () => {
     if (!originalBytes.current) return;
-    const blob = new Blob([originalBytes.current], { type: "application/pdf" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `original-${file?.name || "restaurado.pdf"}`;
-    a.click();
-    URL.revokeObjectURL(url);
+    downloadBytes(originalBytes.current, `original-${file?.name || "restaurado.pdf"}`);
   }, [file]);
 
   const formatBytes = (b: number) =>
@@ -123,13 +107,13 @@ export default function EsCompressPage() {
     <div className="max-w-3xl mx-auto px-4 py-12">
       <SoftwareAppJsonLd
         name="Comprimir PDF - Herramienta Gratuita Online"
-        description="Comprime archivos PDF gratis online. Reduce el tamaño del PDF sin perder calidad. Sin subidas, 100% privado."
+        description="Comprime archivos PDF gratis online. Reduce el tamaño del PDF con compresión equilibrada. Sin subidas, 100% privado."
         url="https://allaboutpdfediting.xyz/es/compress"
       />
-      <HowToJsonLd name="Comprimir PDF Online Gratis" description="Reduce el tamaño del PDF sin perder calidad" steps={[{name:"Subir PDF",text:"Selecciona el archivo PDF que deseas comprimir"},{name:"Comprimir",text:"Haz clic en comprimir para reducir el tamaño"},{name:"Descargar PDF",text:"Descarga tu archivo PDF más pequeño"}]} />
+      <HowToJsonLd name="Comprimir PDF Online Gratis" description="Reduce el tamaño del PDF con compresión equilibrada" steps={[{name:"Subir PDF",text:"Selecciona el archivo PDF que deseas comprimir"},{name:"Comprimir",text:"Haz clic en comprimir para reducir el tamaño"},{name:"Descargar PDF",text:"Descarga tu archivo PDF más pequeño"}]} />
       <BreadcrumbJsonLd items={[{ name: "Inicio", item: "https://allaboutpdfediting.xyz/es" }, { name: "Comprimir PDF", item: "https://allaboutpdfediting.xyz/es/compress" }]} />
       <FaqPageJsonLd questions={rc?.faqs} />
-      <AiSummaryJsonLd name="Comprimir PDF" summary="Reduce el tamaño de archivos PDF al instante sin perder calidad" category="Utilidades" inputType="PDF" outputType="PDF" processing="lado-del-cliente" price="free" features={["Compresión sin pérdida","Reducción de tamaño","Preservación de calidad","Procesamiento instantáneo","Sin subidas"]} limits="Archivos hasta 10MB" />
+      <AiSummaryJsonLd name="Comprimir PDF" summary="Reduce el tamaño de archivos PDF con compresión visual equilibrada" category="Utilidades" inputType="PDF" outputType="PDF" processing="lado-del-cliente" price="free" features={["Compresión equilibrada","Reducción de tamaño","Buena calidad visual","Procesamiento instantáneo","Sin subidas"]} limits="Archivos hasta 10MB" />
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">Comprimir PDF</h1>
         <p className="text-[var(--muted)]">Reduce el tamaño del PDF manteniendo la calidad.</p>
@@ -137,7 +121,7 @@ export default function EsCompressPage() {
 
       <ToolInfo
         name="Comprimir PDF"
-        description="Tu PDF nunca sale de tu dispositivo. La compresión ocurre localmente en tu navegador usando pdf-lib. Selecciona un archivo, haz clic en comprimir y descarga la versión más pequeña — sin subidas, sin servidores, sin riesgos de privacidad."
+        description="Tu PDF nunca sale de tu dispositivo. La compresión ocurre localmente en tu navegador y reconstruye las páginas como imágenes optimizadas. Selecciona un archivo, haz clic en comprimir y descarga la versión más pequeña — sin subidas, sin servidores, sin riesgos de privacidad."
       />
 
       <div className="mb-4">

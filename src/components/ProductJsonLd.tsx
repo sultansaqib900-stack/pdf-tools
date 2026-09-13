@@ -1,10 +1,12 @@
+import { PREMIUM_TOOLS, PREMIUM_TOOL_COUNT } from "@/lib/toolCatalog";
+
 export default function ProductJsonLd() {
+  const premiumNames = PREMIUM_TOOLS.map((tool) => tool.title).join(", ");
   const json = {
     "@context": "https://schema.org",
     "@type": "Product",
     name: "PDFTools Premium",
-    description:
-      "Premium PDF tool subscription with unlimited file processing, 100MB file support, batch processing, ad-free experience, and 13 exclusive premium tools including PDF comparison, certificate generation, PDF-to-audio, form data extraction, bulk rename, booklet creator, search & redact, color inverter, secure vault, QR code stamp, metadata sanitizer, split by bookmarks, and bates numbering.",
+    description: `Premium PDF subscription with unlimited processing, 100MB file support, batch workflows, unlimited AI questions, and ${PREMIUM_TOOL_COUNT} professional tools: ${premiumNames}.`,
     url: "https://allaboutpdfediting.xyz/premium",
     image: "https://allaboutpdfediting.xyz/opengraph-image.png",
     brand: { "@type": "Brand", name: "PDFTools" },

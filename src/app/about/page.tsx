@@ -35,7 +35,7 @@ export default function AboutPage() {
           <li><strong>29 free PDF tools</strong> — Compress, merge, split, convert, edit, sign, protect, and more</li>
           <li><strong>AI Chat with PDF</strong> — Upload any PDF and ask AI questions about its content</li>
           <li><strong>AI OCR</strong> — Extract text from scanned/image-based PDFs using AI vision</li>
-          <li><strong>Premium subscription</strong> — Unlimited usage, no ads, larger files, batch processing</li>
+          <li><strong>Premium subscription</strong> — Unlimited usage, larger files, batch processing, and advanced tools</li>
           <li><strong>Real user feedback</strong> — See what others say about our tools on the homepage</li>
         </ul>
 

@@ -12,6 +12,7 @@ import { isPremium, checkFileSize } from "@/lib/premium";
 import { useUsage } from "@/hooks/useUsage";
 import { useToolHistory } from "@/hooks/useToolHistory";
 import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
+import { downloadBytes, isPdfFile } from "@/lib/pdfBytes";
 import HowToJsonLd from "@/components/HowToJsonLd";
 import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
 import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
@@ -42,30 +43,26 @@ export default function PdfToPdfaPage() {
     const canProceed = await usage.checkAndTrack();
     if (!canProceed) { setProcessing(false); upsell.showUpsell("daily-limit"); return; }
     try {
-      const { PDFDocument } = await import("pdf-lib");
+      if (!isPdfFile(file)) throw new Error("Please select a valid PDF file.");
+      const { PDFDocument } = await import("@cantoo/pdf-lib");
       const bytes = await file.arrayBuffer();
-      const doc = await PDFDocument.load(bytes, { ignoreEncryption: true });
-      setProgress("Embedding fonts and standardizing...");
-      doc.setTitle("PDF/A Document");
-      doc.setSubject("Archived PDF");
-      doc.setKeywords(["PDF/A", "archive", "long-term preservation"]);
+      const doc = await PDFDocument.load(bytes, { updateMetadata: false });
+      setProgress("Adding PDF/A-2B identifiers, XMP, and sRGB output intent…");
+      doc.convertToPDFA({ conformance: "2B" });
       const pdfBytes = await doc.save({ useObjectStreams: true });
-      const blob = new Blob([pdfBytes.slice()], { type: "application/pdf" });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url; a.download = file.name.replace(/\.pdf$/i, "-pdfa.pdf"); a.click();
-      URL.revokeObjectURL(url);
-      trackExport(file.name, "PDF to PDF/A", pdfBytes.byteLength);
+      downloadBytes(pdfBytes, file.name.replace(/\.pdf$/i, "-pdfa.pdf"));
+      trackExport(file.name, "PDF to PDF/A-2B", pdfBytes.byteLength);
       setSuccess(true);
-    } catch {
-      setError("Conversion failed.");
+    } catch (conversionError) {
+      setError(conversionError instanceof Error ? conversionError.message : "Conversion failed.");
+    } finally {
+      setProcessing(false);
     }
-    setProcessing(false);
   }, [file]);
 
   const handleFile = useCallback((f: File | null) => {
     if (!f) return;
-    if (f.type !== "application/pdf") { setError("Please upload a PDF file."); return; }
+    if (!isPdfFile(f)) { setError("Please upload a PDF file."); return; }
     setFile(f); setError(null); setSuccess(false);
   }, []);
 
@@ -95,7 +92,8 @@ export default function PdfToPdfaPage() {
         <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">PDF to PDF/A</h1>
         <p className="text-[var(--muted)]">Convert PDF to PDF/A archive format for long-term preservation.</p>
       </div>
-      <ToolInfo name="PDF to PDF/A" description="Convert your PDFs to the PDF/A archival standard. Ideal for legal, government, and long-term document storage." />
+      <ToolInfo name="PDF to PDF/A-2B" description="Adds the PDF/A-2B document ID, synchronized XMP metadata, PDF/A identification, and an embedded sRGB output intent entirely in your browser." />
+      <p className="mb-4 text-xs text-[var(--muted)]">Existing content is preserved. For regulated archives, validate the result with a PDF/A validator because source PDFs with unembedded fonts or non-compliant content may still require specialist remediation.</p>
       <div className="mb-4"><UsageBar remaining={usage.remaining} unlimited={usage.unlimited} /></div>
       <div className="bg-[var(--card)] rounded-xl border border-[var(--card-border)] p-8 space-y-6">
         <div onDrop={onDrop} onDragOver={(e) => { e.preventDefault(); setDragging(true); }} onDragLeave={() => setDragging(false)}

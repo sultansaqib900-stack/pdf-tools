@@ -1,80 +1,76 @@
-import { describe, it, expect } from "vitest";
+import { beforeEach, describe, expect, it } from "vitest";
 import {
-  isPremium,
-  setPremium,
-  getClientId,
-  UNLIMITED_TOOLS,
-  FREE_LIMITS,
-  PREMIUM_LIMITS,
-  getLimits,
-  checkFileSize,
   checkBatchCount,
+  checkFileSize,
+  FREE_LIMITS,
+  getClientId,
+  getLimits,
+  getPremiumSnapshot,
+  isPremium,
+  PREMIUM_LIMITS,
+  setPremium,
+  UNLIMITED_TOOLS,
 } from "@/lib/premium";
 
-describe("getClientId", () => {
-  it("returns a UUID string", () => {
-    const id = getClientId();
-    expect(id).toBeTruthy();
-    expect(typeof id).toBe("string");
+beforeEach(() => {
+  setPremium(false);
+  localStorage.clear();
+});
+
+describe("anonymous client identity", () => {
+  it("creates and reuses a UUID without persisting entitlement proof", () => {
+    const first = getClientId();
+    const second = getClientId();
+    expect(first).toBeTruthy();
+    expect(second).toBe(first);
+    expect(Object.keys(localStorage)).toEqual(["pdftools_client_id"]);
   });
-  it("returns the same ID on subsequent calls", () => {
-    const id1 = getClientId();
-    const id2 = getClientId();
-    expect(id1).toBe(id2);
+
+  it("does not trust a browser-set premium flag", () => {
+    localStorage.setItem("pdftools_premium", "true");
+    expect(isPremium()).toBe(false);
   });
 });
 
-describe("isPremium / setPremium", () => {
-  it("returns false by default on server", () => {
+describe("verified in-memory Premium snapshot", () => {
+  it("fails closed until a trusted server response updates it", () => {
+    setPremium(false, false);
+    expect(getPremiumSnapshot()).toEqual({ premium: false, ready: false });
     expect(isPremium()).toBe(false);
   });
 
-  it("setPremium updates the module state", () => {
+  it("reacts to a verified Premium result", () => {
     setPremium(true);
     expect(isPremium()).toBe(true);
-    setPremium(false);
-    expect(isPremium()).toBe(false);
+    expect(getLimits()).toBe(PREMIUM_LIMITS);
   });
 });
 
-describe("UNLIMITED_TOOLS", () => {
-  it("includes compress, image-to-pdf, split, unlock (not merge)", () => {
-    expect(UNLIMITED_TOOLS).toContain("compress");
-    expect(UNLIMITED_TOOLS).not.toContain("merge");
-    expect(UNLIMITED_TOOLS).toContain("image-to-pdf");
-    expect(UNLIMITED_TOOLS).toContain("split");
-    expect(UNLIMITED_TOOLS).toContain("unlock");
+describe("tier limits", () => {
+  it("uses consistent free limits with no artificial wait", () => {
+    expect(UNLIMITED_TOOLS).toEqual([]);
+    expect(getLimits()).toBe(FREE_LIMITS);
+    expect(FREE_LIMITS.maxFileSize).toBe(10 * 1024 * 1024);
+    expect(FREE_LIMITS.waitSeconds).toBe(0);
+    expect(PREMIUM_LIMITS.maxFileSize).toBe(100 * 1024 * 1024);
+    expect(PREMIUM_LIMITS.waitSeconds).toBe(0);
   });
-});
 
-describe("getLimits", () => {
-  it("returns free limits by default (not premium)", () => {
-    const limits = getLimits();
-    expect(limits.maxFileSize).toBe(FREE_LIMITS.maxFileSize);
-    expect(limits.maxDailyUses).toBe(FREE_LIMITS.maxDailyUses);
-  });
-});
+  it("enforces file size against the active tier", () => {
+    expect(checkFileSize(5 * 1024 * 1024).ok).toBe(true);
+    const rejected = checkFileSize(50 * 1024 * 1024);
+    expect(rejected.ok).toBe(false);
+    expect(rejected.message).toContain("up to 10MB");
 
-describe("checkFileSize", () => {
-  it("accepts files under free limit", () => {
-    const result = checkFileSize(5 * 1024 * 1024);
-    expect(result.ok).toBe(true);
+    setPremium(true);
+    expect(checkFileSize(50 * 1024 * 1024).ok).toBe(true);
+    expect(checkFileSize(101 * 1024 * 1024).ok).toBe(false);
   });
-  it("rejects files over free limit", () => {
-    const result = checkFileSize(50 * 1024 * 1024);
-    expect(result.ok).toBe(false);
-    expect(result.message).toContain("Free tier");
-  });
-});
 
-describe("checkBatchCount", () => {
-  it("rejects batch processing for free users", () => {
-    const result = checkBatchCount(2);
-    expect(result.ok).toBe(false);
-    expect(result.message).toContain("Premium");
-  });
-  it("allows single file processing for free users", () => {
-    const result = checkBatchCount(1);
-    expect(result.ok).toBe(true);
+  it("reserves multi-file batch processing for Premium", () => {
+    expect(checkBatchCount(1).ok).toBe(true);
+    expect(checkBatchCount(2).ok).toBe(false);
+    setPremium(true);
+    expect(checkBatchCount(20).ok).toBe(true);
   });
 });

@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { DEFAULT_RECIPES, executePdfRecipe, getActionLabel } from "@/lib/pdfRecipes";
-import { PDFDocument, StandardFonts } from "pdf-lib";
+import { PDFDocument, PDFName, StandardFonts } from "pdf-lib";
+import { decryptPdf, getPdfEncryptionInfo } from "@/lib/pdfSecurity";
 
 describe("PDF Recipes & Macro Automations", () => {
   it("should have pre-configured industry recipes", () => {
@@ -28,5 +29,54 @@ describe("PDF Recipes & Macro Automations", () => {
 
     expect(outputBytes).toBeDefined();
     expect(outputBytes.length).toBeGreaterThan(0);
+  });
+
+  it("applies configured rotation and watermark content", async () => {
+    const document = await PDFDocument.create();
+    document.addPage([300, 200]);
+    const output = await executePdfRecipe(await document.save(), {
+      id: "configured-actions",
+      name: "Configured actions",
+      description: "test",
+      icon: "test",
+      badge: "Test",
+      category: "Custom",
+      actions: [
+        { type: "rotate", params: { degrees: 90 } },
+        { type: "watermark", params: { text: "REVIEW COPY", opacity: 40 } },
+      ],
+    });
+    const processed = await PDFDocument.load(output);
+    expect(processed.getPage(0).getRotation().angle).toBe(90);
+    const contents = processed.getPage(0).node.get(PDFName.of("Contents"));
+    expect(contents).toBeDefined();
+  });
+
+  it("uses real AES-256 protection and enforces it as the final action", async () => {
+    const document = await PDFDocument.create();
+    document.addPage();
+    const source = await document.save();
+    const protectedOutput = await executePdfRecipe(source, {
+      id: "protect",
+      name: "Protect",
+      description: "test",
+      icon: "test",
+      badge: "Test",
+      category: "Custom",
+      actions: [{ type: "protect" }],
+    }, undefined, { password: "reader-secret" });
+
+    expect((await getPdfEncryptionInfo(protectedOutput)).encrypted).toBe(true);
+    expect((await PDFDocument.load(await decryptPdf(protectedOutput, "reader-secret"))).getPageCount()).toBe(1);
+
+    await expect(executePdfRecipe(source, {
+      id: "invalid-order",
+      name: "Invalid order",
+      description: "test",
+      icon: "test",
+      badge: "Test",
+      category: "Custom",
+      actions: [{ type: "protect" }, { type: "rotate", params: { degrees: 90 } }],
+    }, undefined, { password: "secret" })).rejects.toThrow(/final/i);
   });
 });

@@ -1,51 +1,50 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createClient } from "@vercel/kv";
-import { setPremiumStatus, setPremiumByEmail } from "@/lib/kv";
-
-const kv = createClient({
-  url: process.env.pdf_tools_KV_REST_API_URL || process.env.KV_REST_API_URL || "",
-  token: process.env.pdf_tools_KV_REST_API_TOKEN || process.env.KV_REST_API_TOKEN || "",
-});
+import {
+  bindPremiumClient,
+  getCheckoutRecord,
+  getPremiumStatus,
+  setCheckoutRecord,
+} from "@/lib/kv";
+import { rateLimit, rateLimitResponse } from "@/lib/rate-limit";
+import { validateString } from "@/lib/validation";
 
 export async function POST(req: NextRequest) {
+  const { success, reset } = await rateLimit(req, { limit: 20, window: 60, identifier: "premium-confirm" });
+  if (!success) return rateLimitResponse(reset);
+
   try {
-    const { clientId, nonce, email } = await req.json();
-    if (!clientId) {
-      return NextResponse.json({ ok: false, error: "No clientId" }, { status: 400 });
+    const body = await req.json();
+    const clientId = validateString(body.clientId, 100);
+    const nonce = validateString(body.nonce, 128);
+    if (!clientId || !nonce) {
+      return NextResponse.json({ ok: false, premium: false, error: "Invalid checkout confirmation." }, { status: 400 });
     }
 
-    if (nonce) {
-      try {
-        const raw = await kv.get(`pdftools:checkout:${nonce}`);
-        if (raw) {
-          const data = typeof raw === "string" ? JSON.parse(raw) : raw;
-          if (data.used) {
-            return NextResponse.json({ ok: false, error: "Nonce already used" }, { status: 400 });
-          }
-          if (data.clientId !== clientId) {
-            return NextResponse.json({ ok: false, error: "Nonce mismatch" }, { status: 400 });
-          }
-          await kv.set(`pdftools:checkout:${nonce}`, JSON.stringify({ ...data, used: true }), { ex: 7200 });
-          await setPremiumStatus(clientId, true);
-          if (email) {
-            await setPremiumByEmail(email, clientId);
-          }
-          return NextResponse.json({ ok: true, premium: true });
-        }
-      } catch {
-        // KV error during checkout validation
-      }
+    const checkout = await getCheckoutRecord(nonce);
+    if (!checkout || checkout.clientId !== clientId) {
+      return NextResponse.json({ ok: false, premium: false, error: "Checkout session not found." }, { status: 404 });
     }
 
-    if (email) {
-      const isEmailPremium = await setPremiumByEmail(email, clientId);
-      if (isEmailPremium) {
-        return NextResponse.json({ ok: true, premium: true });
-      }
+    if (checkout.used) {
+      const premium = await getPremiumStatus(clientId);
+      return NextResponse.json({ ok: premium, premium });
     }
 
-    return NextResponse.json({ ok: false, error: "Invalid checkout session or email" }, { status: 400 });
+    if (!checkout.paid || !checkout.email) {
+      return NextResponse.json(
+        { ok: false, premium: false, pending: true, error: "Waiting for verified payment confirmation." },
+        { status: 409 },
+      );
+    }
+
+    const bound = await bindPremiumClient(clientId, checkout.email);
+    if (!bound) {
+      return NextResponse.json({ ok: false, premium: false, error: "The paid entitlement is not active." }, { status: 403 });
+    }
+
+    await setCheckoutRecord(nonce, { ...checkout, used: true }, 24 * 60 * 60);
+    return NextResponse.json({ ok: true, premium: true });
   } catch {
-    return NextResponse.json({ ok: false, error: "Confirmation failed" }, { status: 500 });
+    return NextResponse.json({ ok: false, premium: false, error: "Confirmation failed." }, { status: 500 });
   }
 }

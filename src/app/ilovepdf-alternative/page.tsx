@@ -59,8 +59,8 @@ export default function ILovePDFAltPage() {
           <p className="text-sm text-[var(--muted)]">iLovePDF restricts free users to 1 PDF per hour — a frustrating cap when you need to process multiple files. PDFTools gives you 5 uses per day free, with no arbitrary cooldown. <Link href="/premium" className="text-indigo-500 underline">Premium</Link> removes all limits.</p>
         </div>
         <div className="border border-[var(--card-border)] rounded-xl p-5">
-          <h3 className="font-semibold mb-2 text-[var(--foreground)]">3. Clean, Ad-Light Experience</h3>
-          <p className="text-sm text-[var(--muted)]">iLovePDF&apos;s free tier is cluttered with ads. PDFTools keeps a minimal interface with non-intrusive ad placements. Focus on your documents, not on pop-ups and banners.</p>
+          <h3 className="font-semibold mb-2 text-[var(--foreground)]">3. Clean, Ad-Free Experience</h3>
+          <p className="text-sm text-[var(--muted)]">iLovePDF&apos;s free tier is cluttered with ads. PDFTools currently loads no advertising scripts, pop-ups, or banners, so you can focus on your documents.</p>
         </div>
         <div className="border border-[var(--card-border)] rounded-xl p-5">
           <h3 className="font-semibold mb-2 text-[var(--foreground)]">4. AI-Powered PDF Features</h3>

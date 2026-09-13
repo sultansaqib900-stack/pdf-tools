@@ -1,5 +1,7 @@
 "use client";
 
+import { isPdfFile } from "@/lib/pdfBytes";
+
 import { useState, useCallback, useEffect, useRef } from "react";
 import ToolInfo from "@/components/ToolInfo";
 import FreeWaitTimer from "@/components/FreeWaitTimer";
@@ -41,7 +43,7 @@ export default function InsertBlankPage() {
   useEffect(() => { trackToolVisit("insert-blank"); }, []);
 
   const handleFile = useCallback(async (f: File | null) => {
-    if (!f || f.type !== "application/pdf") return;
+    if (!f || !isPdfFile(f)) return;
     const check = checkFileSize(f.size);
     if (!check.ok) { upsell.showUpsell("file-size"); return; }
     setFile(f);
@@ -49,7 +51,7 @@ export default function InsertBlankPage() {
     setError(null);
     const bytes = await f.arrayBuffer();
     const { PDFDocument } = await import("pdf-lib");
-    const pdf = await PDFDocument.load(bytes, { ignoreEncryption: true });
+    const pdf = await PDFDocument.load(bytes);
     setPageCount(pdf.getPageCount());
   }, []);
 
@@ -63,7 +65,7 @@ export default function InsertBlankPage() {
       const { PDFDocument } = await import("pdf-lib");
       const bytes = await file.arrayBuffer();
       originalBytes.current = bytes;
-      const pdfDoc = await PDFDocument.load(bytes, { ignoreEncryption: true });
+      const pdfDoc = await PDFDocument.load(bytes);
       const firstPage = pdfDoc.getPage(0);
       const { width, height } = firstPage.getSize();
 
@@ -91,7 +93,7 @@ export default function InsertBlankPage() {
         a.href = url;
         a.download = `inserted-${file.name}`;
         a.click();
-        URL.revokeObjectURL(url);
+        window.setTimeout(() => URL.revokeObjectURL(url), 60_000);
         trackExport(file.name, "Insert Blank Pages", saved.length);
         setSuccess(true);
         setProcessing(false);
@@ -116,7 +118,7 @@ export default function InsertBlankPage() {
         a.href = url;
         a.download = `inserted-${file.name}`;
         a.click();
-        URL.revokeObjectURL(url);
+        window.setTimeout(() => URL.revokeObjectURL(url), 60_000);
         trackExport(file.name, "Insert Blank Pages", saved.length);
         setSuccess(true);
         setProcessing(false);
@@ -130,7 +132,7 @@ export default function InsertBlankPage() {
       a.href = url;
       a.download = `inserted-${file.name}`;
       a.click();
-      URL.revokeObjectURL(url);
+      window.setTimeout(() => URL.revokeObjectURL(url), 60_000);
       trackExport(file.name, "Insert Blank Pages", pdfBytes.length);
       setSuccess(true);
     } catch {
@@ -157,7 +159,7 @@ export default function InsertBlankPage() {
     a.href = url;
     a.download = `original-${file?.name || "restored.pdf"}`;
     a.click();
-    URL.revokeObjectURL(url);
+    window.setTimeout(() => URL.revokeObjectURL(url), 60_000);
   }, [file]);
 
   return (
