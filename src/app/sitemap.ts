@@ -1,27 +1,13 @@
 import type { MetadataRoute } from "next";
-import { seoPages } from "@/lib/programmatic-seo";
-import { getErrorPages } from "@/lib/error-pages";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const base = "https://allaboutpdfediting.xyz";
 
   const es = (path: string) => `${base}/es${path}`;
 
-  const forPages: MetadataRoute.Sitemap = seoPages.map((p) => ({
-    url: `${base}/for/${p.slug}`,
-    lastModified: new Date(),
-    changeFrequency: "weekly" as const,
-    priority: 0.6,
-  }));
-
-  const errorPages: MetadataRoute.Sitemap = getErrorPages().map((p) => ({
-    url: `${base}/error/${p.slug}`,
-    lastModified: new Date(),
-    changeFrequency: "monthly" as const,
-    priority: 0.7,
-  }));
-
-  return [...errorPages, ...forPages,
+  // Sitemap contains only canonical, indexable pages. The generated audience
+  // matrix and error pages are intentionally excluded from Search.
+  return [
     { url: base, lastModified: new Date(), changeFrequency: "weekly", priority: 1 },
     { url: es(""), lastModified: new Date(), changeFrequency: "weekly", priority: 0.9 },
     { url: es("/tools"), lastModified: new Date(), changeFrequency: "weekly", priority: 0.9 },

@@ -31,6 +31,13 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   return {
     title: page.title,
     description: page.description,
+    // These are useful landing pages for visitors arriving from internal links,
+    // but the audience/tool matrix is intentionally not indexed. This avoids
+    // presenting hundreds of near-duplicate doorway pages to Google.
+    robots: {
+      index: false,
+      follow: true,
+    },
     openGraph: {
       title: page.title,
       description: page.description,
