@@ -93,7 +93,7 @@ export default function PremiumFeatureShowcase() {
             Unlock All Premium Features
             <svg className="w-4 h-4 group-hover:translate-x-1 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" /></svg>
           </Link>
-          <p className="text-xs text-[var(--muted)] mt-3">From $8.33/month · No ads · 100MB files · Unlimited usage</p>
+          <p className="text-xs text-[var(--muted)] mt-3">From $8.33/month · 100MB files · Unlimited usage · Unlimited AI</p>
         </div>
       </div>
     </div>

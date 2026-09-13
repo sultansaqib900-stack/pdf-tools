@@ -4,7 +4,7 @@ export default function ProductJsonLd() {
     "@type": "Product",
     name: "PDFTools Premium",
     description:
-      "Premium PDF tool subscription with unlimited file processing, 100MB file support, batch processing, ad-free experience, and 13 exclusive premium tools including PDF comparison, certificate generation, PDF-to-audio, form data extraction, bulk rename, booklet creator, search & redact, color inverter, secure vault, QR code stamp, metadata sanitizer, split by bookmarks, and bates numbering.",
+      "Premium PDF tool subscription with unlimited file processing, 100MB file support, batch processing, unlimited AI questions, and 13 exclusive premium tools including PDF comparison, certificate generation, PDF-to-audio, form data extraction, bulk rename, booklet creator, search & redact, color inverter, secure vault, QR code stamp, metadata sanitizer, split by bookmarks, and bates numbering.",
     url: "https://allaboutpdfediting.xyz/premium",
     image: "https://allaboutpdfediting.xyz/opengraph-image.png",
     brand: { "@type": "Brand", name: "PDFTools" },

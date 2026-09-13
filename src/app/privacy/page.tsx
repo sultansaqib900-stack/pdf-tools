@@ -36,9 +36,7 @@ export default function PrivacyPage() {
 
         <h2 className="text-lg font-semibold text-[var(--foreground)] pt-2">4. Cookies & Tracking</h2>
         <p>
-          We use <strong>Google AdSense</strong> to serve ads. AdSense may use cookies for
-          personalized advertising based on your browsing history. You can manage ad preferences
-          at <a href="https://adssettings.google.com" className="text-indigo-500 underline" target="_blank" rel="noopener noreferrer">Google&apos;s Ad Settings</a>.
+          We do not currently load third-party advertising scripts or use advertising cookies.
         </p>
         <p>
           We also use <strong>Google Analytics (GA4)</strong> for anonymous usage analytics
@@ -94,7 +92,7 @@ export default function PrivacyPage() {
         </p>
 
         <p className="text-xs text-[var(--muted)] pt-4 border-t border-[var(--card-border)]">
-          Last updated: June 2026
+          Last updated: September 2026
         </p>
       </div>
     </div>

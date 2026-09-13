@@ -4,7 +4,7 @@ Build premium-only PDF features, redesign UI to make them visible, apply compreh
 ## Constraints & Preferences
 - 100% client-side processing (no file uploads to server)
 - Premium tier via LemonSqueezy payments
-- Ads: AdSense + Adsterra
+- Ads: disabled; no third-party advertising scripts are loaded
 - Deployed on Vercel at allaboutpdfediting.xyz (custom domain live — verified 200 on all premium pages)
 
 ## Progress

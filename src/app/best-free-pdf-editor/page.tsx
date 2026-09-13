@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 };
 
 const comparisons = [
-  { name: "PDFTools", url: "/compress", free: true, uploads: false, limit: "10MB", batch: false, signup: false, ads: true, rating: 5 },
+  { name: "PDFTools", url: "/compress", free: true, uploads: false, limit: "10MB", batch: false, signup: false, ads: false, rating: 5 },
   { name: "SmallPDF", url: "https://smallpdf.com", free: false, uploads: true, limit: "2/day", batch: false, signup: true, ads: false, rating: 4 },
   { name: "iLovePDF", url: "https://ilovepdf.com", free: true, uploads: true, limit: "10MB", batch: true, signup: true, ads: true, rating: 4 },
   { name: "PDF Candy", url: "https://pdfcandy.com", free: true, uploads: true, limit: "10MB", batch: false, signup: false, ads: true, rating: 3 },
@@ -75,7 +75,7 @@ export default function ComparisonPage() {
         </div>
         <div className="border border-[var(--card-border)] rounded-xl p-5">
           <h3 className="font-semibold mb-2 text-[var(--foreground)]">100% Free (No Tricks)</h3>
-          <p className="text-sm text-[var(--muted)]">No free trial, no credit card, no "2 free files per day" limit. All basic tools are completely free with a 10MB file limit. Premium removes limits and ads for users who want more.</p>
+          <p className="text-sm text-[var(--muted)]">No free trial, no credit card, no "2 free files per day" limit. All basic tools are completely free with a 10MB file limit. Premium removes usage limits and unlocks advanced workflows for users who want more.</p>
         </div>
         <div className="border border-[var(--card-border)] rounded-xl p-5">
           <h3 className="font-semibold mb-2 text-[var(--foreground)]">24+ Tools, One Site</h3>

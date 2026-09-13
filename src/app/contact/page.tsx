@@ -61,7 +61,7 @@ export default function ContactPage() {
           Email: <a href="mailto:saqibbostan83@gmail.com" className="text-indigo-400 hover:text-indigo-300 transition-colors">saqibbostan83@gmail.com</a>
         </p>
         <p className="text-sm text-[var(--muted)] mt-1">
-          Advertising: <a href="mailto:saqibbostan83@gmail.com?subject=Advertising" className="text-indigo-400 hover:text-indigo-300 transition-colors">saqibbostan83@gmail.com</a>
+          Partnerships: <a href="mailto:saqibbostan83@gmail.com?subject=Partnership" className="text-indigo-400 hover:text-indigo-300 transition-colors">saqibbostan83@gmail.com</a>
         </p>
         <p className="text-sm text-[var(--muted)] mt-1">
           Affiliates: <a href="mailto:saqibbostan83@gmail.com?subject=Affiliate" className="text-indigo-400 hover:text-indigo-300 transition-colors">saqibbostan83@gmail.com</a>
