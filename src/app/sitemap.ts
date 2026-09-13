@@ -82,7 +82,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${base}/booklet`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.7 },
     { url: `${base}/search-redact`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.7 },
     { url: `${base}/pdf-inverter`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.7 },
-    { url: `${base}/vault`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.7 },
+
     { url: `${base}/qr-stamp`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.7 },
     { url: `${base}/metadata-sanitizer`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.7 },
     { url: `${base}/split-by-bookmarks`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.7 },
@@ -153,12 +153,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${base}/blog/add-qr-code-to-pdf`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.6 },
     { url: `${base}/blog/clean-pdf-metadata`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.6 },
     { url: `${base}/qa`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.8 },
-    { url: `${base}/login`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.3 },
-    { url: `${base}/signup`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.3 },
-    { url: `${base}/dashboard`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.3 },
-    { url: `${base}/view`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.7 },
     { url: `${base}/contact`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.3 },
-    { url: `${base}/offline`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.3 },
     { url: `${base}/ilovepdf-alternative`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.7 },
     { url: `${base}/adobe-acrobat-alternative`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.7 },
     { url: `${base}/ultimate-guide-to-pdf-editing`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.7 },
@@ -168,6 +163,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${base}/pdf-tools-for-small-business`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.6 },
     { url: `${base}/pdf-tools-for-business`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.6 },
     { url: `${base}/sitemap`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.5 },
-    { url: `${base}/embed`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.8 },
+
   ];
 }

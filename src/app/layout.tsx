@@ -45,6 +45,23 @@ export const metadata: Metadata = {
     description: "Free core PDF editing and conversion plus professional AI, automation, redaction, legal, and bulk workflows.",
     images: ["https://allaboutpdfediting.xyz/opengraph-image.png"],
   },
+  alternates: {
+    canonical: "/",
+    types: {
+      "application/rss+xml": "/feed.xml",
+    },
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
+  },
   manifest: "/manifest.json",
   other: {
     "theme-color": "#4f46e5",
