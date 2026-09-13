@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { Suspense } from "react";
 import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -17,7 +16,6 @@ import ToastProvider from "@/components/Toast";
 import OrganizationJsonLd from "@/components/OrganizationJsonLd";
 import WebSiteJsonLd from "@/components/WebSiteJsonLd";
 import SiteNavJsonLd from "@/components/SiteNavJsonLd";
-import CanonicalTag from "@/components/CanonicalTag";
 import HreflangTags from "@/components/HreflangTags";
 import { Analytics } from "@vercel/analytics/react";
 import Script from "next/script";
@@ -61,6 +59,11 @@ export const metadata: Metadata = {
       "max-snippet": -1,
       "max-video-preview": -1,
     },
+  },
+  icons: {
+    icon: "/icon.svg",
+    shortcut: "/icon.svg",
+    apple: "/icon.svg",
   },
   manifest: "/manifest.json",
   other: {
@@ -131,9 +134,6 @@ gtag('config', 'G-0YRS54VR4X');`}
         <SiteNavJsonLd />
       </head>
       <body className="min-h-full flex flex-col">
-        <Suspense fallback={null}>
-          <CanonicalTag />
-        </Suspense>
         <AnalyticsScript />
         <ClientIdProvider />
         <a href="#main-content" className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-2 focus:bg-indigo-600 focus:text-white focus:rounded-lg focus:text-sm focus:font-medium">
