@@ -134,7 +134,7 @@ export default function OcrPdfPage() {
     a.href = url;
     a.download = `${file?.name?.replace(/\.[^.]+$/, "") || "ocr"}-recognized.txt`;
     a.click();
-    URL.revokeObjectURL(url);
+    window.setTimeout(() => URL.revokeObjectURL(url), 60_000);
   }, [ocrResult, file]);
 
   return (

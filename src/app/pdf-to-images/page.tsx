@@ -20,7 +20,8 @@ import FaqPageJsonLd from "@/components/FaqPageJsonLd";
 import RelatedContent from "@/components/RelatedContent";
 import { getRelatedContent } from "@/lib/related-content";
 import { createZipArchive } from "@/lib/archive";
-import { downloadBytes } from "@/lib/pdfBytes";
+import { isPdfFile, downloadBytes } from "@/lib/pdfBytes";
+import { dataUrlToBytes } from "@/lib/imageBytes";
 
 const rc = getRelatedContent("pdf-to-images");
 
@@ -44,7 +45,7 @@ export default function PdfToImagesPage() {
   useEffect(() => { trackToolVisit("pdf-to-images"); }, []);
 
   const handleFile = useCallback(async (f: File | null) => {
-    if (!f || f.type !== "application/pdf") return;
+    if (!f || !isPdfFile(f)) return;
     const check = checkFileSize(f.size);
     if (!check.ok) { upsell.showUpsell("file-size"); return; }
     setFile(f);
@@ -52,7 +53,7 @@ export default function PdfToImagesPage() {
     const bytes = await f.arrayBuffer();
     originalBytes.current = bytes;
     const { PDFDocument } = await import("pdf-lib");
-    const pdf = await PDFDocument.load(bytes, { ignoreEncryption: true });
+    const pdf = await PDFDocument.load(bytes);
     setPageCount(pdf.getPageCount());
   }, []);
 
@@ -119,17 +120,17 @@ export default function PdfToImagesPage() {
     a.href = url;
     a.download = `original-${file?.name || "restored.pdf"}`;
     a.click();
-    URL.revokeObjectURL(url);
+    window.setTimeout(() => URL.revokeObjectURL(url), 60_000);
   }, [file]);
 
   const downloadAll = async () => {
     if (previews.length === 0) return;
     try {
       const extension = format === "png" ? "png" : "jpg";
-      const files = await Promise.all(previews.map(async (dataUrl, i) => ({
+      const files = previews.map((dataUrl, i) => ({
         name: `page-${String(i + 1).padStart(String(previews.length).length, "0")}.${extension}`,
-        bytes: new Uint8Array(await (await fetch(dataUrl)).arrayBuffer()),
-      })));
+        bytes: dataUrlToBytes(dataUrl),
+      }));
       const archive = createZipArchive(files);
       const baseName = file?.name.replace(/\.pdf$/i, "") || "pdf-pages";
       downloadBytes(archive, `${baseName}-${extension}.zip`, "application/zip");

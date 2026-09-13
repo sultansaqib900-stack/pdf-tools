@@ -21,7 +21,7 @@ import RelatedContent from "@/components/RelatedContent";
 import { getRelatedContent } from "@/lib/related-content";
 import UseCaseLinks from "@/components/UseCaseLinks";
 import { createZipArchive } from "@/lib/archive";
-import { downloadBytes } from "@/lib/pdfBytes";
+import { isPdfFile, downloadBytes } from "@/lib/pdfBytes";
 
 const rc = getRelatedContent("split");
 
@@ -44,14 +44,14 @@ export default function SplitPage() {
   useEffect(() => { trackToolVisit("split"); }, []);
 
   const handleFile = useCallback(async (f: File | null) => {
-    if (!f || f.type !== "application/pdf") return;
+    if (!f || !isPdfFile(f)) return;
     const check = checkFileSize(f.size);
     if (!check.ok) { upsell.showUpsell("file-size"); return; }
     setFile(f);
     const bytes = await f.arrayBuffer();
     originalBytes.current = bytes;
     const { PDFDocument: PDFDoc } = await import("pdf-lib");
-    const pdf = await PDFDoc.load(bytes, { ignoreEncryption: true });
+    const pdf = await PDFDoc.load(bytes);
     const count = pdf.getPageCount();
     setPageCount(count);
     setEndPage(count);
@@ -66,7 +66,7 @@ export default function SplitPage() {
     try {
       const { PDFDocument } = await import("pdf-lib");
       const bytes = await file.arrayBuffer();
-      const sourcePdf = await PDFDocument.load(bytes, { ignoreEncryption: true });
+      const sourcePdf = await PDFDocument.load(bytes);
 
       if (mode === "all") {
         const outputFiles: { name: string; bytes: Uint8Array }[] = [];
@@ -122,7 +122,7 @@ export default function SplitPage() {
     a.href = url;
     a.download = `original-${file?.name || "restored.pdf"}`;
     a.click();
-    URL.revokeObjectURL(url);
+    window.setTimeout(() => URL.revokeObjectURL(url), 60_000);
   }, [file]);
 
   return (

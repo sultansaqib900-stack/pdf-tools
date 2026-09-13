@@ -20,7 +20,7 @@ import FaqPageJsonLd from "@/components/FaqPageJsonLd";
 import RelatedContent from "@/components/RelatedContent";
 import { getRelatedContent } from "@/lib/related-content";
 import UseCaseLinks from "@/components/UseCaseLinks";
-import { downloadBytes } from "@/lib/pdfBytes";
+import { isPdfFile, downloadBytes } from "@/lib/pdfBytes";
 
 const rc = getRelatedContent("annotate");
 
@@ -73,7 +73,7 @@ export default function AnnotatePage() {
   useEffect(() => { trackToolVisit("annotate"); }, []);
 
   const handleFile = useCallback(async (f: File | null) => {
-    if (!f || f.type !== "application/pdf") return;
+    if (!f || !isPdfFile(f)) return;
     const check = checkFileSize(f.size);
     if (!check.ok) { upsell.showUpsell("file-size"); return; }
     setError(null);
@@ -87,7 +87,7 @@ export default function AnnotatePage() {
     const { PDFDocument } = await import("pdf-lib");
     const bytes = await f.arrayBuffer();
     pdfBytesRef.current = bytes;
-    const doc = await PDFDocument.load(bytes, { ignoreEncryption: true });
+    const doc = await PDFDocument.load(bytes);
     setPdfDoc(doc);
 
     const pageData: PageData[] = doc.getPages().map((_: any, i: number) => ({
@@ -299,7 +299,7 @@ export default function AnnotatePage() {
       ]);
       if (!pdfjs.GlobalWorkerOptions.workerSrc) pdfjs.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";
       const bytes = pdfBytesRef.current.slice(0);
-      const outDoc = await PDFDocument.load(bytes.slice(0), { ignoreEncryption: true });
+      const outDoc = await PDFDocument.load(bytes.slice(0));
       coordinateTask = pdfjs.getDocument({ data: bytes.slice(0) });
       const coordinatePdf = await coordinateTask.promise;
 

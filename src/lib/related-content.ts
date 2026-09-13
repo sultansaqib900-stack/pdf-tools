@@ -34,7 +34,7 @@ const allBlogs: Record<string, BlogRef> = {
   "pdf-to-audio": { title: "Convert PDF to Audio", href: "/blog/convert-pdf-to-audio", description: "Listen to PDFs with text-to-speech." },
   "protect": { title: "How to Protect PDF With Password", href: "/blog/protect-pdf-with-password", description: "Encrypt your PDF files." },
   "unlock": { title: "How to Remove Password from PDF", href: "/blog/remove-password-from-pdf", description: "Remove PDF password protection." },
-  "sign": { title: "How to Sign PDF Without Printing", href: "/blog/sign-pdf-without-printing", description: "Add digital signatures to PDF." },
+  "sign": { title: "How to Sign PDF Without Printing", href: "/blog/sign-pdf-without-printing", description: "Add a visible electronic-signature mark to a PDF." },
   "compress-long": { title: "PDF Compression Guide", href: "/blog/compress-pdf-without-losing-quality", description: "Complete guide to PDF compression." },
   "ocr-pdf": { title: "OCR PDF Online", href: "/blog/ocr-pdf-online", description: "Extract text from scanned PDFs." },
   "edit-pdf": { title: "How to Edit PDF Online", href: "/blog/edit-pdf-online", description: "Add text and shapes to PDFs." },
@@ -137,7 +137,7 @@ export const relatedContent: Record<string, ToolRelatedContent> = {
     relatedBlogs: [allBlogs["protect"], allBlogs["unlock"], allBlogs["sign"]],
     faqs: [
       { question: "Can I set different permissions?", answer: "Yes. You can allow or restrict printing, copying, and editing when setting the password." },
-      { question: "Is the encryption secure?", answer: "Yes. We use 128-bit AES encryption, the industry standard for PDF protection." },
+      { question: "Is the encryption secure?", answer: "The tool creates a standards-based AES-256 encrypted PDF and verifies the encryption dictionary before download. Password strength still matters, so use a long, unique password." },
       { question: "Can I password-protect an already protected PDF?", answer: "You must unlock it first, then re-protect with a new password." },
     ],
   },
@@ -162,9 +162,9 @@ export const relatedContent: Record<string, ToolRelatedContent> = {
     ],
     relatedBlogs: [allBlogs["sign"], allBlogs["fill-form"], allBlogs["annotate"]],
     faqs: [
-      { question: "Can I save my signature?", answer: "Yes. Your signature is stored locally in your browser for future use." },
-      { question: "What signature styles are available?", answer: "You can draw, type, or upload an image of your signature." },
-      { question: "Is the signature legally binding?", answer: "Electronic signatures are legally valid in most countries under eSignature laws." },
+      { question: "Can I save my signature?", answer: "No. The drawn signature remains in the current page session only and is not retained for future documents." },
+      { question: "What signature styles are available?", answer: "This tool supports a freehand signature drawn with a mouse, pen, or touchscreen." },
+      { question: "Is this a certificate-based digital signature?", answer: "No. It places a visible electronic-signature image in the PDF; it does not create a cryptographic certificate signature or independently verify identity. Legal requirements vary by document and jurisdiction." },
     ],
   },
   "edit-pdf": {

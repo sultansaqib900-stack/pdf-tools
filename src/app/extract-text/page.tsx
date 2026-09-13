@@ -1,5 +1,7 @@
 "use client";
 
+import { isPdfFile } from "@/lib/pdfBytes";
+
 import { useState, useCallback, useEffect, useRef } from "react";
 import ToolInfo from "@/components/ToolInfo";
 import FreeWaitTimer from "@/components/FreeWaitTimer";
@@ -40,7 +42,7 @@ export default function ExtractTextPage() {
   useEffect(() => { trackToolVisit("extract-text"); }, []);
 
   const handleFile = useCallback(async (f: File | null) => {
-    if (!f || f.type !== "application/pdf") return;
+    if (!f || !isPdfFile(f)) return;
     const check = checkFileSize(f.size);
     if (!check.ok) { upsell.showUpsell("file-size"); return; }
     setFile(f);
@@ -102,7 +104,7 @@ export default function ExtractTextPage() {
     a.href = url;
     a.download = `original-${file?.name || "restored.pdf"}`;
     a.click();
-    URL.revokeObjectURL(url);
+    window.setTimeout(() => URL.revokeObjectURL(url), 60_000);
   }, [file]);
 
   const copyText = () => {
@@ -116,7 +118,7 @@ export default function ExtractTextPage() {
     a.href = url;
     a.download = `${file?.name?.replace(".pdf", "") || "extracted"}.txt`;
     a.click();
-    URL.revokeObjectURL(url);
+    window.setTimeout(() => URL.revokeObjectURL(url), 60_000);
     trackExport(file?.name || "extracted.txt", "Extract Text", blob.size);
   };
 

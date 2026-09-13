@@ -1,5 +1,7 @@
 "use client";
 
+import { isPdfFile } from "@/lib/pdfBytes";
+
 import { useState, useCallback, useEffect } from "react";
 import ToolInfo from "@/components/ToolInfo";
 import FreeWaitTimer from "@/components/FreeWaitTimer";
@@ -44,14 +46,14 @@ export default function RepairPdfPage() {
     try {
       const { PDFDocument } = await import("pdf-lib");
       const bytes = await file.arrayBuffer();
-      const doc = await PDFDocument.load(bytes, { ignoreEncryption: true, updateMetadata: false });
+      const doc = await PDFDocument.load(bytes, { updateMetadata: false });
       setProgress("Re-serializing readable objects and cross-references...");
       const repairedBytes = await doc.save({ useObjectStreams: true });
       const blob = new Blob([repairedBytes.slice()], { type: "application/pdf" });
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url; a.download = `repaired-${file.name}`; a.click();
-      URL.revokeObjectURL(url);
+      window.setTimeout(() => URL.revokeObjectURL(url), 60_000);
       trackExport(file.name, "Repair PDF", repairedBytes.byteLength);
       setSuccess(true);
     } catch {
@@ -62,7 +64,7 @@ export default function RepairPdfPage() {
 
   const handleFile = useCallback((f: File | null) => {
     if (!f) return;
-    if (f.type !== "application/pdf") { setError("Please upload a PDF file."); return; }
+    if (!isPdfFile(f)) { setError("Please upload a PDF file."); return; }
     setFile(f); setError(null); setSuccess(false);
   }, []);
 

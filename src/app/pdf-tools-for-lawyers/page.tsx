@@ -170,7 +170,7 @@ export default function PDFToolsForLawyersPage() {
               <li>No upload to any server — files stay on your device</li>
               <li>No cookies or tracking on tool pages</li>
               <li>No account creation required</li>
-              <li>Fully functional offline after the initial page load</li>
+              <li>Local PDF processing after each required tool module has loaded</li>
             </ul>
             <p className="mt-3">This means client confidential information never leaves your computer. Compliant with ethical obligations to protect client data.</p>
           </div>

@@ -1,5 +1,7 @@
 "use client";
 
+import { isPdfFile } from "@/lib/pdfBytes";
+
 import { useState, useCallback, useEffect, useRef } from "react";
 import ToolInfo from "@/components/ToolInfo";
 import FreeWaitTimer from "@/components/FreeWaitTimer";
@@ -8,7 +10,7 @@ import ProgressBar from "@/components/ProgressBar";
 import SuccessAnimation from "@/components/SuccessAnimation";
 import ErrorBanner from "@/components/ErrorBanner";
 import PremiumUpsell, { usePremiumUpsell } from "@/components/PremiumUpsell";
-import { isPremium, checkFileSize, checkBatchCount } from "@/lib/premium";
+import { isPremium, checkFileSize } from "@/lib/premium";
 import { useUsage } from "@/hooks/useUsage";
 import { useToolHistory } from "@/hooks/useToolHistory";
 import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
@@ -43,9 +45,7 @@ export default function MergePage() {
       const check = checkFileSize(f.size);
       if (!check.ok) { upsell.showUpsell("file-size"); return; }
     }
-    const countCheck = checkBatchCount(list.length);
-    if (!countCheck.ok) { upsell.showUpsell("file-size"); return; }
-    setFiles((prev) => [...prev, ...Array.from(list).filter((f) => f.type === "application/pdf")]);
+    setFiles((prev) => [...prev, ...Array.from(list).filter((f) => isPdfFile(f))]);
   }, []);
 
   const onDrop = useCallback((e: React.DragEvent) => {
@@ -69,7 +69,7 @@ export default function MergePage() {
       for (const file of files) {
         const bytes = await file.arrayBuffer();
         if (!originalBytes.current) { originalBytes.current = bytes; }
-        const pdf = await PDFDocument.load(bytes, { ignoreEncryption: true });
+        const pdf = await PDFDocument.load(bytes);
         const pages = await mergedPdf.copyPages(pdf, pdf.getPageIndices());
         pages.forEach((page) => mergedPdf.addPage(page));
       }
@@ -80,7 +80,7 @@ export default function MergePage() {
       a.href = url;
       a.download = "merged.pdf";
       a.click();
-      URL.revokeObjectURL(url);
+      window.setTimeout(() => URL.revokeObjectURL(url), 60_000);
       trackExport(files[0]?.name || "merged.pdf", "Merge PDF", mergedBytes.byteLength);
       setSuccess(true);
     } catch {
@@ -107,7 +107,7 @@ export default function MergePage() {
     a.href = url;
     a.download = `original-${files[0]?.name || "restored.pdf"}`;
     a.click();
-    URL.revokeObjectURL(url);
+    window.setTimeout(() => URL.revokeObjectURL(url), 60_000);
   }, [files]);
 
   const formatBytes = (b: number) =>
@@ -130,18 +130,18 @@ export default function MergePage() {
         description="Merge multiple PDFs into one document online for free. Combine PDF files instantly in your browser. No uploads required."
         url="https://allaboutpdfediting.xyz/merge"
       />
-      <HowToJsonLd name="Merge PDF Files Online" description="Combine multiple PDF files into a single document" steps={[{name:"Upload PDFs",text:"Select two or more PDF files to merge"},{name:"Arrange order",text:"Drag and drop files to set the desired order"},{name:"Download merged PDF",text:"Download the combined single PDF document"}]} />
+      <HowToJsonLd name="Merge PDF Files Online" description="Combine multiple PDF files into a single document" steps={[{name:"Upload PDFs",text:"Select two or more PDF files to merge"},{name:"Arrange order",text:"Use the arrow controls to set the desired order"},{name:"Download merged PDF",text:"Download the combined single PDF document"}]} />
       <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Merge PDF", item: "https://allaboutpdfediting.xyz/merge" }]} />
       <FaqPageJsonLd questions={rc?.faqs} />
       <AiSummaryJsonLd name="Merge PDF" summary="Combine multiple PDF documents into one file with customizable page order" category="Utilities" inputType="PDF" outputType="PDF" processing="client-side" price="free" features={["Multi-file merging","Order customization","Drag-and-drop","Free processing","No file uploads"]} limits="Files up to 10MB" />
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">Merge PDF</h1>
-        <p className="text-[var(--muted)]">Combine multiple PDFs into one document. Drag to reorder.</p>
+        <p className="text-[var(--muted)]">Combine multiple PDFs into one document. Use the arrow controls to reorder.</p>
       </div>
 
       <ToolInfo
         name="Merge PDF"
-        description="Your files stay on your device. Merging is done entirely in your browser using WebAssembly — no data uploaded, no servers involved. Select, reorder, and download your combined PDF instantly."
+        description="Your files stay on your device. Merging is done entirely in your browser using pdf-lib — no data uploaded, no servers involved. Select, reorder, and download your combined PDF instantly."
       />
 
 
@@ -176,7 +176,7 @@ export default function MergePage() {
         {files.length > 0 && (
           <div className="mt-5 space-y-2">
             <p className="text-sm font-medium text-[var(--muted)] mb-2">
-              {files.length} file{files.length > 1 ? "s" : ""} selected — drag to reorder
+              {files.length} file{files.length > 1 ? "s" : ""} selected — use the arrow controls to reorder
               <button onClick={() => setFiles([])} className="ml-3 text-red-500 hover:text-red-600 text-xs">Clear all</button>
             </p>
             {files.map((file, i) => (
@@ -238,7 +238,7 @@ export default function MergePage() {
       <div className="max-w-3xl mx-auto mt-12 pt-8 border-t border-[var(--card-border)]">
         <h2 className="text-xl font-bold text-[var(--foreground)] mb-3">About Merge PDF</h2>
         <div className="text-sm text-[var(--muted)] space-y-3 leading-relaxed">
-          <p>With our merge PDF tool, you can combine PDF documents into a single file effortlessly, making it perfect for consolidating reports, invoices, scanned contracts, or any collection of related pages. Simply upload your PDFs, drag to reorder them, and click merge — the intuitive interface gives you full control over the final page sequence. The tool processes everything locally in your browser using pdf-lib, so your sensitive documents never touch a server. To merge PDF files online free, just select multiple PDFs, arrange them in the desired order, and download the combined result in seconds. This feature is especially useful for merging scanned documents that arrive as separate files, unifying chapter drafts into a complete manuscript, or creating comprehensive portfolios from individual pages. Everything stays private and secure.</p>
+          <p>With our merge PDF tool, you can combine PDF documents into a single file effortlessly, making it perfect for consolidating reports, invoices, scanned contracts, or any collection of related pages. Simply upload your PDFs, use the arrow controls to reorder them, and click merge — the intuitive interface gives you full control over the final page sequence. The tool processes everything locally in your browser using pdf-lib, so your sensitive documents never touch a server. To merge PDF files online free, just select multiple PDFs, arrange them in the desired order, and download the combined result in seconds. This feature is especially useful for merging scanned documents that arrive as separate files, unifying chapter drafts into a complete manuscript, or creating comprehensive portfolios from individual pages. Everything stays private and secure.</p>
         </div>
       </div>
 

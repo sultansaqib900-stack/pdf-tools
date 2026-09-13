@@ -8,7 +8,7 @@ import HowToJsonLd from "@/components/HowToJsonLd";
 import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
 import PremiumGate from "@/components/PremiumGate";
 import { createZipArchive } from "@/lib/archive";
-import { downloadBytes } from "@/lib/pdfBytes";
+import { isPdfFile, downloadBytes } from "@/lib/pdfBytes";
 
 interface FileMeta {
   file: File;
@@ -36,7 +36,7 @@ export default function BulkRenamePage() {
       pdfjsLib.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";
     }
     for (const f of Array.from(selected)) {
-      if (f.type !== "application/pdf") continue;
+      if (!isPdfFile(f)) continue;
       try {
         const bytes = await f.arrayBuffer();
         const loadingTask = pdfjsLib.getDocument({ data: bytes.slice(0) });

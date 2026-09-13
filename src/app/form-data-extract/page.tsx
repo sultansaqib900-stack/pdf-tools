@@ -75,7 +75,7 @@ export default function FormDataExtractPage() {
     a.href = url;
     a.download = "form-data.csv";
     a.click();
-    URL.revokeObjectURL(url);
+    window.setTimeout(() => URL.revokeObjectURL(url), 60_000);
   };
 
   return (

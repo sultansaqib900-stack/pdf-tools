@@ -18,6 +18,8 @@ import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 import FaqPageJsonLd from "@/components/FaqPageJsonLd";
 import RelatedContent from "@/components/RelatedContent";
 import { getRelatedContent } from "@/lib/related-content";
+import { dataUrlToBytes } from "@/lib/imageBytes";
+import { downloadBytes } from "@/lib/pdfBytes";
 
 const rc = getRelatedContent("scan-to-pdf");
 
@@ -35,7 +37,6 @@ export default function ScanToPdfPage() {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
   const [flash, setFlash] = useState(false);
-  const originalBytes = useRef<ArrayBuffer | null>(null);
 
   useEffect(() => { trackToolVisit("scan-to-pdf"); }, []);
 
@@ -89,22 +90,13 @@ export default function ScanToPdfPage() {
       const { PDFDocument } = await import("pdf-lib");
       const pdfDoc = await PDFDocument.create();
       for (const dataUrl of captured) {
-        const res = await fetch(dataUrl);
-        const blob = await res.blob();
-        const imgBytes = await blob.arrayBuffer();
-        if (!originalBytes.current) originalBytes.current = imgBytes;
+        const imgBytes = dataUrlToBytes(dataUrl);
         const image = await pdfDoc.embedJpg(imgBytes);
         const page = pdfDoc.addPage([image.width, image.height]);
         page.drawImage(image, { x: 0, y: 0, width: image.width, height: image.height });
       }
       const pdfBytes = await pdfDoc.save({ useObjectStreams: true });
-      const blob = new Blob([pdfBytes.slice()], { type: "application/pdf" });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = "scanned-document.pdf";
-      a.click();
-      URL.revokeObjectURL(url);
+      downloadBytes(pdfBytes, "scanned-document.pdf");
       trackExport("scanned-document.pdf", "Scan to PDF", pdfBytes.byteLength);
       setSuccess(true);
     } catch {
@@ -122,17 +114,6 @@ export default function ScanToPdfPage() {
     }
     runConvert();
     }, [usage, upsell, runConvert])
-
-  const restoreOriginal = useCallback(async () => {
-    if (!originalBytes.current) return;
-    const blob = new Blob([originalBytes.current], { type: "application/pdf" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "original-scanned-document.pdf";
-    a.click();
-    URL.revokeObjectURL(url);
-  }, []);
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-12">
@@ -241,7 +222,7 @@ export default function ScanToPdfPage() {
 
         {error && <ErrorBanner message={error} onRetry={runConvert} onDismiss={() => setError(null)} />}
 
-        <SuccessAnimation show={success} message="PDF created!" onRestore={restoreOriginal} />
+        <SuccessAnimation show={success} message="PDF created!" />
       </div>
 
       <div className="max-w-3xl mx-auto mt-12 pt-8 border-t border-[var(--card-border)]">

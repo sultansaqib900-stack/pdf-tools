@@ -75,7 +75,7 @@ export default function QrStampPage() {
       a.href = url;
       a.download = `qr-${file.name}`;
       a.click();
-      URL.revokeObjectURL(url);
+      window.setTimeout(() => URL.revokeObjectURL(url), 60_000);
       setSuccess(true);
     } catch {
       setError("Failed to stamp QR code. The file may be encrypted or corrupted.");

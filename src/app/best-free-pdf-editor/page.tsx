@@ -83,7 +83,7 @@ export default function ComparisonPage() {
         </div>
         <div className="border border-[var(--card-border)] rounded-xl p-5">
           <h3 className="font-semibold mb-2 text-[var(--foreground)]">Works Offline-Ready</h3>
-          <p className="text-sm text-[var(--muted)]">Once loaded, the PDF processing libraries run entirely in your browser. No ongoing server connection needed. This means faster processing and true offline capability for installed users.</p>
+          <p className="text-sm text-[var(--muted)]">PDF processing runs in your browser after the required tool code has loaded. An already-open workflow may continue through a temporary connection loss, but opening an uncached tool or loading a processing module for the first time still requires internet access.</p>
         </div>
       </div>
 

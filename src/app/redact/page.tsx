@@ -12,7 +12,7 @@ import { isPremium, checkFileSize } from "@/lib/premium";
 import { useUsage } from "@/hooks/useUsage";
 import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
 import { secureRedactPdf, type PdfRedactionArea } from "@/lib/pdfRaster";
-import { downloadBytes } from "@/lib/pdfBytes";
+import { isPdfFile, downloadBytes } from "@/lib/pdfBytes";
 
 import HowToJsonLd from "@/components/HowToJsonLd";
 import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
@@ -61,7 +61,7 @@ export default function RedactPage() {
   const containerRef = useRef<HTMLDivElement>(null);
 
   const handleFile = useCallback(async (f: File | null) => {
-    if (!f || f.type !== "application/pdf") return;
+    if (!f || !isPdfFile(f)) return;
     const check = checkFileSize(f.size);
     if (!check.ok) { upsell.showUpsell("file-size"); return; }
     setError(null);
@@ -75,7 +75,7 @@ export default function RedactPage() {
     const { PDFDocument } = await import("pdf-lib");
     const bytes = await f.arrayBuffer();
     pdfBytesRef.current = bytes;
-    const doc = await PDFDocument.load(bytes, { ignoreEncryption: true });
+    const doc = await PDFDocument.load(bytes);
     setPdfDoc(doc);
 
     const pageData: PageData[] = doc.getPages().map((_: any, i: number) => ({

@@ -34,7 +34,7 @@ const qas = [
   },
   {
     q: "How do I sign a PDF without printing?",
-    a: "Our free e-sign tool lets you draw, type, or upload a signature and place it anywhere on your PDF. No account needed, no document uploads. Download the signed PDF immediately.",
+    a: "Our free e-sign tool lets you draw a visible signature with a mouse, pen, or touchscreen and stamps it near the bottom of the last PDF page. No account or document upload is needed.",
   },
   {
     q: "How do I convert an image to PDF?",

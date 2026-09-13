@@ -9,6 +9,7 @@ import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
 import PremiumGate from "@/components/PremiumGate";
 import { secureRedactPdf, type PdfRedactionArea } from "@/lib/pdfRaster";
 import { copyPdfBytes, downloadBytes, isPdfFile } from "@/lib/pdfBytes";
+import { findPositionedTextMatches, type PositionedTextItem } from "@/lib/textSearch";
 
 export default function SearchRedactPage() {
   usePageMeta("Search & Redact PDF - Auto-Redact Multiple Words | PDFTools Premium", "Search for specific words or phrases in a PDF and redact all occurrences automatically. Bulk redaction tool. Premium.");
@@ -51,7 +52,7 @@ export default function SearchRedactPage() {
     setSuccess(false);
     try {
       if (!isPdfFile(file)) throw new Error("Please select a valid PDF file.");
-      const terms = Array.from(new Set(searchTerms.split(",").map((term) => term.trim().toLowerCase()).filter(Boolean)));
+      const terms = Array.from(new Set(searchTerms.split(",").map((term) => term.trim()).filter(Boolean)));
       const bytes = new Uint8Array(await file.arrayBuffer());
       const pdfjsLib = await import("pdfjs-dist");
       if (!pdfjsLib.GlobalWorkerOptions.workerSrc) {
@@ -60,25 +61,26 @@ export default function SearchRedactPage() {
       const loadingTask = pdfjsLib.getDocument({ data: copyPdfBytes(bytes) });
       const pdf = await loadingTask.promise;
       const redactions: PdfRedactionArea[] = [];
+      let occurrenceCount = 0;
       const offscreen = document.createElement("canvas");
 
       try {
         for (let pageIndex = 0; pageIndex < pdf.numPages; pageIndex += 1) {
           const page = await pdf.getPage(pageIndex + 1);
-          const textItems: Array<{ str: string; x: number; y: number; w: number; h: number }> = [];
+          const textItems: PositionedTextItem[] = [];
           const content = await page.getTextContent();
           for (const item of content.items) {
             const textItem = item as { str: string; transform: number[]; width?: number; height?: number };
             textItems.push({
-              str: textItem.str || "",
+              text: textItem.str || "",
               x: textItem.transform[4],
               y: textItem.transform[5],
-              w: textItem.width || (textItem.str || "").length * 5,
-              h: textItem.height || Math.abs(textItem.transform[3]) || 12,
+              width: textItem.width || (textItem.str || "").length * 5,
+              height: textItem.height || Math.abs(textItem.transform[3]) || 12,
             });
           }
 
-          if (!textItems.some((item) => item.str.trim())) {
+          if (!textItems.some((item) => item.text.trim())) {
             const viewport = page.getViewport({ scale: 2 });
             offscreen.width = Math.max(1, Math.round(viewport.width));
             offscreen.height = Math.max(1, Math.round(viewport.height));
@@ -90,31 +92,27 @@ export default function SearchRedactPage() {
               const first = viewport.convertToPdfPoint(word.x, word.y);
               const second = viewport.convertToPdfPoint(word.x + word.w, word.y + word.h);
               textItems.push({
-                str: word.text,
+                text: word.text,
                 x: Math.min(first[0], second[0]),
                 y: Math.min(first[1], second[1]),
-                w: Math.abs(second[0] - first[0]),
-                h: Math.abs(second[1] - first[1]),
+                width: Math.abs(second[0] - first[0]),
+                height: Math.abs(second[1] - first[1]),
               });
             }
           }
 
-          for (const item of textItems) {
-            const lowerText = item.str.toLowerCase();
-            for (const term of terms) {
-              let matchIndex = 0;
-              while ((matchIndex = lowerText.indexOf(term, matchIndex)) !== -1) {
-                const averageCharacterWidth = item.w / Math.max(item.str.length, 1);
-                redactions.push({
-                  pageIndex,
-                  x: item.x + matchIndex * averageCharacterWidth,
-                  y: item.y - item.h * 0.25,
-                  width: term.length * averageCharacterWidth,
-                  height: item.h * 1.25,
-                });
-                matchIndex += Math.max(1, term.length);
-              }
-            }
+          const searchResult = findPositionedTextMatches(textItems, terms);
+          occurrenceCount += searchResult.occurrenceCount;
+          for (const area of searchResult.areas) {
+            const item = textItems[area.itemIndex];
+            if (!item) continue;
+            redactions.push({
+              pageIndex,
+              x: item.x + area.startRatio * item.width,
+              y: item.y - item.height * 0.25,
+              width: Math.max(1, (area.endRatio - area.startRatio) * item.width),
+              height: item.height * 1.25,
+            });
           }
           page.cleanup();
         }
@@ -122,10 +120,10 @@ export default function SearchRedactPage() {
         await loadingTask.destroy();
       }
 
-      if (redactions.length === 0) {
+      if (occurrenceCount === 0 || redactions.length === 0) {
         throw new Error("No matching words or phrases were found. Nothing was changed.");
       }
-      setMatchCount(redactions.length);
+      setMatchCount(occurrenceCount);
       const pdfBytes = await secureRedactPdf(bytes, redactions);
       downloadBytes(pdfBytes, `redacted-${file.name}`);
       setSuccess(true);

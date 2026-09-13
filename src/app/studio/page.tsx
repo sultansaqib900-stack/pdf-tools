@@ -8,8 +8,10 @@ import { getPipelineDocument, pushPipelineStep, setPipelineDocument } from "@/li
 import { scanPdfForPii, redactSelectedPii, type PiiMatch } from "@/lib/piiScanner";
 import { DEFAULT_RECIPES, executePdfRecipe, type PdfRecipe } from "@/lib/pdfRecipes";
 import { copyPdfBytes, downloadBytes, isPdfFile } from "@/lib/pdfBytes";
-import { encryptPdf } from "@/lib/pdfSecurity";
+import { encryptPdf, getPdfEncryptionInfo } from "@/lib/pdfSecurity";
 import { compressPdfBytes } from "@/lib/pdfRaster";
+import { canvasToImageBytes } from "@/lib/imageBytes";
+import { locateSignatureOnPdfPage } from "@/lib/pdfSignature";
 
 type ActiveTab = "pages" | "pii" | "recipes" | "sign" | "watermark" | "protect" | "compress";
 
@@ -19,6 +21,11 @@ interface PageMetaInfo {
   thumbnail: string;
   deleted: boolean;
 }
+
+const SIGNATURE_PAD_WIDTH = 380;
+const SIGNATURE_PAD_HEIGHT = 150;
+const SIGNATURE_PDF_WIDTH = 150;
+const SIGNATURE_PDF_HEIGHT = SIGNATURE_PDF_WIDTH * SIGNATURE_PAD_HEIGHT / SIGNATURE_PAD_WIDTH;
 
 export default function StudioPage() {
   const [pdfBytes, setPdfBytes] = useState<Uint8Array | null>(null);
@@ -33,10 +40,14 @@ export default function StudioPage() {
 
   // Signature state
   const sigCanvasRef = useRef<HTMLCanvasElement>(null);
+  const sigDrawingRef = useRef<boolean>(false);
+  const sigPlacementRef = useRef<boolean>(false);
   const [sigColor, setSigColor] = useState<string>("#1e293b");
   const [sigWidth] = useState<number>(3);
-  const [isDrawingSig, setIsDrawingSig] = useState<boolean>(false);
-  const [sigPosition, setSigPosition] = useState<{ x: number; y: number; scale: number }>({ x: 50, y: 50, scale: 1 });
+  const [hasSignatureInk, setHasSignatureInk] = useState<boolean>(false);
+  const [sigPreview, setSigPreview] = useState<string | null>(null);
+  const [sigPosition, setSigPosition] = useState<{ x: number; y: number; scale: number }>({ x: 50, y: 82, scale: 1 });
+  const [mainViewport, setMainViewport] = useState<{ width: number; height: number; scale: number }>({ width: 0, height: 0, scale: 1 });
 
   // Watermark state
   const [watermarkText, setWatermarkText] = useState<string>("CONFIDENTIAL");
@@ -194,11 +205,14 @@ export default function StudioPage() {
         loadingTask = task;
         const pdf = await task.promise;
         const page = await pdf.getPage(activeMeta.index + 1);
-        const viewport = page.getViewport({ scale: 1.2 * zoom, rotation: activeMeta.rotation });
+        const renderScale = 1.2 * zoom;
+        const displayRotation = ((page.rotate + activeMeta.rotation) % 360 + 360) % 360;
+        const viewport = page.getViewport({ scale: renderScale, rotation: displayRotation });
         if (cancelled) return;
 
         canvas.width = Math.max(1, Math.round(viewport.width));
         canvas.height = Math.max(1, Math.round(viewport.height));
+        setMainViewport({ width: canvas.width, height: canvas.height, scale: renderScale });
         const context = canvas.getContext("2d");
         if (!context) throw new Error("Canvas is unavailable.");
         await page.render({ canvas, canvasContext: context, viewport }).promise;
@@ -349,95 +363,170 @@ export default function StudioPage() {
   };
 
   // Signature Canvas Handling
-  const signaturePoint = (event: React.MouseEvent | React.TouchEvent) => {
+  const signaturePoint = (event: React.PointerEvent<HTMLCanvasElement>) => {
     const canvas = sigCanvasRef.current;
     if (!canvas) return null;
     const rect = canvas.getBoundingClientRect();
-    const source = "touches" in event ? event.touches[0] : event;
-    if (!source || rect.width === 0 || rect.height === 0) return null;
+    if (rect.width === 0 || rect.height === 0) return null;
     return {
-      x: (source.clientX - rect.left) * (canvas.width / rect.width),
-      y: (source.clientY - rect.top) * (canvas.height / rect.height),
+      x: (event.clientX - rect.left) * (canvas.width / rect.width),
+      y: (event.clientY - rect.top) * (canvas.height / rect.height),
     };
   };
 
-  const startSigDraw = (event: React.MouseEvent | React.TouchEvent) => {
-    if ("touches" in event) event.preventDefault();
+  const startSigDraw = (event: React.PointerEvent<HTMLCanvasElement>) => {
+    event.preventDefault();
     const canvas = sigCanvasRef.current;
     const point = signaturePoint(event);
-    if (!canvas || !point) return;
-    const context = canvas.getContext("2d");
-    if (!context) return;
-    setIsDrawingSig(true);
+    const context = canvas?.getContext("2d");
+    if (!canvas || !point || !context) return;
+    canvas.setPointerCapture(event.pointerId);
+    sigDrawingRef.current = true;
     context.strokeStyle = sigColor;
     context.lineWidth = sigWidth;
     context.lineCap = "round";
     context.lineJoin = "round";
     context.beginPath();
     context.moveTo(point.x, point.y);
+    context.lineTo(point.x + 0.01, point.y + 0.01);
+    context.stroke();
+    setHasSignatureInk(true);
   };
 
-  const drawSig = (event: React.MouseEvent | React.TouchEvent) => {
-    if (!isDrawingSig) return;
-    if ("touches" in event) event.preventDefault();
+  const drawSig = (event: React.PointerEvent<HTMLCanvasElement>) => {
+    if (!sigDrawingRef.current) return;
+    event.preventDefault();
     const canvas = sigCanvasRef.current;
     const point = signaturePoint(event);
-    if (!canvas || !point) return;
-    const context = canvas.getContext("2d");
-    if (!context) return;
+    const context = canvas?.getContext("2d");
+    if (!canvas || !point || !context) return;
     context.lineTo(point.x, point.y);
     context.stroke();
   };
 
-  const endSigDraw = () => setIsDrawingSig(false);
+  const endSigDraw = (event: React.PointerEvent<HTMLCanvasElement>) => {
+    sigDrawingRef.current = false;
+    if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+      event.currentTarget.releasePointerCapture(event.pointerId);
+    }
+    setSigPreview(event.currentTarget.toDataURL("image/png"));
+  };
 
   const clearSig = () => {
     const canvas = sigCanvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
     if (ctx) ctx.clearRect(0, 0, canvas.width, canvas.height);
+    sigDrawingRef.current = false;
+    setHasSignatureInk(false);
+    setSigPreview(null);
+  };
+
+  const updateSignaturePlacement = (event: React.PointerEvent<HTMLCanvasElement>) => {
+    if (tab !== "sign" || !hasSignatureInk || pages[activePage]?.deleted) return;
+    const canvas = mainCanvasRef.current;
+    if (!canvas) return;
+    const rect = canvas.getBoundingClientRect();
+    if (rect.width <= 0 || rect.height <= 0) return;
+    const halfWidthPercent = (SIGNATURE_PDF_WIDTH * sigPosition.scale * mainViewport.scale / canvas.width) * 50;
+    const halfHeightPercent = (SIGNATURE_PDF_HEIGHT * sigPosition.scale * mainViewport.scale / canvas.height) * 50;
+    const x = Math.min(100 - halfWidthPercent, Math.max(halfWidthPercent, ((event.clientX - rect.left) / rect.width) * 100));
+    const y = Math.min(100 - halfHeightPercent, Math.max(halfHeightPercent, ((event.clientY - rect.top) / rect.height) * 100));
+    setSigPosition((previous) => ({ ...previous, x, y }));
+  };
+
+  const startSignaturePlacement = (event: React.PointerEvent<HTMLCanvasElement>) => {
+    if (tab !== "sign" || !hasSignatureInk || pages[activePage]?.deleted) return;
+    event.preventDefault();
+    event.currentTarget.setPointerCapture(event.pointerId);
+    sigPlacementRef.current = true;
+    updateSignaturePlacement(event);
+  };
+
+  const moveSignaturePlacement = (event: React.PointerEvent<HTMLCanvasElement>) => {
+    if (sigPlacementRef.current) updateSignaturePlacement(event);
+  };
+
+  const endSignaturePlacement = (event: React.PointerEvent<HTMLCanvasElement>) => {
+    sigPlacementRef.current = false;
+    if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+      event.currentTarget.releasePointerCapture(event.pointerId);
+    }
   };
 
   // Commit Signature Step
   const applySignature = async () => {
     const signatureCanvas = sigCanvasRef.current;
-    if (!pdfBytes || !signatureCanvas) return;
-    const signatureContext = signatureCanvas.getContext("2d");
-    const hasInk = signatureContext
-      ? signatureContext.getImageData(0, 0, signatureCanvas.width, signatureCanvas.height).data.some((value, index) => index % 4 === 3 && value > 0)
-      : false;
-    if (!hasInk) {
+    const activeMeta = pages[activePage];
+    if (!pdfBytes || !signatureCanvas || !activeMeta) return;
+    if (activeMeta.deleted) {
+      showError("Restore this page or select another page before signing.");
+      return;
+    }
+    if (!hasSignatureInk) {
       showError("Draw a signature before stamping it onto the PDF.");
       return;
     }
 
     setProcessing(true);
-    const displayedPage = activePage + 1;
+    const displayedPage = pages.slice(0, activePage + 1).filter((page) => !page.deleted).length;
     try {
-      const sigDataUrl = signatureCanvas.toDataURL("image/png");
-      const sigImgBytes = await fetch(sigDataUrl).then((response) => response.arrayBuffer());
+      const sigImgBytes = await canvasToImageBytes(signatureCanvas, "image/png");
+      const drawWidth = SIGNATURE_PDF_WIDTH * sigPosition.scale;
+      const drawHeight = SIGNATURE_PDF_HEIGHT * sigPosition.scale;
+      const placement = await locateSignatureOnPdfPage(
+        pdfBytes,
+        activeMeta.index,
+        sigPosition.x,
+        sigPosition.y,
+        drawWidth,
+        drawHeight,
+        activeMeta.rotation,
+      );
 
-      const { PDFDocument } = await import("pdf-lib");
-      const doc = await PDFDocument.load(copyPdfBytes(pdfBytes));
-      const sigImg = await doc.embedPng(sigImgBytes);
-      const sourcePageIndex = pages[activePage]?.index ?? activePage;
-      const targetPage = doc.getPages()[sourcePageIndex];
+      const { PDFDocument, degrees } = await import("pdf-lib");
+      const sourceDocument = await PDFDocument.load(copyPdfBytes(pdfBytes));
+      const hasPendingPageLayout = pages.some((page, index) => (
+        page.deleted || page.index !== index || page.rotation !== 0
+      ));
+      let outputDocument = sourceDocument;
+      let targetPage: ReturnType<typeof sourceDocument.getPages>[number] | undefined = sourceDocument.getPages()[activeMeta.index];
+
+      // A page reorder/rotation exists only in Studio state until it is applied.
+      // Materialize that exact visible layout while signing so the stamp cannot
+      // land on a stale source index or make pending page work disappear.
+      if (hasPendingPageLayout) {
+        outputDocument = await PDFDocument.create();
+        targetPage = undefined;
+        for (let pageIndex = 0; pageIndex < pages.length; pageIndex += 1) {
+          const pageMeta = pages[pageIndex];
+          if (pageMeta.deleted) continue;
+          const [copiedPage] = await outputDocument.copyPages(sourceDocument, [pageMeta.index]);
+          copiedPage.setRotation(degrees((copiedPage.getRotation().angle + pageMeta.rotation) % 360));
+          outputDocument.addPage(copiedPage);
+          if (pageIndex === activePage) targetPage = copiedPage;
+        }
+      }
+
       if (!targetPage) throw new Error("The selected page no longer exists.");
-
-      const { width, height } = targetPage.getSize();
-      const drawWidth = 140 * sigPosition.scale;
-      const drawHeight = 60 * sigPosition.scale;
+      const sigImg = await outputDocument.embedPng(sigImgBytes);
       targetPage.drawImage(sigImg, {
-        x: width / 2 - drawWidth / 2,
-        y: height * 0.15,
-        width: drawWidth,
-        height: drawHeight,
+        x: placement.x,
+        y: placement.y,
+        width: placement.width,
+        height: placement.height,
+        rotate: degrees(placement.rotation),
       });
 
-      const outBytes = await doc.save({ useObjectStreams: true });
-      await commitDocument(outBytes, `Added Signature (Page ${displayedPage})`);
+      const outBytes = await outputDocument.save({ useObjectStreams: true });
+      await commitDocument(
+        outBytes,
+        hasPendingPageLayout
+          ? `Applied Page Layout + Added Signature (Page ${displayedPage})`
+          : `Added Signature (Page ${displayedPage})`,
+      );
       clearSig();
-      success(`Signature placed on page ${displayedPage}.`);
+      success(`Signature placed at the previewed position on page ${displayedPage}.`);
     } catch (error) {
       showError(error instanceof Error ? error.message : "Failed to apply signature.");
     } finally {
@@ -493,14 +582,18 @@ export default function StudioPage() {
   // pdf-lib for more edits, so Studio keeps the editable copy in memory and
   // uses the encrypted copy for downloads until another edit is committed.
   const applyPasswordProtection = async () => {
-    if (!pdfBytes || !password.trim()) return;
-    if (password.length < 4) {
-      showError("Use a password of at least 4 characters.");
+    if (!pdfBytes) return;
+    if (password.length < 4 || !password.trim()) {
+      showError("Use a non-blank password of at least 4 characters.");
       return;
     }
     setProcessing(true);
     try {
       const encrypted = await encryptPdf(copyPdfBytes(pdfBytes), password);
+      const encryption = await getPdfEncryptionInfo(encrypted);
+      if (!encryption.encrypted || encryption.algorithm !== "AES-256") {
+        throw new Error("The protected output failed encryption verification.");
+      }
       setProtectedExportBytes(copyPdfBytes(encrypted));
       setHistory((previous) => [
         ...previous,
@@ -565,6 +658,15 @@ export default function StudioPage() {
       setProcessing(false);
     }
   };
+
+  const signatureWidthPercent = mainViewport.width > 0
+    ? Math.min(100, SIGNATURE_PDF_WIDTH * sigPosition.scale * mainViewport.scale / mainViewport.width * 100)
+    : 0;
+  const signatureHeightPercent = mainViewport.height > 0
+    ? Math.min(100, SIGNATURE_PDF_HEIGHT * sigPosition.scale * mainViewport.scale / mainViewport.height * 100)
+    : 0;
+  const signaturePreviewX = Math.min(100 - signatureWidthPercent / 2, Math.max(signatureWidthPercent / 2, sigPosition.x));
+  const signaturePreviewY = Math.min(100 - signatureHeightPercent / 2, Math.max(signatureHeightPercent / 2, sigPosition.y));
 
   return (
     <div className="min-h-screen bg-[var(--background)] text-[var(--foreground)] pb-24">
@@ -930,8 +1032,8 @@ export default function StudioPage() {
                 <div className="bg-[var(--card)] border border-[var(--card-border)] rounded-2xl p-5 shadow-xl space-y-4">
                   <div className="flex items-center justify-between">
                     <div>
-                      <h3 className="text-sm font-bold text-[var(--foreground)]">Draw Signature</h3>
-                      <p className="text-xs text-[var(--muted)]">Sign below and stamp onto page {activePage + 1}</p>
+                      <h3 className="text-sm font-bold text-[var(--foreground)]">Draw &amp; Place Signature</h3>
+                      <p className="text-xs text-[var(--muted)]">Draw below, then click or drag its preview on page {activePage + 1}</p>
                     </div>
                     <button
                       onClick={clearSig}
@@ -944,16 +1046,14 @@ export default function StudioPage() {
                   <div className="border border-[var(--card-border)] rounded-2xl bg-white overflow-hidden touch-none shadow-inner">
                     <canvas
                       ref={sigCanvasRef}
-                      width={380}
-                      height={150}
+                      width={SIGNATURE_PAD_WIDTH}
+                      height={SIGNATURE_PAD_HEIGHT}
                       className="w-full h-36 cursor-crosshair block"
-                      onMouseDown={startSigDraw}
-                      onMouseMove={drawSig}
-                      onMouseUp={endSigDraw}
-                      onMouseLeave={endSigDraw}
-                      onTouchStart={startSigDraw}
-                      onTouchMove={drawSig}
-                      onTouchEnd={endSigDraw}
+                      style={{ touchAction: "none" }}
+                      onPointerDown={startSigDraw}
+                      onPointerMove={drawSig}
+                      onPointerUp={endSigDraw}
+                      onPointerCancel={endSigDraw}
                     />
                   </div>
 
@@ -985,12 +1085,50 @@ export default function StudioPage() {
                     </div>
                   </div>
 
+                  <div className="grid grid-cols-2 gap-3 p-3 rounded-xl border border-[var(--card-border)] bg-[var(--background)]">
+                    <div>
+                      <label htmlFor="signature-horizontal-position" className="block text-[10px] font-bold text-[var(--muted)] mb-1">
+                        Horizontal: {Math.round(sigPosition.x)}%
+                      </label>
+                      <input
+                        id="signature-horizontal-position"
+                        type="range"
+                        min="0"
+                        max="100"
+                        value={sigPosition.x}
+                        onChange={(event) => setSigPosition((position) => ({ ...position, x: Number(event.target.value) }))}
+                        className="w-full accent-indigo-600"
+                      />
+                    </div>
+                    <div>
+                      <label htmlFor="signature-vertical-position" className="block text-[10px] font-bold text-[var(--muted)] mb-1">
+                        Vertical: {Math.round(sigPosition.y)}%
+                      </label>
+                      <input
+                        id="signature-vertical-position"
+                        type="range"
+                        min="0"
+                        max="100"
+                        value={sigPosition.y}
+                        onChange={(event) => setSigPosition((position) => ({ ...position, y: Number(event.target.value) }))}
+                        className="w-full accent-indigo-600"
+                      />
+                    </div>
+                    <p className="col-span-2 text-[10px] text-[var(--muted)]">
+                      The outlined signature on the page is the exact export location, including rotated pages.
+                    </p>
+                  </div>
+
+                  {pages[activePage]?.deleted && (
+                    <p className="text-xs font-semibold text-red-500">This page is marked for deletion and cannot be signed.</p>
+                  )}
+
                   <button
                     onClick={applySignature}
-                    disabled={processing}
-                    className="w-full py-3 bg-gradient-to-r from-indigo-500 to-purple-600 text-white text-xs font-bold rounded-xl hover:opacity-95 transition shadow-md shadow-indigo-500/20 active:scale-[0.99]"
+                    disabled={processing || !hasSignatureInk || pages[activePage]?.deleted}
+                    className="w-full py-3 bg-gradient-to-r from-indigo-500 to-purple-600 text-white text-xs font-bold rounded-xl hover:opacity-95 disabled:opacity-40 disabled:cursor-not-allowed transition shadow-md shadow-indigo-500/20 active:scale-[0.99]"
                   >
-                    {processing ? "Applying Signature..." : `⚡ Stamp Signature on Page ${activePage + 1}`}
+                    {processing ? "Applying Signature..." : `⚡ Stamp at Previewed Position on Page ${activePage + 1}`}
                   </button>
                 </div>
               )}
@@ -1063,7 +1201,10 @@ export default function StudioPage() {
                     <input
                       type="password"
                       value={password}
-                      onChange={(e) => setPassword(e.target.value)}
+                      onChange={(event) => {
+                        setPassword(event.target.value);
+                        setProtectedExportBytes(null);
+                      }}
                       placeholder="Enter strong password..."
                       className="w-full px-3.5 py-2.5 rounded-xl border border-[var(--card-border)] bg-[var(--background)] text-sm font-medium outline-none focus:border-indigo-500"
                     />
@@ -1077,11 +1218,19 @@ export default function StudioPage() {
 
                   <button
                     onClick={applyPasswordProtection}
-                    disabled={processing || password.length < 4}
-                    className="w-full py-3 bg-gradient-to-r from-indigo-500 to-purple-600 text-white text-xs font-bold rounded-xl hover:opacity-95 transition shadow-md shadow-indigo-500/20 active:scale-[0.99]"
+                    disabled={processing || password.length < 4 || !password.trim()}
+                    className="w-full py-3 bg-gradient-to-r from-indigo-500 to-purple-600 text-white text-xs font-bold rounded-xl hover:opacity-95 disabled:opacity-40 disabled:cursor-not-allowed transition shadow-md shadow-indigo-500/20 active:scale-[0.99]"
                   >
-                    {processing ? "Encrypting Document..." : "⚡ Apply Password Protection"}
+                    {processing ? "Encrypting & Verifying..." : "⚡ Apply & Verify Password Protection"}
                   </button>
+                  {protectedExportBytes && (
+                    <button
+                      onClick={exportFinalPdf}
+                      className="w-full py-3 border border-emerald-500/40 bg-emerald-500/10 text-emerald-500 text-xs font-bold rounded-xl hover:bg-emerald-500/20 transition"
+                    >
+                      ↓ Download Password-Protected PDF Now
+                    </button>
+                  )}
                 </div>
               )}
 
@@ -1218,10 +1367,33 @@ export default function StudioPage() {
 
               {/* Main Document Canvas Viewport */}
               <div className="bg-slate-900/60 rounded-2xl p-4 flex items-center justify-center min-h-[500px] overflow-auto border border-[var(--card-border)] shadow-inner">
-                <canvas
-                  ref={mainCanvasRef}
-                  className="rounded-lg shadow-2xl max-w-full h-auto bg-white"
-                />
+                <div className="relative inline-flex max-w-full">
+                  <canvas
+                    ref={mainCanvasRef}
+                    className={`rounded-lg shadow-2xl max-w-full h-auto bg-white ${tab === "sign" && hasSignatureInk ? "cursor-crosshair touch-none" : ""}`}
+                    onPointerDown={startSignaturePlacement}
+                    onPointerMove={moveSignaturePlacement}
+                    onPointerUp={endSignaturePlacement}
+                    onPointerCancel={endSignaturePlacement}
+                  />
+                  {tab === "sign" && hasSignatureInk && sigPreview && !pages[activePage]?.deleted && mainViewport.width > 0 && (
+                    <div
+                      aria-label="Signature export position preview"
+                      className="absolute pointer-events-none border-2 border-dashed border-indigo-500 bg-white/10 rounded-sm shadow-lg"
+                      style={{
+                        left: `${signaturePreviewX}%`,
+                        top: `${signaturePreviewY}%`,
+                        width: `${signatureWidthPercent}%`,
+                        height: `${signatureHeightPercent}%`,
+                        transform: "translate(-50%, -50%)",
+                        backgroundImage: `url(${sigPreview})`,
+                        backgroundPosition: "center",
+                        backgroundRepeat: "no-repeat",
+                        backgroundSize: "100% 100%",
+                      }}
+                    />
+                  )}
+                </div>
               </div>
             </div>
           </div>

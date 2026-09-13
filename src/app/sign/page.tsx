@@ -14,6 +14,9 @@ import ErrorBanner from "@/components/ErrorBanner";
 import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
 import PipelineActionBar from "@/components/PipelineActionBar";
 import { getPipelineDocument } from "@/lib/pdfPipeline";
+import { canvasToImageBytes } from "@/lib/imageBytes";
+import { copyPdfBytes, downloadBytes, isPdfFile } from "@/lib/pdfBytes";
+import { locateSignatureOnPdfPage } from "@/lib/pdfSignature";
 
 import HowToJsonLd from "@/components/HowToJsonLd";
 import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
@@ -36,7 +39,7 @@ export default function SignPage() {
   const [processing, setProcessing] = useState(false);
   const [dragging, setDragging] = useState(false);
   const [showTimer, setShowTimer] = useState(false);
-  const [drawing, setDrawing] = useState(false);
+  const drawingRef = useRef(false);
   const [hasSignature, setHasSignature] = useState(false);
   const [resultBytes, setResultBytes] = useState<Uint8Array | null>(null);
   const [downloadUrl, setDownloadUrl] = useState<string | null>(null);
@@ -69,47 +72,48 @@ export default function SignPage() {
     ctx.lineJoin = "round";
   }, []);
 
-  const startDraw = (e: React.MouseEvent | React.TouchEvent) => {
-    setDrawing(true);
+  const getPos = (event: React.PointerEvent<HTMLCanvasElement>) => {
     const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-    ctx.beginPath();
-    const pos = getPos(e);
-    ctx.moveTo(pos.x, pos.y);
+    if (!canvas) return { x: 0, y: 0 };
+    const rect = canvas.getBoundingClientRect();
+    return {
+      x: (event.clientX - rect.left) * (canvas.width / Math.max(rect.width, 1)),
+      y: (event.clientY - rect.top) * (canvas.height / Math.max(rect.height, 1)),
+    };
   };
 
-  const draw = (e: React.MouseEvent | React.TouchEvent) => {
-    if (!drawing) return;
+  const startDraw = (event: React.PointerEvent<HTMLCanvasElement>) => {
+    event.preventDefault();
     const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-    const pos = getPos(e);
-    ctx.lineTo(pos.x, pos.y);
+    const ctx = canvas?.getContext("2d");
+    if (!canvas || !ctx) return;
+    canvas.setPointerCapture(event.pointerId);
+    drawingRef.current = true;
+    const pos = getPos(event);
+    ctx.beginPath();
+    ctx.moveTo(pos.x, pos.y);
+    // A tap should produce a visible mark and count as ink too.
+    ctx.lineTo(pos.x + 0.01, pos.y + 0.01);
     ctx.stroke();
     setHasSignature(true);
   };
 
-  const stopDraw = () => setDrawing(false);
-
-  const getPos = (e: React.MouseEvent | React.TouchEvent) => {
+  const draw = (event: React.PointerEvent<HTMLCanvasElement>) => {
+    if (!drawingRef.current) return;
+    event.preventDefault();
     const canvas = canvasRef.current;
-    if (!canvas) return { x: 0, y: 0 };
-    const rect = canvas.getBoundingClientRect();
-    const scaleX = canvas.width / Math.max(rect.width, 1);
-    const scaleY = canvas.height / Math.max(rect.height, 1);
-    if ("touches" in e) {
-      return {
-        x: (e.touches[0].clientX - rect.left) * scaleX,
-        y: (e.touches[0].clientY - rect.top) * scaleY,
-      };
+    const ctx = canvas?.getContext("2d");
+    if (!canvas || !ctx) return;
+    const pos = getPos(event);
+    ctx.lineTo(pos.x, pos.y);
+    ctx.stroke();
+  };
+
+  const stopDraw = (event: React.PointerEvent<HTMLCanvasElement>) => {
+    drawingRef.current = false;
+    if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+      event.currentTarget.releasePointerCapture(event.pointerId);
     }
-    return {
-      x: (e.clientX - rect.left) * scaleX,
-      y: (e.clientY - rect.top) * scaleY,
-    };
   };
 
   const clearCanvas = () => {
@@ -118,11 +122,16 @@ export default function SignPage() {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+    drawingRef.current = false;
     setHasSignature(false);
   };
 
   const handleFile = useCallback((f: File | null) => {
-    if (!f || f.type !== "application/pdf") return;
+    if (!f) return;
+    if (!isPdfFile(f)) {
+      setError("Please select a valid PDF file.");
+      return;
+    }
     const check = checkFileSize(f.size);
     if (!check.ok) { upsell.showUpsell("file-size"); return; }
     setFile(f);
@@ -140,41 +149,47 @@ export default function SignPage() {
     if (!canProceed) { setProcessing(false); upsell.showUpsell("daily-limit"); return; }
     try {
       const canvas = canvasRef.current;
-      if (!canvas) return;
-      const sigDataUrl = canvas.toDataURL("image/png");
-      const sigBytes = await fetch(sigDataUrl).then((r) => r.arrayBuffer());
+      if (!canvas) throw new Error("The signature pad is unavailable.");
+      const sigBytes = await canvasToImageBytes(canvas, "image/png");
 
-      const pdfBytes = await file.arrayBuffer();
-      originalBytes.current = pdfBytes;
-      const { PDFDocument } = await import("pdf-lib");
-      const pdfDoc = await PDFDocument.load(pdfBytes, { ignoreEncryption: true });
-      const sigImage = await pdfDoc.embedPng(sigBytes);
+      const pdfBytes = new Uint8Array(await file.arrayBuffer());
+      originalBytes.current = copyPdfBytes(pdfBytes).buffer as ArrayBuffer;
+      const { PDFDocument, degrees } = await import("pdf-lib");
+      const pdfDoc = await PDFDocument.load(copyPdfBytes(pdfBytes));
       const pages = pdfDoc.getPages();
-      const lastPage = pages[pages.length - 1];
-      const { width } = lastPage.getSize();
-      lastPage.drawImage(sigImage, {
-        x: width / 2 - 75,
-        y: 50,
-        width: 150,
-        height: 50,
+      if (pages.length === 0) throw new Error("This PDF has no pages.");
+      const lastPageIndex = pages.length - 1;
+      const placement = await locateSignatureOnPdfPage(
+        pdfBytes,
+        lastPageIndex,
+        50,
+        85,
+        150,
+        50,
+      );
+      const sigImage = await pdfDoc.embedPng(sigBytes);
+      pages[lastPageIndex].drawImage(sigImage, {
+        x: placement.x,
+        y: placement.y,
+        width: placement.width,
+        height: placement.height,
+        rotate: degrees(placement.rotation),
       });
 
       const outBytes = await pdfDoc.save({ useObjectStreams: true });
       setResultBytes(outBytes);
-      const blob = new Blob([outBytes.slice()], { type: "application/pdf" });
-      const url = URL.createObjectURL(blob);
+      if (downloadUrl) URL.revokeObjectURL(downloadUrl);
+      const url = URL.createObjectURL(new Blob([outBytes.slice()], { type: "application/pdf" }));
       setDownloadUrl(url);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `signed-${file.name}`;
-      a.click();
-      trackExport(file.name, "Sign PDF", pdfBytes.byteLength);
+      downloadBytes(outBytes, `signed-${file.name}`);
+      trackExport(file.name, "Sign PDF", outBytes.byteLength);
       setSuccess(true);
-    } catch {
-      setError("Failed to add signature.");
+      setError(null);
+    } catch (signError) {
+      setError(signError instanceof Error ? signError.message : "Failed to add signature.");
     }
     setProcessing(false);
-  }, [file, hasSignature, usage, upsell, trackExport]);
+  }, [file, hasSignature, usage, upsell, trackExport, downloadUrl]);
 
   const sign = useCallback(async () => {
     if (!isPremium()) {
@@ -194,7 +209,7 @@ export default function SignPage() {
     a.href = url;
     a.download = `original-${file?.name || "restored.pdf"}`;
     a.click();
-    URL.revokeObjectURL(url);
+    window.setTimeout(() => URL.revokeObjectURL(url), 60_000);
   }, [file]);
 
   return (
@@ -232,13 +247,10 @@ export default function SignPage() {
               width={300}
               height={100}
               className="w-full h-auto cursor-crosshair touch-none block"
-              onMouseDown={startDraw}
-              onMouseMove={draw}
-              onMouseUp={stopDraw}
-              onMouseLeave={stopDraw}
-              onTouchStart={startDraw}
-              onTouchMove={draw}
-              onTouchEnd={stopDraw}
+              onPointerDown={startDraw}
+              onPointerMove={draw}
+              onPointerUp={stopDraw}
+              onPointerCancel={stopDraw}
             />
           </div>
           <button onClick={clearCanvas} className="mt-2 text-xs text-red-500 hover:text-red-600 font-bold">

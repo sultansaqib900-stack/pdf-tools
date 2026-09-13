@@ -1,4 +1,5 @@
 import { copyPdfBytes, type PdfBinary } from "./pdfBytes";
+import { canvasToImageBytes } from "./imageBytes";
 
 export interface PdfRedactionArea {
   pageIndex: number;
@@ -41,17 +42,11 @@ async function canvasToBytes(
   imageType: "png" | "jpeg",
   quality: number,
 ): Promise<Uint8Array> {
-  const mime = imageType === "png" ? "image/png" : "image/jpeg";
-  const blob = await new Promise<Blob | null>((resolve) => {
-    canvas.toBlob(resolve, mime, quality);
-  });
-
-  if (blob) return new Uint8Array(await blob.arrayBuffer());
-
-  // Older WebKit versions may not implement canvas.toBlob.
-  const dataUrl = canvas.toDataURL(mime, quality);
-  const response = await fetch(dataUrl);
-  return new Uint8Array(await response.arrayBuffer());
+  return canvasToImageBytes(
+    canvas,
+    imageType === "png" ? "image/png" : "image/jpeg",
+    quality,
+  );
 }
 
 async function rasterizePdf(

@@ -138,7 +138,7 @@ export default function ToolGrid() {
                 PDF Studio: One-Stop Multi-Operation Pipeline
               </h3>
               <p className="text-sm text-indigo-200/80 leading-relaxed">
-                Why upload 5 times to do 5 things? Delete pages, rotate orientation, add your digital signature, stamp watermarks, and compress all in one unified interactive workspace.
+                Why upload 5 times to do 5 things? Delete pages, rotate orientation, add your visible e-signature, stamp watermarks, and compress all in one unified interactive workspace.
               </p>
             </div>
 

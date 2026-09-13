@@ -119,7 +119,7 @@ export default function TextToPdfPage() {
       a.href = url;
       a.download = title ? `${title.toLowerCase().replace(/\s+/g, "-")}.pdf` : "text-to-pdf.pdf";
       a.click();
-      URL.revokeObjectURL(url);
+      window.setTimeout(() => URL.revokeObjectURL(url), 60_000);
       trackExport(title ? `${title.toLowerCase().replace(/\s+/g, "-")}.pdf` : "text-to-pdf.pdf", "Text to PDF", pdfBytes.length);
       setSuccess(true);
     } catch (conversionError) { setError(conversionError instanceof Error ? `Failed to convert text: ${conversionError.message}` : "Failed to convert text."); }

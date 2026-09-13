@@ -1,5 +1,7 @@
 "use client";
 
+import { isPdfFile } from "@/lib/pdfBytes";
+
 import { useState, useCallback, useRef, useEffect } from "react";
 import ToolInfo from "@/components/ToolInfo";
 import UsageBar from "@/components/UsageBar";
@@ -75,7 +77,7 @@ export default function ChatPDFPage() {
   }, [messages]);
 
   const handleFile = useCallback(async (f: File | null) => {
-    if (!f || f.type !== "application/pdf") return;
+    if (!f || !isPdfFile(f)) return;
     if (f.size > 20 * 1024 * 1024) { upsell.showUpsell("file-size"); return; }
     setFile(f);
     setPdfText("");

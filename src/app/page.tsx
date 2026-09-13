@@ -1,5 +1,7 @@
 "use client";
 
+import { isPdfFile } from "@/lib/pdfBytes";
+
 import { usePageMeta } from "@/hooks/usePageMeta";
 import ToolGrid from "@/components/ToolGrid";
 import ToolSearch from "@/components/ToolSearch";
@@ -26,7 +28,7 @@ function AnimatedHero() {
     e.preventDefault();
     setIsDragging(false);
     const f = e.dataTransfer.files?.[0];
-    if (!f || f.type !== "application/pdf") return;
+    if (!f || !isPdfFile(f)) return;
     setUploading(true);
     const ab = await f.arrayBuffer();
     await setPipelineDocument(new Uint8Array(ab), f.name);
@@ -35,7 +37,7 @@ function AnimatedHero() {
 
   const handleFileSelect = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
     const f = e.target.files?.[0];
-    if (!f || f.type !== "application/pdf") return;
+    if (!f || !isPdfFile(f)) return;
     setUploading(true);
     const ab = await f.arrayBuffer();
     await setPipelineDocument(new Uint8Array(ab), f.name);
@@ -277,7 +279,7 @@ export default function Home() {
                 <div className="space-y-2 opacity-75 text-slate-300">
                   <div className="p-2.5 rounded-xl bg-slate-900/60 border border-red-500/10">1. Upload PDF to server &amp; wait for slow queue</div>
                   <div className="p-2.5 rounded-xl bg-slate-900/60 border border-red-500/10">2. Delete pages &amp; download result to hard drive</div>
-                  <div className="p-2.5 rounded-xl bg-slate-900/60 border border-red-500/10">3. Re-upload same file to add digital signature</div>
+                  <div className="p-2.5 rounded-xl bg-slate-900/60 border border-red-500/10">3. Re-upload same file to add a visible e-signature</div>
                   <div className="p-2.5 rounded-xl bg-slate-900/60 border border-red-500/10">4. Download again, re-upload for compression</div>
                   <div className="p-2.5 rounded-xl bg-slate-900/60 border border-red-500/10">5. 10 minutes wasted + files stored on random servers</div>
                 </div>

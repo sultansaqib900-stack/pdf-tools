@@ -1,5 +1,7 @@
 "use client";
 
+import { isPdfFile } from "@/lib/pdfBytes";
+
 import { useState, useCallback, useEffect, useRef } from "react";
 import ToolInfo from "@/components/ToolInfo";
 import FreeWaitTimer from "@/components/FreeWaitTimer";
@@ -53,7 +55,7 @@ export default function PdfToExcelPage() {
   }, [trackToolVisit]);
 
   const handleFile = useCallback((f: File | null) => {
-    if (f && f.type === "application/pdf") {
+    if (f && isPdfFile(f)) {
       const check = checkFileSize(f.size);
       if (!check.ok) { upsell.showUpsell("file-size"); return; }
       setFile(f);
@@ -202,7 +204,7 @@ export default function PdfToExcelPage() {
     a.href = url;
     a.download = file ? file.name.replace(/\.pdf$/i, "") + ".csv" : "tables.csv";
     a.click();
-    URL.revokeObjectURL(url);
+    window.setTimeout(() => URL.revokeObjectURL(url), 60_000);
   }, [csv, file]);
 
   const copySpreadsheetData = () => {

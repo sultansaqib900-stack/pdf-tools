@@ -20,7 +20,7 @@ import FaqPageJsonLd from "@/components/FaqPageJsonLd";
 import RelatedContent from "@/components/RelatedContent";
 import { getRelatedContent } from "@/lib/related-content";
 import { flattenPdfVisually } from "@/lib/pdfRaster";
-import { downloadBytes } from "@/lib/pdfBytes";
+import { isPdfFile, downloadBytes } from "@/lib/pdfBytes";
 
 const rc = getRelatedContent("flatten-pdf");
 
@@ -40,7 +40,7 @@ export default function FlattenPDFPage() {
   useEffect(() => { trackToolVisit("flatten-pdf"); }, []);
 
   const handleFile = useCallback((f: File | null) => {
-    if (!f || f.type !== "application/pdf") return;
+    if (!f || !isPdfFile(f)) return;
     const check = checkFileSize(f.size);
     if (!check.ok) { upsell.showUpsell("file-size"); return; }
     setFile(f);
@@ -89,7 +89,7 @@ export default function FlattenPDFPage() {
     a.href = url;
     a.download = `original-${file?.name || "restored.pdf"}`;
     a.click();
-    URL.revokeObjectURL(url);
+    window.setTimeout(() => URL.revokeObjectURL(url), 60_000);
   }, [file]);
 
   return (

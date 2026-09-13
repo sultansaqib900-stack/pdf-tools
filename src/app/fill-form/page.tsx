@@ -1,5 +1,7 @@
 "use client";
 
+import { isPdfFile } from "@/lib/pdfBytes";
+
 import { useState, useCallback, useEffect, useRef } from "react";
 import ToolInfo from "@/components/ToolInfo";
 import FreeWaitTimer from "@/components/FreeWaitTimer";
@@ -48,7 +50,7 @@ export default function FillFormPage() {
   useEffect(() => { trackToolVisit("fill-form"); }, []);
 
   const handleFile = useCallback(async (f: File | null) => {
-    if (!f || f.type !== "application/pdf") return;
+    if (!f || !isPdfFile(f)) return;
     const check = checkFileSize(f.size);
     if (!check.ok) { upsell.showUpsell("file-size"); return; }
     setFile(f);
@@ -142,7 +144,7 @@ export default function FillFormPage() {
       a.download = `filled-${file.name}`;
       a.click();
       trackExport(file.name, "Fill PDF Form", filledBytes.length);
-      URL.revokeObjectURL(url);
+      window.setTimeout(() => URL.revokeObjectURL(url), 60_000);
       setSuccess(true);
     } catch {
       setError("Failed to fill the form. The PDF may not contain fillable form fields.");
@@ -168,7 +170,7 @@ export default function FillFormPage() {
     a.href = url;
     a.download = `original-${file?.name || "restored.pdf"}`;
     a.click();
-    URL.revokeObjectURL(url);
+    window.setTimeout(() => URL.revokeObjectURL(url), 60_000);
   }, [file]);
 
   return (
