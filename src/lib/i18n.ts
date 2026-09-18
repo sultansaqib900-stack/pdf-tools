@@ -2,6 +2,26 @@ export const locales = ["en", "es"] as const;
 export type Locale = (typeof locales)[number];
 export const defaultLocale: Locale = "en";
 
+/**
+ * Every route that has a hand-written Spanish page under `src/app/es`.
+ *
+ * This is the single source of truth for locale routing: nothing outside this
+ * list may be emitted as `/es/...`, because those URLs do not exist and would
+ * resolve to a 404. Untranslated pages fall back to the Spanish home page.
+ *
+ * `src/__tests__/i18nRoutes.test.ts` asserts this list stays in sync with the
+ * actual directories in `src/app/es`.
+ */
+export const spanishRoutes = [
+  "",
+  "tools",
+  "compress",
+  "merge",
+  "split",
+  "image-to-pdf",
+  "edit-pdf",
+] as const;
+
 export const localeNames: Record<Locale, string> = {
   en: "English",
   es: "Español",
@@ -85,4 +105,50 @@ export function detectLocale(acceptLanguage?: string): Locale {
   const preferred = acceptLanguage.split(",")[0]?.split("-")[0]?.toLowerCase();
   if (preferred === "es") return "es";
   return defaultLocale;
+}
+
+/**
+ * Normalize an app-router pathname to its canonical English form: no query or
+ * hash, no trailing slash, and no `/es` locale prefix.
+ *
+ * `/es/` -> `/`, `/es/merge/` -> `/merge`, `/merge?x=1` -> `/merge`.
+ */
+export function normalizePath(pathname?: string | null): string {
+  if (!pathname) return "/";
+  const pathOnly = pathname.split("?")[0].split("#")[0];
+  const withoutLocale =
+    pathOnly === "/es" || pathOnly.startsWith("/es/") ? pathOnly.slice(3) : pathOnly;
+  const collapsed = withoutLocale.replace(/\/+$/, "");
+  return collapsed === "" ? "/" : collapsed;
+}
+
+/** Whether a Spanish translation exists for the given (English) pathname. */
+export function hasSpanishVersion(pathname?: string | null): boolean {
+  const clean = normalizePath(pathname);
+  if (clean === "/") return true;
+  return (spanishRoutes as readonly string[]).includes(clean.slice(1));
+}
+
+/**
+ * Resolve the URL of `pathname` (in either locale) for the requested locale.
+ *
+ * Spanish URLs are only produced for routes that actually exist; anything else
+ * falls back to `/es` so a language switch can never lead to a 404.
+ */
+export function localizePath(pathname: string | null | undefined, locale: Locale): string {
+  const clean = normalizePath(pathname);
+  if (locale === defaultLocale) return clean;
+  if (!hasSpanishVersion(clean)) return "/es";
+  return clean === "/" ? "/es" : `/es${clean}`;
+}
+
+/** Target URL for switching the language toggle on the current page. */
+export function localeSwitchHref(pathname: string | null | undefined, current: Locale): string {
+  return localizePath(pathname, current === "es" ? defaultLocale : "es");
+}
+
+/** The locale a pathname belongs to, based on its `/es` prefix. */
+export function pathLocale(pathname?: string | null): Locale {
+  if (!pathname) return defaultLocale;
+  return pathname === "/es" || pathname.startsWith("/es/") ? "es" : defaultLocale;
 }

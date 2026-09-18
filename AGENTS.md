@@ -55,6 +55,14 @@ Build premium-only PDF features, redesign UI to make them visible, apply compreh
 - **Fixed TypeScript build errors:** `drawPage` uses `embedPage()` first; `Blob(Uint8Array)` cast; `getFieldByName` cast to `any`; removed `export const metadata` from "use client" blog posts; `showToast` → `success`/`error` named exports; `walk` made async; `BreadcrumbJsonLd` uses `item` not `url`
 - **Build:** TypeScript compiles clean; full build completes (115 pages)
 
+### Locale routing fix + full-site verification (2026-09-18)
+- **Verified the running site end-to-end** (production build, `next start`): TypeScript clean, 143/143 tests pass, 0 lint errors, build succeeds, all 137 sitemap URLs and all 147 static routes return 200, no broken assets, APIs degrade gracefully without KV/Upstash credentials (local env only).
+- **Found and fixed 350 broken internal links.** The Header language switcher blindly built `/es{currentPath}`, so every page without a Spanish translation (blog posts, `/for/*`, `/vs/*`, `/studio`, `/premium`, …) linked to a 404. Now `localizePath`/`localeSwitchHref` only emit `/es/...` for routes that exist and fall back to `/es` otherwise.
+- **Fixed 4 broken links on the Spanish home page** (`/es/protect`, `/es/sign`, `/es/ocr-pdf`, `/es/pdf-to-word` → English tool pages) plus a duplicated "Comprimir PNG" card that pointed at `/es/compress` (also a duplicate React key).
+- **Centralized the translated-route list** in `src/lib/i18n.ts` (`spanishRoutes`) — Header and `HreflangTags` now share it; `HreflangTags` previously omitted `/es/tools`, so `/tools` emitted no `es` alternate.
+- **New regression test** `src/__tests__/i18nRoutes.test.ts` (12 tests): asserts `spanishRoutes` matches the real directories under `src/app/es`, that no generated locale URL lacks a page, and that no hard-coded `href`/`href:` literal in `src/**` points at a missing `/es/...` URL. Verified the guard fails when the bug is reintroduced.
+- **Post-fix crawl:** 445 unique internal paths across the sitemap graph → 0 broken links.
+
 ### Blocked
 - Domain `allaboutpdfediting.xyz` resolution works (200 OK), but Vercel CLI shows "already assigned to another project" when linking — managed via dashboard
 

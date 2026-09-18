@@ -11,11 +11,13 @@ const tools = [
   { title: "Dividir PDF", desc: "Extrae páginas o divide", icon: "✂️", href: "/es/split", gradient: "from-purple-500 to-purple-600" },
   { title: "Imagen a PDF", desc: "Convierte JPG, PNG a PDF", icon: "🖼️", href: "/es/image-to-pdf", gradient: "from-amber-500 to-amber-600" },
   { title: "Editar PDF", desc: "Añade texto y formas", icon: "✏️", href: "/es/edit-pdf", gradient: "from-orange-500 to-orange-600" },
-  { title: "Proteger PDF", desc: "Encripta con contraseña", icon: "🔒", href: "/es/protect", gradient: "from-violet-500 to-violet-600" },
-  { title: "Firmar PDF", desc: "Añade tu firma digital", icon: "✍️", href: "/es/sign", gradient: "from-pink-500 to-pink-600" },
-  { title: "OCR PDF", desc: "Extrae texto de escaneados", icon: "🔍", href: "/es/ocr-pdf", gradient: "from-purple-500 to-purple-600" },
-  { title: "PDF a Word", desc: "Convierte a DOCX", icon: "📄", href: "/es/pdf-to-word", gradient: "from-blue-500 to-blue-700" },
-  { title: "Comprimir PNG", desc: "Reduce el peso del archivo", icon: "📦", href: "/es/compress", gradient: "from-indigo-500 to-indigo-600" },
+  // The tools below have no Spanish page yet, so they link to the English
+  // tool — never to `/es/...`, which would be a 404.
+  { title: "Proteger PDF", desc: "Encripta con contraseña", icon: "🔒", href: "/protect", gradient: "from-violet-500 to-violet-600" },
+  { title: "Firmar PDF", desc: "Añade tu firma digital", icon: "✍️", href: "/sign", gradient: "from-pink-500 to-pink-600" },
+  { title: "OCR PDF", desc: "Extrae texto de escaneados", icon: "🔍", href: "/ocr-pdf", gradient: "from-purple-500 to-purple-600" },
+  { title: "PDF a Word", desc: "Convierte a DOCX", icon: "📄", href: "/pdf-to-word", gradient: "from-blue-500 to-blue-700" },
+  { title: "PDF a Imágenes", desc: "Exporta páginas como PNG o JPG", icon: "📸", href: "/pdf-to-images", gradient: "from-indigo-500 to-indigo-600" },
 ];
 
 export default function EsHomePage() {
