@@ -20,34 +20,17 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType>(null!);
 
-function getStoredToken(): string | null {
-  if (typeof window === "undefined") return null;
-  try {
-    const raw = localStorage.getItem("pdftools_token");
-    if (!raw || raw === "undefined" || raw === "null") return null;
-    const parsed = JSON.parse(raw);
-    return typeof parsed === "string" ? parsed : null;
-  } catch {
-    return null;
-  }
-}
-
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [token, setTokenState] = useState<string | null>(null);
 
-  const setToken = (t: string | null) => {
-    setTokenState(t);
-    if (t) localStorage.setItem("pdftools_token", JSON.stringify(t));
-    else localStorage.removeItem("pdftools_token");
-  };
+  // Authentication is carried by the HttpOnly session cookie. The token is
+  // deliberately not exposed to JavaScript or persisted in localStorage.
+  const setToken = (_t: string | null) => setTokenState(null);
 
   useEffect(() => {
-    const t = getStoredToken();
-    if (!t) { setLoading(false); return; }
-    setTokenState(t);
-    fetch("/api/auth/me", { headers: { authorization: `Bearer ${t}` } })
+    fetch("/api/auth/me")
       .then((r) => r.json().then((d) => { if (d.user) setUser(d.user); }))
       .catch(() => {})
       .finally(() => setLoading(false));
@@ -78,13 +61,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const logout = () => {
-    if (token) {
-      void fetch("/api/auth/logout", {
-        method: "POST",
-        headers: { authorization: `Bearer ${token}` },
-        keepalive: true,
-      });
-    }
+    void fetch("/api/auth/logout", { method: "POST", keepalive: true });
     setToken(null);
     setUser(null);
   };

@@ -1,27 +1,13 @@
 import type { MetadataRoute } from "next";
-import { seoPages } from "@/lib/programmatic-seo";
-import { getErrorPages } from "@/lib/error-pages";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const base = "https://allaboutpdfediting.xyz";
 
   const es = (path: string) => `${base}/es${path}`;
 
-  const forPages: MetadataRoute.Sitemap = seoPages.map((p) => ({
-    url: `${base}/for/${p.slug}`,
-    lastModified: new Date(),
-    changeFrequency: "weekly" as const,
-    priority: 0.6,
-  }));
-
-  const errorPages: MetadataRoute.Sitemap = getErrorPages().map((p) => ({
-    url: `${base}/error/${p.slug}`,
-    lastModified: new Date(),
-    changeFrequency: "monthly" as const,
-    priority: 0.7,
-  }));
-
-  return [...errorPages, ...forPages,
+  // Sitemap contains only canonical, indexable pages. The generated audience
+  // matrix and error pages are intentionally excluded from Search.
+  return [
     { url: base, lastModified: new Date(), changeFrequency: "weekly", priority: 1 },
     { url: es(""), lastModified: new Date(), changeFrequency: "weekly", priority: 0.9 },
     { url: es("/tools"), lastModified: new Date(), changeFrequency: "weekly", priority: 0.9 },
@@ -82,7 +68,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${base}/booklet`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.7 },
     { url: `${base}/search-redact`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.7 },
     { url: `${base}/pdf-inverter`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.7 },
-    { url: `${base}/vault`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.7 },
+
     { url: `${base}/qr-stamp`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.7 },
     { url: `${base}/metadata-sanitizer`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.7 },
     { url: `${base}/split-by-bookmarks`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.7 },
@@ -153,12 +139,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${base}/blog/add-qr-code-to-pdf`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.6 },
     { url: `${base}/blog/clean-pdf-metadata`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.6 },
     { url: `${base}/qa`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.8 },
-    { url: `${base}/login`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.3 },
-    { url: `${base}/signup`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.3 },
-    { url: `${base}/dashboard`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.3 },
-    { url: `${base}/view`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.7 },
     { url: `${base}/contact`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.3 },
-    { url: `${base}/offline`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.3 },
     { url: `${base}/ilovepdf-alternative`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.7 },
     { url: `${base}/adobe-acrobat-alternative`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.7 },
     { url: `${base}/ultimate-guide-to-pdf-editing`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.7 },
@@ -168,6 +149,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${base}/pdf-tools-for-small-business`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.6 },
     { url: `${base}/pdf-tools-for-business`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.6 },
     { url: `${base}/sitemap`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.5 },
-    { url: `${base}/embed`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.8 },
+
   ];
 }

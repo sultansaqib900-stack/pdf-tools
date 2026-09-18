@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { Suspense } from "react";
 import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -17,7 +16,6 @@ import ToastProvider from "@/components/Toast";
 import OrganizationJsonLd from "@/components/OrganizationJsonLd";
 import WebSiteJsonLd from "@/components/WebSiteJsonLd";
 import SiteNavJsonLd from "@/components/SiteNavJsonLd";
-import CanonicalTag from "@/components/CanonicalTag";
 import HreflangTags from "@/components/HreflangTags";
 import { Analytics } from "@vercel/analytics/react";
 import Script from "next/script";
@@ -26,7 +24,10 @@ import PrivacyHUD from "@/components/PrivacyHUD";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://allaboutpdfediting.xyz"),
-  title: "PDFTools - 52 Online PDF Tools",
+  title: {
+    default: "PDFTools — Free Online PDF Tools",
+    template: "%s | PDFTools",
+  },
   description:
     "39 core PDF tools with free access plus 13 professional tools for AI, automation, secure redaction, legal, and bulk workflows. Most file processing happens locally in your browser.",
   keywords: ["PDF tools", "compress PDF", "merge PDF", "split PDF", "free online PDF editor", "PDF converter", "sign PDF", "protect PDF", "PDF compressor", "merge PDF files", "split PDF pages", "PDF creator", "edit PDF", "PDF merger", "PDF splitter", "PDF comparison", "PDF audio", "PDF certificates", "PDF booklet", "PDF redact", "PDF metadata"],
@@ -44,6 +45,28 @@ export const metadata: Metadata = {
     title: "PDFTools - 52 Online PDF Tools",
     description: "Free core PDF editing and conversion plus professional AI, automation, redaction, legal, and bulk workflows.",
     images: ["https://allaboutpdfediting.xyz/opengraph-image.png"],
+  },
+  alternates: {
+    canonical: "/",
+    types: {
+      "application/rss+xml": "/feed.xml",
+    },
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
+  },
+  icons: {
+    icon: "/icon.svg",
+    shortcut: "/icon.svg",
+    apple: "/icon.svg",
   },
   manifest: "/manifest.json",
   other: {
@@ -114,9 +137,6 @@ gtag('config', 'G-0YRS54VR4X');`}
         <SiteNavJsonLd />
       </head>
       <body className="min-h-full flex flex-col">
-        <Suspense fallback={null}>
-          <CanonicalTag />
-        </Suspense>
         <AnalyticsScript />
         <ClientIdProvider />
         <a href="#main-content" className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-2 focus:bg-indigo-600 focus:text-white focus:rounded-lg focus:text-sm focus:font-medium">

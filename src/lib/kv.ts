@@ -190,6 +190,18 @@ export async function getPremiumStatusByUserId(userId: string): Promise<boolean>
   return (await getPremiumEmailByUserId(userId)) !== null;
 }
 
+/**
+ * Server-configured owner/support grants. Keep the email in Vercel only;
+ * never commit account identifiers or payment overrides to source control.
+ */
+export async function grantConfiguredPremium(userId: string, email: string): Promise<boolean> {
+  const configured = (process.env.PREMIUM_ADMIN_EMAILS || "")
+    .split(",").map((value) => value.trim().toLowerCase()).filter(Boolean);
+  if (!configured.includes(email.toLowerCase())) return false;
+  await kv.set(keys.premiumByUserId(userId), email.toLowerCase());
+  return true;
+}
+
 /** Link an authenticated account only from a verified paid checkout record. */
 export async function bindPremiumUser(userId: string, email: string): Promise<boolean> {
   try {
