@@ -17,6 +17,7 @@ import { checkFileSize } from "@/lib/premium";
 import { usePremiumStatus } from "@/hooks/usePremiumStatus";
 import PremiumUpsell, { usePremiumUpsell } from "@/components/PremiumUpsell";
 import { useUsage } from "@/hooks/useUsage";
+import { readFileWithProgress } from "@/lib/readFileWithProgress";
 
 type ActiveTab = "pages" | "pii" | "recipes" | "sign" | "watermark" | "protect" | "compress";
 
@@ -43,6 +44,7 @@ export default function StudioPage() {
   const [activePage, setActivePage] = useState<number>(0);
   const [tab, setTab] = useState<ActiveTab>("pages");
   const [processing, setProcessing] = useState<boolean>(false);
+  const [uploadProgress, setUploadProgress] = useState<number | null>(null);
   const [history, setHistory] = useState<{ label: string; bytes: Uint8Array }[]>([]);
   const [zoom, setZoom] = useState<number>(1);
   const [protectedExportBytes, setProtectedExportBytes] = useState<Uint8Array | null>(null);
@@ -197,8 +199,9 @@ export default function StudioPage() {
     }
 
     setProcessing(true);
+    setUploadProgress(0);
     try {
-      const bytes = new Uint8Array(await selected.arrayBuffer());
+      const bytes = await readFileWithProgress(selected, setUploadProgress);
       await loadPdfData(bytes, selected.name);
       await setPipelineDocument(bytes, selected.name);
       setHistory([{ label: `Original: ${selected.name}`, bytes: copyPdfBytes(bytes) }]);
@@ -208,6 +211,7 @@ export default function StudioPage() {
       showError(error instanceof Error ? error.message : "Could not open this PDF.");
     } finally {
       setProcessing(false);
+      setUploadProgress(null);
       event.target.value = "";
     }
   };
@@ -795,6 +799,18 @@ export default function StudioPage() {
               </p>
             </div>
 
+            {uploadProgress !== null && (
+              <div className="mb-4 rounded-2xl border border-indigo-500/30 bg-indigo-500/5 p-4" role="status" aria-live="polite">
+                <div className="flex items-center justify-between text-sm font-semibold text-[var(--foreground)]">
+                  <span>{uploadProgress < 100 ? "Reading PDF into Studio…" : "Preparing PDF preview…"}</span>
+                  <span>{uploadProgress}%</span>
+                </div>
+                <div className="mt-2 h-2 overflow-hidden rounded-full bg-[var(--card-border)]">
+                  <div className="h-full rounded-full bg-gradient-to-r from-indigo-500 to-purple-600 transition-[width] duration-150" style={{ width: `${Math.max(2, uploadProgress)}%` }} />
+                </div>
+                <p className="mt-2 text-xs text-[var(--muted)]">Your file stays on this device. Processing starts after it is read.</p>
+              </div>
+            )}
             <label className="block border-2 border-dashed border-[var(--card-border)] hover:border-indigo-500 rounded-3xl p-12 text-center bg-[var(--card)] hover:shadow-2xl hover:shadow-indigo-500/10 transition-all cursor-pointer group">
               <input type="file" accept=".pdf" onChange={handleFileUpload} className="hidden" />
               <div className="w-20 h-20 rounded-2xl bg-indigo-500/10 text-indigo-500 flex items-center justify-center text-4xl mx-auto mb-4 group-hover:scale-110 transition-transform">
