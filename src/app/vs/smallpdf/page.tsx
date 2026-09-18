@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 
 export default function VsSmallpdfPage() {
   const comparisonRows = [
-    { feature: "Free Daily Limit", competitor: "Only 2 documents / day", pdfTools: "High Daily Allowance", win: true },
+    { feature: "Free Daily Limit", competitor: "Only 2 documents / day", pdfTools: "Unlimited basic tools", win: true },
     { feature: "Wait Queue / Timers", competitor: "Forced 60-minute wait timers", pdfTools: "Instant Client Processing", win: true },
     { feature: "Privacy & Cloud Storage", competitor: "Documents stored in remote cloud", pdfTools: "100% In-Browser RAM (Zero Uploads)", win: true },
     { feature: "Chained Operations", competitor: "Siloed tool pages", pdfTools: "PDF Studio Multi-Step Pipeline", win: true },

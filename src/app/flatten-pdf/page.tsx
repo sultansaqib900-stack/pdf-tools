@@ -53,7 +53,7 @@ export default function FlattenPDFPage() {
     setProgress(0);
     setError(null);
     const canProceed = await usage.checkAndTrack();
-    if (!canProceed) { setProcessing(false); upsell.showUpsell("daily-limit"); return; }
+    if (!canProceed) { setProcessing(false); upsell.showUpsell("trial-limit"); return; }
     try {
       const bytes = await file.arrayBuffer();
       originalBytes.current = bytes;
@@ -74,7 +74,7 @@ export default function FlattenPDFPage() {
   const flatten = useCallback(async () => {
     if (!isPremium()) {
       const remaining = await usage.peekUsage();
-      if (remaining <= 0) { upsell.showUpsell("daily-limit"); return; }
+      if (remaining <= 0) { upsell.showUpsell("trial-limit"); return; }
       setShowTimer(true);
       return;
     }
@@ -114,7 +114,7 @@ export default function FlattenPDFPage() {
       />
 
       <div className="mb-4">
-        <UsageBar remaining={usage.remaining} unlimited={usage.unlimited} />
+        <UsageBar remaining={usage.remaining} unlimited={usage.unlimited} tier={usage.tier} />
       </div>
 
       <div className="bg-[var(--card)] rounded-xl border border-[var(--card-border)] p-8">

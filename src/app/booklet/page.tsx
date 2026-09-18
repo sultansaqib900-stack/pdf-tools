@@ -7,13 +7,17 @@ import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 import { usePageMeta } from "@/hooks/usePageMeta";
 import HowToJsonLd from "@/components/HowToJsonLd";
 import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
-import PremiumGate from "@/components/PremiumGate";
+import TrialGate from "@/components/TrialGate";
+import PremiumUpsell, { usePremiumUpsell } from "@/components/PremiumUpsell";
+import { useUsage } from "@/hooks/useUsage";
 import { checkFileSize } from "@/lib/premium";
 import { downloadBytes } from "@/lib/pdfBytes";
 
 type Layout = "booklet" | "2x2" | "4x4";
 
 export default function BookletPage() {
+  const usage = useUsage("booklet");
+  const upsell = usePremiumUpsell();
   usePageMeta("Create PDF Booklet - N-Up Printing & Booklet Layout | PDFTools Premium", "Create saddle-stitch page order or scale PDF pages into 2×2 and 4×4 N-up layouts. Premium.");
   const [file, setFile] = useState<File | null>(null);
   const [layout, setLayout] = useState<Layout>("booklet");
@@ -25,6 +29,8 @@ export default function BookletPage() {
     if (!file) return;
     const sizeCheck = checkFileSize(file.size);
     if (!sizeCheck.ok) { setError(sizeCheck.message); return; }
+    const reservation = await usage.checkAndTrack();
+    if (!reservation) { upsell.showUpsell("trial-limit"); return; }
     setProcessing(true);
     setError(null);
     setSuccess(false);
@@ -110,22 +116,24 @@ export default function BookletPage() {
       downloadBytes(pdfBytes, `${layout}-${file.name}`);
       setSuccess(true);
     } catch {
+      await usage.releaseReservation(reservation);
       setError("Failed to create booklet. The file may be corrupted or encrypted.");
     }
     setProcessing(false);
   };
 
   return (
-    <PremiumGate
+    <TrialGate
+      tool="booklet"
       title="PDF Booklet & N-Up Imposition Creator"
       description="Convert PDFs to booklet layout for dual-sided saddle-stitch printing or compact 2×2 / 4×4 sheets to save paper."
       icon="📖"
     >
       <div className="max-w-3xl mx-auto px-4 py-12">
-        <SoftwareAppJsonLd name="PDF Booklet Creator" description="Convert PDF to booklet format, N-up printing layouts. Premium feature." url="https://allaboutpdfediting.xyz/booklet" image="https://allaboutpdfediting.xyz/opengraph-image.png" aggregateRating={{ ratingValue: 4.7, bestRating: 5, ratingCount: 134 }} />
+        <SoftwareAppJsonLd name="PDF Booklet Creator" description="Convert PDF to booklet format, N-up printing layouts. Premium feature." url="https://allaboutpdfediting.xyz/booklet" image="https://allaboutpdfediting.xyz/opengraph-image" aggregateRating={{ ratingValue: 4.7, bestRating: 5, ratingCount: 134 }} />
         <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Booklet", item: "https://allaboutpdfediting.xyz/booklet" }]} />
         <HowToJsonLd name="Create PDF Booklet" description="Convert any PDF into a printable booklet with various layouts" steps={[{name:"Upload PDF",text:"Upload the PDF you want to convert to a booklet"},{name:"Choose layout",text:"Select side-by-side 2x2 grid or 4x4 grid layout"},{name:"Download booklet",text:"Download the formatted PDF ready for printing and binding"}]} />
-        <AiSummaryJsonLd name="Booklet Creator" summary="Convert PDFs into printable booklets with configurable N-up layouts" category="Graphics" inputType="PDF" outputType="PDF" processing="client-side" price="premium" features={["Booklet formatting","N-up layouts 2x2 4x4","Saddle-stitch ready","Side-by-side pages","Print optimization"]} limits="Premium subscribers" />
+        <AiSummaryJsonLd name="Booklet Creator" summary="Convert PDFs into printable booklets with configurable N-up layouts" category="Graphics" inputType="PDF" outputType="PDF" processing="client-side" price="premium" features={["Booklet formatting","N-up layouts 2x2 4x4","Saddle-stitch ready","Side-by-side pages","Print optimization"]} limits="Free: 5-file lifetime trial (shared); Premium: unlimited" />
         
         <div className="mb-8">
           <div className="flex items-center gap-3 mb-2">
@@ -187,6 +195,7 @@ export default function BookletPage() {
           </div>
         )}
       </div>
-    </PremiumGate>
+      <PremiumUpsell show={upsell.state.show} mode={upsell.state.mode} message={upsell.state.message} onClose={upsell.hideUpsell} />
+    </TrialGate>
   );
 }

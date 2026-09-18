@@ -6,13 +6,17 @@ import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 import { usePageMeta } from "@/hooks/usePageMeta";
 import HowToJsonLd from "@/components/HowToJsonLd";
 import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
-import PremiumGate from "@/components/PremiumGate";
+import TrialGate from "@/components/TrialGate";
+import PremiumUpsell, { usePremiumUpsell } from "@/components/PremiumUpsell";
+import { useUsage } from "@/hooks/useUsage";
 import { checkFileSize } from "@/lib/premium";
 import { downloadBytes, isPdfFile } from "@/lib/pdfBytes";
 import { sanitizePdf, type PdfMetadataSnapshot } from "@/lib/pdfSanitize";
 
 export default function MetadataSanitizerPage() {
   usePageMeta("PDF Metadata Sanitizer - Remove Hidden Data from PDF | PDFTools Premium", "Strip hidden metadata, author info, creation dates, and embedded data from PDFs. Privacy cleaner. Premium.");
+  const usage = useUsage("metadata-sanitizer");
+  const upsell = usePremiumUpsell();
   const [file, setFile] = useState<File | null>(null);
   const [processing, setProcessing] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -21,19 +25,23 @@ export default function MetadataSanitizerPage() {
 
   const sanitize = async () => {
     if (!file) return;
+    // Invalid files are rejected before any trial allowance is consumed.
+    if (!isPdfFile(file)) { setError("Please select a valid PDF file."); return; }
+    const sizeCheck = checkFileSize(file.size);
+    if (!sizeCheck.ok) { setError(sizeCheck.message); return; }
+    const reservation = await usage.checkAndTrack();
+    if (!reservation) { upsell.showUpsell("trial-limit"); return; }
     setProcessing(true);
     setError(null);
     setSuccess(false);
     setBeforeMeta(null);
     try {
-      if (!isPdfFile(file)) throw new Error("Please select a valid PDF file.");
-      const sizeCheck = checkFileSize(file.size);
-      if (!sizeCheck.ok) throw new Error(sizeCheck.message);
       const sanitized = await sanitizePdf(await file.arrayBuffer());
       setBeforeMeta(sanitized.before);
       downloadBytes(sanitized.bytes, `sanitized-${file.name}`);
       setSuccess(true);
     } catch (sanitizeError) {
+      await usage.releaseReservation(reservation);
       setError(sanitizeError instanceof Error ? sanitizeError.message : "Failed to sanitize metadata. The file may be encrypted or corrupted.");
     } finally {
       setProcessing(false);
@@ -41,16 +49,17 @@ export default function MetadataSanitizerPage() {
   };
 
   return (
-    <PremiumGate
+    <TrialGate
+      tool="metadata-sanitizer"
       title="PDF Metadata Sanitizer & Privacy Stripper"
       description="Erase author names, creation timestamps, software fingerprints, annotations, and hidden properties from your PDF files."
       icon="🧹"
     >
       <div className="max-w-3xl mx-auto px-4 py-12">
-        <SoftwareAppJsonLd name="PDF Metadata Sanitizer" description="Strip hidden metadata from PDFs. Privacy cleaning tool." url="https://allaboutpdfediting.xyz/metadata-sanitizer" image="https://allaboutpdfediting.xyz/opengraph-image.png" aggregateRating={{ ratingValue: 4.7, bestRating: 5, ratingCount: 89 }} />
+        <SoftwareAppJsonLd name="PDF Metadata Sanitizer" description="Strip hidden metadata from PDFs. Privacy cleaning tool." url="https://allaboutpdfediting.xyz/metadata-sanitizer" image="https://allaboutpdfediting.xyz/opengraph-image" aggregateRating={{ ratingValue: 4.7, bestRating: 5, ratingCount: 89 }} />
         <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Metadata Sanitizer", item: "https://allaboutpdfediting.xyz/metadata-sanitizer" }]} />
         <HowToJsonLd name="Clean PDF Metadata" description="Rebuild a PDF without original metadata, attachments, actions, forms, or annotations" steps={[{name:"Upload PDF",text:"Select the PDF document to sanitize"},{name:"Rebuild document",text:"Copy page content into a fresh PDF while excluding document-level metadata and interactive objects"},{name:"Download cleaned PDF",text:"Download the rebuilt sanitized PDF"}]} />
-        <AiSummaryJsonLd name="Metadata Sanitizer" summary="Remove hidden metadata from PDFs including author creation date software info annotations and embedded files" category="SecurityApplications" inputType="PDF" outputType="PDF" processing="client-side" price="premium" features={["Author removal","Date stripping","Software info removal","Annotation cleaning","Embedded file removal"]} limits="Premium subscribers" />
+        <AiSummaryJsonLd name="Metadata Sanitizer" summary="Remove hidden metadata from PDFs including author creation date software info annotations and embedded files" category="SecurityApplications" inputType="PDF" outputType="PDF" processing="client-side" price="premium" features={["Author removal","Date stripping","Software info removal","Annotation cleaning","Embedded file removal"]} limits="Free: 5-file lifetime trial (shared); Premium: unlimited" />
         
         <div className="mb-8">
           <div className="flex items-center gap-3 mb-2">
@@ -91,6 +100,7 @@ export default function MetadataSanitizerPage() {
         {success && <div className="mt-4 p-4 bg-emerald-500/10 border border-emerald-500/30 rounded-2xl text-center text-sm text-emerald-600 font-bold">✅ Metadata sanitized — clean file downloaded!</div>}
         {error && <div className="mt-6 p-4 bg-red-500/10 border border-red-500/30 rounded-2xl text-red-500 text-sm">{error}</div>}
       </div>
-    </PremiumGate>
+      <PremiumUpsell show={upsell.state.show} mode={upsell.state.mode} message={upsell.state.message} onClose={upsell.hideUpsell} />
+    </TrialGate>
   );
 }

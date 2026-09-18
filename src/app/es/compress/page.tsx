@@ -68,7 +68,7 @@ export default function EsCompressPage() {
     setProcessing(true);
     setError(null);
     const canProceed = await usage.checkAndTrack();
-    if (!canProceed) { setProcessing(false); upsell.showUpsell("daily-limit"); return; }
+    if (!canProceed) { setProcessing(false); upsell.showUpsell("trial-limit"); return; }
     try {
       const bytes = await file.arrayBuffer();
       originalBytes.current = bytes.slice(0);
@@ -88,7 +88,7 @@ export default function EsCompressPage() {
     if (!file) return;
     if (!isPremium()) {
       const remaining = await usage.peekUsage();
-      if (remaining <= 0) { upsell.showUpsell("daily-limit"); return; }
+      if (remaining <= 0) { upsell.showUpsell("trial-limit"); return; }
       setShowTimer(true);
       return;
     }

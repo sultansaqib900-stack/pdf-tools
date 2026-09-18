@@ -18,7 +18,6 @@ import { STARTER_RECIPE_IDS } from "@/lib/toolCatalog";
 import { checkFileSize } from "@/lib/premium";
 import { usePremiumStatus } from "@/hooks/usePremiumStatus";
 import PremiumUpsell, { usePremiumUpsell } from "@/components/PremiumUpsell";
-import { useUsage } from "@/hooks/useUsage";
 
 interface RecipeResult {
   name: string;
@@ -45,7 +44,6 @@ const STARTER_RECIPES = new Set<string>(STARTER_RECIPE_IDS);
 export default function RecipeRunner() {
   const { premium, ready: premiumReady } = usePremiumStatus();
   const upsell = usePremiumUpsell();
-  const usage = useUsage("recipes");
   const [recipes, setRecipes] = useState<PdfRecipe[]>(DEFAULT_RECIPES);
   const [selectedRecipe, setSelectedRecipe] = useState<PdfRecipe>(DEFAULT_RECIPES[0]);
   const [files, setFiles] = useState<File[]>([]);
@@ -139,11 +137,6 @@ export default function RecipeRunner() {
       setError("Enter a password of at least 4 characters for the AES-256 protection step.");
       return;
     }
-    if (!(await usage.checkAndTrack())) {
-      upsell.showUpsell("daily-limit", "You've used today's free processing allowance. Premium unlocks unlimited recipe runs.");
-      return;
-    }
-
     setRunning(true);
     setError(null);
     setResults([]);

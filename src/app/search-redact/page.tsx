@@ -6,7 +6,9 @@ import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 import { usePageMeta } from "@/hooks/usePageMeta";
 import HowToJsonLd from "@/components/HowToJsonLd";
 import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
-import PremiumGate from "@/components/PremiumGate";
+import TrialGate from "@/components/TrialGate";
+import PremiumUpsell, { usePremiumUpsell } from "@/components/PremiumUpsell";
+import { useUsage } from "@/hooks/useUsage";
 import { checkFileSize } from "@/lib/premium";
 import { secureRedactPdf, type PdfRedactionArea } from "@/lib/pdfRaster";
 import { copyPdfBytes, downloadBytes, isPdfFile } from "@/lib/pdfBytes";
@@ -14,6 +16,8 @@ import { findPositionedTextMatches, type PositionedTextItem } from "@/lib/textSe
 
 export default function SearchRedactPage() {
   usePageMeta("Search & Redact PDF - Auto-Redact Multiple Words | PDFTools Premium", "Search for specific words or phrases in a PDF and redact all occurrences automatically. Bulk redaction tool. Premium.");
+  const usage = useUsage("search-redact");
+  const upsell = usePremiumUpsell();
   const [file, setFile] = useState<File | null>(null);
   const [searchTerms, setSearchTerms] = useState<string>("");
   const [processing, setProcessing] = useState(false);
@@ -48,13 +52,16 @@ export default function SearchRedactPage() {
 
   const runRedact = async () => {
     if (!file || !searchTerms.trim()) return;
+    // Invalid files are rejected before any trial allowance is consumed.
+    if (!isPdfFile(file)) { setError("Please select a valid PDF file."); return; }
+    const sizeCheck = checkFileSize(file.size);
+    if (!sizeCheck.ok) { setError(sizeCheck.message); return; }
+    const reservation = await usage.checkAndTrack();
+    if (!reservation) { upsell.showUpsell("trial-limit"); return; }
     setProcessing(true);
     setError(null);
     setSuccess(false);
     try {
-      if (!isPdfFile(file)) throw new Error("Please select a valid PDF file.");
-      const sizeCheck = checkFileSize(file.size);
-      if (!sizeCheck.ok) throw new Error(sizeCheck.message);
       const terms = Array.from(new Set(searchTerms.split(",").map((term) => term.trim()).filter(Boolean)));
       const bytes = new Uint8Array(await file.arrayBuffer());
       const pdfjsLib = await import("pdfjs-dist");
@@ -131,6 +138,7 @@ export default function SearchRedactPage() {
       downloadBytes(pdfBytes, `redacted-${file.name}`);
       setSuccess(true);
     } catch (redactError) {
+      await usage.releaseReservation(reservation);
       setError(redactError instanceof Error ? redactError.message : "Failed to redact. The file may be encrypted or corrupted.");
     } finally {
       setProcessing(false);
@@ -138,16 +146,17 @@ export default function SearchRedactPage() {
   };
 
   return (
-    <PremiumGate
+    <TrialGate
+      tool="search-redact"
       title="Search & Bulk Text Redaction"
       description="Scan your document automatically for sensitive keywords, SSNs, names, or phrases and permanently redact every instance."
       icon="⬛"
     >
       <div className="max-w-3xl mx-auto px-4 py-12">
-        <SoftwareAppJsonLd name="Search & Redact PDF" description="Automatically find and redact specific words or phrases in PDF documents." url="https://allaboutpdfediting.xyz/search-redact" image="https://allaboutpdfediting.xyz/opengraph-image.png" aggregateRating={{ ratingValue: 4.8, bestRating: 5, ratingCount: 167 }} />
+        <SoftwareAppJsonLd name="Search & Redact PDF" description="Automatically find and redact specific words or phrases in PDF documents." url="https://allaboutpdfediting.xyz/search-redact" image="https://allaboutpdfediting.xyz/opengraph-image" aggregateRating={{ ratingValue: 4.8, bestRating: 5, ratingCount: 167 }} />
         <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Search & Redact", item: "https://allaboutpdfediting.xyz/search-redact" }]} />
         <HowToJsonLd name="Search and Redact PDF" description="Automatically find and redact specific words or phrases across a PDF document" steps={[{name:"Upload PDF",text:"Upload the PDF document you want to redact"},{name:"Enter search terms",text:"Type the words or phrases you want to find and redact"},{name:"Download redacted PDF",text:"Download the PDF with all matching content permanently blacked out"}]} />
-        <AiSummaryJsonLd name="Search and Redact" summary="Auto-find and permanently redact specific words phrases or patterns across entire PDF documents" category="SecurityApplications" inputType="PDF" outputType="PDF" processing="client-side" price="premium" features={["Auto-search and redact","Batch redaction","Phrase matching","OCR for scanned PDFs","Permanent removal","Client-side processing"]} limits="Premium subscribers" />
+        <AiSummaryJsonLd name="Search and Redact" summary="Auto-find and permanently redact specific words phrases or patterns across entire PDF documents" category="SecurityApplications" inputType="PDF" outputType="PDF" processing="client-side" price="premium" features={["Auto-search and redact","Batch redaction","Phrase matching","OCR for scanned PDFs","Permanent removal","Client-side processing"]} limits="Free: 5-file lifetime trial (shared); Premium: unlimited" />
         
         <div className="mb-8">
           <div className="flex items-center gap-3 mb-2">
@@ -184,6 +193,7 @@ export default function SearchRedactPage() {
         )}
         {error && <div className="mt-6 p-4 bg-red-500/10 border border-red-500/30 rounded-2xl text-red-500 text-sm">{error}</div>}
       </div>
-    </PremiumGate>
+      <PremiumUpsell show={upsell.state.show} mode={upsell.state.mode} message={upsell.state.message} onClose={upsell.hideUpsell} />
+    </TrialGate>
   );
 }

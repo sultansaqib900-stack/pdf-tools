@@ -56,7 +56,7 @@ export default function BlogPost() {
         <p>If you need more control than a simple reverse — like moving specific pages or rearranging individual pages — use our <a href="/organize" className="text-indigo-500 underline">drag-and-drop page organizer</a>. It lets you reorder pages one by one with a visual interface. Combined with <a href="/reverse-pdf" className="text-indigo-500 underline">reverse</a>, you can fix any page ordering issue.</p>
 
         <h2 className="text-xl font-bold text([--foreground]) pt-4">What About Large PDFs?</h2>
-        <p>Free users can reverse PDFs up to 10MB. <a href="/premium" className="text-indigo-500 underline">Premium users</a> get a 100MB limit with no wait times, making it easy to reverse large scanned documents or lengthy reports.</p>
+        <p>Free users can reverse PDFs up to 10MB. <a href="/premium" className="text-indigo-500 underline">Premium users</a> get a 100MB limit, making it easy to reverse large scanned documents or lengthy reports.</p>
 
         <div className="bg-[var(--card)] border border-[var(--card-border)] rounded-xl p-6 mt-6">
           <p className="font-semibold text-[var(--foreground)] mb-2">Need to reverse a PDF?</p>

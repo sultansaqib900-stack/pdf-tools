@@ -179,8 +179,13 @@ export async function getPremiumStatusByEmail(email: string): Promise<boolean> {
 export async function getPremiumEmailByUserId(userId: string): Promise<string | null> {
   try {
     const email = await kv.get<string>(keys.premiumByUserId(userId));
-    if (!email || !(await getPremiumStatusByEmail(email))) return null;
-    return email;
+    if (!email) return null;
+    // The stored pointer can reference a paid entitlement or a server-
+    // configured owner grant; both are valid Premium sources.
+    if (isAdminPremiumEmail(email) || (await getPremiumStatusByEmail(email))) {
+      return email;
+    }
+    return null;
   } catch {
     return null;
   }
@@ -194,11 +199,20 @@ export async function getPremiumStatusByUserId(userId: string): Promise<boolean>
  * Server-configured owner/support grants. Keep the email in Vercel only;
  * never commit account identifiers or payment overrides to source control.
  */
-export async function grantConfiguredPremium(userId: string, email: string): Promise<boolean> {
+export function isAdminPremiumEmail(email: string): boolean {
   const configured = (process.env.PREMIUM_ADMIN_EMAILS || "")
     .split(",").map((value) => value.trim().toLowerCase()).filter(Boolean);
-  if (!configured.includes(email.toLowerCase())) return false;
-  await kv.set(keys.premiumByUserId(userId), email.toLowerCase());
+  return configured.includes(email.trim().toLowerCase());
+}
+
+/**
+ * Grant a configured (env) Premium account. Returns true when the account
+ * matches PREMIUM_ADMIN_EMAILS; the entitlement is persisted so device
+ * binding and cross-device login also see it.
+ */
+export async function grantConfiguredPremium(userId: string, email: string): Promise<boolean> {
+  if (!isAdminPremiumEmail(email)) return false;
+  await kv.set(keys.premiumByUserId(userId), email.trim().toLowerCase());
   return true;
 }
 
@@ -223,9 +237,12 @@ export async function getPremiumStatus(clientId: string): Promise<boolean> {
     const bindingKey = keys.premiumByClientId(clientId);
     const binding = await kv.get<unknown>(bindingKey);
     // A device record is only a pointer to a webhook-verified email
-    // entitlement. Direct booleans from the former confirmation flow are
-    // intentionally rejected because they were forgeable without payment.
-    if (typeof binding !== "string" || !(await getPremiumStatusByEmail(binding))) return false;
+    // entitlement (or a server-configured owner grant). Direct booleans from
+    // the former confirmation flow are intentionally rejected because they
+    // were forgeable without payment.
+    if (typeof binding !== "string") return false;
+    if (isAdminPremiumEmail(binding)) return true;
+    if (!(await getPremiumStatusByEmail(binding))) return false;
     // Migrate older expiring pointers. The entitlement itself carries the
     // expiry, while this relationship must survive legitimate renewals.
     await kv.persist(bindingKey).catch(() => undefined);
@@ -237,8 +254,10 @@ export async function getPremiumStatus(clientId: string): Promise<boolean> {
 
 export async function bindPremiumClient(clientId: string, email: string): Promise<boolean> {
   try {
-    if (!(await getPremiumStatusByEmail(email))) return false;
-    await kv.set(keys.premiumByClientId(clientId), email.toLowerCase());
+    // A configured owner/support email is a valid entitlement source too, so
+    // the env-granted account can bind devices like any paid subscription.
+    if (!(await getPremiumStatusByEmail(email)) && !isAdminPremiumEmail(email)) return false;
+    await kv.set(keys.premiumByClientId(clientId), email.trim().toLowerCase());
     return true;
   } catch {
     return false;
@@ -471,38 +490,6 @@ export async function releasePremiumCustomerLock(
   );
 }
 
-export async function getDailyUsage(clientId: string): Promise<{ count: number; remaining: number }> {
-  const date = new Date().toISOString().slice(0, 10);
-  try {
-    const count = (await kv.get<number>(keys.dailyUsage(clientId, date))) || 0;
-    return { count, remaining: Math.max(0, 5 - count) };
-  } catch {
-    return { count: 0, remaining: 5 };
-  }
-}
-
-export async function incrementDailyUsage(clientId: string): Promise<{ ok: boolean; count: number; remaining: number }> {
-  const date = new Date().toISOString().slice(0, 10);
-  let count: number;
-  try {
-    count = await kv.incr(keys.dailyUsage(clientId, date));
-  } catch {
-    // Local tools remain usable if quota storage is unavailable.
-    return { ok: true, count: 0, remaining: 5 };
-  }
-
-  try {
-    await kv.expire(keys.dailyUsage(clientId, date), 86400);
-    if (count <= 5) {
-      await kv.incr(keys.totalProcessed());
-      await kv.incr(keys.dailyGlobal(date));
-    }
-  } catch {
-    // Analytics failure does not alter the already-reserved allowance.
-  }
-  return { ok: count <= 5, count, remaining: Math.max(0, 5 - count) };
-}
-
 export async function getTotalProcessed(): Promise<number> {
   try {
     return (await kv.get<number>(keys.totalProcessed())) || 0;
@@ -554,24 +541,38 @@ export async function submitFeedback(
 
 const CHAT_DAILY_LIMIT = 3;
 
-export async function getChatUsage(clientId: string, limit = CHAT_DAILY_LIMIT): Promise<{ count: number; remaining: number }> {
+export interface ChatUsage {
+  count: number;
+  remaining: number;
+  /** True when the counter store is unreachable, so `remaining` is unknown. */
+  unknown?: boolean;
+}
+
+export async function getChatUsage(clientId: string, limit = CHAT_DAILY_LIMIT): Promise<ChatUsage> {
   const date = new Date().toISOString().slice(0, 10);
   try {
     const count = (await kv.get<number>(keys.chatUsage(clientId, date))) || 0;
     return { count, remaining: Math.max(0, limit - count) };
   } catch {
-    return { count: limit, remaining: 0 };
+    // Display path only: report "unknown" instead of a fake zero so the UI
+    // does not disable chat when the counter store is merely unreachable.
+    return { count: 0, remaining: limit, unknown: true };
   }
 }
 
-export async function trackChatUsage(clientId: string, limit = CHAT_DAILY_LIMIT): Promise<{ ok: boolean; remaining: number }> {
+export async function trackChatUsage(
+  clientId: string,
+  limit = CHAT_DAILY_LIMIT,
+): Promise<{ ok: boolean; remaining: number; storageError?: boolean }> {
   const date = new Date().toISOString().slice(0, 10);
   try {
     const count = await kv.incr(keys.chatUsage(clientId, date));
     await kv.expire(keys.chatUsage(clientId, date), 86400);
     return { ok: count <= limit, remaining: Math.max(0, limit - count) };
   } catch {
-    // AI usage fails closed so an unavailable counter cannot create unbounded API cost.
-    return { ok: false, remaining: 0 };
+    // AI usage still fails closed so an unavailable counter cannot create
+    // unbounded API cost, but the caller can tell this apart from a real
+    // exhausted quota and show an honest "temporarily unavailable" message.
+    return { ok: false, remaining: 0, storageError: true };
   }
 }

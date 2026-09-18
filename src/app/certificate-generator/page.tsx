@@ -6,7 +6,9 @@ import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 import { usePageMeta } from "@/hooks/usePageMeta";
 import HowToJsonLd from "@/components/HowToJsonLd";
 import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
-import PremiumGate from "@/components/PremiumGate";
+import TrialGate from "@/components/TrialGate";
+import PremiumUpsell, { usePremiumUpsell } from "@/components/PremiumUpsell";
+import { useUsage } from "@/hooks/useUsage";
 import { checkFileSize } from "@/lib/premium";
 import { copyPdfBytes, downloadBytes, isPdfFile, sanitizeDownloadFilename } from "@/lib/pdfBytes";
 import { parseCsv } from "@/lib/csv";
@@ -63,6 +65,8 @@ async function findTextPlaceholders(bytes: Uint8Array): Promise<TemplatePlacehol
 
 export default function CertificateGeneratorPage() {
   usePageMeta("PDF Certificate Generator - Bulk Certificate Creator | PDFTools Premium", "Generate personalized PDF certificates in bulk from a template and CSV data. Perfect for course completions, awards, and event participation. Premium.");
+  const usage = useUsage("certificate-generator");
+  const upsell = usePremiumUpsell();
   const [template, setTemplate] = useState<File | null>(null);
   const [csvData, setCsvData] = useState<File | null>(null);
   const [columns, setColumns] = useState<string[]>([]);
@@ -103,6 +107,8 @@ export default function CertificateGeneratorPage() {
     if (!template || !csvData) return;
     const sizeCheck = checkFileSize(template.size);
     if (!sizeCheck.ok) { setError(sizeCheck.message); return; }
+    const reservation = await usage.checkAndTrack();
+    if (!reservation) { upsell.showUpsell("trial-limit"); return; }
     setGenerating(true);
     setProgress(0);
     setGeneratedCount(0);
@@ -199,6 +205,8 @@ export default function CertificateGeneratorPage() {
       setGeneratedCount(entries.length);
       setSuccess(true);
     } catch (generationError) {
+      // Failed generation refunds the reserved trial file.
+      await usage.releaseReservation(reservation);
       setError(generationError instanceof Error ? generationError.message : "Failed to generate certificates.");
     } finally {
       setGenerating(false);
@@ -206,12 +214,13 @@ export default function CertificateGeneratorPage() {
   };
 
   return (
-    <PremiumGate title="Bulk PDF Certificate Generator" description="Create personalized PDF certificates and diplomas in bulk from a fillable PDF or {{COLUMN}} text placeholders and a CSV participant list." icon="🏆">
+    <TrialGate
+      tool="certificate-generator" title="Bulk PDF Certificate Generator" description="Create personalized PDF certificates and diplomas in bulk from a fillable PDF or {{COLUMN}} text placeholders and a CSV participant list." icon="🏆">
       <div className="max-w-3xl mx-auto px-4 py-12">
-        <SoftwareAppJsonLd name="PDF Certificate Generator" description="Generate personalized PDF certificates in bulk from a template and CSV. Premium." url="https://allaboutpdfediting.xyz/certificate-generator" image="https://allaboutpdfediting.xyz/opengraph-image.png" />
+        <SoftwareAppJsonLd name="PDF Certificate Generator" description="Generate personalized PDF certificates in bulk from a template and CSV. Premium." url="https://allaboutpdfediting.xyz/certificate-generator" image="https://allaboutpdfediting.xyz/opengraph-image" />
         <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Certificate Generator", item: "https://allaboutpdfediting.xyz/certificate-generator" }]} />
         <HowToJsonLd name="Generate PDF Certificates in Bulk" description="Create personalized PDF certificates in bulk from a template and CSV data" steps={[{name:"Prepare template",text:"Use PDF form fields or text such as {{NAME}} matching your CSV headers"},{name:"Upload CSV data",text:"Upload a CSV file with one participant per row"},{name:"Generate certificates",text:"Download one PDF or a ZIP containing all generated certificates"}]} />
-        <AiSummaryJsonLd name="Certificate Generator" summary="Bulk-generate personalized PDF certificates from fillable fields or named placeholders and CSV data" category="BusinessApplications" inputType="PDF+CSV" outputType="PDF or ZIP" processing="client-side" price="premium" features={["Bulk certificate generation","Quoted CSV support","Fillable form support","Text placeholders","ZIP download","Client-side rendering"]} limits="Premium subscribers; 250 rows per batch" />
+        <AiSummaryJsonLd name="Certificate Generator" summary="Bulk-generate personalized PDF certificates from fillable fields or named placeholders and CSV data" category="BusinessApplications" inputType="PDF+CSV" outputType="PDF or ZIP" processing="client-side" price="premium" features={["Bulk certificate generation","Quoted CSV support","Fillable form support","Text placeholders","ZIP download","Client-side rendering"]} limits="Free: 5-file lifetime trial (shared); Premium: unlimited, 250 rows per batch" />
 
         <div className="mb-8">
           <div className="flex items-center gap-3 mb-2"><h1 className="text-3xl font-extrabold text-[var(--foreground)]">Certificate Generator</h1><span className="text-xs font-bold bg-gradient-to-r from-amber-500 to-orange-600 text-white px-3 py-1 rounded-full">Premium</span></div>
@@ -243,6 +252,7 @@ export default function CertificateGeneratorPage() {
         {success && <div className="mt-6 p-6 bg-emerald-500/10 border border-emerald-500/30 rounded-2xl text-center"><div className="text-4xl mb-2">🎉</div><p className="font-bold text-emerald-600 text-lg">{generatedCount} certificate{generatedCount === 1 ? "" : "s"} generated and downloaded.</p></div>}
         {error && <div role="alert" className="mt-6 p-4 bg-red-500/10 border border-red-500/30 rounded-2xl text-red-500 text-sm">{error}</div>}
       </div>
-    </PremiumGate>
+      <PremiumUpsell show={upsell.state.show} mode={upsell.state.mode} message={upsell.state.message} onClose={upsell.hideUpsell} />
+    </TrialGate>
   );
 }

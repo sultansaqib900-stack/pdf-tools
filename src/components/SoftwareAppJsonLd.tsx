@@ -13,7 +13,7 @@ export default function SoftwareAppJsonLd({ name, description, url, image, aggre
     name,
     description,
     url,
-    image: image || "https://allaboutpdfediting.xyz/opengraph-image.png",
+    image: image || "https://allaboutpdfediting.xyz/opengraph-image",
     applicationCategory: "UtilityApplication",
     operatingSystem: "All",
     browserRequirements: "Requires JavaScript",

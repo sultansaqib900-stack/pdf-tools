@@ -41,7 +41,7 @@ export default function PdfToPdfaPage() {
     setProcessing(true);
     setProgress("Loading PDF...");
     const canProceed = await usage.checkAndTrack();
-    if (!canProceed) { setProcessing(false); upsell.showUpsell("daily-limit"); return; }
+    if (!canProceed) { setProcessing(false); upsell.showUpsell("trial-limit"); return; }
     try {
       if (!isPdfFile(file)) throw new Error("Please select a valid PDF file.");
       const { PDFDocument } = await import("@cantoo/pdf-lib");
@@ -74,7 +74,7 @@ export default function PdfToPdfaPage() {
   const convert = useCallback(async () => {
     if (!isPremium()) {
       const remaining = await usage.peekUsage();
-      if (remaining <= 0) { upsell.showUpsell("daily-limit"); return; }
+      if (remaining <= 0) { upsell.showUpsell("trial-limit"); return; }
       setShowTimer(true);
       return;
     }
@@ -94,7 +94,7 @@ export default function PdfToPdfaPage() {
       </div>
       <ToolInfo name="PDF to PDF/A-2B" description="Adds the PDF/A-2B document ID, synchronized XMP metadata, PDF/A identification, and an embedded sRGB output intent entirely in your browser." />
       <p className="mb-4 text-xs text-[var(--muted)]">Existing content is preserved. For regulated archives, validate the result with a PDF/A validator because source PDFs with unembedded fonts or non-compliant content may still require specialist remediation.</p>
-      <div className="mb-4"><UsageBar remaining={usage.remaining} unlimited={usage.unlimited} /></div>
+      <div className="mb-4"><UsageBar remaining={usage.remaining} unlimited={usage.unlimited} tier={usage.tier} /></div>
       <div className="bg-[var(--card)] rounded-xl border border-[var(--card-border)] p-8 space-y-6">
         <div onDrop={onDrop} onDragOver={(e) => { e.preventDefault(); setDragging(true); }} onDragLeave={() => setDragging(false)}
           className={`border-2 border-dashed rounded-xl p-10 text-center transition ${dragging ? "border-indigo-500 bg-indigo-50/30" : "border-[var(--card-border)] bg-[var(--background)]"}`}>

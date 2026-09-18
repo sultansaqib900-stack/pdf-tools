@@ -68,7 +68,7 @@ export default function WatermarkPage() {
     if (!file || !text.trim()) return;
     setProcessing(true);
     const canProceed = await usage.checkAndTrack();
-    if (!canProceed) { setProcessing(false); upsell.showUpsell("daily-limit"); return; }
+    if (!canProceed) { setProcessing(false); upsell.showUpsell("trial-limit"); return; }
     try {
       const [{ PDFDocument, rgb, StandardFonts, degrees }] = await Promise.all([
         import("pdf-lib"),
@@ -113,7 +113,7 @@ export default function WatermarkPage() {
   const watermark = useCallback(async () => {
     if (!isPremium()) {
       const remaining = await usage.peekUsage();
-      if (remaining <= 0) { upsell.showUpsell("daily-limit"); return; }
+      if (remaining <= 0) { upsell.showUpsell("trial-limit"); return; }
       setShowTimer(true);
       return;
     }
@@ -153,7 +153,7 @@ export default function WatermarkPage() {
       />
 
       <div className="mb-4">
-        <UsageBar remaining={usage.remaining} unlimited={usage.unlimited} />
+        <UsageBar remaining={usage.remaining} unlimited={usage.unlimited} tier={usage.tier} />
       </div>
 
       <div className="bg-[var(--card)] rounded-2xl border border-[var(--card-border)] p-6 sm:p-8 shadow-xl">

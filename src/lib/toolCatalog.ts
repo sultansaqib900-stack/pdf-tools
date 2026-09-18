@@ -7,6 +7,14 @@ export type ToolCategory =
   | "Organize"
   | "Premium";
 
+/**
+ * - "basic": free and unlimited. Never touches the usage counter.
+ * - "professional": premium/professional tools. Free users share a one-time
+ *   lifetime trial of 5 files across ALL professional tools; Premium removes
+ *   the trial limit.
+ */
+export type ToolTier = "basic" | "professional";
+
 export interface ToolDefinition {
   title: string;
   description: string;
@@ -19,11 +27,32 @@ export interface ToolDefinition {
 }
 
 /**
+ * Routes whose file processing consumes the shared lifetime trial.
+ * PDF Studio is NOT here: it is fully Premium-gated (no free trial files).
+ */
+const PROFESSIONAL_TRIAL_ROUTES = new Set<string>([
+  "/pdf-diff",
+  "/bates-numbering",
+  "/certificate-generator",
+  "/form-data-extract",
+  "/bulk-rename",
+  "/booklet",
+  "/search-redact",
+  "/metadata-sanitizer",
+  "/split-by-bookmarks",
+]);
+
+export function getToolTier(hrefOrSlug: string): ToolTier {
+  const href = hrefOrSlug.startsWith("/") ? hrefOrSlug : `/${hrefOrSlug}`;
+  return PROFESSIONAL_TRIAL_ROUTES.has(href) ? "professional" : "basic";
+}
+
+/**
  * The single source of truth for every advertised PDF tool and its tier.
  * Premium subscribers also receive the larger limits on every free tool.
  */
 export const TOOL_CATALOG: readonly ToolDefinition[] = [
-  { title: "PDF Studio Pipeline", description: "Reorder, delete, sign, watermark, protect, and compress without re-uploading.", icon: "⚡", href: "/studio", gradient: "bg-gradient-to-br from-indigo-500 via-purple-600 to-pink-500", category: "Studio & AI", badge: "Flagship" },
+  { title: "PDF Studio Pipeline", description: "The flagship workspace: reorder, delete, sign, watermark, protect, and compress without re-uploading — all Premium.", icon: "⚡", href: "/studio", gradient: "bg-gradient-to-br from-indigo-500 via-purple-600 to-pink-500", category: "Premium", badge: "Flagship" },
   { title: "PII Guardian", description: "Preview common PII matches locally; Premium securely redacts complete documents.", icon: "🛡️", href: "/pii-guardian", gradient: "bg-gradient-to-br from-red-500 via-rose-600 to-amber-600", category: "Premium", hasFreePreview: true },
   { title: "PDF Automation Recipes", description: "Run multi-step PDF workflows; two starter recipes are available as a free preview.", icon: "⚡", href: "/recipes", gradient: "bg-gradient-to-br from-purple-500 via-indigo-600 to-blue-500", category: "Premium", hasFreePreview: true },
   { title: "Chat with PDF AI", description: "Ask questions, summarize, simplify, or translate extracted PDF text with a free daily preview.", icon: "🤖", href: "/chat-pdf", gradient: "bg-gradient-to-br from-violet-500 to-fuchsia-600", category: "Premium", hasFreePreview: true },
@@ -84,6 +113,12 @@ export const PREMIUM_TOOLS = TOOL_CATALOG.filter((tool) => tool.category === "Pr
 export const FREE_TOOLS = TOOL_CATALOG.filter((tool) => tool.category !== "Premium");
 export const PREMIUM_TOOL_COUNT = PREMIUM_TOOLS.length;
 export const FREE_TOOL_COUNT = FREE_TOOLS.length;
+
+/** Tools that consume the shared lifetime 5-file trial for free users. */
+export const PROFESSIONAL_TRIAL_TOOLS = TOOL_CATALOG.filter(
+  (tool) => getToolTier(tool.href) === "professional",
+);
+export const BASIC_TOOLS = TOOL_CATALOG.filter((tool) => getToolTier(tool.href) === "basic");
 
 export const FREE_RECIPE_IDS = ["academic_grant_submission", "executive_signoff"] as const;
 export const STARTER_RECIPE_IDS = FREE_RECIPE_IDS;

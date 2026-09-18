@@ -39,7 +39,6 @@ import {
   getPremiumStatusByEmail,
   getPremiumStatusByUserId,
   getPremiumSubscriptionBinding,
-  incrementDailyUsage,
   keys,
   releasePremiumCustomerLock,
   revokePremiumByEmail,
@@ -194,14 +193,6 @@ describe("authoritative Premium store", () => {
     });
 
     expect(await getPremiumStatus("correlated-device")).toBe(false);
-  });
-
-  it("atomically rejects processing beyond the five-use free allowance", async () => {
-    for (let index = 0; index < 5; index += 1) {
-      expect((await incrementDailyUsage("free-device")).ok).toBe(true);
-    }
-    const blocked = await incrementDailyUsage("free-device");
-    expect(blocked).toEqual(expect.objectContaining({ ok: false, remaining: 0, count: 6 }));
   });
 
   it("deduplicates an exact signed webhook event", async () => {

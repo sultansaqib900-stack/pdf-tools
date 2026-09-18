@@ -50,7 +50,7 @@ export default function PdfInverterPage() {
 
   return (
       <div className="max-w-3xl mx-auto px-4 py-12">
-        <SoftwareAppJsonLd name="PDF Color Inverter" description="Invert colors, grayscale, or high-contrast for PDF accessibility." url="https://allaboutpdfediting.xyz/pdf-inverter" image="https://allaboutpdfediting.xyz/opengraph-image.png" aggregateRating={{ ratingValue: 4.4, bestRating: 5, ratingCount: 78 }} />
+        <SoftwareAppJsonLd name="PDF Color Inverter" description="Invert colors, grayscale, or high-contrast for PDF accessibility." url="https://allaboutpdfediting.xyz/pdf-inverter" image="https://allaboutpdfediting.xyz/opengraph-image" aggregateRating={{ ratingValue: 4.4, bestRating: 5, ratingCount: 78 }} />
         <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "PDF Inverter", item: "https://allaboutpdfediting.xyz/pdf-inverter" }]} />
         <HowToJsonLd name="Invert PDF Colors" description="Transform PDF colors to dark mode grayscale or high-contrast" steps={[{name:"Upload PDF",text:"Upload the PDF you want to transform"},{name:"Choose color mode",text:"Select dark mode grayscale or high-contrast"},{name:"Download transformed PDF",text:"Download the PDF with new color scheme applied"}]} />
         <AiSummaryJsonLd name="Color Inverter" summary="Transform PDF color schemes to dark mode grayscale or high-contrast for accessibility" category="Graphics" inputType="PDF" outputType="PDF" processing="client-side" price="free" features={["Dark mode conversion","Grayscale conversion","High-contrast mode","Accessibility features","Client-side rendering"]} limits="10MB free or 100MB Premium; limited daily free processing" />

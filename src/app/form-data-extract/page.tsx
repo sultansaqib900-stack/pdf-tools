@@ -6,13 +6,17 @@ import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 import { usePageMeta } from "@/hooks/usePageMeta";
 import HowToJsonLd from "@/components/HowToJsonLd";
 import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
-import PremiumGate from "@/components/PremiumGate";
+import TrialGate from "@/components/TrialGate";
+import PremiumUpsell, { usePremiumUpsell } from "@/components/PremiumUpsell";
+import { useUsage, type UsageReservation } from "@/hooks/useUsage";
 import { checkFileSize } from "@/lib/premium";
 import { escapeCsvCell } from "@/lib/csv";
 import { isPdfFile } from "@/lib/pdfBytes";
 
 export default function FormDataExtractPage() {
   usePageMeta("Extract PDF Form Data to CSV - Form Field Extractor | PDFTools Premium", "Extract filled form field data from PDF documents to CSV. Batch export PDF form data to Excel. Premium.");
+  const usage = useUsage("form-data-extract");
+  const upsell = usePremiumUpsell();
   const [files, setFiles] = useState<File[]>([]);
   const [extracting, setExtracting] = useState(false);
   const [csvResult, setCsvResult] = useState<string>("");
@@ -24,6 +28,16 @@ export default function FormDataExtractPage() {
     if (files.length > 20) { setError("Select up to 20 PDFs per extraction batch."); return; }
     const oversized = files.find((file) => !checkFileSize(file.size).ok);
     if (oversized) { setError(checkFileSize(oversized.size).message); return; }
+    const reservations: (UsageReservation | null)[] = [];
+    for (let i = 0; i < files.length; i += 1) {
+      const reservation = await usage.checkAndTrack();
+      if (!reservation) {
+        await Promise.all(reservations.map((existing) => usage.releaseReservation(existing)));
+        upsell.showUpsell("trial-limit");
+        return;
+      }
+      reservations.push(reservation);
+    }
     setExtracting(true);
     setError(null);
     setSuccess(false);
@@ -65,6 +79,7 @@ export default function FormDataExtractPage() {
       setCsvResult(csvLines.join("\n"));
       setSuccess(true);
     } catch (extractionError) {
+      await Promise.all(reservations.map((existing) => usage.releaseReservation(existing)));
       setError(extractionError instanceof Error ? extractionError.message : "Failed to extract form data. Ensure your PDFs contain AcroForm fields.");
     } finally {
       setExtracting(false);
@@ -83,16 +98,17 @@ export default function FormDataExtractPage() {
   };
 
   return (
-    <PremiumGate
+    <TrialGate
+      tool="form-data-extract"
       title="Extract PDF Form Data to CSV"
       description="Batch extract filled form fields and questionnaire responses from PDF documents directly into CSV spreadsheets."
       icon="📊"
     >
       <div className="max-w-3xl mx-auto px-4 py-12">
-        <SoftwareAppJsonLd name="PDF Form Data Extractor" description="Extract filled form field data from PDF documents to CSV spreadsheet files." url="https://allaboutpdfediting.xyz/form-data-extract" image="https://allaboutpdfediting.xyz/opengraph-image.png" aggregateRating={{ ratingValue: 4.6, bestRating: 5, ratingCount: 143 }} />
+        <SoftwareAppJsonLd name="PDF Form Data Extractor" description="Extract filled form field data from PDF documents to CSV spreadsheet files." url="https://allaboutpdfediting.xyz/form-data-extract" image="https://allaboutpdfediting.xyz/opengraph-image" aggregateRating={{ ratingValue: 4.6, bestRating: 5, ratingCount: 143 }} />
         <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Form Data Extract", item: "https://allaboutpdfediting.xyz/form-data-extract" }]} />
         <HowToJsonLd name="Extract PDF Form Data to CSV" description="Extract filled form field data from PDF forms and export to CSV" steps={[{name:"Upload PDF form",text:"Upload a PDF with interactive AcroForm fields"},{name:"Extract data",text:"The tool reads all form fields and extracts their values"},{name:"Download CSV",text:"Download the extracted data as a CSV file for analysis"}]} />
-        <AiSummaryJsonLd name="Form Data Extraction" summary="Extract field values from PDF forms and export them to CSV format" category="BusinessApplications" inputType="PDF" outputType="CSV" processing="client-side" price="premium" features={["AcroForm extraction","CSV export","Batch processing","Field name mapping","No data uploads"]} limits="Premium subscribers" />
+        <AiSummaryJsonLd name="Form Data Extraction" summary="Extract field values from PDF forms and export them to CSV format" category="BusinessApplications" inputType="PDF" outputType="CSV" processing="client-side" price="premium" features={["AcroForm extraction","CSV export","Batch processing","Field name mapping","No data uploads"]} limits="Free: 5-file lifetime trial (shared); Premium: unlimited" />
         
         <div className="mb-8">
           <div className="flex items-center gap-3 mb-2">
@@ -139,6 +155,7 @@ export default function FormDataExtractPage() {
           <div className="mt-6 p-4 bg-red-500/10 border border-red-500/30 rounded-2xl text-red-500 text-sm">{error}</div>
         )}
       </div>
-    </PremiumGate>
+      <PremiumUpsell show={upsell.state.show} mode={upsell.state.mode} message={upsell.state.message} onClose={upsell.hideUpsell} />
+    </TrialGate>
   );
 }

@@ -21,5 +21,7 @@ export async function GET(req: NextRequest) {
     ? `user:${entitlement.userId}`
     : `client:${entitlement.clientId}`;
   const usage = await getChatUsage(usageIdentity);
-  return NextResponse.json({ remaining: usage.remaining, premium: false });
+  // When the counter store is unreachable, `remaining` is unknown — report
+  // null so the client keeps chat enabled instead of faking "0 left".
+  return NextResponse.json({ remaining: usage.unknown ? null : usage.remaining, premium: false });
 }

@@ -59,7 +59,7 @@ export default function EsToolsPage() {
         name="Herramientas PDF en Español | PDFTools"
         description="Explora todas las herramientas PDF gratuitas en español."
         url="https://allaboutpdfediting.xyz/es/tools"
-        image="https://allaboutpdfediting.xyz/opengraph-image.png"
+        image="https://allaboutpdfediting.xyz/opengraph-image"
       />
       <BreadcrumbJsonLd
         items={[

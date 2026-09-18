@@ -15,7 +15,7 @@ export default function ArticleJsonLd({ title, description, url, image, datePubl
     headline: title,
     description,
     url,
-    image: image || "https://allaboutpdfediting.xyz/opengraph-image.png",
+    image: image || "https://allaboutpdfediting.xyz/opengraph-image",
     datePublished,
     dateModified: dateModified || datePublished,
     author: { "@type": "Person", name: authorName || "Saqib" },
@@ -23,7 +23,7 @@ export default function ArticleJsonLd({ title, description, url, image, datePubl
       "@type": "Organization",
       name: "PDFTools",
       url: "https://allaboutpdfediting.xyz",
-      logo: { "@type": "ImageObject", url: "https://allaboutpdfediting.xyz/opengraph-image.png" },
+      logo: { "@type": "ImageObject", url: "https://allaboutpdfediting.xyz/opengraph-image" },
     },
     mainEntityOfPage: { "@type": "WebPage", "@id": url },
   };

@@ -84,7 +84,7 @@ export default function WordToPdfPage() {
     setError(null);
     setProgress("Reading Word document...");
     const canProceed = await usage.checkAndTrack();
-    if (!canProceed) { setProcessing(false); upsell.showUpsell("daily-limit"); return; }
+    if (!canProceed) { setProcessing(false); upsell.showUpsell("trial-limit"); return; }
     try {
       const mammoth = await import("mammoth");
       const bytes = await file.arrayBuffer();
@@ -157,7 +157,7 @@ export default function WordToPdfPage() {
   const convert = useCallback(async () => {
     if (!isPremium()) {
       const remaining = await usage.peekUsage();
-      if (remaining <= 0) { upsell.showUpsell("daily-limit"); return; }
+      if (remaining <= 0) { upsell.showUpsell("trial-limit"); return; }
       setShowTimer(true);
       return;
     }
@@ -176,7 +176,7 @@ export default function WordToPdfPage() {
         <p className="text-[var(--muted)]">Convert Word (DOCX) documents to PDF.</p>
       </div>
       <ToolInfo name="Word to PDF" description="Convert DOCX paragraphs, headings, lists, and table text into a clean PDF entirely in your browser. Complex Word layouts may be simplified." />
-      <div className="mb-4"><UsageBar remaining={usage.remaining} unlimited={usage.unlimited} /></div>
+      <div className="mb-4"><UsageBar remaining={usage.remaining} unlimited={usage.unlimited} tier={usage.tier} /></div>
       <div className="bg-[var(--card)] rounded-xl border border-[var(--card-border)] p-8 space-y-6">
         <div onDrop={onDrop} onDragOver={(e) => { e.preventDefault(); setDragging(true); }} onDragLeave={() => setDragging(false)}
           className={`border-2 border-dashed rounded-xl p-10 text-center transition ${dragging ? "border-indigo-500 bg-indigo-50/30" : "border-[var(--card-border)] bg-[var(--background)]"}`}>

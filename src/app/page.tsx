@@ -93,10 +93,11 @@ function AnimatedHero() {
               </div>
               <div className="text-left">
                 <p className="text-sm font-bold text-[var(--foreground)]">
-                  {uploading ? "Loading PDF into Studio..." : "Drop PDF here to launch Studio Pipeline"}
+                  {uploading ? "Loading PDF into Studio..." : "Drop PDF here to launch the Studio Pipeline"}
+                  <span className="ml-2 align-middle text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-400 border border-amber-500/30">Premium</span>
                 </p>
                 <p className="text-xs text-[var(--muted)] mt-0.5">
-                  or click to browse from device · Delete pages, sign, watermark &amp; compress in 1 go
+                  or click to browse · Premium Studio chains delete pages, sign, watermark &amp; compress in 1 go
                 </p>
               </div>
             </div>
@@ -109,7 +110,8 @@ function AnimatedHero() {
             href="/studio"
             className="px-8 py-4 bg-gradient-to-r from-indigo-500 via-purple-600 to-pink-500 text-white font-extrabold text-sm rounded-2xl hover:opacity-95 transition-all shadow-xl shadow-indigo-500/25 active:scale-95 flex items-center gap-2"
           >
-            <span>⚡ Open Unified PDF Studio</span>
+            <span>⚡ Open PDF Studio</span>
+            <span className="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-full bg-white/20 border border-white/30">Premium</span>
             <span>→</span>
           </Link>
           <Link
@@ -177,7 +179,7 @@ function SectionReveal({ children, className = "" }: { children: React.ReactNode
 export default function Home() {
   usePageMeta(
     "PDFTools - Free Online PDF Editor | 52 Online PDF Tools",
-    "39 core PDF tools with free access plus 13 professional tools for AI, automation, redaction, legal, and bulk workflows. Most document processing stays in your browser."
+    "38 core PDF tools free and unlimited, plus 14 professional tools — led by the PDF Studio pipeline — for AI, automation, redaction, legal, and bulk workflows. Most document processing stays in your browser."
   );
 
   return (
@@ -201,14 +203,14 @@ export default function Home() {
               <div className="w-12 h-12 rounded-2xl bg-indigo-500/20 text-indigo-400 flex items-center justify-center text-2xl font-bold mb-4 group-hover:scale-110 transition-transform">
                 ⚡
               </div>
-              <span className="text-[10px] font-extrabold uppercase px-2.5 py-0.5 rounded-full bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">
-                Flagship Pipeline
+              <span className="text-[10px] font-extrabold uppercase px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30">
+                ⭐ Premium · Flagship
               </span>
               <h3 className="text-lg font-extrabold text-[var(--foreground)] mt-2 mb-1 group-hover:text-indigo-400 transition">
                 PDF Studio Workspace
               </h3>
               <p className="text-xs text-[var(--muted)] leading-relaxed">
-                Reorder, delete pages, sign, watermark, and compress in one smooth continuous flow without re-uploading.
+                The Premium pipeline: reorder, delete pages, sign, watermark, protect, and compress in one continuous flow — without re-uploading.
               </p>
             </Link>
 
@@ -258,15 +260,22 @@ export default function Home() {
         <section className="max-w-6xl mx-auto px-4 mb-16">
           <div className="p-8 sm:p-12 rounded-3xl bg-gradient-to-br from-slate-900 via-indigo-950/40 to-slate-900 border border-indigo-500/30 shadow-2xl relative overflow-hidden">
             <div className="text-center max-w-3xl mx-auto mb-10">
-              <span className="text-xs font-extrabold uppercase tracking-widest px-3 py-1 rounded-full bg-indigo-500/20 text-indigo-400 border border-indigo-500/30 mb-3 inline-block">
-                Continuous Operations Engine
+              <span className="text-xs font-extrabold uppercase tracking-widest px-3 py-1 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30 mb-3 inline-block">
+                ⭐ PDF Studio — the Premium Pipeline
               </span>
               <h2 className="text-2xl sm:text-4xl font-extrabold text-white mb-4">
                 Stop Re-Uploading Your PDF For Every Small Edit
               </h2>
               <p className="text-sm sm:text-base text-slate-300">
-                Traditional PDF websites make you download, re-upload, and wait for every single action. With PDFTools, your PDF moves through an instant pipeline in real-time.
+                PDF Studio is our flagship Premium workspace. Load a document once, then chain every step — no downloads, no re-uploads, no waiting:
               </p>
+              <div className="flex flex-wrap justify-center gap-2 mt-4">
+                {["Organize & delete pages", "Rotate", "e-Sign", "Watermark", "Protect (AES-256)", "Compress"].map((step) => (
+                  <span key={step} className="text-xs font-semibold px-3 py-1.5 rounded-full bg-indigo-500/15 text-indigo-200 border border-indigo-500/30">
+                    {step}
+                  </span>
+                ))}
+              </div>
             </div>
 
             {/* Workflow Comparison Grid */}
@@ -302,13 +311,24 @@ export default function Home() {
               </div>
             </div>
 
-            <div className="mt-8 text-center">
-              <Link
-                href="/studio"
-                className="inline-flex items-center gap-2 px-8 py-3.5 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white font-bold rounded-2xl shadow-lg shadow-indigo-500/25 hover:opacity-95 transition"
-              >
-                Try the PDF Studio Pipeline Free →
-              </Link>
+            <div className="mt-8 text-center space-y-3">
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+                <Link
+                  href="/studio"
+                  className="inline-flex items-center gap-2 px-8 py-3.5 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white font-bold rounded-2xl shadow-lg shadow-indigo-500/25 hover:opacity-95 transition"
+                >
+                  Open PDF Studio →
+                </Link>
+                <Link
+                  href="/premium"
+                  className="inline-flex items-center gap-2 px-8 py-3.5 border border-amber-500/40 bg-amber-500/10 text-amber-300 font-bold rounded-2xl hover:bg-amber-500/20 transition"
+                >
+                  ⭐ Get Premium
+                </Link>
+              </div>
+              <p className="text-xs text-slate-400">
+                PDF Studio is included with Premium — and every basic tool stays free and unlimited for everyone.
+              </p>
             </div>
           </div>
         </section>
@@ -409,7 +429,7 @@ export default function Home() {
       {/* SEO FAQs */}
       <FaqPageJsonLd
         questions={[
-          { question: "Is PDFTools truly free?", answer: "Yes! All core tools (Compress, Merge, Split, e-Sign, Watermark, Delete Pages, Rotate) are 100% free with generous daily limits. Premium plans are available for heavy batch operations." },
+          { question: "Is PDFTools truly free?", answer: "Yes! All core tools (Compress, Merge, Split, e-Sign, Watermark, Delete Pages, Rotate, and 30+ more) are 100% free and unlimited — no daily or monthly caps. Only the professional tools carry a one-time 5-file lifetime trial, and Premium removes even that." },
           { question: "Are my PDF files uploaded to your servers?", answer: "No! All PDF processing, page reordering, OCR, and compression happens locally inside your web browser using WebAssembly. Your files never leave your computer." },
           { question: "What is the PDF Studio Pipeline?", answer: "PDF Studio is our flagship workspace that lets you perform multi-step edits (delete pages -> rotate -> sign -> watermark -> compress) on a single document without downloading and re-uploading at each step." },
           { question: "What is the PII Guardian?", answer: "PII Guardian detects common sensitive-data patterns locally. Free users can preview first-page matches; Premium can scan and securely raster-redact complete documents after review." },

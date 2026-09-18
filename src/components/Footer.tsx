@@ -9,7 +9,6 @@ export default function Footer() {
           <div>
             <h4 className="font-extrabold text-xs uppercase tracking-wider mb-4 text-indigo-400">Core Tools</h4>
             <div className="space-y-2 text-xs text-[var(--muted)] font-medium">
-              <Link href="/studio" className="block text-indigo-400 font-bold hover:underline">⚡ PDF Studio Pipeline</Link>
               <Link href="/recipes" className="block text-purple-400 font-bold hover:underline">⚡ PDF Recipes (Macros)</Link>
               <Link href="/pii-guardian" className="block text-red-400 font-bold hover:underline">🛡️ PII Guardian</Link>
               <Link href="/compress" className="block hover:text-[var(--foreground)] hover:translate-x-0.5 transition-all">Compress PDF</Link>
@@ -45,6 +44,7 @@ export default function Footer() {
           <div>
             <h4 className="font-extrabold text-xs uppercase tracking-wider mb-4 text-amber-500">⭐ Premium Suite</h4>
             <div className="space-y-2 text-xs text-[var(--muted)] font-medium">
+              <Link href="/studio" className="block text-indigo-400 font-bold hover:underline">⚡ PDF Studio Pipeline</Link>
               <Link href="/pdf-diff" className="block hover:text-amber-400 hover:translate-x-0.5 transition-all">PDF Diff Compare</Link>
               <Link href="/bates-numbering" className="block hover:text-amber-400 hover:translate-x-0.5 transition-all">Bates Numbering</Link>
               <Link href="/certificate-generator" className="block hover:text-amber-400 hover:translate-x-0.5 transition-all">Certificate Generator</Link>

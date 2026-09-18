@@ -32,7 +32,7 @@ const translations: Record<Locale, TranslationDict> = {
     "theme.midnight": "Midnight",
     "theme.amber": "Amber",
     "theme.ocean": "Ocean",
-    "usage.remaining": "Free uses remaining today",
+    "usage.remaining": "Free trial files remaining (professional tools)",
     "usage.unlimited": "Unlimited",
     "usage.upgrade": "Upgrade for unlimited access",
     "premium.badge": "Premium",

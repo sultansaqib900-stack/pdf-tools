@@ -168,7 +168,7 @@ export default function PDFToolsForStudentsPage() {
             {[
               { q: "Can I use these tools on my phone?", a: "Yes. All tools work on any device with a modern browser — phone, tablet, or laptop." },
               { q: "Do I need a .edu email?", a: "No. No account or email of any kind is required. Just upload and go." },
-              { q: "Is there a daily limit?", a: "Free tier allows 5 uses per day per tool. Premium removes all limits." },
+              { q: "Is there a daily limit?", a: "No. All basic tools are free and unlimited. Professional tools include a shared lifetime trial of 5 files, and Premium removes even that." },
               { q: "What if my file is too large?", a: "Free tier handles up to 10MB. For larger files, use our Compress tool first, or upgrade to Premium (up to 100MB)." },
               { q: "Can I edit text in a PDF?", a: "You can add new text, highlights, and shapes. For deep text edits, convert to Word first." },
             ].map((faq) => (

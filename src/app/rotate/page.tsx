@@ -58,7 +58,7 @@ export default function RotatePage() {
     if (!file) return;
     setProcessing(true);
     const canProceed = await usage.checkAndTrack();
-    if (!canProceed) { setProcessing(false); upsell.showUpsell("daily-limit"); return; }
+    if (!canProceed) { setProcessing(false); upsell.showUpsell("trial-limit"); return; }
     try {
       const { PDFDocument, degrees } = await import("pdf-lib");
       const bytes = await file.arrayBuffer();
@@ -87,7 +87,7 @@ export default function RotatePage() {
   const rotate = useCallback(async () => {
     if (!isPremium()) {
       const remaining = await usage.peekUsage();
-      if (remaining <= 0) { upsell.showUpsell("daily-limit"); return; }
+      if (remaining <= 0) { upsell.showUpsell("trial-limit"); return; }
       setShowTimer(true);
       return;
     }
@@ -128,7 +128,7 @@ export default function RotatePage() {
 
 
       <div className="mb-4">
-        <UsageBar remaining={usage.remaining} unlimited={usage.unlimited} />
+        <UsageBar remaining={usage.remaining} unlimited={usage.unlimited} tier={usage.tier} />
       </div>
 
       <div className="bg-[var(--card)] rounded-xl border border-[var(--card-border)] p-8">
@@ -197,7 +197,7 @@ export default function RotatePage() {
             {!isPremium() && (
               <p className="mt-3 text-center text-xs text-[var(--muted)]">
                 Free users limited to 10MB files.{ " " }
-                <a href="/premium" className="text-indigo-500 font-medium hover:underline">Upgrade for 100MB, batch & no wait</a>
+                <a href="/premium" className="text-indigo-500 font-medium hover:underline">Upgrade for 100MB files & batch</a>
               </p>
             )}
 

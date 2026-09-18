@@ -16,7 +16,7 @@ import { STARTER_RECIPE_IDS } from "@/lib/toolCatalog";
 import { checkFileSize } from "@/lib/premium";
 import { usePremiumStatus } from "@/hooks/usePremiumStatus";
 import PremiumUpsell, { usePremiumUpsell } from "@/components/PremiumUpsell";
-import { useUsage } from "@/hooks/useUsage";
+import PremiumGate from "@/components/PremiumGate";
 import { readFileWithProgress } from "@/lib/readFileWithProgress";
 
 type ActiveTab = "pages" | "pii" | "recipes" | "sign" | "watermark" | "protect" | "compress";
@@ -37,7 +37,6 @@ const SIGNATURE_PDF_HEIGHT = SIGNATURE_PDF_WIDTH * SIGNATURE_PAD_HEIGHT / SIGNAT
 export default function StudioPage() {
   const { premium, ready: premiumReady } = usePremiumStatus();
   const upsell = usePremiumUpsell();
-  const usage = useUsage("studio");
   const [pdfBytes, setPdfBytes] = useState<Uint8Array | null>(null);
   const [docName, setDocName] = useState<string>("document.pdf");
   const [pages, setPages] = useState<PageMetaInfo[]>([]);
@@ -192,12 +191,6 @@ export default function StudioPage() {
       event.target.value = "";
       return;
     }
-    if (!(await usage.checkAndTrack())) {
-      upsell.showUpsell("daily-limit");
-      event.target.value = "";
-      return;
-    }
-
     setProcessing(true);
     setUploadProgress(0);
     try {
@@ -726,12 +719,23 @@ export default function StudioPage() {
   const signaturePreviewY = Math.min(100 - signatureHeightPercent / 2, Math.max(signatureHeightPercent / 2, sigPosition.y));
 
   return (
+    <PremiumGate
+      title="PDF Studio — the Multi-Step PDF Pipeline"
+      description="Upload once, then chain everything: reorder and delete pages, e-sign, watermark, protect with AES-256, and compress — in one continuous session, without re-uploading. Exclusively included with Premium."
+      icon="⚡"
+      highlights={[
+        "Organize, rotate, and delete pages visually",
+        "Draw your signature and place it on any page",
+        "Watermark, protect with a password, and compress",
+        "One document, one session — no re-uploading between steps",
+      ]}
+    >
     <div className="min-h-screen bg-[var(--background)] text-[var(--foreground)] pb-24">
       <SoftwareAppJsonLd
         name="PDF Studio - Unified PDF Workspace"
         description="Edit, remove pages, sign, watermark, and compress PDFs in one seamless pipeline."
         url="https://allaboutpdfediting.xyz/studio"
-        image="https://allaboutpdfediting.xyz/opengraph-image.png"
+        image="https://allaboutpdfediting.xyz/opengraph-image"
       />
       <BreadcrumbJsonLd
         items={[
@@ -1496,5 +1500,6 @@ export default function StudioPage() {
         onClose={upsell.hideUpsell}
       />
     </div>
+    </PremiumGate>
   );
 }

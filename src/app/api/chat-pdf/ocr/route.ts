@@ -41,6 +41,9 @@ export async function POST(req: NextRequest) {
 
     const usage = await reserveAiAllowance(req, entitlement, "ocr");
     if (!usage.ok) {
+      if (usage.storageError) {
+        return NextResponse.json({ ok: false, error: "AI OCR is temporarily unavailable. Please try again in a moment." }, { status: 503 });
+      }
       return NextResponse.json({ ok: false, error: "Your free AI OCR preview for today is used. Premium includes unlimited AI OCR.", remaining: 0 }, { status: 429 });
     }
 

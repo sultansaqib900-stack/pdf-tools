@@ -56,7 +56,7 @@ export default function ILovePDFAltPage() {
         </div>
         <div className="border border-[var(--card-border)] rounded-xl p-5">
           <h3 className="font-semibold mb-2 text-[var(--foreground)]">2. No Hourly Limits</h3>
-          <p className="text-sm text-[var(--muted)]">iLovePDF restricts free users to 1 PDF per hour — a frustrating cap when you need to process multiple files. PDFTools gives you 5 uses per day free, with no arbitrary cooldown. <Link href="/premium" className="text-indigo-500 underline">Premium</Link> removes all limits.</p>
+          <p className="text-sm text-[var(--muted)]">iLovePDF restricts free users to 1 PDF per hour — a frustrating cap when you need to process multiple files. PDFTools makes every basic tool free and unlimited, with no arbitrary cooldown (professional tools include a 5-file lifetime trial). <Link href="/premium" className="text-indigo-500 underline">Premium</Link> removes all limits.</p>
         </div>
         <div className="border border-[var(--card-border)] rounded-xl p-5">
           <h3 className="font-semibold mb-2 text-[var(--foreground)]">3. Clean, Ad-Free Experience</h3>

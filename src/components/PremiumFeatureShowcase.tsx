@@ -62,7 +62,7 @@ export default function PremiumFeatureShowcase() {
             Supercharge Your PDF Workflow
           </h2>
           <p className="text-lg text-[var(--muted)] max-w-2xl mx-auto">
-            {PREMIUM_TOOL_COUNT} professional tools for AI assistance, secure redaction, automation, legal work, and bulk document processing.
+            {PREMIUM_TOOL_COUNT} professional tools for AI assistance, secure redaction, automation, legal work, and bulk document processing. Every basic tool stays free and unlimited; professional tools include a 5-file lifetime trial — Premium removes the limit.
           </p>
         </div>
 
