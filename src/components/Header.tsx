@@ -6,7 +6,6 @@ import { useState, lazy, Suspense, useEffect } from "react";
 import { useAuth } from "@/components/AuthProvider";
 import { usePremiumStatus } from "@/hooks/usePremiumStatus";
 import { PREMIUM_TOOLS, PREMIUM_TOOL_COUNT, TOOL_CATALOG } from "@/lib/toolCatalog";
-import { localeSwitchHref, pathLocale as detectPathLocale } from "@/lib/i18n";
 
 const ShareModal = lazy(() => import("./ShareModal"));
 const ExportHistory = lazy(() => import("./ExportHistory"));
@@ -28,7 +27,7 @@ export default function Header() {
     setTheme(currentTheme);
   }, []);
 
-  const pathLocale = detectPathLocale(pathname);
+  const pathLocale = pathname.startsWith("/es") ? "es" : "en";
 
   const themes = [
     { id: "midnight", label: "Midnight", color: "#6366f1" },
@@ -243,8 +242,7 @@ export default function Header() {
           </button>
 
           <Link
-            href={localeSwitchHref(pathname, pathLocale)}
-            title={pathLocale === "es" ? "View this page in English" : "Ver esta página en español"}
+            href={pathLocale === "es" ? pathname.replace(/^\/es/, "") || "/" : `/es${pathname === "/" ? "" : pathname}`}
             className="hidden sm:flex p-2.5 rounded-xl bg-[var(--card)] border border-[var(--card-border)] text-[var(--muted)] hover:text-[var(--foreground)] hover:border-indigo-500/50 transition-all active:scale-95 text-xs font-bold shrink-0"
             aria-label="Switch language"
           >
