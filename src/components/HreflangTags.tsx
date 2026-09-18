@@ -1,19 +1,15 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-
-const translatedSlugs = new Set([
-  "", "compress", "merge", "split", "image-to-pdf", "edit-pdf",
-]);
+import { hasSpanishVersion, normalizePath } from "@/lib/i18n";
 
 export default function HreflangTags() {
   const pathname = usePathname();
-  const isEs = pathname.startsWith("/es");
-  const cleanPath = isEs ? pathname.replace(/^\/es/, "") || "/" : pathname || "/";
+  const cleanPath = normalizePath(pathname);
   const base = "https://allaboutpdfediting.xyz";
   const enUrl = `${base}${cleanPath}`;
-  const esUrl = `${base}/es${cleanPath}`;
-  const slug = cleanPath.replace(/^\//, "");
+  const esUrl = cleanPath === "/" ? `${base}/es` : `${base}/es${cleanPath}`;
+  const hasEs = hasSpanishVersion(cleanPath);
 
   return (
     <>
@@ -24,8 +20,8 @@ export default function HreflangTags() {
       <link rel="alternate" href={enUrl} hrefLang="en-AU" />
       <link rel="alternate" href={enUrl} hrefLang="en-NZ" />
       <link rel="alternate" href={enUrl} hrefLang="en-IE" />
-      {translatedSlugs.has(slug) && <link rel="alternate" href={esUrl} hrefLang="es" />}
-      {translatedSlugs.has(slug) && <link rel="alternate" href={esUrl} hrefLang="es-ES" />}
+      {hasEs && <link rel="alternate" href={esUrl} hrefLang="es" />}
+      {hasEs && <link rel="alternate" href={esUrl} hrefLang="es-ES" />}
       <link rel="alternate" href={enUrl} hrefLang="x-default" />
     </>
   );
