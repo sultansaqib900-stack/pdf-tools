@@ -6,6 +6,9 @@ export async function POST(request: NextRequest) {
   const token = authorization?.startsWith("Bearer ")
     ? authorization.slice("Bearer ".length).trim()
     : "";
-  if (token) await deleteSession(token).catch(() => undefined);
-  return NextResponse.json({ ok: true });
+  const cookieToken = request.headers.get("cookie")?.match(/(?:^|;\s*)pdftools_session=([^;]+)/)?.[1] || "";
+  await Promise.all([token, cookieToken].filter(Boolean).map((t) => deleteSession(t).catch(() => undefined)));
+  const response = NextResponse.json({ ok: true });
+  response.cookies.set("pdftools_session", "", { httpOnly: true, expires: new Date(0), path: "/" });
+  return response;
 }

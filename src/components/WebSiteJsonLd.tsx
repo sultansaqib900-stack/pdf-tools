@@ -10,11 +10,6 @@ export default function WebSiteJsonLd() {
       "@type": "Audience",
       audienceType: ["US", "CA", "GB", "AU", "NZ", "IE"],
     },
-    potentialAction: {
-      "@type": "SearchAction",
-      target: { "@type": "EntryPoint", urlTemplate: "https://allaboutpdfediting.xyz/search?q={search_term_string}" },
-      "query-input": "required name=search_term_string",
-    },
   };
 
   return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(json) }} />;

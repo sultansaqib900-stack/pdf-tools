@@ -115,7 +115,7 @@ export async function confirmPremium(nonce?: string, token?: string): Promise<bo
 }
 
 /** Bind this device to the authenticated user's verified purchase. */
-export async function claimPremium(token: string): Promise<boolean> {
+export async function claimPremium(token?: string): Promise<boolean> {
   const requestVersion = ++premiumRequestVersion;
   const clientId = getClientId();
   if (!clientId || !token) return false;

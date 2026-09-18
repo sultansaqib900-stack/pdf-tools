@@ -34,10 +34,14 @@ export async function POST(request: NextRequest) {
     }
 
     const token = await createSession(user);
-    return NextResponse.json({
-      token,
+    const response = NextResponse.json({
       user: { id: user.id, email: user.email, name: user.name, premium: false },
     });
+    response.cookies.set("pdftools_session", token, {
+      httpOnly: true, secure: process.env.NODE_ENV === "production",
+      sameSite: "lax", path: "/", maxAge: 7 * 24 * 60 * 60,
+    });
+    return response;
   } catch {
     return NextResponse.json({ error: "Internal error" }, { status: 500 });
   }
