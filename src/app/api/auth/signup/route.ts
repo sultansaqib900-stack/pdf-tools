@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { hashPassword } from "@/lib/auth/crypto";
 import { createSession, createUser } from "@/lib/auth/sessions";
+import { grantConfiguredPremium } from "@/lib/kv";
 import { rateLimit, rateLimitResponse } from "@/lib/rate-limit";
 import { validateEmail, validateString } from "@/lib/validation";
 
@@ -34,8 +35,9 @@ export async function POST(request: NextRequest) {
     }
 
     const token = await createSession(user);
+    const premium = await grantConfiguredPremium(user.id, user.email);
     const response = NextResponse.json({
-      user: { id: user.id, email: user.email, name: user.name, premium: false },
+      user: { id: user.id, email: user.email, name: user.name, premium }, 
     });
     response.cookies.set("pdftools_session", token, {
       httpOnly: true, secure: process.env.NODE_ENV === "production",

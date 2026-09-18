@@ -9,6 +9,7 @@ import {
   getUserByEmail,
   updateUserPassword,
 } from "@/lib/auth/sessions";
+import { grantConfiguredPremium } from "@/lib/kv";
 import { getPremiumStatusByUserId } from "@/lib/kv";
 import { rateLimit, rateLimitResponse } from "@/lib/rate-limit";
 import { validateEmail } from "@/lib/validation";
@@ -48,7 +49,8 @@ export async function POST(request: NextRequest) {
     }
 
     const token = await createSession(user);
-    const premium = await getPremiumStatusByUserId(user.id);
+    const configuredGrant = await grantConfiguredPremium(user.id, user.email);
+    const premium = configuredGrant || await getPremiumStatusByUserId(user.id);
     const response = NextResponse.json({
       user: { id: user.id, email: user.email, name: user.name, premium },
     });
