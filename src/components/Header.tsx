@@ -50,6 +50,14 @@ export default function Header() {
     { href: "/compress", label: "Compress" },
   ];
 
+  /**
+   * Top-bar entries. The bar must fit ~1280px viewports next to the account
+   * controls, so only these four stay up here — everything else lives in
+   * "All Tools" and the drawer. Never grow this list without re-checking the
+   * 1280px (xl) breakpoint.
+   */
+  const primaryLinks = navLinks.filter((link) => link.href === "/studio");
+
   const toolCategories = [
     {
       name: "Convert & Compress",
@@ -128,8 +136,8 @@ export default function Header() {
           <span className="tracking-tight">PDFTools</span>
         </Link>
 
-        <nav className="hidden xl:flex items-center gap-3 2xl:gap-4 text-sm font-semibold min-w-0" role="navigation" aria-label="Main navigation">
-          {navLinks.map((link) => (
+        <nav className="hidden xl:flex items-center gap-2 2xl:gap-3 text-sm font-semibold min-w-0" role="navigation" aria-label="Main navigation">
+          {primaryLinks.map((link) => (
             <Link
               key={link.href}
               href={link.href}
@@ -146,7 +154,7 @@ export default function Header() {
           ))}
 
           <div className="relative" onMouseEnter={() => setToolsMenu(true)} onMouseLeave={() => setToolsMenu(false)}>
-            <button className="text-[var(--muted)] hover:text-[var(--foreground)] px-3 py-1.5 rounded-xl transition-all flex items-center gap-1.5 hover:bg-[var(--card-border)]/40">
+            <button className="text-[var(--muted)] hover:text-[var(--foreground)] px-2.5 py-1.5 rounded-xl transition-all flex items-center gap-1 whitespace-nowrap hover:bg-[var(--card-border)]/40">
               All Tools
               <svg className={`w-3.5 h-3.5 transition-transform duration-200 ${toolsMenu ? "rotate-180" : ""}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
             </button>
@@ -172,7 +180,7 @@ export default function Header() {
           </div>
 
           <div className="relative" onMouseEnter={() => setPremiumMenu(true)} onMouseLeave={() => setPremiumMenu(false)}>
-            <button className="text-amber-500 hover:text-amber-600 px-3 py-1.5 rounded-xl transition-all font-bold flex items-center gap-1.5 bg-amber-500/10 border border-amber-500/20">
+            <button className="text-amber-500 hover:text-amber-600 px-2.5 py-1.5 rounded-xl transition-all font-bold flex items-center gap-1 whitespace-nowrap bg-amber-500/10 border border-amber-500/20">
               ⭐ Premium
               <svg className={`w-3.5 h-3.5 transition-transform duration-200 ${premiumMenu ? "rotate-180" : ""}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
             </button>
@@ -205,7 +213,7 @@ export default function Header() {
           </div>
 
           <div className="relative" onMouseEnter={() => setResourcesMenu(true)} onMouseLeave={() => setResourcesMenu(false)}>
-            <button className="text-[var(--muted)] hover:text-[var(--foreground)] px-3 py-1.5 rounded-xl transition-all flex items-center gap-1.5 hover:bg-[var(--card-border)]/40">
+            <button className="text-[var(--muted)] hover:text-[var(--foreground)] px-2.5 py-1.5 rounded-xl transition-all flex items-center gap-1 whitespace-nowrap hover:bg-[var(--card-border)]/40">
               Resources
               <svg className={`w-3.5 h-3.5 transition-transform duration-200 ${resourcesMenu ? "rotate-180" : ""}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
             </button>
@@ -221,13 +229,13 @@ export default function Header() {
           </div>
         </nav>
 
-        <div className="flex items-center gap-2.5 shrink-0">
-          <Suspense fallback={null}><ExportHistory /></Suspense>
-          
+        <div className="flex items-center gap-1.5 sm:gap-2 shrink-0 ml-auto">
+          <div className="hidden md:block"><Suspense fallback={null}><ExportHistory /></Suspense></div>
+
           <button
             onClick={() => setShareOpen(true)}
-            className="p-2.5 rounded-xl bg-[var(--card)] border border-[var(--card-border)] text-[var(--muted)] hover:text-[var(--foreground)] hover:border-indigo-500/50 transition-all active:scale-95"
-            aria-label="Share"
+            className="hidden sm:flex p-2.5 rounded-xl bg-[var(--card)] border border-[var(--card-border)] text-[var(--muted)] hover:text-[var(--foreground)] hover:border-indigo-500/50 transition-all active:scale-95 shrink-0"
+            aria-label="Share PDFTools — copy a link or post to social"
             title="Share PDFTools"
           >
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
@@ -235,7 +243,7 @@ export default function Header() {
 
           <Link
             href={pathLocale === "es" ? pathname.replace(/^\/es/, "") || "/" : `/es${pathname === "/" ? "" : pathname}`}
-            className="p-2.5 rounded-xl bg-[var(--card)] border border-[var(--card-border)] text-[var(--muted)] hover:text-[var(--foreground)] hover:border-indigo-500/50 transition-all active:scale-95 text-xs font-bold"
+            className="hidden sm:flex p-2.5 rounded-xl bg-[var(--card)] border border-[var(--card-border)] text-[var(--muted)] hover:text-[var(--foreground)] hover:border-indigo-500/50 transition-all active:scale-95 text-xs font-bold shrink-0"
             aria-label="Switch language"
           >
             {pathLocale === "es" ? "EN" : "ES"}
@@ -244,7 +252,7 @@ export default function Header() {
           <div className="relative">
             <button
               onClick={() => setThemeMenu(!themeMenu)}
-              className="p-2.5 rounded-xl bg-[var(--card)] border border-[var(--card-border)] text-[var(--muted)] hover:text-[var(--foreground)] hover:border-indigo-500/50 transition-all active:scale-95 flex items-center gap-1.5"
+              className="p-2.5 rounded-xl bg-[var(--card)] border border-[var(--card-border)] text-[var(--muted)] hover:text-[var(--foreground)] hover:border-indigo-500/50 transition-all active:scale-95 flex items-center gap-1.5 shrink-0"
               aria-label="Switch theme"
               title="Change Theme"
             >
@@ -319,6 +327,14 @@ export default function Header() {
             ⚡ Open PDF Studio Pipeline
           </Link>
 
+          <button
+            onClick={() => { setMenuOpen(false); setShareOpen(true); }}
+            className="w-full p-3 rounded-2xl border border-[var(--card-border)] bg-[var(--background)] text-sm font-bold text-[var(--foreground)] hover:border-indigo-500/50 transition flex items-center justify-center gap-2"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+            Share PDFTools
+          </button>
+
           <div className="pt-2">
             <p className="text-xs font-extrabold text-amber-500 uppercase tracking-wider mb-2">⭐ Premium Features</p>
             <div className="grid grid-cols-2 gap-2">
@@ -350,6 +366,17 @@ export default function Header() {
               ))}
               <Link href="/tools" onClick={() => setMenuOpen(false)} className="block p-2 rounded-xl bg-[var(--background)] text-xs font-medium text-indigo-500 transition border border-[var(--card-border)]">All {TOOL_CATALOG.length} Tools →</Link>
               <Link href="/premium" onClick={() => setMenuOpen(false)} className="block p-2 rounded-xl bg-[var(--background)] text-xs font-medium text-amber-500 transition border border-[var(--card-border)]">Premium Tier →</Link>
+            </div>
+          </div>
+
+          <div className="pt-2 border-t border-[var(--card-border)]">
+            <p className="text-xs font-extrabold text-[var(--muted)] uppercase tracking-wider mb-2">Resources</p>
+            <div className="grid grid-cols-2 gap-2">
+              <Link href="/blog" onClick={() => setMenuOpen(false)} className="block p-2 rounded-xl bg-[var(--background)] text-xs font-medium text-[var(--muted)] hover:text-[var(--foreground)] transition border border-[var(--card-border)]">📚 Guides &amp; Blog</Link>
+              <Link href="/ultimate-guide-to-pdf-editing" onClick={() => setMenuOpen(false)} className="block p-2 rounded-xl bg-[var(--background)] text-xs font-medium text-[var(--muted)] hover:text-[var(--foreground)] transition border border-[var(--card-border)]">📖 Ultimate Guide</Link>
+              <Link href="/qa" onClick={() => setMenuOpen(false)} className="block p-2 rounded-xl bg-[var(--background)] text-xs font-medium text-[var(--muted)] hover:text-[var(--foreground)] transition border border-[var(--card-border)]">❓ Q&amp;A Support</Link>
+              <Link href="/embed" onClick={() => setMenuOpen(false)} className="block p-2 rounded-xl bg-[var(--background)] text-xs font-medium text-[var(--muted)] hover:text-[var(--foreground)] transition border border-[var(--card-border)]">🔌 Embed Widget</Link>
+              <Link href="/contact" onClick={() => setMenuOpen(false)} className="block p-2 rounded-xl bg-[var(--background)] text-xs font-medium text-[var(--muted)] hover:text-[var(--foreground)] transition border border-[var(--card-border)]">📧 Contact Us</Link>
             </div>
           </div>
 
