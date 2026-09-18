@@ -108,15 +108,16 @@ function SuccessMessage() {
 }
 
 function ClaimSection() {
-  const { user, token } = useAuth();
+  const { user } = useAuth();
   const [submitting, setSubmitting] = useState(false);
   const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
 
   const handleClaim = async () => {
-    if (!token) return;
+    if (!user) return;
     setSubmitting(true);
     setMessage(null);
-    const ok = await claimPremium(token);
+    // Authentication is sent by the HttpOnly session cookie.
+    const ok = await claimPremium();
     setMessage(ok
       ? { type: "success", text: "Premium is now active on this device." }
       : { type: "error", text: "No active Premium checkout is linked to this account. Account recovery is available when checkout was started while signed in." });
@@ -126,7 +127,7 @@ function ClaimSection() {
   return (
     <div className="mt-16 pt-8 border-t border-[var(--card-border)] max-w-md mx-auto text-center">
       <h3 className="text-lg font-bold text-[var(--foreground)] mb-2">Already purchased Premium?</h3>
-      {user && token ? (
+      {user ? (
         <>
           <p className="text-sm text-[var(--muted)] mb-4">Restore a verified checkout started from the <strong>{user.email}</strong> account on this device.</p>
           <button type="button" onClick={handleClaim} disabled={submitting} className="w-full px-5 py-2.5 bg-indigo-600 text-white font-medium rounded-xl hover:bg-indigo-700 disabled:opacity-40 transition text-sm">
