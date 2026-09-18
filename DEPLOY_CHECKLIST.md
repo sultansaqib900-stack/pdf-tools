@@ -16,6 +16,7 @@ Set these for **Production** and, when testing the protected deployment, **Previ
 | `BUTTONDOWN_API_KEY` | Yes while newsletter is shown | Newsletter delivery; the API fails visibly instead of discarding addresses |
 | `SENTRY_DSN` | Optional | Server/edge error monitoring |
 | `NEXT_PUBLIC_SENTRY_DSN` | Optional | Browser error monitoring; a Sentry DSN is public by design |
+| `PREMIUM_ADMIN_EMAILS` | Optional | Comma-separated owner/support emails that receive **permanent Premium**. Evaluated only server-side after a real HttpOnly-cookie login; never send this value to the browser and never prefix it with `NEXT_PUBLIC_` |
 
 The code also accepts the legacy Vercel integration names `pdf_tools_KV_REST_API_URL` and `pdf_tools_KV_REST_API_TOKEN`, but the standard names above are preferred. See `.env.example` for a secret-free template.
 
@@ -54,10 +55,49 @@ Expected for this release:
 
 - Full and production audits: **0 vulnerabilities**
 - TypeScript: pass
-- Tests: **108 pass across 23 files**
+- Tests: **141 pass across 28 files**
 - ESLint: **0 errors** (126 existing warnings)
 - Production build: pass; 500 static pages generated
 - Catalog: exactly **52 unique tools — 39 free and 13 Premium**
+
+## 4. Usage model (this release)
+
+- **Basic tools are unlimited for everyone.** They never call `/api/usage/*`.
+- **Professional tools share one lifetime free trial of 5 files** per identity
+  (authenticated account when signed in, otherwise the stable anonymous client
+  id). The trial never resets and is enforced server-side with atomic Redis
+  scripts; failed or invalid files refund automatically. Premium bypasses it.
+- The former "5 uses per day" counter (`/api/usage/track`, `incrementDailyUsage`)
+  was removed. `/api/usage/check`, `/api/usage/reserve`, and `/api/usage/release`
+  replace it.
+
+## 5. Owner Premium grant
+
+1. In Vercel → Project → Settings → Environment Variables, add
+   `PREMIUM_ADMIN_EMAILS` with the owner email (Production + Preview).
+2. Redeploy so the new variable is visible to serverless functions.
+3. Sign in with that email through `/login` (or create the account via
+   `/signup`). The grant applies on login, `/api/auth/me`, premium
+   verification, and device claim — it never bypasses authentication.
+
+## 6. Brand logo / Google Search steps
+
+The Vercel-triangle `favicon.ico` default was replaced with PDFTools PNG assets
+(`/icons/icon-512.png`, `/icons/icon-192.png`, `/icons/apple-touch-icon.png`,
+`/logo-32.png`, `favicon.ico`) plus a matching `src/app/icon.svg`. The
+Organization JSON-LD `logo` now points at the 512×512 PNG.
+
+After deploying, Google must re-crawl — it cannot be forced to update
+instantly:
+
+1. Verify `https://allaboutpdfediting.xyz/icons/icon-512.png` returns HTTP 200
+   and is not blocked by `robots.txt`.
+2. In Google Search Console, use **URL Inspection → Request indexing** on the
+   homepage.
+3. Wait for recrawl (typically days to a few weeks). Google's help explicitly
+   states you cannot force a profile/favicon change; it updates when the
+   service visits the new assets. The old icon may persist in some surfaces
+   until then.
 - PDF.js browser worker: exact match with installed `pdfjs-dist`
 - GitHub/Vercel checks: pass
 

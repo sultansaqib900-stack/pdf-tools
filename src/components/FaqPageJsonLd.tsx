@@ -21,6 +21,14 @@ const defaultQuestions: QA[] = [
     answer: "Free users can process files up to 10MB. Premium users get up to 100MB file support with faster processing.",
   },
   {
+    question: "Which tools are free and unlimited?",
+    answer: "Every basic tool - Compress, Merge, Split, Delete Pages, Rotate, Crop, Resize, Extract Text, Image to PDF, PDF to Images, PDF to Word, Word to PDF, Protect, Unlock, Sign, Watermark, Add Page Numbers, Annotate, Fill Forms, Flatten, Reverse, Insert Blank Pages, Metadata editing, and more - is free with no daily or monthly cap.",
+  },
+  {
+    question: "How does the free trial for professional tools work?",
+    answer: "Professional tools (PDF Studio, PDF Diff, Bates Numbering, Certificate Generator, and the rest of the Premium suite) include a one-time trial of 5 files. The allowance is lifetime and shared across all professional tools - not per tool, per day, or per month. Failed or invalid files never consume the allowance.",
+  },
+  {
     question: "Which browsers are supported?",
     answer: "PDFTools works on Chrome, Firefox, Safari, and Edge on both desktop and mobile devices.",
   },

@@ -1,65 +1,110 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
-import { trackUsage, peekUsage as peekUsageApi, isPremium, getTotalProcessed, isUnlimited } from "@/lib/premium";
+import { useCallback, useEffect, useState } from "react";
+import {
+  isPremium,
+  peekTrialUsage,
+  releaseTrialFile,
+  reserveTrialFile,
+  TRIAL_FILE_LIMIT,
+} from "@/lib/premium";
+import { getToolTier } from "@/lib/toolCatalog";
 import { trackEvent } from "@/lib/analytics";
 
-function getToolName(): string {
-  if (typeof window === "undefined") return "unknown";
+function getToolSlug(): string {
+  if (typeof window === "undefined") return "home";
   const path = window.location.pathname.replace(/^\/+|\/+$/g, "");
   if (!path) return "home";
   return path.replace(/\//g, "_");
 }
 
+export type UsageTier = "basic" | "professional";
+
+export interface UsageReservation {
+  reservationId: string;
+}
+
+/**
+ * Tier-aware usage guard.
+ *
+ * - Basic tools: free and unlimited. No usage API is ever called.
+ * - Professional tools: free users share one lifetime trial of
+ *   TRIAL_FILE_LIMIT files; checkAndTrack() reserves server-side before
+ *   processing begins and releaseReservation() refunds when processing fails.
+ * - Premium users bypass the trial without consuming it.
+ */
 export function useUsage(toolName?: string) {
   const [remaining, setRemaining] = useState<number | null>(null);
-  const [totalProcessed, setTotalProcessed] = useState<number | null>(null);
-  const [showUsageBar, setShowUsageBar] = useState(false);
-  const tool = toolName || getToolName();
-  const unlimited = !isPremium() && isUnlimited(tool);
-
+  const [trialLoaded, setTrialLoaded] = useState(false);
+  // SSR renders with the neutral "home" slug; the real route is resolved in an
+  // effect so the first client render matches the server HTML (no hydration
+  // mismatch), then the tier refreshes immediately after mount.
+  const [slug, setSlug] = useState(toolName || "home");
   useEffect(() => {
-    getTotalProcessed().then(setTotalProcessed).catch(() => setTotalProcessed(0));
-  }, []);
-
-  const checkAndTrack = useCallback(async (): Promise<boolean> => {
-    if (isPremium() || unlimited) return true;
-
-    trackEvent("tool_start", { tool });
-
-    const peek = await peekUsageApi();
-    if (peek.remaining <= 0) {
-      trackEvent("tool_limit_reached", { tool });
-      return false;
-    }
-
-    const result = await trackUsage();
-    setRemaining(result.remaining);
-    if (!result.ok) trackEvent("tool_limit_reached", { tool });
-    return result.ok;
-  }, [tool, unlimited]);
-
-  const peekUsage = useCallback(async (): Promise<number> => {
-    if (isPremium() || unlimited) return 999;
-    const result = await peekUsageApi();
-    setRemaining(result.remaining);
-    return result.remaining;
-  }, [unlimited]);
+    if (!toolName) setSlug(getToolSlug());
+  }, [toolName]);
+  const tier: UsageTier = getToolTier(slug);
+  const unlimited = tier === "basic" || isPremium();
 
   const refreshUsage = useCallback(async () => {
-    if (isPremium() || unlimited) return;
-    const result = await trackUsage();
-    setRemaining(result.remaining);
-  }, [unlimited]);
+    if (tier === "basic" || isPremium()) {
+      setRemaining(null);
+      setTrialLoaded(true);
+      return;
+    }
+    const status = await peekTrialUsage();
+    setRemaining(status.premium ? null : status.remaining);
+    setTrialLoaded(true);
+  }, [tier]);
+
+  useEffect(() => {
+    void refreshUsage();
+  }, [refreshUsage]);
+
+  /**
+   * Reserve one file for a professional tool. Resolves `null` when the trial
+   * is exhausted. Basic tools and premium users resolve to a no-op marker
+   * without any server call.
+   */
+  const checkAndTrack = useCallback(async (): Promise<UsageReservation | null> => {
+    trackEvent("tool_start", { tool: slug });
+    if (tier === "basic") return { reservationId: "" };
+    if (isPremium()) return { reservationId: "" };
+
+    const result = await reserveTrialFile();
+    if (!result.ok) {
+      setRemaining(0);
+      trackEvent("tool_limit_reached", { tool: slug });
+      return null;
+    }
+    if (!result.premium && typeof result.remaining === "number") setRemaining(result.remaining);
+    return { reservationId: result.reservationId };
+  }, [slug, tier]);
+
+  /** Refund a reservation after processing failed; failed files are never counted. */
+  const releaseReservation = useCallback(async (reservation: UsageReservation | null) => {
+    if (!reservation || !reservation.reservationId) return;
+    await releaseTrialFile(reservation.reservationId);
+    void refreshUsage();
+  }, [refreshUsage]);
+
+  const peekUsage = useCallback(async (): Promise<number> => {
+    if (tier === "basic" || isPremium()) return 999;
+    const status = await peekTrialUsage();
+    setRemaining(status.premium ? null : status.remaining);
+    return status.remaining ?? 0;
+  }, [tier]);
 
   return {
+    tier,
+    unlimited,
+    trialLoaded,
+    /** Trial files left, or 999 for unlimited (basic tools / premium users). */
     remaining: unlimited ? 999 : remaining,
-    totalProcessed,
-    showUsageBar,
-    setShowUsageBar,
+    limit: TRIAL_FILE_LIMIT,
     checkAndTrack,
+    releaseReservation,
     peekUsage,
     refreshUsage,
-    unlimited,
   };
 }

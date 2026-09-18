@@ -63,7 +63,7 @@ export default function HtmlToPdfPage() {
     setProcessing(true);
     setError(null);
     const canProceed = await usage.checkAndTrack();
-    if (!canProceed) { setProcessing(false); upsell.showUpsell("daily-limit"); return; }
+    if (!canProceed) { setProcessing(false); upsell.showUpsell("trial-limit"); return; }
     try {
       const container = previewRef.current;
       if (!container) throw new Error("The HTML preview is unavailable.");
@@ -107,7 +107,7 @@ export default function HtmlToPdfPage() {
     if (!sanitizedHtml.trim()) return;
     if (!isPremium()) {
       const remaining = await usage.peekUsage();
-      if (remaining <= 0) { upsell.showUpsell("daily-limit"); return; }
+      if (remaining <= 0) { upsell.showUpsell("trial-limit"); return; }
       setShowTimer(true);
       return;
     }
@@ -137,7 +137,7 @@ export default function HtmlToPdfPage() {
       />
 
       <div className="mb-4">
-        <UsageBar remaining={usage.remaining} unlimited={usage.unlimited} />
+        <UsageBar remaining={usage.remaining} unlimited={usage.unlimited} tier={usage.tier} />
       </div>
 
       <div className="bg-[var(--card)] rounded-xl border border-[var(--card-border)] p-8">

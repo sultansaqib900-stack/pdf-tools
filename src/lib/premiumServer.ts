@@ -2,6 +2,8 @@ import { getAuthenticatedSession } from "@/lib/auth/request";
 import {
   bindPremiumClientForUser,
   getPremiumStatus,
+  grantConfiguredPremium,
+  isAdminPremiumEmail,
   trackChatUsage,
 } from "@/lib/kv";
 import { validateString } from "@/lib/validation";
@@ -23,8 +25,18 @@ export async function resolveRequestEntitlement(
   if (!clientId) return null;
 
   const session = await getAuthenticatedSession(request);
-  if (session && await bindPremiumClientForUser(session.userId, clientId)) {
-    return { premium: true, email: session.email, userId: session.userId, clientId };
+  if (session) {
+    // Persist a configured owner grant (PREMIUM_ADMIN_EMAILS) so device
+    // binding and cross-device recovery observe the same entitlement, then
+    // treat the account as Premium without bypassing authentication.
+    const configuredGrant = await grantConfiguredPremium(session.userId, session.email);
+    if (
+      configuredGrant
+      || isAdminPremiumEmail(session.email)
+      || await bindPremiumClientForUser(session.userId, clientId)
+    ) {
+      return { premium: true, email: session.email, userId: session.userId, clientId };
+    }
   }
 
   return {

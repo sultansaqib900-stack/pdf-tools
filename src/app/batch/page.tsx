@@ -99,7 +99,7 @@ export default function BatchPage() {
     setSuccess(false);
     setError(null);
     const canProceed = await usage.checkAndTrack();
-    if (!canProceed) { setProcessing(false); upsell.showUpsell("daily-limit"); return; }
+    if (!canProceed) { setProcessing(false); upsell.showUpsell("trial-limit"); return; }
     setResults([]);
     const output: typeof results = [];
 
@@ -178,7 +178,7 @@ export default function BatchPage() {
 
 
       <div className="mb-4">
-        <UsageBar remaining={usage.remaining} unlimited={usage.unlimited} />
+        <UsageBar remaining={usage.remaining} unlimited={usage.unlimited} tier={usage.tier} />
       </div>
 
       <div className="bg-[var(--card)] rounded-xl border border-[var(--card-border)] p-8">

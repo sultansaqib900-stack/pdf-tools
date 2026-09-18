@@ -6,7 +6,9 @@ import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 import { usePageMeta } from "@/hooks/usePageMeta";
 import HowToJsonLd from "@/components/HowToJsonLd";
 import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
-import PremiumGate from "@/components/PremiumGate";
+import TrialGate from "@/components/TrialGate";
+import PremiumUpsell, { usePremiumUpsell } from "@/components/PremiumUpsell";
+import { useUsage } from "@/hooks/useUsage";
 import { checkFileSize } from "@/lib/premium";
 
 interface DiffBlock {
@@ -16,6 +18,8 @@ interface DiffBlock {
 }
 
 export default function PdfDiffPage() {
+  const usage = useUsage("pdf-diff");
+  const upsell = usePremiumUpsell();
   usePageMeta("Visual Contract & PDF Diff 2.0 | PDFTools Premium", "Compare two PDF files side by side or with an interactive split-screen slider. Highlight additions, deletions, and layout changes.");
   const [docA, setDocA] = useState<File | null>(null);
   const [docB, setDocB] = useState<File | null>(null);
@@ -157,6 +161,14 @@ export default function PdfDiffPage() {
     if (!docA || !docB) return;
     const oversized = [docA, docB].find((file) => !checkFileSize(file.size).ok);
     if (oversized) { setError(checkFileSize(oversized.size).message); return; }
+    // A comparison processes two documents, so it reserves two of the five
+    // shared lifetime trial files for free users (premium bypasses this).
+    const reservations = [await usage.checkAndTrack(), await usage.checkAndTrack()];
+    if (reservations.some((reservation) => reservation === null)) {
+      await Promise.all(reservations.map((reservation) => usage.releaseReservation(reservation)));
+      upsell.showUpsell("trial-limit");
+      return;
+    }
     setProcessing(true);
     setError(null);
     try {
@@ -197,7 +209,8 @@ export default function PdfDiffPage() {
   const removedCount = diffs.filter((d) => d.type === "removed").length;
 
   return (
-    <PremiumGate
+    <TrialGate
+      tool="pdf-diff"
       title="Visual Contract & PDF Diff 2.0"
       description="Compare revisions side by side or using the interactive split-screen slider. 100% in-browser comparison without cloud uploads."
       icon="🔍"
@@ -425,6 +438,7 @@ export default function PdfDiffPage() {
           </div>
         )}
       </div>
-    </PremiumGate>
+      <PremiumUpsell show={upsell.state.show} mode={upsell.state.mode} message={upsell.state.message} onClose={upsell.hideUpsell} />
+    </TrialGate>
   );
 }

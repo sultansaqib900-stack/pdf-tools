@@ -42,7 +42,7 @@ export default function RepairPdfPage() {
     setProcessing(true);
     setProgress("Analyzing PDF structure...");
     const canProceed = await usage.checkAndTrack();
-    if (!canProceed) { setProcessing(false); upsell.showUpsell("daily-limit"); return; }
+    if (!canProceed) { setProcessing(false); upsell.showUpsell("trial-limit"); return; }
     try {
       const { PDFDocument } = await import("pdf-lib");
       const bytes = await file.arrayBuffer();
@@ -76,7 +76,7 @@ export default function RepairPdfPage() {
   const convert = useCallback(async () => {
     if (!isPremium()) {
       const remaining = await usage.peekUsage();
-      if (remaining <= 0) { upsell.showUpsell("daily-limit"); return; }
+      if (remaining <= 0) { upsell.showUpsell("trial-limit"); return; }
       setShowTimer(true);
       return;
     }
@@ -95,7 +95,7 @@ export default function RepairPdfPage() {
         <p className="text-[var(--muted)]">Re-serialize a readable PDF with fresh object streams and cross-references.</p>
       </div>
       <ToolInfo name="Re-save PDF" description="This is not a forensic recovery engine. It can rewrite a PDF that pdf-lib can parse, which may repair some cross-reference or serialization compatibility issues; it cannot reconstruct unreadable headers or missing objects." />
-      <div className="mb-4"><UsageBar remaining={usage.remaining} unlimited={usage.unlimited} /></div>
+      <div className="mb-4"><UsageBar remaining={usage.remaining} unlimited={usage.unlimited} tier={usage.tier} /></div>
       <div className="bg-[var(--card)] rounded-xl border border-[var(--card-border)] p-8 space-y-6">
         <div onDrop={onDrop} onDragOver={(e) => { e.preventDefault(); setDragging(true); }} onDragLeave={() => setDragging(false)}
           className={`border-2 border-dashed rounded-xl p-10 text-center transition ${dragging ? "border-indigo-500 bg-indigo-50/30" : "border-[var(--card-border)] bg-[var(--background)]"}`}>

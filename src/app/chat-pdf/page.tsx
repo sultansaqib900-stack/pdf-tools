@@ -208,7 +208,7 @@ export default function ChatPDFPage() {
       } else {
         if (res.status === 429) {
           setChatRemaining(0);
-          upsell.showUpsell("daily-limit", "You've used all 3 free AI requests today. Upgrade to Premium for unlimited AI.");
+          upsell.showUpsell("trial-limit", "You've used all 3 free AI requests today. Upgrade to Premium for unlimited AI.");
         }
         setMessages((prev) => [...prev, { role: "assistant", text: data.error || "Failed to get answer." }]);
       }

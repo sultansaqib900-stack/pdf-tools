@@ -38,13 +38,13 @@ export const metadata: Metadata = {
     siteName: "PDFTools",
     type: "website",
     locale: "en_US",
-    images: [{ url: "https://allaboutpdfediting.xyz/opengraph-image.png", width: 1200, height: 630 }],
+    images: [{ url: "https://allaboutpdfediting.xyz/opengraph-image", width: 1200, height: 630 }],
   },
   twitter: {
     card: "summary_large_image",
     title: "PDFTools - 52 Online PDF Tools",
     description: "Free core PDF editing and conversion plus professional AI, automation, redaction, legal, and bulk workflows.",
-    images: ["https://allaboutpdfediting.xyz/opengraph-image.png"],
+    images: ["https://allaboutpdfediting.xyz/opengraph-image"],
   },
   alternates: {
     canonical: "/",
@@ -64,9 +64,13 @@ export const metadata: Metadata = {
     },
   },
   icons: {
-    icon: "/icon.svg",
-    shortcut: "/icon.svg",
-    apple: "/icon.svg",
+    icon: [
+      { url: "/icons/icon-512.png", type: "image/png", sizes: "512x512" },
+      { url: "/logo-32.png", type: "image/png", sizes: "32x32" },
+      { url: "/icon.svg", type: "image/svg+xml" },
+    ],
+    shortcut: ["/icons/icon-512.png", "/favicon.ico"],
+    apple: [{ url: "/icons/apple-touch-icon.png", sizes: "180x180", type: "image/png" }],
   },
   manifest: "/manifest.json",
   other: {

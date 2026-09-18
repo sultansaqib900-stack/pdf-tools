@@ -6,9 +6,9 @@ export default function ProductJsonLd() {
     "@context": "https://schema.org",
     "@type": "Product",
     name: "PDFTools Premium",
-    description: `Premium PDF subscription with unlimited processing, 100MB file support, batch workflows, unlimited AI questions, and ${PREMIUM_TOOL_COUNT} professional tools: ${premiumNames}.`,
+    description: `Premium PDF subscription with unlimited basic and professional tools (no lifetime trial limit), 100MB file support, batch workflows, unlimited AI questions, and ${PREMIUM_TOOL_COUNT} professional tools: ${premiumNames}.`,
     url: "https://allaboutpdfediting.xyz/premium",
-    image: "https://allaboutpdfediting.xyz/opengraph-image.png",
+    image: "https://allaboutpdfediting.xyz/opengraph-image",
     brand: { "@type": "Brand", name: "PDFTools" },
     offers: [
       {

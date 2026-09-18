@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { getAuthenticatedSession } from "@/lib/auth/request";
 import { getUserByEmail } from "@/lib/auth/sessions";
-import { getPremiumStatusByUserId } from "@/lib/kv";
+import { getPremiumStatusByUserId, grantConfiguredPremium, isAdminPremiumEmail } from "@/lib/kv";
 
 export async function GET(request: Request) {
   try {
@@ -13,7 +13,13 @@ export async function GET(request: Request) {
     if (!user || user.id !== session.userId) {
       return NextResponse.json({ error: "User not found" }, { status: 401 });
     }
-    const premium = await getPremiumStatusByUserId(user.id);
+    // Premium = paid entitlement linked to this account, or a server-side
+    // owner grant configured through PREMIUM_ADMIN_EMAILS. The grant only
+    // ever applies to the authenticated account with the matching email.
+    const premium =
+      (await grantConfiguredPremium(user.id, user.email))
+      || isAdminPremiumEmail(user.email)
+      || await getPremiumStatusByUserId(user.id);
     return NextResponse.json({
       user: { id: user.id, email: user.email, name: user.name, premium },
     });

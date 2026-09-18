@@ -25,7 +25,7 @@ export default function EsHomePage() {
         name="PDFTools - Herramientas PDF Gratuitas"
         description="Más de 40 herramientas PDF gratuitas. Todo en tu navegador."
         url="https://allaboutpdfediting.xyz/es"
-        image="https://allaboutpdfediting.xyz/opengraph-image.png"
+        image="https://allaboutpdfediting.xyz/opengraph-image"
       />
       <BreadcrumbJsonLd items={[{ name: "Inicio", item: "https://allaboutpdfediting.xyz/es" }]} />
       <FaqPageJsonLd />

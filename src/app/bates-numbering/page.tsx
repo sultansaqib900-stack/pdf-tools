@@ -8,11 +8,15 @@ import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 import { usePageMeta } from "@/hooks/usePageMeta";
 import HowToJsonLd from "@/components/HowToJsonLd";
 import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
-import PremiumGate from "@/components/PremiumGate";
+import TrialGate from "@/components/TrialGate";
+import PremiumUpsell, { usePremiumUpsell } from "@/components/PremiumUpsell";
+import { useUsage } from "@/hooks/useUsage";
 import { checkFileSize } from "@/lib/premium";
 
 export default function BatesNumberingPage() {
   usePageMeta("Add Bates Numbering to PDF - Sequential Page Numbers | PDFTools Premium", "Add sequential Bates numbers, letters, or custom labels to every page of your PDF. Perfect for legal documents, discovery, and document indexing. Premium feature.");
+  const usage = useUsage("bates-numbering");
+  const upsell = usePremiumUpsell();
   const [file, setFile] = useState<File | null>(null);
   const [processing, setProcessing] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -29,6 +33,8 @@ export default function BatesNumberingPage() {
     if (!file) return;
     const sizeCheck = checkFileSize(file.size);
     if (!sizeCheck.ok) { setError(sizeCheck.message); return; }
+    const reservation = await usage.checkAndTrack();
+    if (!reservation) { upsell.showUpsell("trial-limit"); return; }
     setProcessing(true);
     setError(null);
     try {
@@ -75,6 +81,8 @@ export default function BatesNumberingPage() {
       const blob = new Blob([pdfBytes as unknown as BlobPart], { type: "application/pdf" });
       setDownloadUrl(URL.createObjectURL(blob));
     } catch {
+      // Failed processing must not consume the shared trial allowance.
+      await usage.releaseReservation(reservation);
       setError("Failed to process PDF. Try a different file.");
     } finally {
       setProcessing(false);
@@ -89,7 +97,8 @@ export default function BatesNumberingPage() {
   }
 
   return (
-    <PremiumGate
+    <TrialGate
+      tool="bates-numbering"
       title="Bates Numbering for Legal & Professional PDFs"
       description="Add sequential page numbers, custom prefixes/suffixes, and document identifiers to every page of your PDF documents."
       icon="🔢"
@@ -97,8 +106,8 @@ export default function BatesNumberingPage() {
       <div className="max-w-3xl mx-auto px-4 py-12">
         <BreadcrumbJsonLd items={[{ name: "Tools", item: "https://allaboutpdfediting.xyz/tools" }, { name: "Bates Numbering", item: "https://allaboutpdfediting.xyz/bates-numbering" }]} />
         <HowToJsonLd name="Bates Numbering for PDF" description="Add sequential page numbers and custom labels to every page of a PDF" steps={[{name:"Upload PDF",text:"Upload the PDF document to number"},{name:"Configure numbering",text:"Set prefix suffix start number digit padding and position"},{name:"Download numbered PDF",text:"Download the PDF with Bates numbers applied to every page"}]} />
-        <AiSummaryJsonLd name="Bates Numbering" summary="Add sequential page numbers letters or custom labels to every page of PDF documents for legal and professional indexing" category="BusinessApplications" inputType="PDF" outputType="PDF" processing="client-side" price="premium" features={["Sequential numbering","Custom prefix suffix","Digit padding","Position selection","Legal document support"]} limits="Premium subscribers" />
-        <SoftwareAppJsonLd name="Bates Numbering for PDF" description="Add sequential page numbers and labels to PDF documents." url="https://allaboutpdfediting.xyz/bates-numbering" image="https://allaboutpdfediting.xyz/opengraph-image.png" aggregateRating={{ ratingValue: 4.9, bestRating: 5, ratingCount: 98 }} />
+        <AiSummaryJsonLd name="Bates Numbering" summary="Add sequential page numbers letters or custom labels to every page of PDF documents for legal and professional indexing" category="BusinessApplications" inputType="PDF" outputType="PDF" processing="client-side" price="premium" features={["Sequential numbering","Custom prefix suffix","Digit padding","Position selection","Legal document support"]} limits="Free: 5-file lifetime trial (shared); Premium: unlimited" />
+        <SoftwareAppJsonLd name="Bates Numbering for PDF" description="Add sequential page numbers and labels to PDF documents." url="https://allaboutpdfediting.xyz/bates-numbering" image="https://allaboutpdfediting.xyz/opengraph-image" aggregateRating={{ ratingValue: 4.9, bestRating: 5, ratingCount: 98 }} />
         
         <div className="mb-8">
           <div className="flex items-center gap-3 mb-2">
@@ -178,6 +187,7 @@ export default function BatesNumberingPage() {
           </div>
         )}
       </div>
-    </PremiumGate>
+      <PremiumUpsell show={upsell.state.show} mode={upsell.state.mode} message={upsell.state.message} onClose={upsell.hideUpsell} />
+    </TrialGate>
   );
 }

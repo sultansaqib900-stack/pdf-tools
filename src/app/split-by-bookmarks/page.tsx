@@ -6,12 +6,16 @@ import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 import { usePageMeta } from "@/hooks/usePageMeta";
 import HowToJsonLd from "@/components/HowToJsonLd";
 import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
-import PremiumGate from "@/components/PremiumGate";
+import TrialGate from "@/components/TrialGate";
+import PremiumUpsell, { usePremiumUpsell } from "@/components/PremiumUpsell";
+import { useUsage } from "@/hooks/useUsage";
 import { checkFileSize } from "@/lib/premium";
 import { copyPdfBytes, isPdfFile } from "@/lib/pdfBytes";
 
 export default function SplitByBookmarksPage() {
   usePageMeta("Split PDF by Bookmarks - Extract Chapters | PDFTools Premium", "Split PDF documents into separate files based on bookmarks and outline structure. Extract chapters, sections, and parts automatically. Premium feature.");
+  const usage = useUsage("split-by-bookmarks");
+  const upsell = usePremiumUpsell();
   const [file, setFile] = useState<File | null>(null);
   const [processing, setProcessing] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -31,6 +35,8 @@ export default function SplitByBookmarksPage() {
     }
     const sizeCheck = checkFileSize(f.size);
     if (!sizeCheck.ok) { setError(sizeCheck.message); return; }
+    const reservation = await usage.checkAndTrack();
+    if (!reservation) { upsell.showUpsell("trial-limit"); return; }
     setFile(f);
     setError(null);
     setSplits([]);
@@ -116,6 +122,7 @@ export default function SplitByBookmarksPage() {
       }
       setDownloadUrls(urls);
     } catch (processError) {
+      await usage.releaseReservation(reservation);
       setError(processError instanceof Error ? processError.message : "Failed to process PDF. Try a different file.");
     } finally {
       setProcessing(false);
@@ -130,7 +137,8 @@ export default function SplitByBookmarksPage() {
   }
 
   return (
-    <PremiumGate
+    <TrialGate
+      tool="split-by-bookmarks"
       title="Split PDF by Bookmarks & Outlines"
       description="Automatically detect chapter outlines and split your document into separate PDF files named by each bookmark."
       icon="📑"
@@ -138,8 +146,8 @@ export default function SplitByBookmarksPage() {
       <div className="max-w-3xl mx-auto px-4 py-12">
         <BreadcrumbJsonLd items={[{ name: "Tools", item: "https://allaboutpdfediting.xyz/tools" }, { name: "Split by Bookmarks", item: "https://allaboutpdfediting.xyz/split-by-bookmarks" }]} />
         <HowToJsonLd name="Split PDF by Bookmarks" description="Split PDF documents into separate files based on bookmark structure" steps={[{name:"Upload PDF with bookmarks",text:"Upload a PDF that contains bookmarks or an outline structure"},{name:"Review detected bookmarks",text:"The tool shows all found bookmarks with their page numbers"},{name:"Download chapter files",text:"Each bookmark becomes a separate PDF file named after the bookmark title"}]} />
-        <AiSummaryJsonLd name="Split by Bookmarks" summary="Split PDF files into separate documents by extracting chapters and sections from the bookmark outline" category="Utilities" inputType="PDF" outputType="PDF" processing="client-side" price="premium" features={["Bookmark-based splitting","Chapter extraction","Outline parsing","Auto-naming","Client-side processing"]} limits="Premium subscribers" />
-        <SoftwareAppJsonLd name="Split PDF by Bookmarks" description="Split PDF files into separate documents based on bookmark/outline structure." url="https://allaboutpdfediting.xyz/split-by-bookmarks" image="https://allaboutpdfediting.xyz/opengraph-image.png" aggregateRating={{ ratingValue: 4.8, bestRating: 5, ratingCount: 156 }} />
+        <AiSummaryJsonLd name="Split by Bookmarks" summary="Split PDF files into separate documents by extracting chapters and sections from the bookmark outline" category="Utilities" inputType="PDF" outputType="PDF" processing="client-side" price="premium" features={["Bookmark-based splitting","Chapter extraction","Outline parsing","Auto-naming","Client-side processing"]} limits="Free: 5-file lifetime trial (shared); Premium: unlimited" />
+        <SoftwareAppJsonLd name="Split PDF by Bookmarks" description="Split PDF files into separate documents based on bookmark/outline structure." url="https://allaboutpdfediting.xyz/split-by-bookmarks" image="https://allaboutpdfediting.xyz/opengraph-image" aggregateRating={{ ratingValue: 4.8, bestRating: 5, ratingCount: 156 }} />
         
         <div className="mb-8">
           <div className="flex items-center gap-3 mb-2">
@@ -199,6 +207,7 @@ export default function SplitByBookmarksPage() {
           </div>
         )}
       </div>
-    </PremiumGate>
+      <PremiumUpsell show={upsell.state.show} mode={upsell.state.mode} message={upsell.state.message} onClose={upsell.hideUpsell} />
+    </TrialGate>
   );
 }

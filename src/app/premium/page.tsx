@@ -15,7 +15,7 @@ const plans = [
     name: "Free",
     price: "$0",
     period: "forever",
-    features: ["Single file processing", "Max 10MB files", "All basic tools", "No account required", "1 download at a time"],
+    features: ["All basic tools — unlimited use", "Professional tools: 5 lifetime trial files (shared)", "Max 10MB files", "No account required", "AI chat preview: 3 questions/day"],
     highlighted: false,
     checkoutUrl: null,
     planKey: null as string | null,
@@ -24,7 +24,7 @@ const plans = [
     name: "Premium Monthly",
     price: "$12",
     period: "/month",
-    features: ["Unlimited file processing", "Max 100MB files", "Batch processing up to 20 files", "Unlimited AI questions", `${PREMIUM_TOOL_COUNT} professional premium tools`, "Priority email support", "Future premium tools"],
+    features: ["Unlimited basic AND professional tools — no trial limit", "Max 100MB files", "Batch processing up to 20 files", "Unlimited AI questions", `${PREMIUM_TOOL_COUNT} professional premium tools`, "Priority email support", "Future premium tools"],
     highlighted: true,
     checkoutUrl: LS_CONFIG.checkoutBaseUrls.premiumMonthly,
     planKey: "monthly",
@@ -41,10 +41,11 @@ const plans = [
 ];
 
 const featureRows = [
+  { feature: "Basic tools (Compress, Merge, Split, Sign, …)", free: "Unlimited", monthly: "Unlimited", yearly: "Unlimited" },
+  { feature: "Professional tools trial", free: "5 files — lifetime, shared", monthly: "Unlimited", yearly: "Unlimited" },
   { feature: "File size limit", free: "10MB", monthly: "100MB", yearly: "100MB" },
-  { feature: "Daily processing", free: "Limited", monthly: "Unlimited", yearly: "Unlimited" },
   { feature: "Batch processing", free: "—", monthly: "20 files", yearly: "20 files" },
-  { feature: "AI chat questions", free: "3/day", monthly: "Unlimited", yearly: "Unlimited" },
+  { feature: "AI chat questions", free: "3/day preview", monthly: "Unlimited", yearly: "Unlimited" },
   { feature: "Priority support", free: "—", monthly: "Email", yearly: "Priority email" },
   { feature: "Future tools", free: "—", monthly: "✓", yearly: "✓" },
 ];
@@ -154,7 +155,7 @@ export default function PremiumPage() {
         </div>
         <h1 className="text-4xl font-bold text-[var(--foreground)] mb-4">Go Premium</h1>
         <p className="text-lg text-[var(--muted)] max-w-2xl mx-auto">
-          Unlock unlimited access, batch processing, larger files, unlimited AI questions, and <strong>{PREMIUM_TOOL_COUNT} professional tools</strong>.
+          Basic tools are <strong>free and unlimited</strong>. Professional tools include a <strong>5-file lifetime trial</strong> shared across all of them — Premium removes the trial limit and unlocks <strong>{PREMIUM_TOOL_COUNT} professional tools</strong>, larger files, and unlimited AI questions.
         </p>
         {!LS_CONFIG.enabled && (
           <p className="mt-3 text-sm text-amber-500 bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800 inline-block px-4 py-2 rounded-lg">
@@ -267,6 +268,39 @@ export default function PremiumPage() {
             </Link>
           ))}
         </div>
+      </div>
+
+      {/* Usage FAQ */}
+      <div className="mb-12">
+        <h2 className="text-2xl font-bold text-[var(--foreground)] mb-6 text-center">Free vs Premium — How Usage Works</h2>
+        <div className="grid md:grid-cols-3 gap-4 mb-8">
+          <div className="rounded-xl border border-[var(--card-border)] bg-[var(--card)] p-5">
+            <p className="font-bold text-emerald-500 mb-2">✓ Basic tools — unlimited</p>
+            <p className="text-sm text-[var(--muted)]">Compress, Merge, Split, Sign, Protect, Watermark, Convert, Organize, and every other core tool is free for everyone with no daily or monthly cap.</p>
+          </div>
+          <div className="rounded-xl border border-[var(--card-border)] bg-[var(--card)] p-5">
+            <p className="font-bold text-amber-500 mb-2">⭐ Professional tools — 5 lifetime trial files</p>
+            <p className="text-sm text-[var(--muted)]">PDF Studio, PDF Diff, Bates Numbering, Certificate Generator, and the rest of the professional suite share a one-time trial of 5 files. It never resets, and failed or invalid files never count.</p>
+          </div>
+          <div className="rounded-xl border border-[var(--card-border)] bg-[var(--card)] p-5">
+            <p className="font-bold text-indigo-500 mb-2">🚀 Premium — no limits</p>
+            <p className="text-sm text-[var(--muted)]">Premium removes the trial limit: unlimited professional tools, 100MB files, batch processing up to 20 files, and unlimited AI questions.</p>
+          </div>
+        </div>
+        {[
+          { q: "Do the 5 trial files reset every month?", a: "No. The trial allowance is 5 files in total, shared across all professional tools for the lifetime of the browser identity or account. It does not reset daily or monthly." },
+          { q: "Do failed or invalid files consume the trial?", a: "No. Only files that are accepted and actually begin processing count. If processing fails, the reservation is refunded automatically." },
+          { q: "Are basic tools really unlimited on the free plan?", a: "Yes. All core tools never touch the trial allowance — use them as often as you like, subject only to the 10MB free file-size limit." },
+          { q: "What does Premium change?", a: "Premium removes the 5-file lifetime trial limit on professional tools and raises the file-size limit to 100MB, enables batch processing, and unlocks unlimited AI questions." },
+        ].map((item) => (
+          <details key={item.q} className="group border border-[var(--card-border)] rounded-xl bg-[var(--card)] mb-2 px-5 py-4">
+            <summary className="font-semibold text-sm text-[var(--foreground)] cursor-pointer list-none flex items-center justify-between">
+              {item.q}
+              <span className="text-[var(--muted)] group-open:rotate-180 transition-transform" aria-hidden="true">▾</span>
+            </summary>
+            <p className="text-sm text-[var(--muted)] mt-3">{item.a}</p>
+          </details>
+        ))}
       </div>
 
       <Suspense fallback={null}>

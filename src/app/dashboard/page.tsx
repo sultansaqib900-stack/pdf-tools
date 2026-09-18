@@ -7,6 +7,8 @@ import { useToolHistory } from "@/hooks/useToolHistory";
 import { listFiles, deleteFile, type StoredFile } from "@/lib/fileStore";
 import Link from "next/link";
 import { usePremiumStatus } from "@/hooks/usePremiumStatus";
+import { peekTrialUsage, TRIAL_FILE_LIMIT } from "@/lib/premium";
+import { TOOL_CATALOG } from "@/lib/toolCatalog";
 
 export default function DashboardPage() {
   const { user, loading, logout } = useAuth();
@@ -14,7 +16,7 @@ export default function DashboardPage() {
   const router = useRouter();
   const [files, setFiles] = useState<StoredFile[]>([]);
   const { exportHistory, clearHistory } = useToolHistory();
-  const [usageCount, setUsageCount] = useState(0);
+  const [trialRemaining, setTrialRemaining] = useState<number | null>(null);
 
   useEffect(() => {
     if (!loading && !user) router.push("/login");
@@ -22,24 +24,10 @@ export default function DashboardPage() {
 
   useEffect(() => {
     listFiles().then(setFiles);
-    const stored = localStorage.getItem("dailyUsage");
-    if (stored) {
-      try {
-        const data = JSON.parse(stored);
-        setUsageCount(typeof data.count === "number" ? data.count : 0);
-      } catch { setUsageCount(0); }
-    }
-  }, []);
-
-  useEffect(() => {
-    const handler = () => {
-      const stored = localStorage.getItem("dailyUsage");
-      if (stored) {
-        try { setUsageCount(JSON.parse(stored).count || 0); } catch { setUsageCount(0); }
-      }
-    };
-    window.addEventListener("usageUpdate", handler);
-    return () => window.removeEventListener("usageUpdate", handler);
+    // Trial state comes from the server, never from localStorage counters.
+    peekTrialUsage()
+      .then((status) => setTrialRemaining(status.premium ? null : status.remaining))
+      .catch(() => setTrialRemaining(null));
   }, []);
 
   const handleDelete = async (id: string) => {
@@ -49,8 +37,6 @@ export default function DashboardPage() {
 
   if (loading) return <div className="flex justify-center py-20"><p className="text-[var(--muted)]">Loading...</p></div>;
   if (!user) return null;
-
-  const remaining = 5 - usageCount;
 
   const quickActions = [
     { href: "/compress", label: "Compress PDF" },
@@ -86,7 +72,7 @@ export default function DashboardPage() {
           <p className="text-xs text-[var(--muted)]">Plan</p>
         </div>
         <div className="border border-[var(--card-border)] rounded-xl p-4 bg-[var(--card)]">
-          <p className="text-2xl font-bold text-[var(--foreground)]">48</p>
+          <p className="text-2xl font-bold text-[var(--foreground)]">{TOOL_CATALOG.length}</p>
           <p className="text-xs text-[var(--muted)]">Tools Available</p>
         </div>
         <div className="border border-[var(--card-border)] rounded-xl p-4 bg-[var(--card)]">
@@ -98,8 +84,12 @@ export default function DashboardPage() {
       {!isPremium && (
         <div className="bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-950/20 dark:to-orange-950/20 border border-amber-200 dark:border-amber-800 rounded-xl p-5 mb-8 flex items-center justify-between">
           <div>
-            <p className="font-semibold text-[var(--foreground)]">Free Plan — {remaining} of 5 uses remaining today</p>
-            <p className="text-xs text-[var(--muted)]">Upgrade to Premium for unlimited processing, 100MB files, and 13 exclusive tools.</p>
+            <p className="font-semibold text-[var(--foreground)]">
+              {trialRemaining === null
+                ? "Free Plan — all basic tools are unlimited"
+                : `Free Plan — ${trialRemaining} of ${TRIAL_FILE_LIMIT} lifetime professional-trial files left`}
+            </p>
+            <p className="text-xs text-[var(--muted)]">Basic tools are free and unlimited. The trial applies only to professional tools and never resets. Premium removes the trial limit.</p>
           </div>
           <Link href="/premium" className="shrink-0 px-5 py-2 bg-gradient-to-r from-amber-500 to-orange-600 text-white font-medium rounded-xl text-sm hover:from-amber-600 hover:to-orange-700 transition">Upgrade</Link>
         </div>

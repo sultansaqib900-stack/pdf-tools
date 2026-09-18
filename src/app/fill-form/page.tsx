@@ -113,7 +113,7 @@ export default function FillFormPage() {
     if (!file || !pdfBytesRef.current) return;
     setProcessing(true);
     const canProceed = await usage.checkAndTrack();
-    if (!canProceed) { setProcessing(false); upsell.showUpsell("daily-limit"); return; }
+    if (!canProceed) { setProcessing(false); upsell.showUpsell("trial-limit"); return; }
     try {
       const { PDFDocument, PDFTextField, PDFCheckBox, PDFDropdown, PDFOptionList, PDFRadioGroup } = await import("pdf-lib");
       const pdfDoc = await PDFDocument.load(pdfBytesRef.current);
@@ -155,7 +155,7 @@ export default function FillFormPage() {
   const fill = useCallback(async () => {
     if (!isPremium()) {
       const remaining = await usage.peekUsage();
-      if (remaining <= 0) { upsell.showUpsell("daily-limit"); return; }
+      if (remaining <= 0) { upsell.showUpsell("trial-limit"); return; }
       setShowTimer(true);
       return;
     }
@@ -195,7 +195,7 @@ export default function FillFormPage() {
       />
 
       <div className="mb-4">
-        <UsageBar remaining={usage.remaining} unlimited={usage.unlimited} />
+        <UsageBar remaining={usage.remaining} unlimited={usage.unlimited} tier={usage.tier} />
       </div>
 
       <div className="bg-[var(--card)] rounded-xl border border-[var(--card-border)] p-8">

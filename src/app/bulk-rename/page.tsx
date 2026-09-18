@@ -6,7 +6,9 @@ import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 import { usePageMeta } from "@/hooks/usePageMeta";
 import HowToJsonLd from "@/components/HowToJsonLd";
 import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
-import PremiumGate from "@/components/PremiumGate";
+import TrialGate from "@/components/TrialGate";
+import PremiumUpsell, { usePremiumUpsell } from "@/components/PremiumUpsell";
+import { useUsage, type UsageReservation } from "@/hooks/useUsage";
 import { checkFileSize } from "@/lib/premium";
 import { createZipArchive } from "@/lib/archive";
 import { isPdfFile, downloadBytes } from "@/lib/pdfBytes";
@@ -21,6 +23,8 @@ interface FileMeta {
 
 export default function BulkRenamePage() {
   usePageMeta("Bulk Rename PDF Files - Auto-Rename by Metadata | PDFTools Premium", "Package multiple PDFs with filenames based on title, author, page count, and original filename metadata. Premium.");
+  const usage = useUsage("bulk-rename");
+  const upsell = usePremiumUpsell();
   const [files, setFiles] = useState<FileMeta[]>([]);
   const [processing, setProcessing] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -33,6 +37,18 @@ export default function BulkRenamePage() {
     if (incoming.length > 20) { setError("Select up to 20 PDFs per rename batch."); return; }
     const oversized = incoming.find((file) => !checkFileSize(file.size).ok);
     if (oversized) { setError(checkFileSize(oversized.size).message); return; }
+    // Reading metadata is the processing step; reserve one shared lifetime
+    // trial file per PDF for free users (premium bypasses the trial).
+    const reservations: (UsageReservation | null)[] = [];
+    for (let i = 0; i < incoming.length; i += 1) {
+      const reservation = await usage.checkAndTrack();
+      if (!reservation) {
+        await Promise.all(reservations.map((existing) => usage.releaseReservation(existing)));
+        upsell.showUpsell("trial-limit");
+        return;
+      }
+      reservations.push(reservation);
+    }
     setProcessing(true);
     setError(null);
     const metas: FileMeta[] = [];
@@ -102,16 +118,17 @@ export default function BulkRenamePage() {
   };
 
   return (
-    <PremiumGate
+    <TrialGate
+      tool="bulk-rename"
       title="Bulk PDF Renamer & Metadata Organizer"
       description="Automatically batch-rename dozens of PDF documents using internal metadata tags like title, author, and page count."
       icon="🏷️"
     >
       <div className="max-w-3xl mx-auto px-4 py-12">
-        <SoftwareAppJsonLd name="Bulk PDF Renamer" description="Rename multiple PDF files at once using document metadata. Premium batch renamer." url="https://allaboutpdfediting.xyz/bulk-rename" image="https://allaboutpdfediting.xyz/opengraph-image.png" aggregateRating={{ ratingValue: 4.5, bestRating: 5, ratingCount: 98 }} />
+        <SoftwareAppJsonLd name="Bulk PDF Renamer" description="Rename multiple PDF files at once using document metadata. Premium batch renamer." url="https://allaboutpdfediting.xyz/bulk-rename" image="https://allaboutpdfediting.xyz/opengraph-image" aggregateRating={{ ratingValue: 4.5, bestRating: 5, ratingCount: 98 }} />
         <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Bulk Rename", item: "https://allaboutpdfediting.xyz/bulk-rename" }]} />
         <HowToJsonLd name="Bulk Rename PDF Files" description="Rename multiple PDFs at once using their embedded metadata" steps={[{name:"Upload PDF files",text:"Select multiple PDF files to rename"},{name:"Choose naming pattern",text:"Select metadata fields like title author or page count as naming pattern"},{name:"Apply new names",text:"Download files with new names based on your pattern"}]} />
-        <AiSummaryJsonLd name="Bulk Rename" summary="Rename multiple PDF files simultaneously using embedded metadata fields" category="Utilities" inputType="PDF" outputType="PDF" processing="client-side" price="premium" features={["Metadata-based renaming","Batch processing","Custom naming patterns","Title author page count extraction","Client-side only"]} limits="Premium subscribers" />
+        <AiSummaryJsonLd name="Bulk Rename" summary="Rename multiple PDF files simultaneously using embedded metadata fields" category="Utilities" inputType="PDF" outputType="PDF" processing="client-side" price="premium" features={["Metadata-based renaming","Batch processing","Custom naming patterns","Title author page count extraction","Client-side only"]} limits="Free: 5-file lifetime trial (shared); Premium: unlimited" />
         
         <div className="mb-8">
           <div className="flex items-center gap-3 mb-2">
@@ -170,6 +187,7 @@ export default function BulkRenamePage() {
         {success && <div className="mt-4 p-4 bg-emerald-500/10 border border-emerald-500/30 rounded-2xl text-center text-sm text-emerald-600 font-bold">✅ Renamed PDFs packaged and downloaded as a ZIP!</div>}
         {error && <div className="mt-6 p-4 bg-red-500/10 border border-red-500/30 rounded-2xl text-red-500 text-sm">{error}</div>}
       </div>
-    </PremiumGate>
+      <PremiumUpsell show={upsell.state.show} mode={upsell.state.mode} message={upsell.state.message} onClose={upsell.hideUpsell} />
+    </TrialGate>
   );
 }

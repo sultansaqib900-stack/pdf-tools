@@ -1,4 +1,4 @@
-const CACHE = "pdftools-v3";
+const CACHE = "pdftools-v4"; // v4: new PDFTools favicon/logo assets replace the Vercel defaults
 const OFFLINE_PAGE = "/offline";
 
 // Pre-caching every tool route made a first visit download dozens of full pages

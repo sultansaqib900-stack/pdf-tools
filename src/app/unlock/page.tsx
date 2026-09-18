@@ -54,7 +54,7 @@ export default function UnlockPage() {
     if (!file || !password) return;
     setProcessing(true);
     const canProceed = await usage.checkAndTrack();
-    if (!canProceed) { setProcessing(false); upsell.showUpsell("daily-limit"); return; }
+    if (!canProceed) { setProcessing(false); upsell.showUpsell("trial-limit"); return; }
     try {
       const bytes = await file.arrayBuffer();
       originalBytes.current = bytes.slice(0);
@@ -78,7 +78,7 @@ export default function UnlockPage() {
   const unlock = useCallback(async () => {
     if (!isPremium()) {
       const remaining = await usage.peekUsage();
-      if (remaining <= 0) { upsell.showUpsell("daily-limit"); return; }
+      if (remaining <= 0) { upsell.showUpsell("trial-limit"); return; }
       setShowTimer(true);
       return;
     }
@@ -112,7 +112,7 @@ export default function UnlockPage() {
       />
 
       <div className="mb-4">
-        <UsageBar remaining={usage.remaining} unlimited={usage.unlimited} />
+        <UsageBar remaining={usage.remaining} unlimited={usage.unlimited} tier={usage.tier} />
       </div>
 
       <div className="bg-[var(--card)] rounded-xl border border-[var(--card-border)] p-8">

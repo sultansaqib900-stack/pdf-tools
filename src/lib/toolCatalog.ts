@@ -7,6 +7,14 @@ export type ToolCategory =
   | "Organize"
   | "Premium";
 
+/**
+ * - "basic": free and unlimited. Never touches the usage counter.
+ * - "professional": premium/professional tools. Free users share a one-time
+ *   lifetime trial of 5 files across ALL professional tools; Premium removes
+ *   the trial limit.
+ */
+export type ToolTier = "basic" | "professional";
+
 export interface ToolDefinition {
   title: string;
   description: string;
@@ -16,6 +24,25 @@ export interface ToolDefinition {
   category: ToolCategory;
   badge?: string;
   hasFreePreview?: boolean;
+}
+
+/** Routes whose file processing consumes the shared lifetime trial. */
+const PROFESSIONAL_TRIAL_ROUTES = new Set<string>([
+  "/studio",
+  "/pdf-diff",
+  "/bates-numbering",
+  "/certificate-generator",
+  "/form-data-extract",
+  "/bulk-rename",
+  "/booklet",
+  "/search-redact",
+  "/metadata-sanitizer",
+  "/split-by-bookmarks",
+]);
+
+export function getToolTier(hrefOrSlug: string): ToolTier {
+  const href = hrefOrSlug.startsWith("/") ? hrefOrSlug : `/${hrefOrSlug}`;
+  return PROFESSIONAL_TRIAL_ROUTES.has(href) ? "professional" : "basic";
 }
 
 /**
@@ -84,6 +111,12 @@ export const PREMIUM_TOOLS = TOOL_CATALOG.filter((tool) => tool.category === "Pr
 export const FREE_TOOLS = TOOL_CATALOG.filter((tool) => tool.category !== "Premium");
 export const PREMIUM_TOOL_COUNT = PREMIUM_TOOLS.length;
 export const FREE_TOOL_COUNT = FREE_TOOLS.length;
+
+/** Tools that consume the shared lifetime 5-file trial for free users. */
+export const PROFESSIONAL_TRIAL_TOOLS = TOOL_CATALOG.filter(
+  (tool) => getToolTier(tool.href) === "professional",
+);
+export const BASIC_TOOLS = TOOL_CATALOG.filter((tool) => getToolTier(tool.href) === "basic");
 
 export const FREE_RECIPE_IDS = ["academic_grant_submission", "executive_signoff"] as const;
 export const STARTER_RECIPE_IDS = FREE_RECIPE_IDS;

@@ -192,8 +192,11 @@ export default function StudioPage() {
       event.target.value = "";
       return;
     }
-    if (!(await usage.checkAndTrack())) {
-      upsell.showUpsell("daily-limit");
+    // Loading a document is Studio's processing step: it consumes one of the
+    // five shared lifetime trial files for free users (premium is unlimited).
+    const reservation = await usage.checkAndTrack();
+    if (!reservation) {
+      upsell.showUpsell("trial-limit");
       event.target.value = "";
       return;
     }
@@ -208,6 +211,8 @@ export default function StudioPage() {
       setProtectedExportBytes(null);
       success(`Loaded “${selected.name}” into Studio.`);
     } catch (error) {
+      // A document that fails to open must not consume the trial allowance.
+      await usage.releaseReservation(reservation);
       showError(error instanceof Error ? error.message : "Could not open this PDF.");
     } finally {
       setProcessing(false);
@@ -731,7 +736,7 @@ export default function StudioPage() {
         name="PDF Studio - Unified PDF Workspace"
         description="Edit, remove pages, sign, watermark, and compress PDFs in one seamless pipeline."
         url="https://allaboutpdfediting.xyz/studio"
-        image="https://allaboutpdfediting.xyz/opengraph-image.png"
+        image="https://allaboutpdfediting.xyz/opengraph-image"
       />
       <BreadcrumbJsonLd
         items={[

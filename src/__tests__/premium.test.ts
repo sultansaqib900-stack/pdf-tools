@@ -52,6 +52,8 @@ describe("tier limits", () => {
     expect(getLimits()).toBe(FREE_LIMITS);
     expect(FREE_LIMITS.maxFileSize).toBe(10 * 1024 * 1024);
     expect(FREE_LIMITS.waitSeconds).toBe(0);
+    // The free tier's file allowance is a LIFETIME shared trial, not per day.
+    expect(FREE_LIMITS.trialFiles).toBe(5);
     expect(PREMIUM_LIMITS.maxFileSize).toBe(100 * 1024 * 1024);
     expect(PREMIUM_LIMITS.waitSeconds).toBe(0);
   });

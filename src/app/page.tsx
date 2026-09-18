@@ -409,7 +409,7 @@ export default function Home() {
       {/* SEO FAQs */}
       <FaqPageJsonLd
         questions={[
-          { question: "Is PDFTools truly free?", answer: "Yes! All core tools (Compress, Merge, Split, e-Sign, Watermark, Delete Pages, Rotate) are 100% free with generous daily limits. Premium plans are available for heavy batch operations." },
+          { question: "Is PDFTools truly free?", answer: "Yes! All core tools (Compress, Merge, Split, e-Sign, Watermark, Delete Pages, Rotate, and 30+ more) are 100% free and unlimited — no daily or monthly caps. Only the professional tools carry a one-time 5-file lifetime trial, and Premium removes even that." },
           { question: "Are my PDF files uploaded to your servers?", answer: "No! All PDF processing, page reordering, OCR, and compression happens locally inside your web browser using WebAssembly. Your files never leave your computer." },
           { question: "What is the PDF Studio Pipeline?", answer: "PDF Studio is our flagship workspace that lets you perform multi-step edits (delete pages -> rotate -> sign -> watermark -> compress) on a single document without downloading and re-uploading at each step." },
           { question: "What is the PII Guardian?", answer: "PII Guardian detects common sensitive-data patterns locally. Free users can preview first-page matches; Premium can scan and securely raster-redact complete documents after review." },

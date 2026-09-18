@@ -309,7 +309,7 @@ export default function EditPdfTool({ locale = "en" }: { locale?: "en" | "es" })
     setProcessing(true);
     setError(null);
     const canProceed = await usage.checkAndTrack();
-    if (!canProceed) { setProcessing(false); upsell.showUpsell("daily-limit"); return; }
+    if (!canProceed) { setProcessing(false); upsell.showUpsell("trial-limit"); return; }
 
     const sourceBytes = fileBytesRef.current.slice(0);
     let coordinateTask: import("pdfjs-dist").PDFDocumentLoadingTask | null = null;
@@ -424,7 +424,7 @@ export default function EditPdfTool({ locale = "en" }: { locale?: "en" | "es" })
   const convert = useCallback(async () => {
     if (!isPremium()) {
       const remaining = await usage.peekUsage();
-      if (remaining <= 0) { upsell.showUpsell("daily-limit"); return; }
+      if (remaining <= 0) { upsell.showUpsell("trial-limit"); return; }
       setShowTimer(true);
       return;
     }
@@ -555,7 +555,7 @@ export default function EditPdfTool({ locale = "en" }: { locale?: "en" | "es" })
         <p className="text-[var(--muted)]">{copy.subtitle}</p>
       </div>
       <ToolInfo name={copy.name} description={copy.toolDescription} />
-      <div className="mb-4"><UsageBar remaining={usage.remaining} unlimited={usage.unlimited} /></div>
+      <div className="mb-4"><UsageBar remaining={usage.remaining} unlimited={usage.unlimited} tier={usage.tier} /></div>
 
       {!file ? (
         <div onDrop={onDrop} onDragOver={(e) => { e.preventDefault(); setDragging(true); }} onDragLeave={() => setDragging(false)}

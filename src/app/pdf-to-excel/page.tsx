@@ -121,7 +121,7 @@ export default function PdfToExcelPage() {
     const canProceed = await usage.checkAndTrack();
     if (!canProceed) {
       setProcessing(false);
-      upsell.showUpsell("daily-limit");
+      upsell.showUpsell("trial-limit");
       return;
     }
 
@@ -192,7 +192,7 @@ export default function PdfToExcelPage() {
     if (!isPremium()) {
       const remaining = await usage.peekUsage();
       if (remaining <= 0) {
-        upsell.showUpsell("daily-limit");
+        upsell.showUpsell("trial-limit");
         return;
       }
       setShowTimer(true);
@@ -277,7 +277,7 @@ export default function PdfToExcelPage() {
       />
 
       <div className="mb-4">
-        <UsageBar remaining={usage.remaining} unlimited={usage.unlimited} />
+        <UsageBar remaining={usage.remaining} unlimited={usage.unlimited} tier={usage.tier} />
       </div>
 
       <div className="bg-[var(--card)] rounded-3xl border border-[var(--card-border)] p-6 sm:p-8 space-y-6 shadow-2xl">

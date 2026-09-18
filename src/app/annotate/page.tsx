@@ -289,7 +289,7 @@ export default function AnnotatePage() {
     setSaving(true);
     setError(null);
     const canProceed = await usage.checkAndTrack();
-    if (!canProceed) { setSaving(false); upsell.showUpsell("daily-limit"); return; }
+    if (!canProceed) { setSaving(false); upsell.showUpsell("trial-limit"); return; }
 
     let coordinateTask: import("pdfjs-dist").PDFDocumentLoadingTask | null = null;
     try {
@@ -358,7 +358,7 @@ export default function AnnotatePage() {
   const process = useCallback(async () => {
     if (!isPremium()) {
       const remaining = await usage.peekUsage();
-      if (remaining <= 0) { upsell.showUpsell("daily-limit"); return; }
+      if (remaining <= 0) { upsell.showUpsell("trial-limit"); return; }
       setShowTimer(true);
       return;
     }

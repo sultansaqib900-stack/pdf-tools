@@ -2,7 +2,7 @@
 
 import { useState, useCallback } from "react";
 
-type UpsellMode = "file-size" | "daily-limit" | "batch" | "premium-only";
+type UpsellMode = "file-size" | "trial-limit" | "batch" | "premium-only";
 
 interface UpsellState {
   show: boolean;
@@ -15,9 +15,9 @@ const defaults: Record<UpsellMode, { title: string; message: string }> = {
     title: "File Too Large",
     message: "Free users are limited to 10MB files. Upgrade to Premium for up to 100MB file support.",
   },
-  "daily-limit": {
-    title: "Daily Limit Reached",
-    message: "You've used all 5 free daily file processes. Upgrade to Premium for unlimited usage.",
+  "trial-limit": {
+    title: "Free Trial Used Up",
+    message: "You've used all 5 lifetime free trial files for professional tools. Basic tools stay free and unlimited. Upgrade to Premium for unlimited professional tools.",
   },
   batch: {
     title: "Batch Processing",
@@ -30,7 +30,7 @@ const defaults: Record<UpsellMode, { title: string; message: string }> = {
 };
 
 export function usePremiumUpsell() {
-  const [state, setState] = useState<UpsellState>({ show: false, mode: "daily-limit", message: "" });
+  const [state, setState] = useState<UpsellState>({ show: false, mode: "trial-limit", message: "" });
 
   const showUpsell = useCallback((mode: UpsellMode, customMessage?: string) => {
     setState({
@@ -62,20 +62,30 @@ export default function PremiumUpsell({
 
   const icons: Record<UpsellMode, string> = {
     "file-size": "📦",
-    "daily-limit": "⏰",
+    "trial-limit": "⏳",
     batch: "⚙️",
     "premium-only": "⭐",
   };
 
+  const titles: Record<UpsellMode, string> = {
+    "file-size": "File Too Large",
+    "trial-limit": "Free Trial Used Up",
+    batch: "Batch Processing",
+    "premium-only": "Premium Feature",
+  };
+
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-fade-in">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-fade-in"
+      role="dialog"
+      aria-modal="true"
+      aria-label={titles[mode]}
+    >
       <div className="bg-[var(--card)] border border-[var(--card-border)] rounded-2xl p-6 max-w-sm w-full shadow-2xl animate-slide-up">
         <div className="text-center">
-          <div className="text-5xl mb-4">{icons[mode]}</div>
+          <div className="text-5xl mb-4" aria-hidden="true">{icons[mode]}</div>
           <h3 className="text-xl font-bold text-[var(--foreground)] mb-2">
-            {mode === "file-size" ? "File Too Large" :
-             mode === "daily-limit" ? "Daily Limit Reached" :
-             mode === "batch" ? "Batch Processing" : "Premium Feature"}
+            {titles[mode]}
           </h3>
           <p className="text-sm text-[var(--muted)] mb-6 leading-relaxed">
             {message}

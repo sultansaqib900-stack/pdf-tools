@@ -221,7 +221,7 @@ export default function RedactPage() {
     setSaving(true);
     setError(null);
     const canProceed = await usage.checkAndTrack();
-    if (!canProceed) { setSaving(false); upsell.showUpsell("daily-limit"); return; }
+    if (!canProceed) { setSaving(false); upsell.showUpsell("trial-limit"); return; }
     try {
       const bytes = pdfBytesRef.current!.slice(0);
       const pdfjs = await import("pdfjs-dist");
@@ -263,7 +263,7 @@ export default function RedactPage() {
   const process = useCallback(async () => {
     if (!isPremium()) {
       const remaining = await usage.peekUsage();
-      if (remaining <= 0) { upsell.showUpsell("daily-limit"); return; }
+      if (remaining <= 0) { upsell.showUpsell("trial-limit"); return; }
       setShowTimer(true);
       return;
     }

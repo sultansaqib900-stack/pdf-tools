@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getAuthenticatedSession } from "@/lib/auth/request";
-import { bindPremiumClientForUser, getPremiumStatusByUserId } from "@/lib/kv";
+import { bindPremiumClientForUser, getPremiumStatusByUserId, grantConfiguredPremium, isAdminPremiumEmail } from "@/lib/kv";
 import { rateLimit, rateLimitResponse } from "@/lib/rate-limit";
 import { validateString } from "@/lib/validation";
 
@@ -20,7 +20,9 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ ok: false, premium: false, error: "Invalid clientId" }, { status: 400 });
     }
 
-    if (!(await getPremiumStatusByUserId(session.userId))) {
+    // A configured owner grant counts as an active entitlement and is
+    // persisted so the device binding below succeeds for that account too.
+    if (!(await grantConfiguredPremium(session.userId, session.email)) && !isAdminPremiumEmail(session.email) && !(await getPremiumStatusByUserId(session.userId))) {
       return NextResponse.json({ ok: false, premium: false, error: "No active signed-in checkout is linked to this account." }, { status: 404 });
     }
 

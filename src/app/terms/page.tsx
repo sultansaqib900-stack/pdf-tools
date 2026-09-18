@@ -24,7 +24,7 @@ export default function TermsPage() {
 
         <h2 className="text-lg font-semibold text-[var(--foreground)] pt-2">3. Free Usage Limits</h2>
         <p>
-          Free users are limited to 5 tool uses per day and 3 AI chat questions per day. These limits
+          Free users get unlimited use of all basic tools, a shared lifetime trial of 5 files across professional tools, and 3 AI chat questions per day. These limits
           reset every 24 hours. Limits are enforced via a client-side identifier stored in your browser.
           Premium subscribers receive unlimited usage.
         </p>

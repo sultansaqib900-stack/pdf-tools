@@ -47,6 +47,19 @@
   --glow-color: rgba(6, 182, 212, 0.25);
 }
 
+/*
+ * Horizontal-overflow guard.
+ * Individual components were fixed to fit their containers (responsive header
+ * nav, truncating account labels, wrapped tables); this clip is a last-resort
+ * safety net for decorative absolute elements. `clip` is used instead of
+ * `hidden` because it does not create a scroll container, so the sticky header
+ * and in-page anchors keep working. Unsupported browsers simply ignore it.
+ */
+html,
+body {
+  overflow-x: clip;
+}
+
 body {
   background-color: var(--background);
   background-image: 

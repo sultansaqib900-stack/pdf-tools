@@ -52,7 +52,7 @@ export default function SmallPDFAltPage() {
         </div>
         <div className="border border-[var(--card-border)] rounded-xl p-5">
           <h3 className="font-semibold mb-2 text-[var(--foreground)]">2. No Daily Limits</h3>
-          <p className="text-sm text-[var(--muted)]">SmallPDF restricts free users to 2 files per day. PDFTools gives you 5 uses per day free, with no artificial caps on which tools you can use. <Link href="/premium" className="text-indigo-500 underline">Premium</Link> removes all limits entirely.</p>
+          <p className="text-sm text-[var(--muted)]">SmallPDF restricts free users to 2 files per day. PDFTools makes every basic tool free and unlimited, with no artificial caps (professional tools include a 5-file lifetime trial). <Link href="/premium" className="text-indigo-500 underline">Premium</Link> removes all limits entirely.</p>
         </div>
         <div className="border border-[var(--card-border)] rounded-xl p-5">
           <h3 className="font-semibold mb-2 text-[var(--foreground)]">3. No Signup Wall</h3>
@@ -86,7 +86,7 @@ export default function SmallPDFAltPage() {
                 ["Unlock PDF", "✓ (paid)", "✓"],
                 ["Chat with PDF", "✗", "✓"],
                 ["File size limit", "10MB free", "10MB free"],
-                ["Daily limit", "2 files", "5 files"],
+                ["Basic-tool daily limit", "2 files", "None — unlimited"],
                 ["Server upload", "Required", "None"],
                 ["Price", "From $12/mo", "Free / $8/mo premium"],
               ].map((row) => (

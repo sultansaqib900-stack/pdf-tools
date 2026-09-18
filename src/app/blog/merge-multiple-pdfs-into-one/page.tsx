@@ -52,7 +52,7 @@ export default function BlogPost() {
         <p>PDFTools merges files entirely in your browser. Your documents never leave your device, making it safe for confidential materials like contracts, legal documents, and financial records.</p>
 
         <h2 className="text-xl font-semibold text-[var(--foreground)] pt-4">Limitations</h2>
-        <p>The free version supports files up to 10MB each and merging up to 20 files at once. For larger files or batch processing, <Link href="/premium" className="text-indigo-500 hover:underline">upgrade to Premium</Link> for 100MB file support and no wait times.</p>
+        <p>The free version supports files up to 10MB each and merging up to 20 files at once. For larger files or batch processing, <Link href="/premium" className="text-indigo-500 hover:underline">upgrade to Premium</Link> for 100MB file support and batch processing.</p>
 
         <p className="pt-4">Ready to merge? Try the <Link href="/merge" className="text-indigo-500 font-medium hover:underline">free online PDF merger</Link> now.</p>
 

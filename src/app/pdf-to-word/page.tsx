@@ -41,7 +41,7 @@ export default function PdfToWordPage() {
     setProcessing(true);
     setProgress("Extracting text from PDF...");
     const canProceed = await usage.checkAndTrack();
-    if (!canProceed) { setProcessing(false); upsell.showUpsell("daily-limit"); return; }
+    if (!canProceed) { setProcessing(false); upsell.showUpsell("trial-limit"); return; }
     try {
       const bytes = await file.arrayBuffer();
       const pdfjsLib = await import("pdfjs-dist");
@@ -88,7 +88,7 @@ export default function PdfToWordPage() {
   const convert = useCallback(async () => {
     if (!isPremium()) {
       const remaining = await usage.peekUsage();
-      if (remaining <= 0) { upsell.showUpsell("daily-limit"); return; }
+      if (remaining <= 0) { upsell.showUpsell("trial-limit"); return; }
       setShowTimer(true);
       return;
     }
@@ -107,7 +107,7 @@ export default function PdfToWordPage() {
         <p className="text-[var(--muted)]">Convert PDF documents to editable Word (DOCX) files.</p>
       </div>
       <ToolInfo name="PDF to Word" description="Convert PDFs to editable Word documents entirely in your browser. No uploads, no servers." />
-      <div className="mb-4"><UsageBar remaining={usage.remaining} unlimited={usage.unlimited} /></div>
+      <div className="mb-4"><UsageBar remaining={usage.remaining} unlimited={usage.unlimited} tier={usage.tier} /></div>
       <div className="bg-[var(--card)] rounded-xl border border-[var(--card-border)] p-8 space-y-6">
         <div onDrop={onDrop} onDragOver={(e) => { e.preventDefault(); setDragging(true); }} onDragLeave={() => setDragging(false)}
           className={`border-2 border-dashed rounded-xl p-10 text-center transition ${dragging ? "border-indigo-500 bg-indigo-50/30" : "border-[var(--card-border)] bg-[var(--background)]"}`}>
