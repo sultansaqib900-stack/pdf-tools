@@ -52,14 +52,16 @@ export async function reserveAiAllowance(
   request: Request,
   entitlement: RequestEntitlement,
   kind: "chat" | "ocr" | "table" = "chat",
-): Promise<{ ok: boolean; premium: boolean; remaining: number }> {
+): Promise<{ ok: boolean; premium: boolean; remaining: number; storageError?: boolean }> {
   if (entitlement.premium) return { ok: true, premium: true, remaining: 999 };
 
   const primaryLimit = kind === "chat" ? 3 : 1;
   const identity = entitlement.userId ? `user:${entitlement.userId}` : `client:${entitlement.clientId}`;
   const primaryKey = kind === "chat" ? identity : `${kind}:${identity}`;
   const primary = await trackChatUsage(primaryKey, primaryLimit);
-  if (!primary.ok) return { ok: false, premium: false, remaining: 0 };
+  if (!primary.ok) {
+    return { ok: false, premium: false, remaining: 0, storageError: primary.storageError === true };
+  }
 
   // Broader anonymous-network ceilings limit cost if client IDs are rotated.
   const networkLimit = kind === "chat" ? 12 : 4;
@@ -74,7 +76,7 @@ export async function reserveAiAllowance(
 export async function consumeAiAllowance(
   request: Request,
   rawClientId: unknown,
-): Promise<{ ok: boolean; premium: boolean; remaining: number } | null> {
+): Promise<{ ok: boolean; premium: boolean; remaining: number; storageError?: boolean } | null> {
   const entitlement = await resolveRequestEntitlement(request, rawClientId);
   if (!entitlement) return null;
   return reserveAiAllowance(request, entitlement);

@@ -13,6 +13,7 @@ import {
 } from "@/lib/toolCatalog";
 
 const expectedPremiumRoster = [
+  "PDF Studio Pipeline",
   "Batch Process",
   "PDF Automation Recipes",
   "Chat with PDF AI",
@@ -29,23 +30,24 @@ const expectedPremiumRoster = [
 ].sort();
 
 describe("canonical tool catalog", () => {
-  it("contains exactly 52 unique routes split into 13 Premium and 39 free tools", () => {
+  it("contains exactly 52 unique routes split into 14 Premium and 38 free tools", () => {
     expect(TOOL_CATALOG).toHaveLength(52);
     expect(new Set(TOOL_CATALOG.map((tool) => tool.href)).size).toBe(52);
-    expect(PREMIUM_TOOL_COUNT).toBe(13);
-    expect(FREE_TOOL_COUNT).toBe(39);
-    expect(PREMIUM_TOOLS).toHaveLength(13);
-    expect(FREE_TOOLS).toHaveLength(39);
+    expect(PREMIUM_TOOL_COUNT).toBe(14);
+    expect(FREE_TOOL_COUNT).toBe(38);
+    expect(PREMIUM_TOOLS).toHaveLength(14);
+    expect(FREE_TOOLS).toHaveLength(38);
   });
 
   it("matches the professional Premium roster exactly", () => {
     expect(PREMIUM_TOOLS.map((tool) => tool.title).sort()).toEqual(expectedPremiumRoster);
   });
 
-  it("keeps Studio and the four corrected acquisition tools free", () => {
-    for (const route of ["/studio", "/pdf-to-audio", "/pdf-inverter", "/qr-stamp", "/vault"]) {
+  it("keeps the four corrected acquisition tools free while Studio is Premium-only", () => {
+    for (const route of ["/pdf-to-audio", "/pdf-inverter", "/qr-stamp", "/vault"]) {
       expect(isPremiumTool(route)).toBe(false);
     }
+    expect(isPremiumTool("/studio")).toBe(true);
   });
 
   it("does not retain route-level Premium gates on the four corrected free tools", () => {

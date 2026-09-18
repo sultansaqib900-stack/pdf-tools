@@ -116,8 +116,8 @@ describe("shared lifetime professional-tools trial", () => {
   });
 
   it("shares ONE counter across different professional tools", async () => {
-    // The user's example: 2 Studio + 1 PDF Diff + 1 Bates + 1 Certificate = 5.
-    const tools = ["studio", "studio", "pdf-diff", "bates-numbering", "certificate-generator"];
+    // The counter is shared: 2 diff + 1 Bates + 1 Certificate + 1 Redact = 5.
+    const tools = ["pdf-diff", "pdf-diff", "bates-numbering", "certificate-generator", "search-redact"];
     for (const [index, tool] of tools.entries()) {
       const result = await reserveTrialUse("client:device-1", `${tool}-${index}`);
       expect(result.ok).toBe(true);

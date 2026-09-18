@@ -541,24 +541,38 @@ export async function submitFeedback(
 
 const CHAT_DAILY_LIMIT = 3;
 
-export async function getChatUsage(clientId: string, limit = CHAT_DAILY_LIMIT): Promise<{ count: number; remaining: number }> {
+export interface ChatUsage {
+  count: number;
+  remaining: number;
+  /** True when the counter store is unreachable, so `remaining` is unknown. */
+  unknown?: boolean;
+}
+
+export async function getChatUsage(clientId: string, limit = CHAT_DAILY_LIMIT): Promise<ChatUsage> {
   const date = new Date().toISOString().slice(0, 10);
   try {
     const count = (await kv.get<number>(keys.chatUsage(clientId, date))) || 0;
     return { count, remaining: Math.max(0, limit - count) };
   } catch {
-    return { count: limit, remaining: 0 };
+    // Display path only: report "unknown" instead of a fake zero so the UI
+    // does not disable chat when the counter store is merely unreachable.
+    return { count: 0, remaining: limit, unknown: true };
   }
 }
 
-export async function trackChatUsage(clientId: string, limit = CHAT_DAILY_LIMIT): Promise<{ ok: boolean; remaining: number }> {
+export async function trackChatUsage(
+  clientId: string,
+  limit = CHAT_DAILY_LIMIT,
+): Promise<{ ok: boolean; remaining: number; storageError?: boolean }> {
   const date = new Date().toISOString().slice(0, 10);
   try {
     const count = await kv.incr(keys.chatUsage(clientId, date));
     await kv.expire(keys.chatUsage(clientId, date), 86400);
     return { ok: count <= limit, remaining: Math.max(0, limit - count) };
   } catch {
-    // AI usage fails closed so an unavailable counter cannot create unbounded API cost.
-    return { ok: false, remaining: 0 };
+    // AI usage still fails closed so an unavailable counter cannot create
+    // unbounded API cost, but the caller can tell this apart from a real
+    // exhausted quota and show an honest "temporarily unavailable" message.
+    return { ok: false, remaining: 0, storageError: true };
   }
 }

@@ -29,11 +29,11 @@ export const metadata: Metadata = {
     template: "%s | PDFTools",
   },
   description:
-    "39 core PDF tools with free access plus 13 professional tools for AI, automation, secure redaction, legal, and bulk workflows. Most file processing happens locally in your browser.",
+    "38 core PDF tools that are free and unlimited, plus 14 professional tools — led by the PDF Studio pipeline — for AI, automation, secure redaction, legal, and bulk workflows. Most file processing happens locally in your browser.",
   keywords: ["PDF tools", "compress PDF", "merge PDF", "split PDF", "free online PDF editor", "PDF converter", "sign PDF", "protect PDF", "PDF compressor", "merge PDF files", "split PDF pages", "PDF creator", "edit PDF", "PDF merger", "PDF splitter", "PDF comparison", "PDF audio", "PDF certificates", "PDF booklet", "PDF redact", "PDF metadata"],
   openGraph: {
     title: "PDFTools - 52 Online PDF Tools",
-    description: "39 core tools with a free tier and 13 professional workflows for automation, AI, redaction, legal work, and bulk processing.",
+    description: "38 core tools free and unlimited plus 14 professional workflows — the PDF Studio pipeline, AI, redaction, legal, and bulk processing.",
     url: "https://allaboutpdfediting.xyz",
     siteName: "PDFTools",
     type: "website",
@@ -43,7 +43,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "PDFTools - 52 Online PDF Tools",
-    description: "Free core PDF editing and conversion plus professional AI, automation, redaction, legal, and bulk workflows.",
+    description: "Free unlimited core PDF editing and conversion plus professional AI, automation, redaction, legal, and bulk workflows.",
     images: ["https://allaboutpdfediting.xyz/opengraph-image"],
   },
   alternates: {

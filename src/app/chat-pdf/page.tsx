@@ -65,9 +65,10 @@ export default function ChatPDFPage() {
         cache: "no-store",
       });
       const data = await res.json();
-      setChatRemaining(data.remaining);
+      setChatRemaining(typeof data.remaining === "number" ? data.remaining : null);
     } catch {
-      setChatRemaining(0);
+      // Unknown status: keep chat enabled rather than pretending quota is gone.
+      setChatRemaining(null);
     }
   }, [token]);
 

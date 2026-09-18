@@ -37,6 +37,11 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ ok: false, error: "A valid client ID is required." }, { status: 400 });
     }
     if (!allowance.ok) {
+      if (allowance.storageError) {
+        // The quota counter store is unreachable: fail closed, but do not
+        // claim the user exhausted a quota they may not have.
+        return NextResponse.json({ ok: false, error: "AI is temporarily unavailable. Please try again in a moment." }, { status: 503 });
+      }
       return NextResponse.json({ ok: false, error: "Your 3 free AI requests for today are used. Upgrade for unlimited AI.", remaining: 0 }, { status: 429 });
     }
 

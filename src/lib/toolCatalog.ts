@@ -26,9 +26,11 @@ export interface ToolDefinition {
   hasFreePreview?: boolean;
 }
 
-/** Routes whose file processing consumes the shared lifetime trial. */
+/**
+ * Routes whose file processing consumes the shared lifetime trial.
+ * PDF Studio is NOT here: it is fully Premium-gated (no free trial files).
+ */
 const PROFESSIONAL_TRIAL_ROUTES = new Set<string>([
-  "/studio",
   "/pdf-diff",
   "/bates-numbering",
   "/certificate-generator",
@@ -50,7 +52,7 @@ export function getToolTier(hrefOrSlug: string): ToolTier {
  * Premium subscribers also receive the larger limits on every free tool.
  */
 export const TOOL_CATALOG: readonly ToolDefinition[] = [
-  { title: "PDF Studio Pipeline", description: "Reorder, delete, sign, watermark, protect, and compress without re-uploading.", icon: "⚡", href: "/studio", gradient: "bg-gradient-to-br from-indigo-500 via-purple-600 to-pink-500", category: "Studio & AI", badge: "Flagship" },
+  { title: "PDF Studio Pipeline", description: "The flagship workspace: reorder, delete, sign, watermark, protect, and compress without re-uploading — all Premium.", icon: "⚡", href: "/studio", gradient: "bg-gradient-to-br from-indigo-500 via-purple-600 to-pink-500", category: "Premium", badge: "Flagship" },
   { title: "PII Guardian", description: "Preview common PII matches locally; Premium securely redacts complete documents.", icon: "🛡️", href: "/pii-guardian", gradient: "bg-gradient-to-br from-red-500 via-rose-600 to-amber-600", category: "Premium", hasFreePreview: true },
   { title: "PDF Automation Recipes", description: "Run multi-step PDF workflows; two starter recipes are available as a free preview.", icon: "⚡", href: "/recipes", gradient: "bg-gradient-to-br from-purple-500 via-indigo-600 to-blue-500", category: "Premium", hasFreePreview: true },
   { title: "Chat with PDF AI", description: "Ask questions, summarize, simplify, or translate extracted PDF text with a free daily preview.", icon: "🤖", href: "/chat-pdf", gradient: "bg-gradient-to-br from-violet-500 to-fuchsia-600", category: "Premium", hasFreePreview: true },

@@ -55,9 +55,9 @@ Expected for this release:
 
 - Full and production audits: **0 vulnerabilities**
 - TypeScript: pass
-- Tests: **141 pass across 28 files**
+- Tests: **131 pass across 27 files**
 - ESLint: **0 errors** (126 existing warnings)
-- Production build: pass; 500 static pages generated
+- Production build: pass; 502 static pages generated
 - Catalog: exactly **52 unique tools — 39 free and 13 Premium**
 
 ## 4. Usage model (this release)

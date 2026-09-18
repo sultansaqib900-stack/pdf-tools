@@ -48,7 +48,6 @@ describe("tool tier classification (free-unlimited vs shared lifetime trial)", (
 
   it("classifies exactly the professional roster as trial-consuming", () => {
     const expected = [
-      "/studio",
       "/pdf-diff",
       "/bates-numbering",
       "/certificate-generator",
@@ -75,19 +74,31 @@ describe("tool tier classification (free-unlimited vs shared lifetime trial)", (
     for (const tool of TOOL_CATALOG) {
       expect(["basic", "professional"]).toContain(getToolTier(tool.href));
     }
-    // Trial tools are a subset of the premium roster plus Studio.
+    // Every trial tool belongs to the Premium roster (Studio is Premium-only, no trial).
     for (const tool of PROFESSIONAL_TRIAL_TOOLS) {
-      expect(tool.category === "Premium" || tool.href === "/studio").toBe(true);
+      expect(tool.category === "Premium").toBe(true);
     }
+    // Studio must never reappear in the trial roster: it is Premium-exclusive.
+    expect(PROFESSIONAL_TRIAL_TOOLS.map((tool) => tool.href)).not.toContain("/studio");
+    expect(getToolTier("/studio")).toBe("basic");
   });
 
-  it("does not reintroduce any premium-route gate file (replaced by TrialGate)", () => {
-    // PremiumGate was replaced by TrialGate, which allows a free lifetime trial.
+  it("gates trial routes with TrialGate and keeps Studio on the Premium-only gate", () => {
+    // TrialGate allows the free 5-file lifetime trial; PremiumGate allows none.
     for (const tool of PREMIUM_TOOLS) {
       const slug = tool.href.replace(/^\//, "");
       if (["chat-pdf", "pii-guardian", "recipes", "batch"].includes(slug)) continue;
       const source = readFileSync(join(process.cwd(), "src", "app", slug, "page.tsx"), "utf8");
-      expect(source).toContain("TrialGate");
+      if (slug === "studio") {
+        expect(source).toContain("PremiumGate");
+        expect(source).not.toContain("TrialGate");
+        expect(source).not.toContain('useUsage("studio")');
+      } else {
+        expect(source).toContain("TrialGate");
+      }
     }
+    // The standalone premium tools keep their custom gating (API-enforced).
+    const chatSource = readFileSync(join(process.cwd(), "src", "app", "chat-pdf", "page.tsx"), "utf8");
+    expect(chatSource).not.toContain("TrialGate");
   });
 });

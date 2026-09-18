@@ -280,11 +280,11 @@ export default function PremiumPage() {
           </div>
           <div className="rounded-xl border border-[var(--card-border)] bg-[var(--card)] p-5">
             <p className="font-bold text-amber-500 mb-2">⭐ Professional tools — 5 lifetime trial files</p>
-            <p className="text-sm text-[var(--muted)]">PDF Studio, PDF Diff, Bates Numbering, Certificate Generator, and the rest of the professional suite share a one-time trial of 5 files. It never resets, and failed or invalid files never count.</p>
+            <p className="text-sm text-[var(--muted)]">PDF Diff, Bates Numbering, Certificate Generator, and the rest of the professional suite share a one-time trial of 5 files. It never resets, and failed or invalid files never count. (PDF Studio — the flagship pipeline — is exclusive to Premium below.)</p>
           </div>
           <div className="rounded-xl border border-[var(--card-border)] bg-[var(--card)] p-5">
             <p className="font-bold text-indigo-500 mb-2">🚀 Premium — no limits</p>
-            <p className="text-sm text-[var(--muted)]">Premium removes the trial limit: unlimited professional tools, 100MB files, batch processing up to 20 files, and unlimited AI questions.</p>
+            <p className="text-sm text-[var(--muted)]">Premium removes the trial limit, unlocks the flagship PDF Studio pipeline, 100MB files, batch processing up to 20 files, and unlimited AI questions.</p>
           </div>
         </div>
         {[
