@@ -207,7 +207,10 @@ export default function ChatPDFPage() {
         setMessages((prev) => [...prev, { role: "assistant", text: data.answer }]);
         if (typeof data.remaining === "number") setChatRemaining(data.remaining);
       } else {
-        if (res.status === 429) {
+        if (res.status === 429 && data.remaining === 0) {
+          // Only the quota endpoint sets `remaining`: this is genuine daily
+          // exhaustion. A bare 429 is the transient rate limiter — do not
+          // disable the chat over it.
           setChatRemaining(0);
           upsell.showUpsell("trial-limit", "You've used all 3 free AI requests today. Upgrade to Premium for unlimited AI.");
         }
