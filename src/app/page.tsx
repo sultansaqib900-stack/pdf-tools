@@ -12,6 +12,8 @@ import { useEffect, useRef, useState, useCallback } from "react";
 import dynamic from "next/dynamic";
 import { setPipelineDocument } from "@/lib/pdfPipeline";
 import SavingsCalculator from "@/components/SavingsCalculator";
+import { STUDIO_TRIAL_CTA } from "@/lib/studioTrial";
+import { FREE_TOOL_COUNT, PREMIUM_TOOL_COUNT, TOOL_CATALOG } from "@/lib/toolCatalog";
 
 const LiveStats = dynamic(() => import("@/components/LiveStats"));
 const EmailSubscribe = dynamic(() => import("@/components/EmailSubscribe"));
@@ -58,7 +60,7 @@ function AnimatedHero() {
         {/* Top Feature Pill */}
         <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-gradient-to-r from-indigo-500/15 via-purple-500/15 to-pink-500/15 border border-indigo-500/30 text-indigo-400 text-xs font-extrabold mb-6 animate-fadeIn">
           <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
-          <span>⚡ Next-Gen 100% Client-Side PDF Engine · Zero Uploads</span>
+          <span>{TOOL_CATALOG.length} PDF tools · Browser-based document editing</span>
         </div>
 
         {/* Hero Headline */}
@@ -71,7 +73,7 @@ function AnimatedHero() {
 
         {/* Subtitle */}
         <p className="text-base sm:text-xl text-[var(--muted)] max-w-2xl mx-auto mb-10 leading-relaxed font-normal">
-          Compress, merge, split, annotate, e-sign, and chain operations in one continuous session. Your documents never leave your browser.
+          {FREE_TOOL_COUNT} core tools — merge, split, compress, OCR, e-sign, redact, convert, and organise — free and unlimited with no account. {PREMIUM_TOOL_COUNT} professional tools for legal and bulk work.
         </p>
 
         {/* Interactive Quick-Drop Studio Launcher */}
@@ -94,10 +96,10 @@ function AnimatedHero() {
               <div className="text-left">
                 <p className="text-sm font-bold text-[var(--foreground)]">
                   {uploading ? "Loading PDF into Studio..." : "Drop PDF here to launch the Studio Pipeline"}
-                  <span className="ml-2 align-middle text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-400 border border-amber-500/30">Premium</span>
+                  <span className="ml-2 align-middle text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-400 border border-amber-500/30">3-day Studio trial</span>
                 </p>
                 <p className="text-xs text-[var(--muted)] mt-0.5">
-                  or click to browse · Premium Studio chains delete pages, sign, watermark &amp; compress in 1 go
+                  or click to browse · Try PDF Studio free for three days. Activate on the next screen.
                 </p>
               </div>
             </div>
@@ -110,8 +112,7 @@ function AnimatedHero() {
             href="/studio"
             className="px-8 py-4 bg-gradient-to-r from-indigo-500 via-purple-600 to-pink-500 text-white font-extrabold text-sm rounded-2xl hover:opacity-95 transition-all shadow-xl shadow-indigo-500/25 active:scale-95 flex items-center gap-2"
           >
-            <span>⚡ Open PDF Studio</span>
-            <span className="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-full bg-white/20 border border-white/30">Premium</span>
+            <span>{STUDIO_TRIAL_CTA}</span>
             <span>→</span>
           </Link>
           <Link
@@ -204,13 +205,13 @@ export default function Home() {
                 ⚡
               </div>
               <span className="text-[10px] font-extrabold uppercase px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30">
-                ⭐ Premium · Flagship
+                PDF Studio · 3 days free
               </span>
               <h3 className="text-lg font-extrabold text-[var(--foreground)] mt-2 mb-1 group-hover:text-indigo-400 transition">
                 PDF Studio Workspace
               </h3>
               <p className="text-xs text-[var(--muted)] leading-relaxed">
-                The Premium pipeline: reorder, delete pages, sign, watermark, protect, and compress in one continuous flow — without re-uploading.
+                Try PDF Studio free for three days: reorder, delete pages, sign, watermark, protect, and compress in one session. Premium afterwards.
               </p>
             </Link>
 
@@ -261,13 +262,13 @@ export default function Home() {
           <div className="p-8 sm:p-12 rounded-3xl bg-gradient-to-br from-slate-900 via-indigo-950/40 to-slate-900 border border-indigo-500/30 shadow-2xl relative overflow-hidden">
             <div className="text-center max-w-3xl mx-auto mb-10">
               <span className="text-xs font-extrabold uppercase tracking-widest px-3 py-1 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30 mb-3 inline-block">
-                ⭐ PDF Studio — the Premium Pipeline
+                PDF Studio — try it free for three days
               </span>
               <h2 className="text-2xl sm:text-4xl font-extrabold text-white mb-4">
                 Stop Re-Uploading Your PDF For Every Small Edit
               </h2>
               <p className="text-sm sm:text-base text-slate-300">
-                PDF Studio is our flagship Premium workspace. Load a document once, then chain every step — no downloads, no re-uploads, no waiting:
+                PDF Studio chains every step in one session. Load a document once, then organise, sign, and export — no downloading and re-uploading between steps:
               </p>
               <div className="flex flex-wrap justify-center gap-2 mt-4">
                 {["Organize & delete pages", "Rotate", "e-Sign", "Watermark", "Protect (AES-256)", "Compress"].map((step) => (
@@ -305,7 +306,7 @@ export default function Home() {
                   <div className="p-2.5 rounded-xl bg-slate-900/80 border border-emerald-500/20 font-medium">3. Stamp your e-signature on page 1 without reloading</div>
                   <div className="p-2.5 rounded-xl bg-slate-900/80 border border-emerald-500/20 font-medium">4. Add watermark &amp; compress in the exact same workspace</div>
                   <div className="p-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-bold text-center">
-                    Done in 15 seconds · 100% Private
+                    One session · Locally processed
                   </div>
                 </div>
               </div>
@@ -317,7 +318,7 @@ export default function Home() {
                   href="/studio"
                   className="inline-flex items-center gap-2 px-8 py-3.5 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white font-bold rounded-2xl shadow-lg shadow-indigo-500/25 hover:opacity-95 transition"
                 >
-                  Open PDF Studio →
+                  {STUDIO_TRIAL_CTA} →
                 </Link>
                 <Link
                   href="/premium"
@@ -327,7 +328,7 @@ export default function Home() {
                 </Link>
               </div>
               <p className="text-xs text-slate-400">
-                PDF Studio is included with Premium — and every basic tool stays free and unlimited for everyone.
+                Three-day trial for PDF Studio only. Premium required afterwards. The 38 core tools stay free and unlimited.
               </p>
             </div>
           </div>
@@ -429,9 +430,9 @@ export default function Home() {
       {/* SEO FAQs */}
       <FaqPageJsonLd
         questions={[
-          { question: "Is PDFTools truly free?", answer: "Yes! All core tools (Compress, Merge, Split, e-Sign, Watermark, Delete Pages, Rotate, and 30+ more) are 100% free and unlimited — no daily or monthly caps. Only the professional tools carry a one-time 5-file lifetime trial, and Premium removes even that." },
-          { question: "Are my PDF files uploaded to your servers?", answer: "No! All PDF processing, page reordering, OCR, and compression happens locally inside your web browser using WebAssembly. Your files never leave your computer." },
-          { question: "What is the PDF Studio Pipeline?", answer: "PDF Studio is our flagship workspace that lets you perform multi-step edits (delete pages -> rotate -> sign -> watermark -> compress) on a single document without downloading and re-uploading at each step." },
+          { question: "Is PDFTools truly free?", answer: "Yes! All core tools (Compress, Merge, Split, e-Sign, Watermark, Delete Pages, Rotate, and 30+ more) are 100% free and unlimited — no daily or monthly caps. Selected professional tools share a one-time 5-file lifetime trial. PDF Studio has its own three-day trial; it does not unlock other Premium tools." },
+          { question: "Are my PDF files uploaded to your servers?", answer: "Core PDF tools and PDF Studio process documents locally in your browser without uploading your PDFs. Optional AI chat sends extracted text, and AI OCR sends page images, to an AI service." },
+          { question: "What is the PDF Studio Pipeline?", answer: "PDF Studio chains edits on one document without downloading and re-uploading between steps. Try PDF Studio free for three days from activation, then continue with Premium. This is a Studio-only trial, not a site-wide Premium trial." },
           { question: "What is the PII Guardian?", answer: "PII Guardian detects common sensitive-data patterns locally. Free users can preview first-page matches; Premium can scan and securely raster-redact complete documents after review." },
         ]}
       />

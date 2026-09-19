@@ -42,7 +42,7 @@ export default function ToolsPage() {
       <div className="text-center mb-12">
         <h1 className="text-4xl font-bold text-[var(--foreground)] mb-4">All PDF Tools</h1>
         <p className="text-lg text-[var(--muted)] max-w-2xl mx-auto">
-          {FREE_TOOL_COUNT} core tools are free and unlimited — no daily or monthly caps. {PREMIUM_TOOL_COUNT} professional Premium tools add automation, bulk workflows, and AI with a shared 5-file lifetime trial (Premium removes the limit).
+          {FREE_TOOL_COUNT} core tools are free and unlimited — no daily or monthly caps. {PREMIUM_TOOL_COUNT} professional Premium tools add legal, automation, and bulk workflows. Selected professional tools share a 5-file lifetime trial; PDF Studio has a separate three-day trial from activation.
         </p>
       </div>
 

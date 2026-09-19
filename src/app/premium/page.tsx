@@ -15,7 +15,7 @@ const plans = [
     name: "Free",
     price: "$0",
     period: "forever",
-    features: ["All basic tools — unlimited use", "Professional tools: 5 lifetime trial files (shared)", "Max 10MB files", "No account required", "AI chat preview: 3 questions/day"],
+    features: ["All basic tools — unlimited use", "PDF Studio only: 3 days free from activation", "Professional tools: 5 lifetime trial files (shared)", "Max 10MB files (100MB in the Studio trial)", "No account required", "AI chat preview: 3 questions/day"],
     highlighted: false,
     checkoutUrl: null,
     planKey: null as string | null,
@@ -42,8 +42,9 @@ const plans = [
 
 const featureRows = [
   { feature: "Basic tools (Compress, Merge, Split, Sign, …)", free: "Unlimited", monthly: "Unlimited", yearly: "Unlimited" },
+  { feature: "PDF Studio", free: "3 days free — Studio only", monthly: "Unlimited", yearly: "Unlimited" },
   { feature: "Professional tools trial", free: "5 files — lifetime, shared", monthly: "Unlimited", yearly: "Unlimited" },
-  { feature: "File size limit", free: "10MB", monthly: "100MB", yearly: "100MB" },
+  { feature: "File size limit", free: "10MB; Studio trial: 100MB", monthly: "100MB", yearly: "100MB" },
   { feature: "Batch processing", free: "—", monthly: "20 files", yearly: "20 files" },
   { feature: "AI chat questions", free: "3/day preview", monthly: "Unlimited", yearly: "Unlimited" },
   { feature: "Priority support", free: "—", monthly: "Email", yearly: "Priority email" },
@@ -280,7 +281,7 @@ export default function PremiumPage() {
           </div>
           <div className="rounded-xl border border-[var(--card-border)] bg-[var(--card)] p-5">
             <p className="font-bold text-amber-500 mb-2">⭐ Professional tools — 5 lifetime trial files</p>
-            <p className="text-sm text-[var(--muted)]">PDF Diff, Bates Numbering, Certificate Generator, and the rest of the professional suite share a one-time trial of 5 files. It never resets, and failed or invalid files never count. (PDF Studio — the flagship pipeline — is exclusive to Premium below.)</p>
+            <p className="text-sm text-[var(--muted)]">PDF Diff, Bates Numbering, Certificate Generator, and the rest of the professional suite share a one-time trial of 5 files. It never resets, and failed or invalid files never count. PDF Studio has a separate three-day trial from activation, followed by Premium access. That offer applies to Studio only, not the whole site.</p>
           </div>
           <div className="rounded-xl border border-[var(--card-border)] bg-[var(--card)] p-5">
             <p className="font-bold text-indigo-500 mb-2">🚀 Premium — no limits</p>
@@ -288,6 +289,7 @@ export default function PremiumPage() {
           </div>
         </div>
         {[
+          { q: "Can I try PDF Studio free for three days?", a: "Yes. Open PDF Studio and activate its 72-hour trial — no account or card required, and no automatic charge. It includes only the Studio workspace, not other Premium tools, and does not consume the shared 5-file trial. Premium is required to continue after expiry." },
           { q: "Do the 5 trial files reset every month?", a: "No. The trial allowance is 5 files in total, shared across all professional tools for the lifetime of the browser identity or account. It does not reset daily or monthly." },
           { q: "Do failed or invalid files consume the trial?", a: "No. Only files that are accepted and actually begin processing count. If processing fails, the reservation is refunded automatically." },
           { q: "Are basic tools really unlimited on the free plan?", a: "Yes. All core tools never touch the trial allowance — use them as often as you like, subject only to the 10MB free file-size limit." },

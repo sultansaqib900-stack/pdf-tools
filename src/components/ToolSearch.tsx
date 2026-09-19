@@ -3,7 +3,7 @@ import Link from "next/link";
 import { useState, useRef, useEffect, useMemo } from "react";
 
 const allTools = [
-  { label: "PDF Studio (Multi-Step Workspace)", href: "/studio", badge: "New" },
+  { label: "PDF Studio (Multi-Step Workspace)", href: "/studio", badge: "3 days free" },
   { label: "Compress PDF", href: "/compress" },
   { label: "Merge PDF", href: "/merge" },
   { label: "Split PDF", href: "/split" },
@@ -92,7 +92,7 @@ export default function ToolSearch() {
             setQuery(e.target.value);
             setIsOpen(true);
           }}
-          placeholder="Search 40+ free PDF tools, Studio & AI..."
+          placeholder="Search PDF tools, Studio & AI..."
           className="bg-transparent border-none outline-none text-sm text-[var(--foreground)] w-full placeholder:text-[var(--muted)] font-medium"
         />
         {query && (

@@ -15,7 +15,7 @@ interface PremiumGateProps {
 }
 
 /**
- * Hard access gate for fully Premium tools (currently PDF Studio). Unlike
+ * Hard access gate for fully Premium tools. PDF Studio uses StudioGate. Unlike
  * TrialGate, there is no free trial here: free visitors see an upgrade panel
  * that explains exactly what the tool does, and Premium members pass through.
  */
