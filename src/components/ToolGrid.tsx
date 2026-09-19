@@ -3,6 +3,7 @@
 import { useState, useMemo } from "react";
 import ToolCard from "@/components/ToolCard";
 import Link from "next/link";
+import { STUDIO_TRIAL_CTA } from "@/lib/studioTrial";
 import { PREMIUM_TOOL_COUNT, TOOL_CATALOG, type ToolCategory } from "@/lib/toolCatalog";
 
 type Category = "All" | ToolCategory;
@@ -74,7 +75,7 @@ export default function ToolGrid() {
             <div className="max-w-2xl">
               <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-indigo-500/20 border border-indigo-500/40 text-indigo-300 text-xs font-extrabold mb-3">
                 <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                NEW FLAGSHIP FEATURE
+                PDF STUDIO · THREE-DAY FREE TRIAL
               </div>
               <h3 className="text-2xl sm:text-3xl font-extrabold text-white mb-2">
                 PDF Studio: One-Stop Multi-Operation Pipeline
@@ -88,7 +89,7 @@ export default function ToolGrid() {
               href="/studio"
               className="px-8 py-4 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white font-extrabold text-sm rounded-2xl hover:opacity-95 transition-all shadow-xl shadow-indigo-500/30 flex items-center gap-2 shrink-0 group-hover:scale-105"
             >
-              <span>⚡ Launch PDF Studio</span>
+              <span>{STUDIO_TRIAL_CTA}</span>
               <span className="group-hover:translate-x-1 transition-transform">→</span>
             </Link>
           </div>

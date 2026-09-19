@@ -43,7 +43,7 @@ describe("canonical tool catalog", () => {
     expect(PREMIUM_TOOLS.map((tool) => tool.title).sort()).toEqual(expectedPremiumRoster);
   });
 
-  it("keeps the four corrected acquisition tools free while Studio is Premium-only", () => {
+  it("keeps the four corrected acquisition tools free while Studio remains professional with its own timed trial", () => {
     for (const route of ["/pdf-to-audio", "/pdf-inverter", "/qr-stamp", "/vault"]) {
       expect(isPremiumTool(route)).toBe(false);
     }

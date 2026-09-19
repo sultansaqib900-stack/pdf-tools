@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { STUDIO_TRIAL_CTA } from "@/lib/studioTrial";
 import { usePathname } from "next/navigation";
 import { useState, lazy, Suspense, useEffect } from "react";
 import { useAuth } from "@/components/AuthProvider";
@@ -326,7 +327,7 @@ export default function Header() {
             onClick={() => setMenuOpen(false)}
             className="block p-3 rounded-2xl bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-extrabold text-sm text-center shadow-lg shadow-indigo-500/25"
           >
-            ⚡ Open PDF Studio Pipeline
+            {premium ? "Open PDF Studio" : STUDIO_TRIAL_CTA}
           </Link>
 
           <button

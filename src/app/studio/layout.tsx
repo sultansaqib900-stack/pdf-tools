@@ -1,8 +1,8 @@
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "PDF Studio - Unified Multi-Step PDF Pipeline & Editor | PDFTools",
-  description: "Chain multiple PDF actions in one session: delete pages, rotate, reorder, add signature, watermark, and compress without re-uploading every time. 100% private in-browser pipeline.",
+  title: "PDF Studio — Try Free for Three Days | PDFTools",
+  description: "Try PDF Studio free for three days. Chain PDF edits in one browser session without downloading and re-uploading. Studio-only trial; Premium required afterwards.",
   alternates: {
     canonical: "https://allaboutpdfediting.xyz/studio",
   },

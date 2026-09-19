@@ -74,23 +74,23 @@ describe("tool tier classification (free-unlimited vs shared lifetime trial)", (
     for (const tool of TOOL_CATALOG) {
       expect(["basic", "professional"]).toContain(getToolTier(tool.href));
     }
-    // Every trial tool belongs to the Premium roster (Studio is Premium-only, no trial).
+    // Every trial tool belongs to the Premium roster (Studio has a separate timed trial).
     for (const tool of PROFESSIONAL_TRIAL_TOOLS) {
       expect(tool.category === "Premium").toBe(true);
     }
-    // Studio must never reappear in the trial roster: it is Premium-exclusive.
+    // Studio must never reappear in the trial roster: it has a separate timed trial.
     expect(PROFESSIONAL_TRIAL_TOOLS.map((tool) => tool.href)).not.toContain("/studio");
     expect(getToolTier("/studio")).toBe("basic");
   });
 
-  it("gates trial routes with TrialGate and keeps Studio on the Premium-only gate", () => {
-    // TrialGate allows the free 5-file lifetime trial; PremiumGate allows none.
+  it("gates trial routes with TrialGate and keeps Studio on its separate timed gate", () => {
+    // StudioGate grants time-based access without consuming file-trial quota.
     for (const tool of PREMIUM_TOOLS) {
       const slug = tool.href.replace(/^\//, "");
       if (["chat-pdf", "pii-guardian", "recipes", "batch"].includes(slug)) continue;
       const source = readFileSync(join(process.cwd(), "src", "app", slug, "page.tsx"), "utf8");
       if (slug === "studio") {
-        expect(source).toContain("PremiumGate");
+        expect(source).toContain("StudioGate");
         expect(source).not.toContain("TrialGate");
         expect(source).not.toContain('useUsage("studio")');
       } else {

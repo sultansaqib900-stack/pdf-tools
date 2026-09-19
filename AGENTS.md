@@ -8,6 +8,14 @@ Build premium-only PDF features, redesign UI to make them visible, apply compreh
 - Deployed on Vercel at allaboutpdfediting.xyz (custom domain live — verified 200 on all premium pages)
 
 ## Progress
+### PDF Studio-only three-day trial (2026-09-19)
+- Offer copy: **Try PDF Studio free for three days**. This is NOT a site-wide Premium trial.
+- `/api/studio/trial`: GET only checks; POST explicitly activates 72 hours of Studio access. Redis server time is authoritative. Persistent timestamps are linked atomically to the earliest browser/account activation; no reset on reload, repeated activation, login, or expiry.
+- `StudioGate` mounts the workspace only after verified paid or active trial access. Trial grants full Studio workflow access (including PII and recipes, 100MB files) without changing global Premium state or the separate five-file professional allowance.
+- KV is required. Verification/storage failures return 503 and a retry UI, never a client-side trial fallback. Anonymous access follows the existing browser identity model; clearing identity or using a fresh browser is not fraud-proof.
+- The catalog remains 52 tools: 38 free and 14 professional. Studio requires Premium after the timed trial.
+- Regression tests: `studioTrial.test.ts`, `studioGate.test.tsx`; updated tier/catalog assertions.
+
 ### Done
 - **Built 13 premium-only PDF tools** (all premium-gated, not just limit-removal):
   - `/pdf-diff` — Compare two PDFs side by side with highlighted differences

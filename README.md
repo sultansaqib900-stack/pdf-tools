@@ -1,36 +1,33 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# PDFTools
 
-## Getting Started
+PDFTools is a 52-tool PDF suite: 38 core tools are free and unlimited with no account, and 14 professional tools cover legal, automation, and bulk workflows. Core PDF processing and PDF Studio run locally in the browser. Optional AI chat sends extracted text (and AI OCR sends page images) to the AI service.
 
-First, run the development server:
+## Try PDF Studio free for three days
+
+PDF Studio chains edits in one session without downloading and re-uploading between steps. Its **Studio-only** trial starts when the visitor clicks the activation button and lasts 72 hours. No account or payment card is required. Premium is required afterwards; there is no automatic charge.
+
+- Includes Studio's editing, signing, watermarking, protection, compression, PII redaction, and recipes, with files up to 100MB.
+- Does **not** grant site-wide Premium or consume the separate five-file professional-tools trial. The 38 core tools remain free.
+- Uses the existing KV configuration from `.env.example`. Only identity/access timestamps go to the server, not PDF content. No schema migration or new secret is required.
+- Redis server time controls expiry. The earliest activation is persisted across repeat visits and linked to an account when signing in. A KV outage fails closed with a retry option.
+- Anonymous trials follow the browser identity; clearing browser storage or changing browsers can create a fresh anonymous identity. This is not an anti-fraud system.
+
+## Development
 
 ```bash
+npm ci
+cp .env.example .env.local  # configure the services needed locally
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open http://localhost:3000. For a remote development preview, bind with `npm run dev -- --hostname 0.0.0.0`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Validation
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm test
+npm run lint
+npm run build
+```
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+The Studio trial tests cover explicit activation, exact expiry, repeat and concurrent requests, device/account linking, paid bypass, storage failures, UI access, and isolation from site-wide Premium.
