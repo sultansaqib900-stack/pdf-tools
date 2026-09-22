@@ -1,5 +1,7 @@
 "use client";
 
+import { registerAdTask } from "@/lib/ads";
+
 import { useState } from "react";
 import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
 import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
@@ -136,6 +138,7 @@ export default function SearchRedactPage() {
       setMatchCount(occurrenceCount);
       const pdfBytes = await secureRedactPdf(bytes, redactions);
       downloadBytes(pdfBytes, `redacted-${file.name}`);
+      registerAdTask();
       setSuccess(true);
     } catch (redactError) {
       await usage.releaseReservation(reservation);

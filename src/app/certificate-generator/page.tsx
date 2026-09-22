@@ -1,5 +1,7 @@
 "use client";
 
+import { registerAdTask } from "@/lib/ads";
+
 import { useState } from "react";
 import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
 import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
@@ -203,6 +205,7 @@ export default function CertificateGeneratorPage() {
         downloadBytes(archive, "certificates.zip", "application/zip");
       }
       setGeneratedCount(entries.length);
+      registerAdTask();
       setSuccess(true);
     } catch (generationError) {
       // Failed generation refunds the reserved trial file.

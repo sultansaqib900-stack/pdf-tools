@@ -1,5 +1,7 @@
 "use client";
 
+import { registerAdTask } from "@/lib/ads";
+
 import { useState, useRef, useEffect } from "react";
 import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
 import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
@@ -87,6 +89,7 @@ export default function VaultPage() {
       vaultRef.current = [item, ...vaultRef.current];
       setItems(vaultRef.current.map(vaultMetadata));
       setSuccess(`Encrypted and saved “${file.name}”.`);
+      registerAdTask();
     } catch (storageError) {
       setError(storageError instanceof Error ? storageError.message : "Failed to encrypt and save this file.");
     } finally {

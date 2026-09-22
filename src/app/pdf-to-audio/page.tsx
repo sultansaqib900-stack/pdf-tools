@@ -1,5 +1,7 @@
 "use client";
 
+import { registerAdTask } from "@/lib/ads";
+
 import { useState, useRef, useCallback, useEffect } from "react";
 import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
 import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
@@ -75,6 +77,7 @@ export default function PdfToAudioPage() {
       }
       if (!fullText.trim()) throw new Error("No selectable text was found. This reader does not run OCR on scanned pages.");
       setText(fullText.trim());
+      registerAdTask();
       setSuccess(true);
     } catch (extractError) {
       setError(extractError instanceof Error ? extractError.message : "Failed to extract text from the PDF.");

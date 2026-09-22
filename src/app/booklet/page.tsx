@@ -1,5 +1,7 @@
 "use client";
 
+import { registerAdTask } from "@/lib/ads";
+
 import { useState } from "react";
 import type { PDFPage } from "pdf-lib";
 import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
@@ -114,6 +116,7 @@ export default function BookletPage() {
 
       const pdfBytes = await newDoc.save();
       downloadBytes(pdfBytes, `${layout}-${file.name}`);
+      registerAdTask();
       setSuccess(true);
     } catch {
       await usage.releaseReservation(reservation);

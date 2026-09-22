@@ -1,5 +1,7 @@
 "use client";
 
+import { registerAdTask } from "@/lib/ads";
+
 import { isPdfFile } from "@/lib/pdfBytes";
 
 import { useState, useCallback, useEffect, useRef } from "react";
@@ -79,6 +81,7 @@ export default function WordCounterPage() {
       const charsNoSpace = fullText.replace(/\s/g, "").length;
       const readingTime = words === 0 ? 0 : Math.ceil(words / 200);
       setResult({ words, chars, charsNoSpace, pages: pageCount, readingTime });
+      registerAdTask();
       setSuccess(true);
     } catch {
       setError("Failed to count words. The file may be encrypted or corrupted.");

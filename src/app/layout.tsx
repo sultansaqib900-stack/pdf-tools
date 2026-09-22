@@ -156,8 +156,8 @@ gtag('config', 'G-0YRS54VR4X');`}
         <EmbedModeDetector><CookieConsent /></EmbedModeDetector>
         <EmbedModeDetector><FeedbackWidget /></EmbedModeDetector>
         <EmbedModeDetector><PrivacyHUD /></EmbedModeDetector>
-        {/* Monetag vignette schedule: first ad 10s after load, then every 3
-            completed tasks. Premium members never see ads. Embed mode = no ads. */}
+        {/* Monetag vignette schedule: first ad 5s after load, then every 3
+            completed tool tasks. Premium members never see ads. Embed mode = no ads. */}
         <EmbedModeDetector><AdManager /></EmbedModeDetector>
         <EmbedModeDetector><Analytics /></EmbedModeDetector>
         </AuthProvider>

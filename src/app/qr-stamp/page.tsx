@@ -1,5 +1,7 @@
 "use client";
 
+import { registerAdTask } from "@/lib/ads";
+
 import { useState, useCallback } from "react";
 import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
 import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
@@ -83,6 +85,7 @@ export default function QrStampPage() {
       a.download = `qr-${file.name}`;
       a.click();
       window.setTimeout(() => URL.revokeObjectURL(url), 60_000);
+      registerAdTask();
       setSuccess(true);
     } catch {
       setError("Failed to stamp QR code. The file may be encrypted or corrupted.");

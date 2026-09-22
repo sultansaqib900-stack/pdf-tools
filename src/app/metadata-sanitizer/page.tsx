@@ -1,5 +1,7 @@
 "use client";
 
+import { registerAdTask } from "@/lib/ads";
+
 import { useState } from "react";
 import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
 import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
@@ -39,6 +41,7 @@ export default function MetadataSanitizerPage() {
       const sanitized = await sanitizePdf(await file.arrayBuffer());
       setBeforeMeta(sanitized.before);
       downloadBytes(sanitized.bytes, `sanitized-${file.name}`);
+      registerAdTask();
       setSuccess(true);
     } catch (sanitizeError) {
       await usage.releaseReservation(reservation);

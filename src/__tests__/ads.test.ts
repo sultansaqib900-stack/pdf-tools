@@ -29,7 +29,8 @@ afterEach(() => {
 });
 
 describe("Monetag vignette ad schedule", () => {
-  it("fires the first vignette 10 seconds after the page opens", () => {
+  it("fires the first vignette 5 seconds after the page opens", () => {
+    expect(ADS_FIRST_DELAY_MS).toBe(5_000);
     const { show, scheduler } = setup();
     scheduler.start();
     vi.advanceTimersByTime(ADS_FIRST_DELAY_MS - 1);
@@ -76,12 +77,71 @@ describe("Monetag vignette ad schedule", () => {
     scheduler.stop();
   });
 
-  it("does not fire two vignettes back-to-back", () => {
+  it("fires immediately when the third completed task is registered", () => {
     const { show, scheduler } = setup();
     scheduler.start();
     vi.advanceTimersByTime(ADS_FIRST_DELAY_MS);
     expect(show).toHaveBeenCalledTimes(1);
-    // Three tasks within the minimum gap must not fire a second vignette.
+
+    scheduler.registerTask();
+    scheduler.registerTask();
+    expect(show).toHaveBeenCalledTimes(1);
+    scheduler.registerTask();
+    expect(show).toHaveBeenCalledTimes(2);
+    scheduler.stop();
+  });
+
+  it("waits for server-backed Premium verification before showing", () => {
+    let ready = false;
+    let premium = false;
+    let notifyPremium = () => {};
+    const show = vi.fn();
+    const scheduler = createAdScheduler({
+      showVignette: show,
+      isPremium: () => premium,
+      isPremiumReady: () => ready,
+      subscribePremium: (listener) => {
+        notifyPremium = listener;
+        return () => { notifyPremium = () => {}; };
+      },
+    });
+
+    scheduler.start();
+    vi.advanceTimersByTime(ADS_FIRST_DELAY_MS);
+    expect(show).not.toHaveBeenCalled();
+
+    ready = true;
+    notifyPremium();
+    expect(show).toHaveBeenCalledTimes(1);
+
+    premium = true;
+    notifyPremium();
+    scheduler.stop();
+  });
+
+  it("removes the current tag and prevents future ads after an upgrade", () => {
+    let premium = false;
+    let notifyPremium = () => {};
+    const show = vi.fn();
+    const hide = vi.fn();
+    const scheduler = createAdScheduler({
+      showVignette: show,
+      hideVignette: hide,
+      isPremium: () => premium,
+      subscribePremium: (listener) => {
+        notifyPremium = listener;
+        return () => { notifyPremium = () => {}; };
+      },
+    });
+
+    scheduler.start();
+    vi.advanceTimersByTime(ADS_FIRST_DELAY_MS);
+    expect(show).toHaveBeenCalledTimes(1);
+
+    premium = true;
+    notifyPremium();
+    expect(hide).toHaveBeenCalled();
+
     for (let i = 0; i < ADS_TASKS_PER_AD; i++) scheduler.registerTask();
     expect(show).toHaveBeenCalledTimes(1);
     scheduler.stop();
