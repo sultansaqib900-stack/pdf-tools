@@ -50,6 +50,38 @@ export function sanitizeDownloadFilename(filename: string): string {
 }
 
 /**
+ * Load a PDF for editing, transparently handling "permission-protected"
+ * files. Many real-world PDFs (Word/Acrobat exports with printing or copy
+ * restrictions, scanner output) carry an encryption dictionary with an EMPTY
+ * user password — viewers open them seamlessly, but pdf-lib refuses them
+ * outright ("Input document is encrypted"). Decrypting with the empty
+ * password restores a plain PDF the tools can edit.
+ *
+ * Throws a friendly Error when the file needs a real password (pointing the
+ * user at the Unlock tool) or when the file is otherwise unreadable.
+ */
+export async function loadPdfForEditing(bytes: ArrayBuffer) {
+  const { PDFDocument } = await import("pdf-lib");
+  try {
+    return await PDFDocument.load(bytes);
+  } catch (cause) {
+    const message = cause instanceof Error ? cause.message : String(cause);
+    if (!/encrypted/i.test(message)) throw cause;
+
+    let decrypted: Uint8Array;
+    try {
+      const { decryptPDF } = await import("@pdfsmaller/pdf-decrypt");
+      decrypted = await decryptPDF(copyPdfBytes(bytes), "");
+    } catch {
+      throw new Error(
+        "This PDF is password-protected. Remove the password with the Unlock PDF tool first, then try again.",
+      );
+    }
+    return PDFDocument.load(bytesToArrayBuffer(decrypted));
+  }
+}
+
+/**
  * Starts a browser download and revokes the temporary URL later. Revoking the
  * URL synchronously after click can cancel downloads in Safari/WebKit.
  */

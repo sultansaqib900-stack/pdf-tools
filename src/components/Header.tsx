@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { STUDIO_TRIAL_CTA } from "@/lib/studioTrial";
 import { usePathname } from "next/navigation";
 import { useState, lazy, Suspense, useEffect } from "react";
 import { useAuth } from "@/components/AuthProvider";
@@ -32,9 +31,9 @@ export default function Header() {
   const pathLocale = detectPathLocale(pathname);
 
   const themes = [
-    { id: "midnight", label: "Midnight", color: "#6366f1" },
-    { id: "amber", label: "Amber", color: "#f59e0b" },
-    { id: "ocean", label: "Ocean", color: "#06b6d4" },
+    { id: "midnight", label: "Daylight", color: "#4f46e5" },
+    { id: "amber", label: "Sand", color: "#d97706" },
+    { id: "ocean", label: "Mint", color: "#0e7490" },
   ];
 
   const pickTheme = (id: string) => {
@@ -131,8 +130,8 @@ export default function Header() {
   return (
     <header className="w-full border-b border-[var(--card-border)] bg-[var(--background)]/85 backdrop-blur-xl sticky top-0 z-50 transition-all duration-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-2 min-w-0">
-        <Link href="/" className="flex items-center gap-2 text-xl font-extrabold bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 bg-clip-text text-transparent shrink-0 group">
-          <span className="w-9 h-9 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white shadow-lg shadow-indigo-500/25 group-hover:scale-105 transition-transform">
+        <Link href="/" className="flex items-center gap-2 text-xl font-extrabold text-[var(--foreground)] shrink-0 group">
+          <span className="w-9 h-9 rounded-lg bg-[var(--accent)] flex items-center justify-center text-white group-hover:scale-105 transition-transform">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
           </span>
           <span className="tracking-tight">PDFTools</span>
@@ -327,7 +326,7 @@ export default function Header() {
             onClick={() => setMenuOpen(false)}
             className="block p-3 rounded-2xl bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-extrabold text-sm text-center shadow-lg shadow-indigo-500/25"
           >
-            {premium ? "Open PDF Studio" : STUDIO_TRIAL_CTA}
+            Open PDF Studio
           </Link>
 
           <button

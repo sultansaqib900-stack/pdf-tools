@@ -2,73 +2,68 @@
 
 import { createContext, useContext, type ReactNode } from "react";
 import Link from "next/link";
-import { useStudioTrial } from "@/hooks/useStudioTrial";
-import { STUDIO_TRIAL_CTA } from "@/lib/studioTrial";
+import { usePremiumStatus } from "@/hooks/usePremiumStatus";
 
 const StudioAccessContext = createContext(false);
 /** Scoped to Studio; never use this as a site-wide Premium entitlement. */
 export const useStudioAccess = () => useContext(StudioAccessContext);
 
+/**
+ * PDF Studio is included with Premium — forever. The former three-day trial
+ * was removed; Premium members (server-verified) mount the workspace, and
+ * everyone else sees a straightforward upgrade page.
+ */
 export default function StudioGate({ children }: { children: ReactNode }) {
-  const { trial, busy, error, refresh } = useStudioTrial();
-  const hasAccess = trial?.status === "active" || trial?.status === "premium";
+  const { premium, ready } = usePremiumStatus();
 
-  if (hasAccess) {
+  if (premium) {
     return (
       <StudioAccessContext.Provider value={true}>
-        {trial.status === "active" && (
-          <div className="border-b border-indigo-500/30 bg-indigo-500/10 px-4 py-3 text-center text-sm" role="status">
-            <strong>PDF Studio free trial</strong> · Ends {new Date(trial.expiresAt!).toLocaleString()}.
-            {" "}Studio only — other Premium tools are not included.{" "}
-            <Link href="/premium" className="font-semibold text-indigo-500 underline">Keep Studio with Premium</Link>
-          </div>
-        )}
         {children}
       </StudioAccessContext.Provider>
     );
   }
 
-  if (!trial && !error) {
-    return <div className="max-w-3xl mx-auto px-4 py-16 text-center" role="status" aria-busy="true">Checking PDF Studio access…</div>;
+  if (!ready) {
+    return (
+      <div className="max-w-3xl mx-auto px-4 py-16 text-center" role="status" aria-busy="true">
+        Checking your Premium status…
+      </div>
+    );
   }
 
-  const expired = trial?.status === "expired";
   return (
     <section className="max-w-3xl mx-auto px-4 py-16">
-      <div className="text-center border border-indigo-500/30 rounded-3xl p-8 sm:p-12 bg-gradient-to-br from-indigo-500/10 via-purple-500/10 to-[var(--card)]">
-        <p className="text-xs font-bold uppercase tracking-widest text-indigo-500 mb-4">PDF Studio · Multi-step workspace</p>
+      <div className="text-center border border-[var(--card-border)] rounded-2xl p-8 sm:p-12 bg-[var(--card)]">
+        <p className="text-xs font-bold uppercase tracking-widest text-[var(--accent)] mb-4">
+          PDF Studio · Multi-step workspace
+        </p>
         <h1 className="text-3xl sm:text-4xl font-extrabold text-[var(--foreground)] mb-4">
-          {expired ? "Your PDF Studio free trial has ended" : STUDIO_TRIAL_CTA}
+          PDF Studio is included with Premium
         </h1>
-        <p className="text-[var(--muted)] leading-relaxed mb-6">
-          Load a PDF once. Organise pages, e-sign, redact, watermark, protect, and compress in one session — without downloading and re-uploading between steps.
+        <p className="text-[var(--muted)] leading-relaxed mb-6 max-w-xl mx-auto">
+          Load a PDF once, then organise pages, e-sign, redact, watermark, protect, and compress
+          in one session — no downloading and re-uploading between steps. Premium keeps Studio
+          unlocked forever, along with the full professional tool suite and files up to 100MB.
         </p>
-        <p className="text-sm text-[var(--muted)] mb-8">
-          {expired
-            ? "Continue using PDF Studio with Premium. Your 38 core tools remain free and unlimited."
-            : "Your 72 hours start when you activate the trial, not when you visit this page. No account or card required. Premium is required afterwards; there is no automatic charge."}
-        </p>
-        {error && <p role="alert" className="text-sm text-red-500 mb-4">{error}</p>}
         <div className="flex flex-col sm:flex-row justify-center gap-3">
-          {!expired && (
-            <button
-              type="button"
-              disabled={busy}
-              onClick={() => void refresh(!error)}
-              className="px-6 py-3.5 rounded-2xl bg-indigo-600 text-white font-bold hover:bg-indigo-500 disabled:opacity-50"
-            >
-              {busy ? "Checking PDF Studio…" : error ? "Retry access check" : STUDIO_TRIAL_CTA}
-            </button>
-          )}
-          <Link href="/premium" className="px-6 py-3.5 rounded-2xl border border-indigo-500/40 text-indigo-500 font-bold">
-            {expired ? "Continue with Premium" : "View Premium plans"}
+          <Link
+            href="/premium"
+            className="px-6 py-3.5 rounded-xl bg-[var(--accent)] text-white font-bold hover:bg-[var(--accent-hover)]"
+          >
+            View Premium plans
+          </Link>
+          <Link
+            href="/tools"
+            className="px-6 py-3.5 rounded-xl border border-[var(--card-border)] text-[var(--foreground)] font-bold hover:border-[var(--card-hover-border)]"
+          >
+            Browse the free core tools
           </Link>
         </div>
         <p className="mt-6 text-xs text-[var(--muted)]">
-          This offer unlocks PDF Studio only, not a site-wide Premium trial. Includes Studio’s PII redaction and recipes, with files up to 100MB. The separate professional tools keep their existing access rules.
+          Already Premium? Sign in with your account email and Studio unlocks immediately.
+          All 38 core tools stay free and unlimited for everyone.
         </p>
-        <p className="mt-3 text-xs text-[var(--muted)]">Trial access is linked to this browser, and to your account if you sign in. Documents are processed locally; only access status is checked with the server.</p>
-        <Link href="/tools" className="inline-block mt-6 text-sm font-semibold text-indigo-500 underline">Browse the free core tools</Link>
       </div>
     </section>
   );

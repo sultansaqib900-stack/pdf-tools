@@ -7,8 +7,11 @@ import { useAuth } from "@/components/AuthProvider";
 const REFRESH_INTERVAL_MS = 5 * 60 * 1000;
 
 export default function PremiumVerifier() {
-  const { token, loading } = useAuth();
+  const { token, loading, user } = useAuth();
 
+  // Re-verify on login/logout too: the session rides in an HttpOnly cookie
+  // (token stays null), so without the user dependency a freshly signed-in
+  // owner/Premium account would not be recognized until the next interval.
   useEffect(() => {
     if (loading) return;
     const verify = () => { void verifyPremiumServer(token || undefined); };
@@ -23,7 +26,7 @@ export default function PremiumVerifier() {
       window.clearInterval(interval);
       document.removeEventListener("visibilitychange", onVisibilityChange);
     };
-  }, [loading, token]);
+  }, [loading, token, user?.id]);
 
   return null;
 }

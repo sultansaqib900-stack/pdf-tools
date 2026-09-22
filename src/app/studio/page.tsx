@@ -13,7 +13,7 @@ import { compressPdfBytes } from "@/lib/pdfRaster";
 import { canvasToImageBytes } from "@/lib/imageBytes";
 import { locateSignatureOnPdfPage } from "@/lib/pdfSignature";
 import { STARTER_RECIPE_IDS } from "@/lib/toolCatalog";
-import { checkStudioFileSize } from "@/lib/studioTrial";
+import { checkStudioFileSize } from "@/lib/studio";
 import PremiumUpsell, { usePremiumUpsell } from "@/components/PremiumUpsell";
 import StudioGate, { useStudioAccess } from "@/components/StudioGate";
 import { readFileWithProgress } from "@/lib/readFileWithProgress";

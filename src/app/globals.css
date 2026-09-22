@@ -1,59 +1,62 @@
 @import "tailwindcss";
 @variant dark (&:where(.dark, .dark *));
 
+/*
+ * Design direction: a practical, document-tool look (iLovePDF / Adobe style).
+ * Light paper background, white cards, solid buttons, no glassmorphism,
+ * no animated gradient glow. Themes below are light variations only.
+ */
+
 :root,
 [data-theme="midnight"] {
-  --background: #060913;
-  --foreground: #f8fafc;
-  --card: #0d1527;
-  --card-border: #1e293b;
-  --card-hover-border: #384561;
-  --muted: #94a3b8;
-  --accent: #6366f1;
-  --accent-hover: #818cf8;
-  --gradient-from: #1e1b4b;
-  --gradient-via: #312e81;
-  --gradient-to: #4338ca;
-  --glow-color: rgba(99, 102, 241, 0.25);
+  --background: #f5f6f8;
+  --foreground: #1c2430;
+  --card: #ffffff;
+  --card-border: #e3e6ea;
+  --card-hover-border: #c7cdd6;
+  --muted: #5c6672;
+  --accent: #4f46e5;
+  --accent-hover: #4338ca;
+  --gradient-from: #eef0ff;
+  --gradient-via: #f5f6f8;
+  --gradient-to: #eef0ff;
+  --glow-color: rgba(79, 70, 229, 0.08);
 }
 
 [data-theme="amber"] {
-  --background: #0d0a07;
-  --foreground: #fef3c7;
-  --card: #1c150e;
-  --card-border: #382c1e;
-  --card-hover-border: #57442d;
-  --muted: #d4a373;
-  --accent: #f59e0b;
-  --accent-hover: #fbbf24;
-  --gradient-from: #451a03;
-  --gradient-via: #78350f;
-  --gradient-to: #b45309;
-  --glow-color: rgba(245, 158, 11, 0.25);
+  --background: #faf7f1;
+  --foreground: #2b2317;
+  --card: #ffffff;
+  --card-border: #eae2d4;
+  --card-hover-border: #d3c4a8;
+  --muted: #6f6250;
+  --accent: #d97706;
+  --accent-hover: #b45309;
+  --gradient-from: #fdf6ea;
+  --gradient-via: #faf7f1;
+  --gradient-to: #fdf6ea;
+  --glow-color: rgba(217, 119, 6, 0.08);
 }
 
 [data-theme="ocean"] {
-  --background: #040d12;
-  --foreground: #ccfbf1;
-  --card: #091c24;
-  --card-border: #143542;
-  --card-hover-border: #1f4f61;
-  --muted: #5eead4;
-  --accent: #06b6d4;
-  --accent-hover: #22d3ee;
-  --gradient-from: #042f2e;
-  --gradient-via: #0f766e;
-  --gradient-to: #0e7490;
-  --glow-color: rgba(6, 182, 212, 0.25);
+  --background: #f1f7f9;
+  --foreground: #16282e;
+  --card: #ffffff;
+  --card-border: #d9e7ec;
+  --card-hover-border: #b3cfd8;
+  --muted: #51686f;
+  --accent: #0e7490;
+  --accent-hover: #155e75;
+  --gradient-from: #e8f4f7;
+  --gradient-via: #f1f7f9;
+  --gradient-to: #e8f4f7;
+  --glow-color: rgba(14, 116, 144, 0.08);
 }
 
 /*
- * Horizontal-overflow guard.
- * Individual components were fixed to fit their containers (responsive header
- * nav, truncating account labels, wrapped tables); this clip is a last-resort
- * safety net for decorative absolute elements. `clip` is used instead of
- * `hidden` because it does not create a scroll container, so the sticky header
- * and in-page anchors keep working. Unsupported browsers simply ignore it.
+ * Horizontal-overflow guard. `clip` is used instead of `hidden` because it
+ * does not create a scroll container, so the sticky header and in-page
+ * anchors keep working. Unsupported browsers simply ignore it.
  */
 html,
 body {
@@ -62,41 +65,31 @@ body {
 
 body {
   background-color: var(--background);
-  background-image: 
-    radial-gradient(circle at 50% 0%, rgba(99, 102, 241, 0.12) 0%, transparent 50%),
-    radial-gradient(circle at 80% 20%, rgba(168, 85, 247, 0.08) 0%, transparent 40%),
-    radial-gradient(circle at 10% 40%, rgba(6, 182, 212, 0.06) 0%, transparent 35%);
-  background-attachment: fixed;
   color: var(--foreground);
   font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   transition: background-color 0.3s, color 0.3s;
   min-height: 100vh;
 }
 
-/* ── Modern Glassmorphism & SaaS Elevation ── */
+/* ── Flat surfaces (former glassmorphism classes, kept for compatibility) ── */
 .glass-panel {
-  background: rgba(13, 21, 39, 0.75);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  background: var(--card);
+  border: 1px solid var(--card-border);
+  box-shadow: 0 1px 3px rgba(16, 24, 40, 0.06);
 }
 
 .glass-card {
-  background: rgba(13, 21, 39, 0.65);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.07);
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  background: var(--card);
+  border: 1px solid var(--card-border);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
 .glass-card:hover {
-  border-color: rgba(99, 102, 241, 0.5);
-  transform: translateY(-4px);
-  box-shadow: 0 16px 36px -10px rgba(99, 102, 241, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  border-color: var(--card-hover-border);
+  box-shadow: 0 2px 8px rgba(16, 24, 40, 0.08);
 }
 
-/* ── Keyframes ── */
+/* ── Keyframes (kept; used by success states and toasts) ── */
 @keyframes successBounce {
   0% { transform: scale(0.9); opacity: 0; }
   50% { transform: scale(1.02); }
@@ -125,24 +118,19 @@ body {
   to { opacity: 1; transform: translateY(0); }
 }
 @keyframes pulseGlow {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.4); }
-  50% { box-shadow: 0 0 0 10px rgba(99, 102, 241, 0); }
+  0%, 100% { box-shadow: 0 0 0 0 rgba(79, 70, 229, 0.3); }
+  50% { box-shadow: 0 0 0 8px rgba(79, 70, 229, 0); }
 }
 @keyframes float {
   0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-8px); }
+  50% { transform: translateY(-4px); }
 }
 @keyframes shimmer {
   0% { background-position: -200% 0; }
   100% { background-position: 200% 0; }
 }
-@keyframes gradientShift {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}
 @keyframes scaleIn {
-  from { opacity: 0; transform: scale(0.92); }
+  from { opacity: 0; transform: scale(0.96); }
   to { opacity: 1; transform: scale(1); }
 }
 
@@ -151,34 +139,21 @@ body {
 .animate-successScale { animation: successScale 0.5s ease-out; }
 .animate-successSparkle { animation: successSparkle 0.8s ease-out; }
 .animate-drawCheck { stroke-dasharray: 30; animation: drawCheck 0.4s ease-out 0.1s forwards; }
-.animate-fadeIn { animation: fadeIn 0.3s ease-out; }
-.animate-slideUp { animation: slideUp 0.4s ease-out; }
-.animate-pulseGlow { animation: pulseGlow 2s ease-in-out infinite; }
-.animate-float { animation: float 4s ease-in-out infinite; }
+.animate-fadeIn { animation: fadeIn 0.25s ease-out; }
+.animate-slideUp { animation: slideUp 0.3s ease-out; }
+.animate-pulseGlow { animation: none; }
+.animate-float { animation: none; }
 .animate-shimmer { background-size: 200% 100%; animation: shimmer 2.5s linear infinite; }
-.animate-gradientShift { background-size: 200% 200%; animation: gradientShift 6s ease infinite; }
-.animate-scaleIn { animation: scaleIn 0.35s cubic-bezier(0.16, 1, 0.3, 1); }
+.animate-gradientShift { animation: none; }
+.animate-scaleIn { animation: scaleIn 0.2s ease-out; }
 
-/* Text Gradients */
-.text-gradient-indigo {
-  background: linear-gradient(135deg, #ffffff 0%, #cbd5e1 40%, #818cf8 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-.text-gradient-emerald {
-  background: linear-gradient(135deg, #ffffff 0%, #a7f3d0 40%, #34d399 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
+/* Solid headings where the old theme used gradient text. */
+.text-gradient-indigo,
+.text-gradient-emerald,
 .text-gradient-purple {
-  background: linear-gradient(135deg, #ffffff 0%, #e9d5ff 40%, #c084fc 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  background: none;
+  -webkit-text-fill-color: currentColor;
+  color: var(--foreground);
 }
 
 /* Interactive States */
@@ -186,8 +161,7 @@ body {
   -webkit-tap-highlight-color: transparent;
 }
 
-button:active:not(:disabled),
-a:active:not(.sr-only) {
+button:active:not(:disabled) {
   transform: scale(0.98);
 }
 
@@ -201,13 +175,11 @@ html { scroll-behavior: smooth; }
   input, select, textarea, button, a { font-size: 16px !important; }
 }
 
-*:focus-visible { outline: 2px solid #6366f1; outline-offset: 2px; border-radius: 8px; }
+*:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 6px; }
 
 @layer utilities {
   .bg-gradient-hero {
-    background: linear-gradient(135deg, var(--gradient-from) 0%, var(--gradient-via) 50%, var(--gradient-to) 100%);
-    background-size: 200% 200%;
-    animation: gradientShift 6s ease infinite;
+    background: var(--card);
   }
   .scrollbar-none::-webkit-scrollbar {
     display: none;
@@ -217,3 +189,57 @@ html { scroll-behavior: smooth; }
     scrollbar-width: none;
   }
 }
+
+/*
+ * ── Global "de-AI" overrides ───────────────────────────────────────────────
+ * These rules live outside Tailwind's layers, so they win over utilities
+ * without touching hundreds of page files. Together they replace the
+ * glassmorphism look with the flat, practical styling of classic PDF tools.
+ */
+
+/* No frosted glass anywhere. */
+* {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+/* Buttons and links: solid colors instead of indigo→purple→pink gradients. */
+button[class*="bg-gradient-to"],
+a[class*="bg-gradient-to"] {
+  background-image: none !important;
+  background-color: var(--accent);
+  box-shadow: none;
+}
+button[class*="from-amber"],
+a[class*="from-amber"],
+button[class*="from-orange"],
+a[class*="from-orange"] {
+  background-color: #f59e0b;
+}
+button[class*="from-emerald"],
+a[class*="from-emerald"],
+button[class*="from-green"],
+a[class*="from-green"] {
+  background-color: #059669;
+}
+button[class*="from-rose"],
+a[class*="from-rose"],
+button[class*="from-red"],
+a[class*="from-red"] {
+  background-color: #e11d48;
+}
+button[class*="from-slate"],
+a[class*="from-slate"],
+button[class*="from-gray"],
+a[class*="from-gray"] {
+  background-color: #334155;
+}
+
+/* Quieter corners: 14px max on big panels, 10px on controls. */
+.rounded-3xl { border-radius: 14px; }
+.rounded-2xl { border-radius: 10px; }
+
+/* Soft, short shadows instead of large colored glows. */
+.shadow-2xl { box-shadow: 0 4px 16px rgba(16, 24, 40, 0.10); }
+.shadow-xl { box-shadow: 0 2px 10px rgba(16, 24, 40, 0.08); }
+.shadow-lg { box-shadow: 0 1px 6px rgba(16, 24, 40, 0.08); }

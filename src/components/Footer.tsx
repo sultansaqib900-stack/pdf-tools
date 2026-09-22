@@ -2,15 +2,15 @@ import Link from "next/link";
 
 export default function Footer() {
   return (
-    <footer className="w-full border-t border-[var(--card-border)] bg-[var(--card)]/90 backdrop-blur-md">
+    <footer className="w-full border-t border-[var(--card-border)] bg-[var(--card)]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12">
         <div className="grid grid-cols-2 md:grid-cols-5 gap-8 mb-12">
           {/* Col 1: Core Tools */}
           <div>
-            <h4 className="font-extrabold text-xs uppercase tracking-wider mb-4 text-indigo-400">Core Tools</h4>
+            <h4 className="font-extrabold text-xs uppercase tracking-wider mb-4 text-indigo-600">Core Tools</h4>
             <div className="space-y-2 text-xs text-[var(--muted)] font-medium">
-              <Link href="/recipes" className="block text-purple-400 font-bold hover:underline">⚡ PDF Recipes (Macros)</Link>
-              <Link href="/pii-guardian" className="block text-red-400 font-bold hover:underline">🛡️ PII Guardian</Link>
+              <Link href="/recipes" className="block text-purple-600 font-bold hover:underline">⚡ PDF Recipes (Macros)</Link>
+              <Link href="/pii-guardian" className="block text-red-600 font-bold hover:underline">🛡️ PII Guardian</Link>
               <Link href="/compress" className="block hover:text-[var(--foreground)] hover:translate-x-0.5 transition-all">Compress PDF</Link>
               <Link href="/merge" className="block hover:text-[var(--foreground)] hover:translate-x-0.5 transition-all">Merge PDF</Link>
               <Link href="/split" className="block hover:text-[var(--foreground)] hover:translate-x-0.5 transition-all">Split PDF</Link>
@@ -25,7 +25,7 @@ export default function Footer() {
 
           {/* Col 2: Edit & Security */}
           <div>
-            <h4 className="font-extrabold text-xs uppercase tracking-wider mb-4 text-purple-400">Edit & Security</h4>
+            <h4 className="font-extrabold text-xs uppercase tracking-wider mb-4 text-purple-600">Edit & Security</h4>
             <div className="space-y-2 text-xs text-[var(--muted)] font-medium">
               <Link href="/edit-pdf" className="block hover:text-[var(--foreground)] hover:translate-x-0.5 transition-all">Edit PDF</Link>
               <Link href="/sign" className="block hover:text-[var(--foreground)] hover:translate-x-0.5 transition-all">e-Sign PDF</Link>
@@ -44,23 +44,23 @@ export default function Footer() {
           <div>
             <h4 className="font-extrabold text-xs uppercase tracking-wider mb-4 text-amber-500">⭐ Premium Suite</h4>
             <div className="space-y-2 text-xs text-[var(--muted)] font-medium">
-              <Link href="/studio" className="block text-indigo-400 font-bold hover:underline">⚡ PDF Studio Pipeline</Link>
-              <Link href="/pdf-diff" className="block hover:text-amber-400 hover:translate-x-0.5 transition-all">PDF Diff Compare</Link>
-              <Link href="/bates-numbering" className="block hover:text-amber-400 hover:translate-x-0.5 transition-all">Bates Numbering</Link>
-              <Link href="/certificate-generator" className="block hover:text-amber-400 hover:translate-x-0.5 transition-all">Certificate Generator</Link>
-              <Link href="/pdf-to-audio" className="block hover:text-amber-400 hover:translate-x-0.5 transition-all">PDF to Audio (TTS)</Link>
-              <Link href="/form-data-extract" className="block hover:text-amber-400 hover:translate-x-0.5 transition-all">Form Data to CSV</Link>
-              <Link href="/bulk-rename" className="block hover:text-amber-400 hover:translate-x-0.5 transition-all">Bulk Rename</Link>
-              <Link href="/booklet" className="block hover:text-amber-400 hover:translate-x-0.5 transition-all">Booklet Creator</Link>
-              <Link href="/search-redact" className="block hover:text-amber-400 hover:translate-x-0.5 transition-all">Search & Redact</Link>
-              <Link href="/vault" className="block hover:text-amber-400 hover:translate-x-0.5 transition-all">Encrypted Vault</Link>
-              <Link href="/split-by-bookmarks" className="block hover:text-amber-400 hover:translate-x-0.5 transition-all">Split by Bookmarks</Link>
+              <Link href="/studio" className="block text-indigo-600 font-bold hover:underline">⚡ PDF Studio Pipeline</Link>
+              <Link href="/pdf-diff" className="block hover:text-amber-700 hover:translate-x-0.5 transition-all">PDF Diff Compare</Link>
+              <Link href="/bates-numbering" className="block hover:text-amber-700 hover:translate-x-0.5 transition-all">Bates Numbering</Link>
+              <Link href="/certificate-generator" className="block hover:text-amber-700 hover:translate-x-0.5 transition-all">Certificate Generator</Link>
+              <Link href="/pdf-to-audio" className="block hover:text-amber-700 hover:translate-x-0.5 transition-all">PDF to Audio (TTS)</Link>
+              <Link href="/form-data-extract" className="block hover:text-amber-700 hover:translate-x-0.5 transition-all">Form Data to CSV</Link>
+              <Link href="/bulk-rename" className="block hover:text-amber-700 hover:translate-x-0.5 transition-all">Bulk Rename</Link>
+              <Link href="/booklet" className="block hover:text-amber-700 hover:translate-x-0.5 transition-all">Booklet Creator</Link>
+              <Link href="/search-redact" className="block hover:text-amber-700 hover:translate-x-0.5 transition-all">Search & Redact</Link>
+              <Link href="/vault" className="block hover:text-amber-700 hover:translate-x-0.5 transition-all">Encrypted Vault</Link>
+              <Link href="/split-by-bookmarks" className="block hover:text-amber-700 hover:translate-x-0.5 transition-all">Split by Bookmarks</Link>
             </div>
           </div>
 
           {/* Col 4: Solutions & Guides */}
           <div>
-            <h4 className="font-extrabold text-xs uppercase tracking-wider mb-4 text-emerald-400">Workflows & SEO</h4>
+            <h4 className="font-extrabold text-xs uppercase tracking-wider mb-4 text-emerald-600">Workflows & SEO</h4>
             <div className="space-y-2 text-xs text-[var(--muted)] font-medium">
               <Link href="/pdf-tools-for-students" className="block hover:text-[var(--foreground)] hover:translate-x-0.5 transition-all">For Students</Link>
               <Link href="/pdf-tools-for-lawyers" className="block hover:text-[var(--foreground)] hover:translate-x-0.5 transition-all">For Lawyers</Link>

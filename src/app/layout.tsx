@@ -8,6 +8,7 @@ import InstallPrompt from "@/components/InstallPrompt";
 import CookieConsent from "@/components/CookieConsent";
 import ClientIdProvider from "@/components/ClientIdProvider";
 import FeedbackWidget from "@/components/FeedbackWidget";
+import AdManager from "@/components/AdManager";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import EmbedModeDetector from "@/components/EmbedModeDetector";
 import EmbedModePoweredBy from "@/components/EmbedModePoweredBy";
@@ -94,7 +95,7 @@ export default function RootLayout({
     >
       <head>
         <meta name="color-scheme" content="light dark" />
-        <meta httpEquiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://cdnjs.cloudflare.com https://va.vercel-scripts.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: blob: https:; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https://www.google-analytics.com https://generativelanguage.googleapis.com https://*.upstash.io https:; frame-src 'self' https:; worker-src 'self' blob:; manifest-src 'self'" />
+        <meta httpEquiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://cdnjs.cloudflare.com https://va.vercel-scripts.com https://n6wxm.com https://*.n6wxm.com https://*.monetag.com https://*.propellerads.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: blob: https:; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https://www.google-analytics.com https://generativelanguage.googleapis.com https://*.upstash.io https:; frame-src 'self' https:; worker-src 'self' blob:; manifest-src 'self'" />
         <link rel="preconnect" href="https://www.googletagmanager.com" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
@@ -155,6 +156,9 @@ gtag('config', 'G-0YRS54VR4X');`}
         <EmbedModeDetector><CookieConsent /></EmbedModeDetector>
         <EmbedModeDetector><FeedbackWidget /></EmbedModeDetector>
         <EmbedModeDetector><PrivacyHUD /></EmbedModeDetector>
+        {/* Monetag vignette schedule: first ad 10s after load, then every 3
+            completed tasks. Premium members never see ads. Embed mode = no ads. */}
+        <EmbedModeDetector><AdManager /></EmbedModeDetector>
         <EmbedModeDetector><Analytics /></EmbedModeDetector>
         </AuthProvider>
       </body>
