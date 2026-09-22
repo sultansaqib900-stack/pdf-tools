@@ -1,5 +1,7 @@
 "use client";
 
+import { registerAdTask } from "@/lib/ads";
+
 import { isPdfFile } from "@/lib/pdfBytes";
 
 import { useState, useRef } from "react";
@@ -80,6 +82,7 @@ export default function BatesNumberingPage() {
       const pdfBytes = await srcDoc.save();
       const blob = new Blob([pdfBytes as unknown as BlobPart], { type: "application/pdf" });
       setDownloadUrl(URL.createObjectURL(blob));
+      registerAdTask();
     } catch {
       // Failed processing must not consume the shared trial allowance.
       await usage.releaseReservation(reservation);

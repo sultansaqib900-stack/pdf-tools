@@ -1,5 +1,7 @@
 "use client";
 
+import { registerAdTask } from "@/lib/ads";
+
 import { useEffect, useRef, useState } from "react";
 import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
 import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
@@ -121,6 +123,7 @@ export default function SplitByBookmarksPage() {
         urls.push(URL.createObjectURL(blob));
       }
       setDownloadUrls(urls);
+      registerAdTask();
     } catch (processError) {
       await usage.releaseReservation(reservation);
       setError(processError instanceof Error ? processError.message : "Failed to process PDF. Try a different file.");

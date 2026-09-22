@@ -9,9 +9,9 @@ Build premium-only PDF features, redesign UI to make them visible, apply compreh
 
 ## Progress
 ### Monetag vignette ads (2026-09-22)
-- `src/lib/monetag.ts` holds the vignette script URL (single paste point; `NEXT_PUBLIC_MONETAG_VIGNETTE_SRC` env var overrides). `src/lib/ads.ts` implements the schedule; `src/components/AdManager.tsx` wires it into the root layout (inside `EmbedModeDetector`, so `?embed=1` stays ad-free).
-- Schedule: first vignette 10s after page open, then one per every 3 completed tasks (tasks = finished tool exports via `trackExport`, Studio steps via `pushPipelineStep`, answered chat questions). `ADS_MIN_GAP_MS` prevents back-to-back shows.
-- Premium check happens at show time via the server-verified premium snapshot — a member who upgrades mid-session stops seeing ads immediately.
+- `src/lib/monetag.ts` holds the vignette script URL and zone copied from `src/tag.txt` (`NEXT_PUBLIC_MONETAG_VIGNETTE_SRC` / `NEXT_PUBLIC_MONETAG_VIGNETTE_ZONE` can override them). `src/lib/ads.ts` implements the schedule; `src/components/AdManager.tsx` wires it into the root layout (inside `EmbedModeDetector`, so `?embed=1` stays ad-free).
+- Schedule: first vignette 5s after page open, then one immediately per every 3 completed tool tasks (finished exports/results, Studio steps, and answered chat questions).
+- Ads wait for the server-verified Premium snapshot. A member who upgrades mid-session has the injected tag removed immediately and all pending ads cancelled.
 - CSP in `src/app/layout.tsx` allows the Monetag serving domains in `script-src`.
 - Tests: `src/__tests__/ads.test.ts` (timing, task cadence, premium suppression).
 

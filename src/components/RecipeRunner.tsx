@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { registerAdTask } from "@/lib/ads";
 import {
   DEFAULT_RECIPES,
   executePdfRecipe,
@@ -179,6 +180,7 @@ export default function RecipeRunner() {
     }
 
     setResults(completed);
+    if (completed.some((result) => !result.error && result.bytes)) registerAdTask();
     setCurrentFile(null);
     setActiveStepIndex(null);
     setRunning(false);

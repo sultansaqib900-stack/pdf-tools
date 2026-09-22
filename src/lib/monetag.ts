@@ -1,27 +1,27 @@
 /**
- * Monetag vignette banner integration — single source of truth.
+ * Monetag vignette integration — values copied from src/tag.txt.
  *
- * The vignette tag from the Monetag dashboard is a script that renders a
- * full-screen banner when it loads. We control WHEN it loads (see ads.ts):
- * 10 seconds after the visitor opens the site, then after every 3 completed
- * tasks. Premium members never see ads.
+ * Canonical dashboard tag:
+ *   <script>(function(s){s.dataset.zone='11530056',s.src='https://n6wxm.com/vignette.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
  *
- * ── PASTE YOUR TAG HERE ──────────────────────────────────────────────────
- * The default below is the site's Monetag vignette script URL. If you rotate
- * the zone in the Monetag dashboard, replace the URL here (or set the
- * NEXT_PUBLIC_MONETAG_VIGNETTE_SRC environment variable on Vercel and
- * redeploy). A full dashboard tag looks like:
- *
- *   <script data-cfasync="false" src="//n6wxm.com/vignette.min.js" async></script>
- *
- * Only the src URL belongs in this constant (https:// or // prefixed).
+ * The tag is injected by components/AdManager.tsx only when an ad is due:
+ * five seconds after opening the site and once per three completed tool tasks.
+ * Premium members never receive the script.
  */
+
 export const MONETAG_VIGNETTE_SRC: string =
   (process.env.NEXT_PUBLIC_MONETAG_VIGNETTE_SRC || "").trim() ||
   "https://n6wxm.com/vignette.min.js";
 
+export const MONETAG_VIGNETTE_ZONE: string =
+  (process.env.NEXT_PUBLIC_MONETAG_VIGNETTE_ZONE || "").trim() ||
+  "11530056";
+
 export function isMonetagConfigured(): boolean {
-  return /^https?:|^\/\//.test(MONETAG_VIGNETTE_SRC);
+  return (
+    /^https?:\/\//i.test(monetagVignetteUrl()) &&
+    /^\d+$/.test(MONETAG_VIGNETTE_ZONE)
+  );
 }
 
 /** Normalize `//host/path` shorthand into a loadable absolute URL. */

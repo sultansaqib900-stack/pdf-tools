@@ -1,5 +1,7 @@
 "use client";
 
+import { registerAdTask } from "@/lib/ads";
+
 import { useState } from "react";
 import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
 import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
@@ -77,6 +79,7 @@ export default function FormDataExtractPage() {
       if (failedFiles.length > 0) setError(`Skipped ${failedFiles.length} unreadable file(s): ${failedFiles.join(", ")}`);
 
       setCsvResult(csvLines.join("\n"));
+      registerAdTask();
       setSuccess(true);
     } catch (extractionError) {
       await Promise.all(reservations.map((existing) => usage.releaseReservation(existing)));
