@@ -1,6 +1,6 @@
 "use client";
 
-import { isPdfFile } from "@/lib/pdfBytes";
+import { isPdfFile, loadPdfForEditing } from "@/lib/pdfBytes";
 
 import { useState, useCallback, useEffect, useRef } from "react";
 import ToolInfo from "@/components/ToolInfo";
@@ -70,12 +70,15 @@ export default function WatermarkPage() {
     const canProceed = await usage.checkAndTrack();
     if (!canProceed) { setProcessing(false); upsell.showUpsell("trial-limit"); return; }
     try {
-      const [{ PDFDocument, rgb, StandardFonts, degrees }] = await Promise.all([
+      const [{ rgb, StandardFonts, degrees }] = await Promise.all([
         import("pdf-lib"),
       ]);
       const bytes = await file.arrayBuffer();
       originalBytes.current = bytes;
-      const pdfDoc = await PDFDocument.load(bytes);
+      // loadPdfForEditing also opens "permission-protected" PDFs (encrypted
+      // with an empty user password), which pdf-lib rejects by default —
+      // the most common reason watermarking failed on real-world files.
+      const pdfDoc = await loadPdfForEditing(bytes);
       const font = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
       const pages = pdfDoc.getPages();
 
@@ -104,8 +107,13 @@ export default function WatermarkPage() {
       a.click();
       trackExport(file.name, "Watermark PDF", bytes.byteLength);
       setSuccess(true);
-    } catch {
-      setError("Failed to watermark PDF.");
+    } catch (cause) {
+      // Show the specific reason (e.g. "password-protected — unlock first")
+      // when we have one; keep the generic banner for unexpected failures.
+      const message = cause instanceof Error && /password-protected/i.test(cause.message)
+        ? cause.message
+        : "Failed to watermark PDF. The file may be corrupted — try repairing it first.";
+      setError(message);
     }
     setProcessing(false);
   }, [file, text, opacity, position, rotation, usage, upsell, trackExport]);

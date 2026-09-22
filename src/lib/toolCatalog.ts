@@ -28,7 +28,7 @@ export interface ToolDefinition {
 
 /**
  * Routes whose file processing consumes the shared lifetime trial.
- * PDF Studio is NOT here: it has a separate three-day trial (no shared trial files).
+ * PDF Studio is NOT here: it is a Premium workspace with no shared trial files.
  */
 const PROFESSIONAL_TRIAL_ROUTES = new Set<string>([
   "/pdf-diff",
@@ -52,7 +52,7 @@ export function getToolTier(hrefOrSlug: string): ToolTier {
  * Premium subscribers also receive the larger limits on every free tool.
  */
 export const TOOL_CATALOG: readonly ToolDefinition[] = [
-  { title: "PDF Studio Pipeline", description: "Try PDF Studio free for three days. Chain edits in one session, without re-uploading. Premium afterwards.", icon: "⚡", href: "/studio", gradient: "bg-gradient-to-br from-indigo-500 via-purple-600 to-pink-500", category: "Premium", badge: "Flagship" },
+  { title: "PDF Studio Pipeline", description: "Included with Premium. Chain edits in one session, without re-uploading.", icon: "⚡", href: "/studio", gradient: "bg-gradient-to-br from-indigo-500 via-purple-600 to-pink-500", category: "Premium", badge: "Flagship" },
   { title: "PII Guardian", description: "Preview common PII matches locally; Premium securely redacts complete documents.", icon: "🛡️", href: "/pii-guardian", gradient: "bg-gradient-to-br from-red-500 via-rose-600 to-amber-600", category: "Premium", hasFreePreview: true },
   { title: "PDF Automation Recipes", description: "Run multi-step PDF workflows; two starter recipes are available as a free preview.", icon: "⚡", href: "/recipes", gradient: "bg-gradient-to-br from-purple-500 via-indigo-600 to-blue-500", category: "Premium", hasFreePreview: true },
   { title: "Chat with PDF AI", description: "Ask questions, summarize, simplify, or translate extracted PDF text with a free daily preview.", icon: "🤖", href: "/chat-pdf", gradient: "bg-gradient-to-br from-violet-500 to-fuchsia-600", category: "Premium", hasFreePreview: true },

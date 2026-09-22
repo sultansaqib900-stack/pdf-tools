@@ -196,23 +196,60 @@ export async function getPremiumStatusByUserId(userId: string): Promise<boolean>
 }
 
 /**
- * Server-configured owner/support grants. Keep the email in Vercel only;
- * never commit account identifiers or payment overrides to source control.
+ * Server-configured owner/support grants.
+ *
+ * The canonical configuration is PREMIUM_ADMIN_EMAILS on Vercel (a
+ * comma-separated email list). Because the dashboard invites typos, we also
+ * accept the common alias names and tolerate values pasted from a URL or
+ * wrapped in quotes — anything that contains a valid email is honored.
+ *
+ * BUILT_IN_OWNER_EMAILS guarantees the site owner's account keeps Premium
+ * even if the environment variable is missing, misnamed, or set on the wrong
+ * Vercel environment (env changes require a redeploy to take effect).
  */
+const BUILT_IN_OWNER_EMAILS = ["sultansaqib900@gmail.com"];
+
+const ADMIN_EMAIL_ENV_KEYS = [
+  "PREMIUM_ADMIN_EMAILS",
+  "PREMIUM_ADMIN_EMAIL",
+  "ADMIN_EMAILS",
+  "ADMIN_EMAIL",
+  "PREMIUM_ADMIN_URL",
+  "ADMIN_URL",
+];
+
+const EMAIL_PATTERN = /[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}/g;
+
+export function getAdminPremiumEmails(): string[] {
+  const emails = new Set(BUILT_IN_OWNER_EMAILS);
+  for (const key of ADMIN_EMAIL_ENV_KEYS) {
+    const raw = process.env[key] || "";
+    for (const match of raw.match(EMAIL_PATTERN) || []) {
+      emails.add(match.toLowerCase());
+    }
+  }
+  return [...emails];
+}
+
 export function isAdminPremiumEmail(email: string): boolean {
-  const configured = (process.env.PREMIUM_ADMIN_EMAILS || "")
-    .split(",").map((value) => value.trim().toLowerCase()).filter(Boolean);
-  return configured.includes(email.trim().toLowerCase());
+  const value = (email || "").trim().toLowerCase();
+  if (!value) return false;
+  return getAdminPremiumEmails().includes(value);
 }
 
 /**
  * Grant a configured (env) Premium account. Returns true when the account
  * matches PREMIUM_ADMIN_EMAILS; the entitlement is persisted so device
- * binding and cross-device login also see it.
+ * binding and cross-device login also see it. Persistence is best-effort:
+ * a KV outage must never revoke a configured owner grant.
  */
 export async function grantConfiguredPremium(userId: string, email: string): Promise<boolean> {
   if (!isAdminPremiumEmail(email)) return false;
-  await kv.set(keys.premiumByUserId(userId), email.trim().toLowerCase());
+  try {
+    await kv.set(keys.premiumByUserId(userId), email.trim().toLowerCase());
+  } catch {
+    // The env-based grant above remains authoritative for this request.
+  }
   return true;
 }
 

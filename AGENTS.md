@@ -4,17 +4,36 @@ Build premium-only PDF features, redesign UI to make them visible, apply compreh
 ## Constraints & Preferences
 - 100% client-side processing (no file uploads to server)
 - Premium tier via LemonSqueezy payments
-- Ads: disabled; no third-party advertising scripts are loaded
+- Ads: Monetag vignette banners for free users only (see below). Premium members never see ads.
 - Deployed on Vercel at allaboutpdfediting.xyz (custom domain live — verified 200 on all premium pages)
 
 ## Progress
-### PDF Studio-only three-day trial (2026-09-19)
-- Offer copy: **Try PDF Studio free for three days**. This is NOT a site-wide Premium trial.
-- `/api/studio/trial`: GET only checks; POST explicitly activates 72 hours of Studio access. Redis server time is authoritative. Persistent timestamps are linked atomically to the earliest browser/account activation; no reset on reload, repeated activation, login, or expiry.
-- `StudioGate` mounts the workspace only after verified paid or active trial access. Trial grants full Studio workflow access (including PII and recipes, 100MB files) without changing global Premium state or the separate five-file professional allowance.
-- KV is required. Verification/storage failures return 503 and a retry UI, never a client-side trial fallback. Anonymous access follows the existing browser identity model; clearing identity or using a fresh browser is not fraud-proof.
-- The catalog remains 52 tools: 38 free and 14 professional. Studio requires Premium after the timed trial.
-- Regression tests: `studioTrial.test.ts`, `studioGate.test.tsx`; updated tier/catalog assertions.
+### Monetag vignette ads (2026-09-22)
+- `src/lib/monetag.ts` holds the vignette script URL (single paste point; `NEXT_PUBLIC_MONETAG_VIGNETTE_SRC` env var overrides). `src/lib/ads.ts` implements the schedule; `src/components/AdManager.tsx` wires it into the root layout (inside `EmbedModeDetector`, so `?embed=1` stays ad-free).
+- Schedule: first vignette 10s after page open, then one per every 3 completed tasks (tasks = finished tool exports via `trackExport`, Studio steps via `pushPipelineStep`, answered chat questions). `ADS_MIN_GAP_MS` prevents back-to-back shows.
+- Premium check happens at show time via the server-verified premium snapshot — a member who upgrades mid-session stops seeing ads immediately.
+- CSP in `src/app/layout.tsx` allows the Monetag serving domains in `script-src`.
+- Tests: `src/__tests__/ads.test.ts` (timing, task cadence, premium suppression).
+
+### PDF Studio is a permanent Premium feature (2026-09-22)
+- The three-day Studio trial was REMOVED (owner request). `StudioGate` now mounts the workspace only for server-verified Premium members; everyone else sees a plain upgrade page.
+- Deleted: `src/lib/studioTrial.ts`, `src/lib/studioTrialStore.ts`, `src/hooks/useStudioTrial.ts`, `/api/studio/trial`. `src/lib/studio.ts` keeps only the 100MB file-size guard.
+- All "three-day trial" copy replaced site-wide (home, tools, premium, header, ToolGrid, ToolSearch, catalog, studio layout).
+- Regression tests: `studioGate.test.tsx` rewritten for the Premium-only gate.
+
+### Owner Premium grant hardening (2026-09-22)
+- `isAdminPremiumEmail` accepts alias env names (`ADMIN_EMAILS`, `ADMIN_EMAIL`, `PREMIUM_ADMIN_URL`, `ADMIN_URL`), extracts emails from pasted URLs/quotes, and always includes the built-in owner email so a missing/misnamed Vercel variable can't lock the owner out. KV persistence of the grant is best-effort (a KV outage never revokes it).
+- `PremiumVerifier` re-verifies on login/logout (previously only on token change — which never fires for cookie sessions).
+- Note for deploys: Vercel env changes require a redeploy to take effect.
+
+### Watermark tool fix (2026-09-22)
+- Root cause: pdf-lib refuses "permission-protected" PDFs (encrypted with an empty user password — common Word/Acrobat/scanner exports), surfacing as "Failed to watermark PDF."
+- Fix: shared `loadPdfForEditing()` in `src/lib/pdfBytes.ts` transparently decrypts empty-password files via `@pdfsmaller/pdf-decrypt`, then loads normally; password-protected files get a friendly error pointing at Unlock PDF.
+- Regression tests: `src/__tests__/watermarkPage.test.tsx` (plain + encrypted fixtures).
+
+### UI direction change (2026-09-22)
+- Moved from the dark glassmorphism look to a flat, light, iLovePDF/Adobe-style design: light paper background, white cards, solid buttons, no blur/glow/gradient text.
+- `globals.css` redefines the three themes as light palettes and adds global overrides (no backdrop-filter, solid gradient buttons, calmer radii/shadows) so all 300+ pages update without per-file edits. `ThemeScript` no longer forces the `dark` class.
 
 ### Done
 - **Built 13 premium-only PDF tools** (all premium-gated, not just limit-removal):

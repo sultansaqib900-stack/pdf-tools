@@ -52,6 +52,30 @@ describe("configured owner Premium grant", () => {
     expect(isAdminPremiumEmail("owner@example.com")).toBe(false);
   });
 
+  it("keeps the built-in owner email Premium even when no env var is set", () => {
+    // Guards against a missing/misnamed Vercel variable: the site owner's
+    // account must always resolve as Premium once signed in.
+    expect(isAdminPremiumEmail("sultansaqib900@gmail.com")).toBe(true);
+    expect(isAdminPremiumEmail("SultanSaqib900@Gmail.com")).toBe(true);
+  });
+
+  it("accepts alias env names and tolerates URLs/quotes pasted as values", () => {
+    vi.stubEnv("PREMIUM_ADMIN_URL", "https://example.com/claim?email=boss@example.com");
+    expect(isAdminPremiumEmail("boss@example.com")).toBe(true);
+
+    vi.stubEnv("ADMIN_EMAIL", "\"admin2@example.com\"");
+    expect(isAdminPremiumEmail("admin2@example.com")).toBe(true);
+  });
+
+  it("returns true from grantConfiguredPremium even when KV persistence fails", async () => {
+    // A KV outage must never revoke a configured owner grant.
+    const kvModule = await import("@vercel/kv");
+    const client = kvModule.createClient({ url: "", token: "" });
+    (client.set as ReturnType<typeof vi.fn>).mockRejectedValueOnce(new Error("kv down"));
+    vi.stubEnv("PREMIUM_ADMIN_EMAILS", "owner@example.com");
+    await expect(grantConfiguredPremium("user-kv-down", "owner@example.com")).resolves.toBe(true);
+  });
+
   it("persists the grant so cross-device login and device binding observe it", async () => {
     vi.stubEnv("PREMIUM_ADMIN_EMAILS", "owner@example.com");
 

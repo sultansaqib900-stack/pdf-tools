@@ -12,7 +12,6 @@ import { useEffect, useRef, useState, useCallback } from "react";
 import dynamic from "next/dynamic";
 import { setPipelineDocument } from "@/lib/pdfPipeline";
 import SavingsCalculator from "@/components/SavingsCalculator";
-import { STUDIO_TRIAL_CTA } from "@/lib/studioTrial";
 import { FREE_TOOL_COUNT, PREMIUM_TOOL_COUNT, TOOL_CATALOG } from "@/lib/toolCatalog";
 
 const LiveStats = dynamic(() => import("@/components/LiveStats"));
@@ -48,31 +47,19 @@ function AnimatedHero() {
 
   return (
     <section className="relative overflow-hidden pt-16 pb-20 px-4">
-      {/* Dynamic Background Glows */}
-      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[400px] bg-gradient-to-tr from-indigo-600/20 via-purple-600/20 to-pink-600/10 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute top-12 left-10 w-72 h-72 bg-blue-500/10 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute bottom-10 right-10 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl pointer-events-none" />
-
-      {/* Grid pattern overlay */}
-      <div className="absolute inset-0 opacity-[0.03] dark:opacity-[0.05] pointer-events-none" style={{ backgroundImage: "radial-gradient(circle at 1px 1px, currentColor 1px, transparent 0)", backgroundSize: "32px 32px" }} />
-
       <div className="max-w-5xl mx-auto text-center relative z-10">
         {/* Top Feature Pill */}
-        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-gradient-to-r from-indigo-500/15 via-purple-500/15 to-pink-500/15 border border-indigo-500/30 text-indigo-400 text-xs font-extrabold mb-6 animate-fadeIn">
-          <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
-          <span>{TOOL_CATALOG.length} PDF tools · Browser-based document editing</span>
+        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[var(--card)] border border-[var(--card-border)] text-[var(--muted)] text-xs font-bold mb-6">
+          <span>{TOOL_CATALOG.length} PDF tools · Everything runs in your browser</span>
         </div>
 
         {/* Hero Headline */}
-        <h1 className="text-4xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight text-[var(--foreground)] mb-6 leading-[1.1]">
-          Edit, Convert &amp; Pipeline <br className="hidden sm:inline" />
-          <span className="bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
-            Any PDF in Seconds
-          </span>
+        <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-[var(--foreground)] mb-5 leading-[1.15]">
+          Every PDF tool you need, <span className="text-[var(--accent)]">free and in one place</span>
         </h1>
 
         {/* Subtitle */}
-        <p className="text-base sm:text-xl text-[var(--muted)] max-w-2xl mx-auto mb-10 leading-relaxed font-normal">
+        <p className="text-base sm:text-lg text-[var(--muted)] max-w-2xl mx-auto mb-10 leading-relaxed">
           {FREE_TOOL_COUNT} core tools — merge, split, compress, OCR, e-sign, redact, convert, and organise — free and unlimited with no account. {PREMIUM_TOOL_COUNT} professional tools for legal and bulk work.
         </p>
 
@@ -82,24 +69,24 @@ function AnimatedHero() {
             onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
             onDragLeave={() => setIsDragging(false)}
             onDrop={handleDrop}
-            className={`block border-2 border-dashed rounded-3xl p-6 sm:p-8 text-center transition-all cursor-pointer bg-[var(--card)]/80 backdrop-blur-xl ${
+            className={`block border-2 border-dashed rounded-xl p-6 sm:p-8 text-center transition-colors cursor-pointer bg-[var(--card)] ${
               isDragging
-                ? "border-indigo-500 bg-indigo-500/10 ring-4 ring-indigo-500/20 scale-102"
-                : "border-[var(--card-border)] hover:border-indigo-500/50 hover:shadow-2xl hover:shadow-indigo-500/10"
+                ? "border-[var(--accent)] bg-indigo-50"
+                : "border-[var(--card-border)] hover:border-[var(--card-hover-border)]"
             }`}
           >
             <input type="file" accept=".pdf" onChange={handleFileSelect} className="hidden" />
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 text-white flex items-center justify-center text-2xl shadow-lg shadow-indigo-500/30 animate-pulse">
+              <div className="w-14 h-14 rounded-lg bg-[var(--accent)] text-white flex items-center justify-center text-2xl">
                 {uploading ? "⏳" : "⚡"}
               </div>
               <div className="text-left">
                 <p className="text-sm font-bold text-[var(--foreground)]">
                   {uploading ? "Loading PDF into Studio..." : "Drop PDF here to launch the Studio Pipeline"}
-                  <span className="ml-2 align-middle text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-400 border border-amber-500/30">3-day Studio trial</span>
+                  <span className="ml-2 align-middle text-[10px] font-bold uppercase px-2 py-0.5 rounded bg-amber-500 text-white">Premium</span>
                 </p>
                 <p className="text-xs text-[var(--muted)] mt-0.5">
-                  or click to browse · Try PDF Studio free for three days. Activate on the next screen.
+                  or click to browse · PDF Studio is included with Premium.
                 </p>
               </div>
             </div>
@@ -110,26 +97,26 @@ function AnimatedHero() {
         <div className="flex flex-wrap items-center justify-center gap-4 mb-10">
           <Link
             href="/studio"
-            className="px-8 py-4 bg-gradient-to-r from-indigo-500 via-purple-600 to-pink-500 text-white font-extrabold text-sm rounded-2xl hover:opacity-95 transition-all shadow-xl shadow-indigo-500/25 active:scale-95 flex items-center gap-2"
+            className="px-7 py-3.5 bg-[var(--accent)] text-white font-bold text-sm rounded-lg hover:bg-[var(--accent-hover)] transition-colors"
           >
-            <span>{STUDIO_TRIAL_CTA}</span>
+            <span>Open PDF Studio</span>
             <span>→</span>
           </Link>
           <Link
             href="/recipes"
-            className="px-6 py-4 bg-purple-600/15 border border-purple-500/30 text-purple-400 hover:text-purple-300 font-extrabold text-sm rounded-2xl transition-all"
+            className="px-5 py-3.5 border border-[var(--card-border)] bg-[var(--card)] text-[var(--foreground)] hover:border-[var(--card-hover-border)] font-bold text-sm rounded-lg transition-colors"
           >
             ⭐ Recipes · Free Preview
           </Link>
           <Link
             href="/pii-guardian"
-            className="px-6 py-4 bg-red-600/15 border border-red-500/30 text-red-400 hover:text-red-300 font-extrabold text-sm rounded-2xl transition-all"
+            className="px-5 py-3.5 border border-[var(--card-border)] bg-[var(--card)] text-[var(--foreground)] hover:border-[var(--card-hover-border)] font-bold text-sm rounded-lg transition-colors"
           >
             ⭐ PII Scan · Free Preview
           </Link>
           <Link
             href="/vs/adobe-acrobat"
-            className="px-6 py-4 border border-[var(--card-border)] bg-[var(--card)] hover:border-indigo-500 text-[var(--foreground)] font-bold text-sm rounded-2xl transition-all"
+            className="px-5 py-3.5 border border-[var(--card-border)] bg-[var(--card)] hover:border-[var(--card-hover-border)] text-[var(--foreground)] font-bold text-sm rounded-lg transition-colors"
           >
             ⚔️ vs Adobe Pro
           </Link>
@@ -199,19 +186,19 @@ export default function Home() {
             {/* Spotlight 1: PDF Studio */}
             <Link
               href="/studio"
-              className="p-6 rounded-3xl border border-indigo-500/40 bg-gradient-to-br from-indigo-950/40 via-[var(--card)] to-purple-950/30 hover:border-indigo-500 hover:scale-[1.02] transition-all shadow-xl group"
+              className="p-6 rounded-xl border border-[var(--card-border)] bg-[var(--card)] hover:border-[var(--card-hover-border)] transition-colors group"
             >
-              <div className="w-12 h-12 rounded-2xl bg-indigo-500/20 text-indigo-400 flex items-center justify-center text-2xl font-bold mb-4 group-hover:scale-110 transition-transform">
+              <div className="w-12 h-12 rounded-lg bg-indigo-600 text-white flex items-center justify-center text-2xl font-bold mb-4">
                 ⚡
               </div>
-              <span className="text-[10px] font-extrabold uppercase px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30">
-                PDF Studio · 3 days free
+              <span className="text-[10px] font-bold uppercase px-2 py-0.5 rounded bg-amber-500 text-white">
+                PDF Studio · Premium
               </span>
-              <h3 className="text-lg font-extrabold text-[var(--foreground)] mt-2 mb-1 group-hover:text-indigo-400 transition">
+              <h3 className="text-lg font-extrabold text-[var(--foreground)] mt-2 mb-1 group-hover:text-[var(--accent)] transition">
                 PDF Studio Workspace
               </h3>
               <p className="text-xs text-[var(--muted)] leading-relaxed">
-                Try PDF Studio free for three days: reorder, delete pages, sign, watermark, protect, and compress in one session. Premium afterwards.
+                Included with Premium: reorder, delete pages, sign, watermark, protect, and compress in one session — yours to keep.
               </p>
             </Link>
 
@@ -220,13 +207,13 @@ export default function Home() {
               href="/pii-guardian"
               className="p-6 rounded-3xl border border-red-500/40 bg-gradient-to-br from-red-950/40 via-[var(--card)] to-rose-950/30 hover:border-red-500 hover:scale-[1.02] transition-all shadow-xl group"
             >
-              <div className="w-12 h-12 rounded-2xl bg-red-500/20 text-red-400 flex items-center justify-center text-2xl font-bold mb-4 group-hover:scale-110 transition-transform">
+              <div className="w-12 h-12 rounded-lg bg-red-600 text-white flex items-center justify-center text-2xl font-bold mb-4">
                 🛡️
               </div>
               <span className="text-[10px] font-extrabold uppercase px-2.5 py-0.5 rounded-full bg-red-500/20 text-red-300 border border-red-500/30">
                 Premium · Free Scan Preview
               </span>
-              <h3 className="text-lg font-extrabold text-[var(--foreground)] mt-2 mb-1 group-hover:text-red-400 transition">
+              <h3 className="text-lg font-extrabold text-[var(--foreground)] mt-2 mb-1 group-hover:text-red-600 transition">
                 PII Guardian Auto-Redact
               </h3>
               <p className="text-xs text-[var(--muted)] leading-relaxed">
@@ -237,15 +224,15 @@ export default function Home() {
             {/* Spotlight 3: PDF Recipes */}
             <Link
               href="/recipes"
-              className="p-6 rounded-3xl border border-purple-500/40 bg-gradient-to-br from-purple-950/40 via-[var(--card)] to-blue-950/30 hover:border-purple-500 hover:scale-[1.02] transition-all shadow-xl group"
+              className="p-6 rounded-xl border border-[var(--card-border)] bg-[var(--card)] hover:border-[var(--card-hover-border)] transition-colors group"
             >
-              <div className="w-12 h-12 rounded-2xl bg-purple-500/20 text-purple-400 flex items-center justify-center text-2xl font-bold mb-4 group-hover:scale-110 transition-transform">
+              <div className="w-12 h-12 rounded-lg bg-purple-600 text-white flex items-center justify-center text-2xl font-bold mb-4">
                 ⚡
               </div>
               <span className="text-[10px] font-extrabold uppercase px-2.5 py-0.5 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/30">
                 Premium · 2 Free Recipes
               </span>
-              <h3 className="text-lg font-extrabold text-[var(--foreground)] mt-2 mb-1 group-hover:text-purple-400 transition">
+              <h3 className="text-lg font-extrabold text-[var(--foreground)] mt-2 mb-1 group-hover:text-purple-600 transition">
                 1-Click Workflow Recipes
               </h3>
               <p className="text-xs text-[var(--muted)] leading-relaxed">
@@ -259,20 +246,20 @@ export default function Home() {
       {/* Interactive Workflow Pipeline Showcase Section */}
       <SectionReveal>
         <section className="max-w-6xl mx-auto px-4 mb-16">
-          <div className="p-8 sm:p-12 rounded-3xl bg-gradient-to-br from-slate-900 via-indigo-950/40 to-slate-900 border border-indigo-500/30 shadow-2xl relative overflow-hidden">
+          <div className="p-8 sm:p-12 rounded-xl bg-[var(--card)] border border-[var(--card-border)]">
             <div className="text-center max-w-3xl mx-auto mb-10">
-              <span className="text-xs font-extrabold uppercase tracking-widest px-3 py-1 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30 mb-3 inline-block">
-                PDF Studio — try it free for three days
+              <span className="text-xs font-bold uppercase tracking-widest px-2.5 py-1 rounded bg-amber-500 text-white mb-3 inline-block">
+                PDF Studio — included with Premium
               </span>
-              <h2 className="text-2xl sm:text-4xl font-extrabold text-white mb-4">
+              <h2 className="text-2xl sm:text-4xl font-extrabold text-[var(--foreground)] mb-4">
                 Stop Re-Uploading Your PDF For Every Small Edit
               </h2>
-              <p className="text-sm sm:text-base text-slate-300">
+              <p className="text-sm sm:text-base text-[var(--muted)]">
                 PDF Studio chains every step in one session. Load a document once, then organise, sign, and export — no downloading and re-uploading between steps:
               </p>
               <div className="flex flex-wrap justify-center gap-2 mt-4">
                 {["Organize & delete pages", "Rotate", "e-Sign", "Watermark", "Protect (AES-256)", "Compress"].map((step) => (
-                  <span key={step} className="text-xs font-semibold px-3 py-1.5 rounded-full bg-indigo-500/15 text-indigo-200 border border-indigo-500/30">
+                  <span key={step} className="text-xs font-semibold px-3 py-1.5 rounded bg-indigo-50 text-indigo-700 border border-indigo-200">
                     {step}
                   </span>
                 ))}
@@ -283,29 +270,29 @@ export default function Home() {
             <div className="grid md:grid-cols-2 gap-6 items-stretch">
               {/* The Old Way */}
               <div className="p-6 rounded-2xl border border-red-500/20 bg-red-950/10 text-xs space-y-3">
-                <p className="font-bold text-red-400 uppercase tracking-wider flex items-center gap-1.5">
+                <p className="font-bold text-red-600 uppercase tracking-wider flex items-center gap-1.5">
                   <span>✕</span> Traditional PDF Websites (Slow &amp; Tedious)
                 </p>
-                <div className="space-y-2 opacity-75 text-slate-300">
-                  <div className="p-2.5 rounded-xl bg-slate-900/60 border border-red-500/10">1. Upload PDF to server &amp; wait for slow queue</div>
-                  <div className="p-2.5 rounded-xl bg-slate-900/60 border border-red-500/10">2. Delete pages &amp; download result to hard drive</div>
-                  <div className="p-2.5 rounded-xl bg-slate-900/60 border border-red-500/10">3. Re-upload same file to add a visible e-signature</div>
-                  <div className="p-2.5 rounded-xl bg-slate-900/60 border border-red-500/10">4. Download again, re-upload for compression</div>
-                  <div className="p-2.5 rounded-xl bg-slate-900/60 border border-red-500/10">5. 10 minutes wasted + files stored on random servers</div>
+                <div className="space-y-2 text-[var(--muted)]">
+                  <div className="p-2.5 rounded-lg bg-red-50 border border-red-100">1. Upload PDF to server &amp; wait for slow queue</div>
+                  <div className="p-2.5 rounded-lg bg-red-50 border border-red-100">2. Delete pages &amp; download result to hard drive</div>
+                  <div className="p-2.5 rounded-lg bg-red-50 border border-red-100">3. Re-upload same file to add a visible e-signature</div>
+                  <div className="p-2.5 rounded-lg bg-red-50 border border-red-100">4. Download again, re-upload for compression</div>
+                  <div className="p-2.5 rounded-lg bg-red-50 border border-red-100">5. 10 minutes wasted + files stored on random servers</div>
                 </div>
               </div>
 
               {/* PDFTools Studio Way */}
               <div className="p-6 rounded-2xl border border-emerald-500/30 bg-emerald-950/15 text-xs space-y-3 shadow-lg shadow-emerald-500/5">
-                <p className="font-bold text-emerald-400 uppercase tracking-wider flex items-center gap-1.5">
+                <p className="font-bold text-emerald-600 uppercase tracking-wider flex items-center gap-1.5">
                   <span>✓</span> PDFTools Studio Pipeline (Instant &amp; Private)
                 </p>
-                <div className="space-y-2 text-slate-200">
-                  <div className="p-2.5 rounded-xl bg-slate-900/80 border border-emerald-500/20 font-medium">1. Drop PDF once — loaded into local browser memory</div>
-                  <div className="p-2.5 rounded-xl bg-slate-900/80 border border-emerald-500/20 font-medium">2. Delete &amp; rotate pages with visual thumbnails</div>
-                  <div className="p-2.5 rounded-xl bg-slate-900/80 border border-emerald-500/20 font-medium">3. Stamp your e-signature on page 1 without reloading</div>
-                  <div className="p-2.5 rounded-xl bg-slate-900/80 border border-emerald-500/20 font-medium">4. Add watermark &amp; compress in the exact same workspace</div>
-                  <div className="p-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-bold text-center">
+                <div className="space-y-2 text-[var(--foreground)]">
+                  <div className="p-2.5 rounded-lg bg-emerald-50 border border-emerald-100 font-medium">1. Drop PDF once — loaded into local browser memory</div>
+                  <div className="p-2.5 rounded-lg bg-emerald-50 border border-emerald-100 font-medium">2. Delete &amp; rotate pages with visual thumbnails</div>
+                  <div className="p-2.5 rounded-lg bg-emerald-50 border border-emerald-100 font-medium">3. Stamp your e-signature on page 1 without reloading</div>
+                  <div className="p-2.5 rounded-lg bg-emerald-50 border border-emerald-100 font-medium">4. Add watermark &amp; compress in the exact same workspace</div>
+                  <div className="p-2.5 rounded-lg bg-emerald-600 text-white font-bold text-center">
                     One session · Locally processed
                   </div>
                 </div>
@@ -316,18 +303,18 @@ export default function Home() {
               <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
                 <Link
                   href="/studio"
-                  className="inline-flex items-center gap-2 px-8 py-3.5 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white font-bold rounded-2xl shadow-lg shadow-indigo-500/25 hover:opacity-95 transition"
+                  className="inline-flex items-center gap-2 px-7 py-3.5 bg-[var(--accent)] text-white font-bold rounded-lg hover:bg-[var(--accent-hover)] transition-colors"
                 >
-                  {STUDIO_TRIAL_CTA} →
+                  Open PDF Studio →
                 </Link>
                 <Link
                   href="/premium"
-                  className="inline-flex items-center gap-2 px-8 py-3.5 border border-amber-500/40 bg-amber-500/10 text-amber-300 font-bold rounded-2xl hover:bg-amber-500/20 transition"
+                  className="inline-flex items-center gap-2 px-7 py-3.5 border border-amber-500 bg-amber-500 text-white font-bold rounded-lg hover:bg-amber-600 transition-colors"
                 >
                   ⭐ Get Premium
                 </Link>
               </div>
-              <p className="text-xs text-slate-400">
+              <p className="text-xs text-[var(--muted)]">
                 Three-day trial for PDF Studio only. Premium required afterwards. The 38 core tools stay free and unlimited.
               </p>
             </div>
@@ -389,14 +376,14 @@ export default function Home() {
                   <div className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${cluster.gradient} flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition-transform`}>
                     {cluster.icon}
                   </div>
-                  <h3 className="text-base font-bold text-[var(--foreground)] group-hover:text-indigo-400 transition mb-2">
+                  <h3 className="text-base font-bold text-[var(--foreground)] group-hover:text-[var(--accent)] transition mb-2">
                     {cluster.title}
                   </h3>
                   <p className="text-xs text-[var(--muted)] leading-relaxed">
                     {cluster.desc}
                   </p>
                 </div>
-                <div className="mt-4 pt-3 border-t border-[var(--card-border)]/50 text-xs font-semibold text-indigo-400 flex items-center justify-between">
+                <div className="mt-4 pt-3 border-t border-[var(--card-border)] text-xs font-semibold text-[var(--accent)] flex items-center justify-between">
                   <span>Explore Solution</span>
                   <span>→</span>
                 </div>
@@ -430,9 +417,9 @@ export default function Home() {
       {/* SEO FAQs */}
       <FaqPageJsonLd
         questions={[
-          { question: "Is PDFTools truly free?", answer: "Yes! All core tools (Compress, Merge, Split, e-Sign, Watermark, Delete Pages, Rotate, and 30+ more) are 100% free and unlimited — no daily or monthly caps. Selected professional tools share a one-time 5-file lifetime trial. PDF Studio has its own three-day trial; it does not unlock other Premium tools." },
+          { question: "Is PDFTools truly free?", answer: "Yes! All core tools (Compress, Merge, Split, e-Sign, Watermark, Delete Pages, Rotate, and 30+ more) are 100% free and unlimited — no daily or monthly caps. Selected professional tools share a one-time 5-file lifetime trial. PDF Studio is included with Premium." },
           { question: "Are my PDF files uploaded to your servers?", answer: "Core PDF tools and PDF Studio process documents locally in your browser without uploading your PDFs. Optional AI chat sends extracted text, and AI OCR sends page images, to an AI service." },
-          { question: "What is the PDF Studio Pipeline?", answer: "PDF Studio chains edits on one document without downloading and re-uploading between steps. Try PDF Studio free for three days from activation, then continue with Premium. This is a Studio-only trial, not a site-wide Premium trial." },
+          { question: "What is the PDF Studio Pipeline?", answer: "PDF Studio chains edits on one document without downloading and re-uploading between steps. PDF Studio is included with Premium and stays unlocked forever." },
           { question: "What is the PII Guardian?", answer: "PII Guardian detects common sensitive-data patterns locally. Free users can preview first-page matches; Premium can scan and securely raster-redact complete documents after review." },
         ]}
       />

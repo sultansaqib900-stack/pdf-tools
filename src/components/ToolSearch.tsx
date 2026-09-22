@@ -3,7 +3,7 @@ import Link from "next/link";
 import { useState, useRef, useEffect, useMemo } from "react";
 
 const allTools = [
-  { label: "PDF Studio (Multi-Step Workspace)", href: "/studio", badge: "3 days free" },
+  { label: "PDF Studio (Multi-Step Workspace)", href: "/studio", badge: "Premium" },
   { label: "Compress PDF", href: "/compress" },
   { label: "Merge PDF", href: "/merge" },
   { label: "Split PDF", href: "/split" },

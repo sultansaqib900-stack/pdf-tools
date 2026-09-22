@@ -4,6 +4,7 @@
 
 import { deleteFile, getFile, saveFile, type StoredFile } from "./fileStore";
 import { copyPdfBytes, type PdfBinary } from "./pdfBytes";
+import { registerAdTask } from "./ads";
 
 const ACTIVE_SESSION_KEY = "pdftools_active_pipeline_id";
 const ACTIVE_FILE_ID = "pipeline_active_doc";
@@ -168,6 +169,9 @@ export async function pushPipelineStep(
     bytes: copyPdfBytes(bytes),
     timestamp: Date.now(),
   });
+  // Every applied Studio step counts as one completed task for the ad
+  // schedule (Premium members are exempt inside the scheduler).
+  registerAdTask();
 
   try {
     await persistDocument(bytes, inMemoryPdfName);

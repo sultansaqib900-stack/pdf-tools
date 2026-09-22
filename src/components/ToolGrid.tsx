@@ -3,7 +3,6 @@
 import { useState, useMemo } from "react";
 import ToolCard from "@/components/ToolCard";
 import Link from "next/link";
-import { STUDIO_TRIAL_CTA } from "@/lib/studioTrial";
 import { PREMIUM_TOOL_COUNT, TOOL_CATALOG, type ToolCategory } from "@/lib/toolCatalog";
 
 type Category = "All" | ToolCategory;
@@ -68,29 +67,25 @@ export default function ToolGrid() {
 
       {/* Flagship Studio Teaser Card (shown when category is All or Studio) */}
       {(category === "All" || category === "Studio & AI") && !query && (
-        <div className="mb-8 p-6 sm:p-8 rounded-3xl bg-gradient-to-br from-indigo-950/60 via-purple-950/40 to-slate-900 border-2 border-indigo-500/40 shadow-2xl relative overflow-hidden group">
-          <div className="absolute top-0 right-0 -mr-20 -mt-20 w-80 h-80 bg-gradient-to-br from-indigo-500/20 via-purple-500/20 to-pink-500/20 rounded-full blur-3xl pointer-events-none group-hover:scale-125 transition-transform duration-700" />
-          
-          <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+        <div className="mb-8 p-6 sm:p-8 rounded-xl bg-[var(--card)] border border-[var(--card-border)]">
+          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
             <div className="max-w-2xl">
-              <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-indigo-500/20 border border-indigo-500/40 text-indigo-300 text-xs font-extrabold mb-3">
-                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                PDF STUDIO · THREE-DAY FREE TRIAL
+              <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded bg-indigo-50 border border-indigo-200 text-indigo-700 text-xs font-bold mb-3">
+                PDF STUDIO · INCLUDED WITH PREMIUM
               </div>
-              <h3 className="text-2xl sm:text-3xl font-extrabold text-white mb-2">
+              <h3 className="text-2xl sm:text-3xl font-extrabold text-[var(--foreground)] mb-2">
                 PDF Studio: One-Stop Multi-Operation Pipeline
               </h3>
-              <p className="text-sm text-indigo-200/80 leading-relaxed">
+              <p className="text-sm text-[var(--muted)] leading-relaxed">
                 Why upload 5 times to do 5 things? Delete pages, rotate orientation, add your visible e-signature, stamp watermarks, and compress all in one unified interactive workspace.
               </p>
             </div>
 
             <Link
               href="/studio"
-              className="px-8 py-4 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white font-extrabold text-sm rounded-2xl hover:opacity-95 transition-all shadow-xl shadow-indigo-500/30 flex items-center gap-2 shrink-0 group-hover:scale-105"
+              className="px-6 py-3.5 bg-[var(--accent)] text-white font-bold text-sm rounded-lg hover:bg-[var(--accent-hover)] transition-colors shrink-0"
             >
-              <span>{STUDIO_TRIAL_CTA}</span>
-              <span className="group-hover:translate-x-1 transition-transform">→</span>
+              Open PDF Studio
             </Link>
           </div>
         </div>

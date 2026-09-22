@@ -6,6 +6,7 @@ import { useState, useCallback, useRef, useEffect } from "react";
 import ToolInfo from "@/components/ToolInfo";
 import PremiumUpsell, { usePremiumUpsell } from "@/components/PremiumUpsell";
 import { checkFileSize, getClientId } from "@/lib/premium";
+import { registerAdTask } from "@/lib/ads";
 import { usePremiumStatus } from "@/hooks/usePremiumStatus";
 import { useAuth } from "@/components/AuthProvider";
 import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
@@ -206,6 +207,8 @@ export default function ChatPDFPage() {
       if (data.ok) {
         setMessages((prev) => [...prev, { role: "assistant", text: data.answer }]);
         if (typeof data.remaining === "number") setChatRemaining(data.remaining);
+        // An answered question counts as one completed task for the ad schedule.
+        registerAdTask();
       } else {
         if (res.status === 429 && data.remaining === 0) {
           // Only the quota endpoint sets `remaining`: this is genuine daily
