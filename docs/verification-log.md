@@ -117,3 +117,16 @@ SITEMAP URLs with ZERO internal inbound links: 0   (the 30 /error/* guides were 
 /es/compress cross-links: /es, /es/tools, /es/compress, /es/merge, /es/split, /es/image-to-pdf, /es/edit-pdf
 vitest: 162 passed
 ```
+
+## Final end-to-end verification (after Phases 1-7)
+
+```
+Spec curl (/, /compress, /merge, /blog/how-to-compress-pdf, /vs/ilovepdf, /es/compress):
+  every page -> self-referencing canonical, unique title (brand once), unique description,
+  og:url = own URL; hreflang en/es/x-default only on the 7 real ES pairs.
+Full-route sweep (142 remaining routes after 8 redirects): ALL ROUTES: self-canonical + titled OK
+sitemap.xml: 172 URLs | 5 distinct lastmod values | OK: no sitemap URL matches a Disallow rule
+Redirects verified (308): 3 x *-alternative -> /vs/*, 5 x duplicate blog -> merged how-to guides
+Keyword map: 131 rows, 131 unique primary keywords, 0 collisions
+Internal links: 0 orphans among sitemap URLs, 0 non-200 targets
+vitest: 162 passed (32 files) | next build: clean

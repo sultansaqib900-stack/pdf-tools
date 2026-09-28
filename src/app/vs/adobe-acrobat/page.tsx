@@ -44,6 +44,7 @@ export default function VsAdobePage() {
         <h1 className="text-3xl sm:text-5xl font-black text-[var(--foreground)] tracking-tight">
           Adobe Acrobat Pro vs. PDFTools
         </h1>
+      <p className="text-xs text-[var(--muted)] mt-2 mb-6">Last verified: September 2026 — pricing and limits re-checked against Adobe Acrobat Pro&apos;s public documentation.</p>
         <p className="text-sm sm:text-base text-[var(--muted)] leading-relaxed">
           Why pay $240/year per person when you can edit, sign, auto-redact, and compress documents with complete air-gapped privacy for free?
         </p>

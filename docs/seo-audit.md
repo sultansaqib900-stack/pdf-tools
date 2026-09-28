@@ -294,8 +294,63 @@ inbound counts: /tools 88 · /blog 612 · /qa 467 · /redact 498 · /resize 10 �
 - **Breadcrumbs** (visible + schema) on 120+ pages — see Phase 4.
 - **ES**: 7 `/es` pages interlink via `EsToolNav` + footer; English↔Spanish pairs connected by hreflang (Phase 1) and the English-equivalent links.
 
-## Phase 7 — Ranking strategy artifacts
+## Phase 7 — Ranking strategy — DONE (artifacts)
 
-## Manual actions for the site owner
+| Deliverable | Where |
+|---|---|
+| Keyword map (url, primary keyword, secondary keywords, intent, target title, target H1) — 131 rows, **no two URLs share a primary keyword** (script-checked), covers every sitemap URL incl. 30 error guides and the 7 `/es` pages | `docs/keyword-map.csv` |
+| Full ranking strategy: privacy differentiator, long-tail plan, preset-page designs, comparison-page upkeep, E-E-A-T, freshness, backlink plan, measurement loop | `docs/ranking-strategy.md` |
+| Privacy-claim accuracy ("no upload") | `/privacy` §1 now scopes the blanket claim to the core tools and points at §5 for the labeled AI exceptions (verified against `src/app/api/chat-pdf/*`, `/api/extract-tables`) |
+| Comparison pages "Last verified" dates | added to `/vs/adobe-acrobat`, `/vs/ilovepdf`, `/vs/smallpdf` ("September 2026") |
+| `/compress` privacy section ("How We Handle Your Files") | done in Phase 3C — the pattern to copy to the top 10 tools |
+| Preset landing pages ("compress PDF to 200KB"…) | **designed, not built** — spec in `docs/ranking-strategy.md` §3. Deliberately not shipped: each preset page needs a working preset in the tool first (doorway-page risk otherwise). |
+| Visible author bylines on posts | **remaining** (JSON-LD already names the author); listed below |
 
-## Remaining / not done
+## Manual actions for the site owner (cannot be automated from this repo)
+
+1. **Deploy** this branch to production (Vercel). Confirm the deployment serves the new
+   canonicals (`curl -s https://allaboutpdfediting.xyz/compress | grep canonical` must show
+   `/compress`).
+2. **Google Search Console** (Domain property recommended):
+   - Settings > robots.txt report → "Request recrawl" / confirm Google fetched the new robots.txt
+     (changed: `/vault` rule, `/es/*` private rules, no `Host:`).
+   - Submit `https://allaboutpdfediting.xyz/sitemap.xml` (176 URLs at deploy time).
+   - URL Inspection → Request indexing for the top 10-20 pages (`/`, `/compress`, `/merge`,
+     `/split`, `/image-to-pdf`, `/edit-pdf`, top 10 blog posts, the 3 `/vs/*` pages).
+   - Pages > Not indexed: export the example URLs for EVERY row into `docs/seo-audit.md`.
+     Expected: the 29 "Blocked by robots.txt" are private paths (fine); the 15 "noindex" should
+     all be `/for/*` (intentional — do NOT click Validate Fix on those, it will fail forever);
+     the "Crawled – currently not indexed" and "Duplicate" rows should clear after re-crawl of the
+     fixed canonicals. Click "Validate Fix" only on rows whose cause this branch actually fixed.
+   - Do not re-validate repeatedly; re-crawls take days to weeks.
+3. **Bing Webmaster Tools**: verify the domain, submit the sitemap (Bing also powers DuckDuckGo).
+4. **Lighthouse / PageSpeed Insights** (mobile) on `/`, `/compress`, `/merge`,
+   `/blog/how-to-compress-pdf` — record before/after scores in `docs/verification-log.md`. The
+   sandbox had no Chrome, so no scores were captured here. Targets: LCP < 2.5s, INP < 200ms,
+   CLS < 0.1.
+5. **Hosting checks** (Vercel project settings, not repo code): HTTPS-only enforced; decide the
+   canonical host (apex vs www) and make the other a 308 redirect — code hardcodes the apex
+   `https://allaboutpdfediting.xyz` everywhere.
+6. **Search Console "queries" export** (weekly) → fold real search phrasings into
+   `docs/keyword-map.csv` secondaries; rewrite titles/descriptions for impressions-but-low-CTR
+   pages.
+7. **Directory / launch submissions** per `docs/ranking-strategy.md` §7 and `seo-tracker.md`
+   (Product Hunt, Show HN, AlternativeTo, Indie Hackers…). Never buy links.
+8. **Outreach** for the linkable asset (privacy audit / compression benchmark) to university IT
+   pages, teacher lists, small-business resource lists.
+9. Add visible author bylines ("by Saqib · last updated …") to the top 10 blog posts.
+10. Run the quarterly `/vs/*` re-verification (pricing/limits) and bump the "Last verified" date.
+
+## Remaining / not done (tracked)
+
+
+- Below-UI content expansion (Phase 3C spec: 500-800 unique words) for tool pages other than
+  `/compress` — needs genuinely unique copy per tool; recommended order: merge, split,
+  image-to-pdf, edit-pdf, pdf-to-word, ocr-pdf, then the rest.
+- `/for/*`: re-enable indexing only for pages rewritten with unique content (max 10 to start) —
+  currently all 300 stay `noindex, follow`.
+- Preset landing pages (rank-strategy §3) — build after the presets work in the tools.
+- Visible author bylines + visible "last updated" on posts.
+- Real Lighthouse runs (manual #4) and CWV monitoring.
+- `next/font` migration skipped on purpose (build-time font fetch would break offline builds);
+  Inter is loaded with `display=swap` already.

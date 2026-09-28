@@ -42,6 +42,7 @@ export default function VsIlovepdfPage() {
         <h1 className="text-3xl sm:text-5xl font-black text-[var(--foreground)] tracking-tight">
           iLovePDF vs. PDFTools
         </h1>
+      <p className="text-xs text-[var(--muted)] mt-2 mb-6">Last verified: September 2026 — pricing and limits re-checked against iLovePDF&apos;s public documentation.</p>
         <p className="text-sm sm:text-base text-[var(--muted)] leading-relaxed">
           Stop downloading and re-uploading the same file four times. Process everything continuously in your browser with zero server uploads.
         </p>
