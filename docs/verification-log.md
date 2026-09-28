@@ -130,3 +130,29 @@ Redirects verified (308): 3 x *-alternative -> /vs/*, 5 x duplicate blog -> merg
 Keyword map: 131 rows, 131 unique primary keywords, 0 collisions
 Internal links: 0 orphans among sitemap URLs, 0 non-200 targets
 vitest: 162 passed (32 files) | next build: clean
+
+## SEO follow-up implementation verification (2026-09-28)
+
+```
+npm ci: clean install, 0 audit vulnerabilities
+npx tsc --noEmit: clean
+npm test: 182 passed (36 files)
+npm run lint: 0 errors (131 existing warnings)
+npm run build: passed; 503 static pages generated; /indexnow-key.txt is dynamic
+  (sandbox logs expected missing-KV and external-font-fetch warnings; no compile errors)
+
+Production-server smoke tests (with a temporary test IndexNow key):
+  /blog/compress-scanned-pdf-under-1mb -> 200, unique title, self-canonical
+  /blog/redact-pdf-for-foia-request   -> 200, unique title, self-canonical
+  sitemap.xml -> 174 URLs; includes both articles; no robots Disallow collisions
+  feed.xml -> includes both new articles
+  /indexnow-key.txt -> serves the configured test key as text/plain
+  / -> existing google-site-verification metadata remains present
+  Host: www.allaboutpdfediting.xyz /compress?from=check -> 308 to
+    https://allaboutpdfediting.xyz/compress?from=check
+  internal HTML crawl -> 482 URLs, 0 non-200 responses
+
+IndexNow submitter unit tests cover URL validation, matching key-file verification,
+POST payload construction, accepted HTTP 200/202 responses, and dry-run mode.
+No production deploy was made from this sandbox. IndexNow/GSC still need the Vercel
+and GitHub configuration in docs/seo-next-steps.md.

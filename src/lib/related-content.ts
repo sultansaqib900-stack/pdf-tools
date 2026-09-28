@@ -24,6 +24,8 @@ export interface ToolRelatedContent {
 
 const allBlogs: Record<string, BlogRef> = {
   "compress": { title: "How to Compress a PDF", href: "/blog/how-to-compress-pdf", description: "Reduce PDF file size — with or without quality loss." },
+  "compress-scanned": { title: "Compress a Scanned PDF Under 1MB", href: "/blog/compress-scanned-pdf-under-1mb", description: "A careful workflow for smaller scans without losing legibility." },
+  "foia-redaction": { title: "Redact a PDF for a FOIA Request", href: "/blog/redact-pdf-for-foia-request", description: "Preserve an original and verify redactions on a release copy." },
   "merge": { title: "How to Merge PDFs Into One File", href: "/blog/how-to-merge-pdf", description: "Combine PDF files into a single document." },
   "split": { title: "How to Split PDF Pages Online", href: "/blog/split-pdf-pages-online", description: "Extract pages or split into separate files." },
   "image-to-pdf": { title: "How to Convert Image to PDF", href: "/blog/how-to-convert-image-to-pdf", description: "Convert JPG, PNG to PDF online." },
@@ -81,7 +83,7 @@ export const relatedContent: Record<string, ToolRelatedContent> = {
       { title: "Resize PDF", description: "Change page size", href: "/resize", icon: "📐" },
       { title: "PDF to Images", description: "Extract pages as images", href: "/pdf-to-images", icon: "📸" },
     ],
-    relatedBlogs: [allBlogs["compress"], allBlogs["pdf-to-images"]],
+    relatedBlogs: [allBlogs["compress"], allBlogs["compress-scanned"], allBlogs["pdf-to-images"]],
     faqs: [
       { question: "Does PDF compression reduce quality?", answer: "Lossless mode never changes visible content — it only removes redundant data. Balanced and Maximum rebuild pages as optimized images, so very small text can soften; pick Lossless when text must stay selectable." },
       { question: "How much can I compress a PDF?", answer: "Typical compression ratios range from 30-80% depending on content. Image-heavy PDFs compress more than text-only PDFs." },
@@ -294,7 +296,7 @@ export const relatedContent: Record<string, ToolRelatedContent> = {
       { title: "Metadata Sanitizer", description: "Strip metadata", href: "/metadata-sanitizer", icon: "🧹" },
       { title: "Protect PDF", description: "Add password protection", href: "/protect", icon: "🔒" },
     ],
-    relatedBlogs: [allBlogs["redact"], allBlogs["search-redact"], allBlogs["metadata-sanitizer"]],
+    relatedBlogs: [allBlogs["redact"], allBlogs["foia-redaction"], allBlogs["search-redact"]],
     faqs: [
       { question: "Can I undo a redaction?", answer: "No. Redactions are permanent once applied. Always test on a copy first." },
       { question: "What can I redact?", answer: "Text, images, numbers, signatures — any content on any page." },

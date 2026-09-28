@@ -21,6 +21,7 @@ import { Analytics } from "@vercel/analytics/react";
 import Script from "next/script";
 import { AuthProvider } from "@/components/AuthProvider";
 import PrivacyHUD from "@/components/PrivacyHUD";
+import { getSearchVerificationMetadata } from "@/lib/search-verification";
 
 export const metadata: Metadata = {
   // Site-wide metadata ONLY. No page-specific title/description/canonical/
@@ -66,6 +67,7 @@ export const metadata: Metadata = {
     apple: [{ url: "/icons/apple-touch-icon.png", sizes: "180x180", type: "image/png" }],
   },
   manifest: "/manifest.json",
+  verification: getSearchVerificationMetadata(),
   other: {
     "theme-color": "#4f46e5",
     "apple-mobile-web-app-capable": "yes",
@@ -93,7 +95,6 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" />
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-        <meta name="google-site-verification" content="N8odpQukXkhYSNhTcTrnMKWHWTi5D5h_Cre96ZVGlTw" />
         <ThemeScript />
         {process.env.NODE_ENV === "production" && (
           <script dangerouslySetInnerHTML={{ __html: `if("serviceWorker" in navigator){window.addEventListener("load",()=>{navigator.serviceWorker.register("/sw.js").catch(()=>{})})}` }} />

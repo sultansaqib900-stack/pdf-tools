@@ -179,7 +179,7 @@ export default function CompressPage() {
               {file ? file.name : "Click to select or drag & drop a PDF"}
             </span>
             {file && <span className="text-sm text-emerald-600 font-semibold">{formatBytes(file.size)}</span>}
-            {!file && <span className="text-xs text-[var(--muted)]">Max 50MB · 100% Private Client-Side</span>}
+            {!file && <span className="text-xs text-[var(--muted)]">Max {isPremium() ? "100MB" : "10MB"} · 100% Private Client-Side</span>}
           </label>
         </div>
 

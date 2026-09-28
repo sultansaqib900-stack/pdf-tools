@@ -1,6 +1,8 @@
 const BASE = "https://allaboutpdfediting.xyz";
 
 const posts = [
+  { slug: "compress-scanned-pdf-under-1mb", title: "How to Compress a Scanned PDF Under 1MB — Keep Text Legible", excerpt: "A practical workflow to shrink scanned PDFs: check scan settings, compare compression modes, and verify readability before upload.", date: "2026-09-28" },
+  { slug: "redact-pdf-for-foia-request", title: "How to Redact a PDF for a FOIA Request — Step-by-Step", excerpt: "Preserve the original, apply authorized redactions to a working copy, and verify every page before sharing a FOIA-related PDF.", date: "2026-09-28" },
   { slug: "how-to-compress-pdf", title: "How to Compress a PDF — Reduce PDF File Size Online Free", excerpt: "Learn how to compress PDF files online free. Reduce PDF size from 20MB to under 5MB with no quality loss. No signup, no uploads.", date: "2026-06-27" },
   { slug: "how-to-merge-pdf", title: "How to Merge PDFs Online Free — Combine Multiple PDFs Into One", excerpt: "Learn how to merge PDF files online free. Combine multiple PDFs into one document in seconds.", date: "2026-06-27" },
   { slug: "how-to-convert-image-to-pdf", title: "How to Convert Images to PDF — JPG, PNG to PDF Online Free", excerpt: "Learn how to convert images to PDF online free. Convert JPG and PNG images to PDF documents.", date: "2026-06-27" },

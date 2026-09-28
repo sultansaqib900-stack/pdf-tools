@@ -83,8 +83,10 @@ smallpdf/ilovepdf, edit-pdf ↔ adobe) — partial today via footer; add context
 - Update the ~10 best posts with original data: before/after file sizes (already in
   `/blog/how-to-compress-pdf`), browser test results, screenshots of the tools.
 - 2-4 genuinely new guides per month, chosen from Search Console questions — not templated
-  posts. Candidate first topics: "how to compress a scanned PDF under 1MB", "redact a PDF for a
-  FOIA request (step-by-step)".
+  posts. First long-tail guides published 2026-09-28: [compress a scanned PDF under 1MB](/blog/compress-scanned-pdf-under-1mb)
+  and [redact a PDF for a FOIA request](/blog/redact-pdf-for-foia-request). Both link to their
+  relevant tools and have unique keyword-map entries. Continue with query-led topics after GSC
+  data accumulates.
 - The `/for/*` matrix stays `noindex` until each re-enabled page has real, unique content
   (Phase 3A) — never use it to inflate page count.
 
