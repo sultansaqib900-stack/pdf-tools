@@ -1,154 +1,79 @@
-import type { MetadataRoute } from "next";
+// app/sitemap.ts  (Next.js 13.3+/14/15 App Router)
+import type { MetadataRoute } from 'next'
+
+const BASE = 'https://allaboutpdfediting.xyz'
+
+// Slugs that have a Spanish version at /es/<slug>
+const ES_SLUGS = new Set(['', 'tools', 'compress', 'merge', 'split', 'image-to-pdf', 'edit-pdf'])
+
+// REAL last-modified dates. Update only when the page content actually changes.
+// Best source: blog frontmatter `updatedAt`, a CMS field, or git commit date.
+// Fallback below is a fixed date, NOT new Date(), so it doesn't change every build.
+const FALLBACK = new Date('2026-09-22')
+
+const TOOLS = [
+  'tools', 'studio', 'pii-guardian', 'recipes', 'compress', 'merge', 'split',
+  'image-to-pdf', 'scan-to-pdf', 'ocr-pdf', 'edit-pdf', 'repair-pdf', 'pdf-to-pdfa',
+  'pdf-to-images', 'extract-text', 'add-page-numbers', 'pdf-to-word', 'word-to-pdf',
+  'insert-blank', 'word-counter', 'annotate', 'pdf-to-excel', 'rotate', 'unlock',
+  'watermark', 'protect', 'html-to-pdf', 'sign', 'chat-pdf', 'batch', 'delete-pages',
+  'text-to-pdf', 'organize', 'metadata', 'resize', 'crop', 'fill-form', 'flatten-pdf',
+  'reverse-pdf', 'pdf-diff', 'certificate-generator', 'pdf-to-audio', 'form-data-extract',
+  'bulk-rename', 'booklet', 'search-redact', 'pdf-inverter', 'qr-stamp',
+  'metadata-sanitizer', 'split-by-bookmarks', 'bates-numbering', 'premium', 'qa',
+]
+
+const COMPARE = [
+  'vs', 'vs/adobe-acrobat', 'vs/ilovepdf', 'vs/smallpdf',
+  // After you 301 the duplicates, DON'T list these:
+  // 'adobe-acrobat-alternative', 'ilovepdf-alternative', 'smallpdf-alternative',
+  'best-free-pdf-editor', 'ultimate-guide-to-pdf-editing',
+  'pdf-tools-for-students', 'pdf-tools-for-teachers', 'pdf-tools-for-lawyers',
+  'pdf-tools-for-small-business', 'pdf-tools-for-business',
+]
+
+// Replace with your real blog data source (with real dates)
+const BLOG: { slug: string; updatedAt?: string }[] = [
+  { slug: 'compress-pdf-without-losing-quality' },
+  { slug: 'crop-pdf-margins' },
+  // ...add the rest, or import from your posts loader:
+  // const BLOG = await getAllPosts()
+]
+
+function entry(
+  slug: string,
+  lastModified: Date,
+  withEs = false,
+): MetadataRoute.Sitemap[number] {
+  const path = slug ? `/${slug}` : ''
+  const en = `${BASE}${path}`
+  const base: MetadataRoute.Sitemap[number] = { url: en, lastModified }
+
+  if (withEs) {
+    const es = `${BASE}/es${path}`
+    const languages = { en, es, 'x-default': en }
+    return [
+      { ...base, alternates: { languages } },
+      { url: es, lastModified, alternates: { languages } },
+    ] as any // flattened below
+  }
+  return base
+}
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const base = "https://allaboutpdfediting.xyz";
+  const out: MetadataRoute.Sitemap = []
+  const push = (slug: string, date: Date) => {
+    const r = entry(slug, date, ES_SLUGS.has(slug))
+    Array.isArray(r) ? out.push(...r) : out.push(r)
+  }
 
-  const es = (path: string) => `${base}/es${path}`;
+  push('', FALLBACK)
+  ;[...TOOLS, ...COMPARE].forEach((s) => push(s, FALLBACK))
+  push('blog', FALLBACK)
+  BLOG.forEach((p) =>
+    push(`blog/${p.slug}`, p.updatedAt ? new Date(p.updatedAt) : FALLBACK),
+  )
 
-  // Sitemap contains only canonical, indexable pages. The generated audience
-  // matrix and error pages are intentionally excluded from Search.
-  return [
-    { url: base, lastModified: new Date(), changeFrequency: "weekly", priority: 1 },
-    { url: es(""), lastModified: new Date(), changeFrequency: "weekly", priority: 0.9 },
-    { url: es("/tools"), lastModified: new Date(), changeFrequency: "weekly", priority: 0.9 },
-    { url: es("/compress"), lastModified: new Date(), changeFrequency: "monthly", priority: 0.8 },
-    { url: es("/merge"), lastModified: new Date(), changeFrequency: "monthly", priority: 0.8 },
-    { url: es("/split"), lastModified: new Date(), changeFrequency: "monthly", priority: 0.8 },
-    { url: es("/image-to-pdf"), lastModified: new Date(), changeFrequency: "monthly", priority: 0.8 },
-    { url: es("/edit-pdf"), lastModified: new Date(), changeFrequency: "monthly", priority: 0.8 },
-    { url: `${base}/tools`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.9 },
-    { url: `${base}/studio`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.95 },
-    { url: `${base}/pii-guardian`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.95 },
-    { url: `${base}/recipes`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.95 },
-    { url: `${base}/vs`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.9 },
-    { url: `${base}/vs/adobe-acrobat`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.9 },
-    { url: `${base}/vs/ilovepdf`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.9 },
-    { url: `${base}/vs/smallpdf`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.9 },
-    { url: `${base}/compress`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.8 },
-    { url: `${base}/merge`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.8 },
-    { url: `${base}/split`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.8 },
-    { url: `${base}/image-to-pdf`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.8 },
-    { url: `${base}/scan-to-pdf`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.8 },
-    { url: `${base}/ocr-pdf`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.8 },
-    { url: `${base}/edit-pdf`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.8 },
-    { url: `${base}/repair-pdf`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.8 },
-    { url: `${base}/pdf-to-pdfa`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.8 },
-    { url: `${base}/pdf-to-images`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.8 },
-    { url: `${base}/extract-text`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.8 },
-    { url: `${base}/add-page-numbers`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.8 },
-    { url: `${base}/pdf-to-word`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.8 },
-    { url: `${base}/word-to-pdf`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.8 },
-    { url: `${base}/insert-blank`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.8 },
-    { url: `${base}/word-counter`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.8 },
-    { url: `${base}/annotate`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.8 },
-    { url: `${base}/pdf-to-excel`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.8 },
-    { url: `${base}/rotate`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.8 },
-    { url: `${base}/unlock`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.8 },
-    { url: `${base}/watermark`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.8 },
-    { url: `${base}/protect`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.8 },
-    { url: `${base}/html-to-pdf`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.8 },
-    { url: `${base}/sign`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.8 },
-    { url: `${base}/chat-pdf`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.8 },
-    { url: `${base}/batch`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.8 },
-    { url: `${base}/delete-pages`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.8 },
-    { url: `${base}/text-to-pdf`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.8 },
-    { url: `${base}/organize`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.8 },
-    { url: `${base}/metadata`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.8 },
-    { url: `${base}/resize`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.8 },
-    { url: `${base}/crop`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.8 },
-    { url: `${base}/fill-form`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.8 },
-    { url: `${base}/flatten-pdf`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.8 },
-    { url: `${base}/reverse-pdf`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.8 },
-    // Premium features
-    { url: `${base}/pdf-diff`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.7 },
-    { url: `${base}/certificate-generator`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.7 },
-    { url: `${base}/pdf-to-audio`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.7 },
-    { url: `${base}/form-data-extract`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.7 },
-    { url: `${base}/bulk-rename`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.7 },
-    { url: `${base}/booklet`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.7 },
-    { url: `${base}/search-redact`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.7 },
-    { url: `${base}/pdf-inverter`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.7 },
-
-    { url: `${base}/qr-stamp`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.7 },
-    { url: `${base}/metadata-sanitizer`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.7 },
-    { url: `${base}/split-by-bookmarks`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.7 },
-    { url: `${base}/bates-numbering`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.7 },
-    // Other pages
-    { url: `${base}/premium`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.8 },
-    { url: `${base}/about`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.4 },
-    { url: `${base}/privacy`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.3 },
-    { url: `${base}/terms`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.3 },
-    { url: `${base}/blog`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.7 },
-    { url: `${base}/blog/compress-pdf-without-losing-quality`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.6 },
-    { url: `${base}/blog/crop-pdf-margins`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.6 },
-    { url: `${base}/blog/delete-pages-from-pdf`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.6 },
-    { url: `${base}/blog/edit-pdf-metadata`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.6 },
-    { url: `${base}/blog/merge-multiple-pdfs-into-one`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.6 },
-    { url: `${base}/blog/organize-pdf-pages`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.6 },
-    { url: `${base}/blog/resize-pdf-pages`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.6 },
-    { url: `${base}/blog/text-to-pdf-converter`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.6 },
-    { url: `${base}/blog/sign-pdf-without-printing`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.6 },
-    { url: `${base}/blog/remove-password-from-pdf`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.6 },
-    { url: `${base}/blog/pdf-vs-image`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.6 },
-    { url: `${base}/blog/fill-pdf-forms-online`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.6 },
-    { url: `${base}/blog/flatten-pdf-online`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.6 },
-    { url: `${base}/blog/reverse-pdf-pages`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.6 },
-    { url: `${base}/blog/chat-with-pdf-ai`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.6 },
-    { url: `${base}/blog/add-page-numbers-to-pdf`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.6 },
-    { url: `${base}/blog/annotate-pdf-online`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.6 },
-    { url: `${base}/blog/batch-process-pdf-online`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.6 },
-    { url: `${base}/blog/extract-text-from-pdf`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.6 },
-    { url: `${base}/blog/convert-html-to-pdf`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.6 },
-    { url: `${base}/blog/convert-image-to-pdf`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.6 },
-    { url: `${base}/blog/insert-blank-pages-pdf`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.6 },
-    { url: `${base}/blog/convert-pdf-to-excel`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.6 },
-    { url: `${base}/blog/convert-pdf-to-images`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.6 },
-    { url: `${base}/blog/protect-pdf-with-password`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.6 },
-    { url: `${base}/blog/redact-pdf-online`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.6 },
-    { url: `${base}/blog/add-watermark-to-pdf`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.6 },
-    { url: `${base}/blog/word-counter-online`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.6 },
-    { url: `${base}/blog/rotate-pdf-pages-online`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.6 },
-    { url: `${base}/blog/split-pdf-pages-online`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.6 },
-    { url: `${base}/best-free-pdf-editor`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.6 },
-    { url: `${base}/smallpdf-alternative`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.6 },
-    { url: `${base}/blog/split-pdf-by-bookmarks`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.6 },
-    { url: `${base}/blog/bates-numbering-pdf`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.6 },
-    { url: `${base}/blog/scan-to-pdf`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.6 },
-    { url: `${base}/blog/ocr-pdf-online`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.6 },
-    { url: `${base}/blog/edit-pdf-online`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.6 },
-    { url: `${base}/blog/convert-pdf-to-word`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.6 },
-    { url: `${base}/blog/convert-word-to-pdf`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.6 },
-    { url: `${base}/blog/repair-pdf-online`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.6 },
-    { url: `${base}/blog/convert-pdf-to-pdfa`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.6 },
-    { url: `${base}/blog/ai-pdf-summarization`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.6 },
-    { url: `${base}/blog/google-drive-pdf-editor`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.6 },
-    { url: `${base}/blog/automate-pdf-workflow`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.6 },
-    { url: `${base}/blog/how-to-compress-pdf`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.6 },
-    { url: `${base}/blog/how-to-merge-pdf`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.6 },
-    { url: `${base}/blog/how-to-convert-image-to-pdf`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.6 },
-    // Premium blog posts
-    { url: `${base}/blog/compare-pdfs-online`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.6 },
-    { url: `${base}/blog/generate-pdf-certificates`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.6 },
-    { url: `${base}/blog/convert-pdf-to-audio`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.6 },
-    { url: `${base}/blog/extract-pdf-form-data`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.6 },
-    { url: `${base}/blog/bulk-rename-pdf-files`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.6 },
-    { url: `${base}/blog/create-pdf-booklet`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.6 },
-    { url: `${base}/blog/search-and-redact-pdf`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.6 },
-    { url: `${base}/blog/invert-pdf-colors`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.6 },
-    { url: `${base}/blog/secure-pdf-vault`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.6 },
-    { url: `${base}/blog/add-qr-code-to-pdf`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.6 },
-    { url: `${base}/blog/clean-pdf-metadata`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.6 },
-    { url: `${base}/qa`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.8 },
-    { url: `${base}/contact`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.3 },
-    { url: `${base}/ilovepdf-alternative`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.7 },
-    { url: `${base}/adobe-acrobat-alternative`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.7 },
-    { url: `${base}/ultimate-guide-to-pdf-editing`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.7 },
-    { url: `${base}/pdf-tools-for-students`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.6 },
-    { url: `${base}/pdf-tools-for-teachers`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.6 },
-    { url: `${base}/pdf-tools-for-lawyers`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.6 },
-    { url: `${base}/pdf-tools-for-small-business`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.6 },
-    { url: `${base}/pdf-tools-for-business`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.6 },
-    { url: `${base}/sitemap`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.5 },
-
-  ];
+  // Intentionally omitted: /sitemap (HTML page), /privacy, /terms, /contact, /about
+  return out
 }
