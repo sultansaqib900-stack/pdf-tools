@@ -1,5 +1,11 @@
+import { buildMetadata } from "@/lib/seo";
 import type { Metadata } from "next";
-export const metadata: Metadata = { title: "How to Password Protect a PDF Online Free — Secure Your Documents", description: "Password protect PDF files online for free. Encrypt your PDF documents with a strong password." };
+export const metadata: Metadata = buildMetadata({
+  path: "/blog/protect-pdf-with-password",
+  title: "How to Password Protect a PDF Online Free — Secure Your Documents",
+  description: "Password protect PDF files online for free. Encrypt your PDF documents with a strong password.",
+  type: "article",
+});
 import ArticleJsonLd from "@/components/ArticleJsonLd";
 import HowToJsonLd from "@/components/HowToJsonLd";
 import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";

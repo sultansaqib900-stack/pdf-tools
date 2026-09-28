@@ -1,5 +1,11 @@
+import { buildMetadata } from "@/lib/seo";
 import type { Metadata } from "next";
-export const metadata: Metadata = { title: "How to Scan Documents to PDF Using Your Camera Online Free", description: "Scan documents to PDF using your device camera. Convert photos of documents to PDF instantly in your browser." };
+export const metadata: Metadata = buildMetadata({
+  path: "/blog/scan-to-pdf",
+  title: "How to Scan Documents to PDF Using Your Camera Online Free",
+  description: "Scan documents to PDF using your device camera. Convert photos of documents to PDF instantly in your browser.",
+  type: "article",
+});
 import ArticleJsonLd from "@/components/ArticleJsonLd";
 import HowToJsonLd from "@/components/HowToJsonLd";
 import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";

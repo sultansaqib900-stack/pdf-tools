@@ -1,5 +1,11 @@
+import { buildMetadata } from "@/lib/seo";
 import type { Metadata } from "next";
-export const metadata: Metadata = { title: "How to Split PDF Pages Online Free — Extract Specific Pages", description: "Split PDF files online for free. Extract specific pages or split every page into separate files instantly in your browser. No uploads, no signup." };
+export const metadata: Metadata = buildMetadata({
+  path: "/blog/split-pdf-pages-online",
+  title: "How to Split PDF Pages Online Free — Extract Specific Pages",
+  description: "Split PDF files online for free. Extract specific pages or split every page into separate files instantly in your browser. No uploads, no signup.",
+  type: "article",
+});
 import ArticleJsonLd from "@/components/ArticleJsonLd";
 import HowToJsonLd from "@/components/HowToJsonLd";
 import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";

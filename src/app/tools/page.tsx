@@ -1,3 +1,4 @@
+import { buildMetadata } from "@/lib/seo";
 import type { Metadata } from "next";
 import Link from "next/link";
 import {
@@ -7,15 +8,11 @@ import {
   type ToolCategory,
 } from "@/lib/toolCatalog";
 
-export const metadata: Metadata = {
-  title: "All PDF Tools - 52 Online PDF Tools | PDFTools",
+export const metadata: Metadata = buildMetadata({
+  path: "/tools",
+  title: "All PDF Tools - 52 Online PDF Tools",
   description: `Browse ${FREE_TOOL_COUNT} free core PDF tools and ${PREMIUM_TOOL_COUNT} professional Premium workflows. Files stay in your browser except clearly labeled AI features.`,
-  openGraph: {
-    title: "All PDF Tools - Free Core Tools & Professional Workflows",
-    description: "Browse PDF editing, conversion, security, organization, AI, and professional workflow tools.",
-  },
-};
-
+});
 const categoryOrder: ToolCategory[] = [
   "Popular",
   "Studio & AI",

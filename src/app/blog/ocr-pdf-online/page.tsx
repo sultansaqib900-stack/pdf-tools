@@ -1,5 +1,11 @@
+import { buildMetadata } from "@/lib/seo";
 import type { Metadata } from "next";
-export const metadata: Metadata = { title: "OCR PDF Online Free — Extract Text from Scanned PDFs", description: "Extract text from scanned PDFs and images using free online OCR. Make scanned documents searchable and editable." };
+export const metadata: Metadata = buildMetadata({
+  path: "/blog/ocr-pdf-online",
+  title: "OCR PDF Online Free — Extract Text from Scanned PDFs",
+  description: "Extract text from scanned PDFs and images using free online OCR. Make scanned documents searchable and editable.",
+  type: "article",
+});
 import ArticleJsonLd from "@/components/ArticleJsonLd";
 import HowToJsonLd from "@/components/HowToJsonLd";
 import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";

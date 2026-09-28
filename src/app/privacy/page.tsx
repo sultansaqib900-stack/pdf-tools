@@ -1,3 +1,11 @@
+import type { Metadata } from "next";
+import { buildMetadata } from "@/lib/seo";
+
+export const metadata: Metadata = buildMetadata({
+  path: "/privacy",
+  title: "Privacy Policy — How PDFTools Handles Your Files",
+  description: "PDFTools processes most files entirely in your browser — nothing is uploaded to our servers. Read exactly what is stored (account data only), what is never collected, and why.",
+});
 export default function PrivacyPage() {
   return (
     <div className="max-w-3xl mx-auto px-4 py-16">

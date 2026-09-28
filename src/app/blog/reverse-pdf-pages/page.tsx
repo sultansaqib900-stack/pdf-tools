@@ -1,15 +1,12 @@
+import { buildMetadata } from "@/lib/seo";
 import type { Metadata } from "next";
 
-export const metadata: Metadata = {
-  title: "How to Reverse PDF Pages Online Free – Flip Page Order Instantly | PDFTools",
+export const metadata: Metadata = buildMetadata({
+  path: "/blog/reverse-pdf-pages",
+  title: "How to Reverse PDF Pages Online Free – Flip Page Order Instantly",
   description: "Reverse PDF page order online for free. Flip the entire page sequence of any PDF — last page becomes first. No uploads, 100% private, all in your browser.",
-  alternates: { canonical: "https://allaboutpdfediting.xyz/blog/reverse-pdf-pages" },
-    openGraph: {
-    title: "How to Reverse PDF Pages Online Free – Flip Page Order",
-    description: "Reverse the entire page sequence of any PDF instantly. 100% free, no uploads, no signup.",
-  },
-};
-
+  type: "article",
+});
 import ArticleJsonLd from "@/components/ArticleJsonLd";
 import HowToJsonLd from "@/components/HowToJsonLd";
 import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";

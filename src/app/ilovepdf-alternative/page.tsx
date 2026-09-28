@@ -1,17 +1,14 @@
+import { buildMetadata } from "@/lib/seo";
 import Link from "next/link";
 import type { Metadata } from "next";
 import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 import ArticleJsonLd from "@/components/ArticleJsonLd";
 
-export const metadata: Metadata = {
-  title: "iLovePDF Alternative — Free, Private PDF Editor Online | PDFTools",
+export const metadata: Metadata = buildMetadata({
+  path: "/ilovepdf-alternative",
+  title: "iLovePDF Alternative — Free, Private PDF Editor Online",
   description: "Looking for an iLovePDF alternative? PDFTools is a free, private PDF editor with no server uploads, no signup, and no daily limits. Compress, merge, split, and edit PDFs entirely in your browser.",
-  openGraph: {
-    title: "iLovePDF Alternative — Free & Private",
-    description: "Free alternative to iLovePDF. No uploads, no signup, no daily limits. All in your browser.",
-  },
-};
-
+});
 export default function ILovePDFAltPage() {
   return (
     <div className="max-w-4xl mx-auto px-4 py-12">

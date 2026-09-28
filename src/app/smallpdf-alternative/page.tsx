@@ -1,15 +1,12 @@
+import { buildMetadata } from "@/lib/seo";
 import Link from "next/link";
 import type { Metadata } from "next";
 
-export const metadata: Metadata = {
-  title: "SmallPDF Alternative — Free & Private PDF Editor Online | PDFTools",
+export const metadata: Metadata = buildMetadata({
+  path: "/smallpdf-alternative",
+  title: "SmallPDF Alternative — Free & Private PDF Editor Online",
   description: "Looking for a SmallPDF alternative? PDFTools is a free, private PDF editor with no uploads, no signup, and no daily limits. Compress, merge, split, and edit PDFs in your browser.",
-  openGraph: {
-    title: "SmallPDF Alternative — Free & Private",
-    description: "Free alternative to SmallPDF. No uploads, no signup, no daily limits. All in your browser.",
-  },
-};
-
+});
 export default function SmallPDFAltPage() {
   return (
     <div className="max-w-4xl mx-auto px-4 py-12">

@@ -1,13 +1,13 @@
+import { buildMetadata } from "@/lib/seo";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { seoPages } from "@/lib/programmatic-seo";
 
-export const metadata: Metadata = {
-  title: "Sitemap — PDFTools",
+export const metadata: Metadata = buildMetadata({
+  path: "/sitemap",
+  title: "Sitemap",
   description: "Complete sitemap for PDFTools — browse all free online PDF tools, use cases, and resources.",
-};
-
-interface Group {
+});interface Group {
   title: string;
   links: { href: string; label: string }[];
 }

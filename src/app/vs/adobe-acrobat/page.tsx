@@ -1,14 +1,15 @@
+import { buildMetadata } from "@/lib/seo";
 import type { Metadata } from "next";
 import Link from "next/link";
 import SavingsCalculator from "@/components/SavingsCalculator";
 import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
 import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = buildMetadata({
+  path: "/vs/adobe-acrobat",
   title: "Adobe Acrobat Pro vs PDFTools - The Private, Free Alternative",
   description: "Compare Adobe Acrobat Pro ($240/yr) vs PDFTools. 100% in-browser privacy, zero cloud document uploads, multi-step Studio, and PII auto-redaction.",
-};
-
+});
 export default function VsAdobePage() {
   const comparisonRows = [
     { feature: "Annual Cost per User", adobe: "$240 - $360 / year", pdfTools: "$0 / Lifetime Free", winner: "pdfTools" },

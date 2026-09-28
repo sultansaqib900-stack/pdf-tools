@@ -1,5 +1,11 @@
+import { buildMetadata } from "@/lib/seo";
 import type { Metadata } from "next";
-export const metadata: Metadata = { title: "How to Convert PDF to Excel Online Free — Extract Tables", description: "Convert PDF to Excel online for free. Extract tables and data from PDF files into editable Excel spreadsheets." };
+export const metadata: Metadata = buildMetadata({
+  path: "/blog/convert-pdf-to-excel",
+  title: "How to Convert PDF to Excel Online Free — Extract Tables",
+  description: "Convert PDF to Excel online for free. Extract tables and data from PDF files into editable Excel spreadsheets.",
+  type: "article",
+});
 import ArticleJsonLd from "@/components/ArticleJsonLd";
 import HowToJsonLd from "@/components/HowToJsonLd";
 import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";

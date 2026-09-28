@@ -1,13 +1,15 @@
+import type { Metadata } from "next";
+import { buildMetadata } from "@/lib/seo";
 import Link from "next/link";
 import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
 import ToolSearch from "@/components/ToolSearch";
 
-export const metadata = {
-  title: "Todas las Herramientas PDF Gratuitas | PDFTools",
+export const metadata: Metadata = buildMetadata({
+  path: "/es/tools",
+  title: "Todas las Herramientas PDF Gratuitas",
   description: "Explora todas las herramientas PDF gratuitas en línea: comprimir, unir, dividir, editar, firmar, convertir y más.",
-};
-
+});
 const toolCategories = [
   {
     name: "Convertir y Comprimir",

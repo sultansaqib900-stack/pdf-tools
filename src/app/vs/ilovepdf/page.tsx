@@ -1,14 +1,15 @@
+import { buildMetadata } from "@/lib/seo";
 import type { Metadata } from "next";
 import Link from "next/link";
 import SavingsCalculator from "@/components/SavingsCalculator";
 import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
 import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = buildMetadata({
+  path: "/vs/ilovepdf",
   title: "iLovePDF vs PDFTools - Why Local Zero-Knowledge Processing Wins",
   description: "Compare iLovePDF vs PDFTools. Eliminate cloud upload risks, avoid 4-step re-upload loops, and automate multi-step workflows in 1 click.",
-};
-
+});
 export default function VsIlovepdfPage() {
   const comparisonRows = [
     { feature: "Privacy & Cloud Uploads", competitor: "Files sent to remote cloud servers", pdfTools: "100% Client-Side (0 KB Uploaded)", win: true },

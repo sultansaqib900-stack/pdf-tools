@@ -1,18 +1,14 @@
+import { buildMetadata } from "@/lib/seo";
 import Link from "next/link";
 import type { Metadata } from "next";
 import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 import FaqPageJsonLd from "@/components/FaqPageJsonLd";
 
-export const metadata: Metadata = {
-  title: "Free PDF Tools for Lawyers — Redact, Merge, Protect & Convert Legal PDFs | PDFTools",
+export const metadata: Metadata = buildMetadata({
+  path: "/pdf-tools-for-lawyers",
+  title: "Free PDF Tools for Lawyers — Redact, Merge, Protect & Convert Legal PDFs",
   description: "10+ free PDF tools for legal professionals. Redact sensitive info, merge discovery documents, protect client files, Bates number exhibits, and more. 100% browser-based, zero uploads, client data stays local.",
-  openGraph: {
-    title: "Free PDF Tools for Lawyers — Secure Legal Document Processing",
-    description: "Redact, merge, protect, and Bates-number PDFs. All processing is local — client data never leaves your computer.",
-    url: "https://allaboutpdfediting.xyz/pdf-tools-for-lawyers",
-  },
-};
-
+});
 const legalTools = [
   {
     category: "🔒 Security & Compliance",

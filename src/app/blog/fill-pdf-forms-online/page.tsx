@@ -1,15 +1,12 @@
+import { buildMetadata } from "@/lib/seo";
 import type { Metadata } from "next";
 
-export const metadata: Metadata = {
-  title: "How to Fill PDF Forms Online Free – Complete Forms Instantly | PDFTools",
+export const metadata: Metadata = buildMetadata({
+  path: "/blog/fill-pdf-forms-online",
+  title: "How to Fill PDF Forms Online Free – Complete Forms Instantly",
   description: "Fill PDF forms online free without Adobe Acrobat. Complete text fields, checkboxes, dropdowns instantly in your browser. 100% private, no uploads.",
-  alternates: { canonical: "https://allaboutpdfediting.xyz/blog/fill-pdf-forms-online" },
-    openGraph: {
-    title: "How to Fill PDF Forms Online Free – No Software Needed",
-    description: "Complete PDF forms instantly in your browser. Text fields, checkboxes, dropdowns — all free, no uploads, no signup.",
-  },
-};
-
+  type: "article",
+});
 import ArticleJsonLd from "@/components/ArticleJsonLd";
 import HowToJsonLd from "@/components/HowToJsonLd";
 import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";

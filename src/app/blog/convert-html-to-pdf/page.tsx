@@ -1,5 +1,11 @@
+import { buildMetadata } from "@/lib/seo";
 import type { Metadata } from "next";
-export const metadata: Metadata = { title: "How to Convert HTML to PDF Online Free — Webpage to PDF Converter", description: "Convert HTML to PDF online for free. Turn web pages or HTML code into PDF documents instantly." };
+export const metadata: Metadata = buildMetadata({
+  path: "/blog/convert-html-to-pdf",
+  title: "How to Convert HTML to PDF Online Free — Webpage to PDF Converter",
+  description: "Convert HTML to PDF online for free. Turn web pages or HTML code into PDF documents instantly.",
+  type: "article",
+});
 import ArticleJsonLd from "@/components/ArticleJsonLd";
 import HowToJsonLd from "@/components/HowToJsonLd";
 import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";

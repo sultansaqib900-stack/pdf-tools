@@ -1,12 +1,11 @@
+import { buildMetadata } from "@/lib/seo";
 import type { Metadata } from "next";
 
-export const metadata: Metadata = {
-  title: "PDF Questions Answered — Free PDF Tools & Guides | PDFTools",
-  description:
-    "Get answers to common PDF questions. How to compress, merge, split, edit, sign, protect, and convert PDFs. Free online PDF tools — no uploads, 100% private.",
-  alternates: { canonical: "https://allaboutpdfediting.xyz/qa" },
-};
-
+export const metadata: Metadata = buildMetadata({
+  path: "/qa",
+  title: "PDF Questions Answered — Free PDF Tools & Guides",
+  description: "Get answers to common PDF questions. How to compress, merge, split, edit, sign, protect, and convert PDFs. Free online PDF tools — no uploads, 100% private.",
+});
 const qas = [
   {
     q: "How do I compress a PDF without losing quality?",

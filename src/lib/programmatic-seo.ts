@@ -250,11 +250,10 @@ export function getAllSeoPages(): SeoPage[] {
       // makes search engines see unnecessary content changes on every deployment.
       const painPoint = uc.painPoints[tool.slug.length % uc.painPoints.length];
       const faqs = getFaqs(tool.slug);
-      const siteName = "PDFTools";
 
       pages.push({
         slug,
-        title: `${toolName} ${uc.label} — Free Online Tool | ${siteName}`,
+        title: `${toolName} ${uc.label} — Free Online Tool`,
         description: `Free ${toolName.toLowerCase()} tool ${uc.label}. ${uc.benefit}. ${painPoint}. No uploads, no signup, 100% free.`,
         h1: `${toolName} Online — Free Tool ${uc.label}`,
         toolSlug: tool.slug,

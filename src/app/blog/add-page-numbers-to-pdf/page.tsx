@@ -1,5 +1,11 @@
+import { buildMetadata } from "@/lib/seo";
 import type { Metadata } from "next";
-export const metadata: Metadata = { title: "How to Add Page Numbers to PDF Files Online Free", description: "Add page numbers to PDF documents online for free. Number pages from any starting position with custom formatting." };
+export const metadata: Metadata = buildMetadata({
+  path: "/blog/add-page-numbers-to-pdf",
+  title: "How to Add Page Numbers to PDF Files Online Free",
+  description: "Add page numbers to PDF documents online for free. Number pages from any starting position with custom formatting.",
+  type: "article",
+});
 import ArticleJsonLd from "@/components/ArticleJsonLd";
 import HowToJsonLd from "@/components/HowToJsonLd";
 import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";

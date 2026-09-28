@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { buildMetadata } from "@/lib/seo";
 import { getErrorPages, getErrorPage } from "@/lib/error-pages";
 import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 import FaqPageJsonLd from "@/components/FaqPageJsonLd";
@@ -25,15 +26,11 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { slug } = await params;
   const page = getErrorPage(slug);
   if (!page) return {};
-  return {
+  return buildMetadata({
+    path: `/error/${slug}`,
     title: page.title,
     description: page.description,
-    openGraph: {
-      title: page.title,
-      description: page.description,
-      url: `https://allaboutpdfediting.xyz/error/${slug}`,
-    },
-  };
+  });
 }
 
 export default async function ErrorPage({ params }: { params: Promise<{ slug: string }> }) {

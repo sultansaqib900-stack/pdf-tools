@@ -1,5 +1,11 @@
+import { buildMetadata } from "@/lib/seo";
 import type { Metadata } from "next";
-export const metadata: Metadata = { title: "Repair PDF Online Free — Fix Corrupted PDF Files", description: "Fix corrupted or damaged PDF files online free. Rebuild PDF structure and recover your documents." };
+export const metadata: Metadata = buildMetadata({
+  path: "/blog/repair-pdf-online",
+  title: "Repair PDF Online Free — Fix Corrupted PDF Files",
+  description: "Fix corrupted or damaged PDF files online free. Rebuild PDF structure and recover your documents.",
+  type: "article",
+});
 import ArticleJsonLd from "@/components/ArticleJsonLd";
 import HowToJsonLd from "@/components/HowToJsonLd";
 import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";

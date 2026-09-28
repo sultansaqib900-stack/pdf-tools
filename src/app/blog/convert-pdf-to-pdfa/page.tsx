@@ -1,5 +1,11 @@
+import { buildMetadata } from "@/lib/seo";
 import type { Metadata } from "next";
-export const metadata: Metadata = { title: "Convert PDF to PDF/A Online Free — Archive Format Converter", description: "Convert PDF to PDF/A archive format for long-term preservation. Ensure your documents remain readable for decades." };
+export const metadata: Metadata = buildMetadata({
+  path: "/blog/convert-pdf-to-pdfa",
+  title: "Convert PDF to PDF/A Online Free — Archive Format Converter",
+  description: "Convert PDF to PDF/A archive format for long-term preservation. Ensure your documents remain readable for decades.",
+  type: "article",
+});
 import ArticleJsonLd from "@/components/ArticleJsonLd";
 import HowToJsonLd from "@/components/HowToJsonLd";
 import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";

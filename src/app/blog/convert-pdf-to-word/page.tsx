@@ -1,5 +1,11 @@
+import { buildMetadata } from "@/lib/seo";
 import type { Metadata } from "next";
-export const metadata: Metadata = { title: "Convert PDF to Word Online Free — PDF to DOCX Converter", description: "Convert PDF to editable Word DOCX files online free. Extract text from PDF documents and download as Microsoft Word format." };
+export const metadata: Metadata = buildMetadata({
+  path: "/blog/convert-pdf-to-word",
+  title: "Convert PDF to Word Online Free — PDF to DOCX Converter",
+  description: "Convert PDF to editable Word DOCX files online free. Extract text from PDF documents and download as Microsoft Word format.",
+  type: "article",
+});
 import ArticleJsonLd from "@/components/ArticleJsonLd";
 import HowToJsonLd from "@/components/HowToJsonLd";
 import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";

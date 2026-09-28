@@ -1,5 +1,11 @@
+import { buildMetadata } from "@/lib/seo";
 import type { Metadata } from "next";
-export const metadata: Metadata = { title: "How to Batch Process PDF Files Online Free — Edit Multiple PDFs at Once", description: "Batch process multiple PDF files online for free. Apply the same operation to many PDFs at once." };
+export const metadata: Metadata = buildMetadata({
+  path: "/blog/batch-process-pdf-online",
+  title: "How to Batch Process PDF Files Online Free — Edit Multiple PDFs at Once",
+  description: "Batch process multiple PDF files online for free. Apply the same operation to many PDFs at once.",
+  type: "article",
+});
 import ArticleJsonLd from "@/components/ArticleJsonLd";
 import HowToJsonLd from "@/components/HowToJsonLd";
 import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";

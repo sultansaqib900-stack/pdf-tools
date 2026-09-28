@@ -1,5 +1,11 @@
+import { buildMetadata } from "@/lib/seo";
 import type { Metadata } from "next";
-export const metadata: Metadata = { title: "How to Annotate PDF Online Free — Highlight, Comment & Markup", description: "Annotate PDF documents online for free. Highlight text, add comments, draw shapes, and markup PDFs instantly in your browser." };
+export const metadata: Metadata = buildMetadata({
+  path: "/blog/annotate-pdf-online",
+  title: "How to Annotate PDF Online Free — Highlight, Comment & Markup",
+  description: "Annotate PDF documents online for free. Highlight text, add comments, draw shapes, and markup PDFs instantly in your browser.",
+  type: "article",
+});
 import ArticleJsonLd from "@/components/ArticleJsonLd";
 import HowToJsonLd from "@/components/HowToJsonLd";
 import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";

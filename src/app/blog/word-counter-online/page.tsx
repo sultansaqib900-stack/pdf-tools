@@ -1,5 +1,11 @@
+import { buildMetadata } from "@/lib/seo";
 import type { Metadata } from "next";
-export const metadata: Metadata = { title: "Word Counter Online — Free Character & Word Count Tool", description: "Count words, characters, sentences, and paragraphs online for free. A fast word counter tool that works entirely in your browser." };
+export const metadata: Metadata = buildMetadata({
+  path: "/blog/word-counter-online",
+  title: "Word Counter Online — Free Character & Word Count Tool",
+  description: "Count words, characters, sentences, and paragraphs online for free. A fast word counter tool that works entirely in your browser.",
+  type: "article",
+});
 import ArticleJsonLd from "@/components/ArticleJsonLd";
 import HowToJsonLd from "@/components/HowToJsonLd";
 import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";

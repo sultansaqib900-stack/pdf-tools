@@ -1,18 +1,14 @@
+import { buildMetadata } from "@/lib/seo";
 import Link from "next/link";
 import type { Metadata } from "next";
 import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 import FaqPageJsonLd from "@/components/FaqPageJsonLd";
 
-export const metadata: Metadata = {
-  title: "Free PDF Tools for Teachers — Worksheets, Certificates, Grading & More | PDFTools",
+export const metadata: Metadata = buildMetadata({
+  path: "/pdf-tools-for-teachers",
+  title: "Free PDF Tools for Teachers — Worksheets, Certificates, Grading & More",
   description: "12 free PDF tools for teachers. Create worksheets, merge student submissions, compress files for email, generate certificates, and more. 100% browser-based, no uploads, no signup.",
-  openGraph: {
-    title: "Free PDF Tools for Teachers — Save Hours on Document Busywork",
-    description: "Create worksheets, merge assignments, generate certificates, and compress files — all free, all in your browser.",
-    url: "https://allaboutpdfediting.xyz/pdf-tools-for-teachers",
-  },
-};
-
+});
 const teacherTools = [
   {
     category: "📝 Worksheets & Handouts",

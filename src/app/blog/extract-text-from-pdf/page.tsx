@@ -1,5 +1,11 @@
+import { buildMetadata } from "@/lib/seo";
 import type { Metadata } from "next";
-export const metadata: Metadata = { title: "How to Extract Text from PDF Online Free — Copy Text Instantly", description: "Extract text from PDF files online for free. Copy text from scanned or digital PDFs instantly." };
+export const metadata: Metadata = buildMetadata({
+  path: "/blog/extract-text-from-pdf",
+  title: "How to Extract Text from PDF Online Free — Copy Text Instantly",
+  description: "Extract text from PDF files online for free. Copy text from scanned or digital PDFs instantly.",
+  type: "article",
+});
 import ArticleJsonLd from "@/components/ArticleJsonLd";
 import HowToJsonLd from "@/components/HowToJsonLd";
 import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";

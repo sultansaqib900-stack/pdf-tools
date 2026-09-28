@@ -1,13 +1,14 @@
+import { buildMetadata } from "@/lib/seo";
 import Link from "next/link";
 import type { Metadata } from "next";
 import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 import ArticleJsonLd from "@/components/ArticleJsonLd";
 
-export const metadata: Metadata = {
-  title: "Ultimate Guide to PDF Editing — Free Online PDF Tools | PDFTools",
+export const metadata: Metadata = buildMetadata({
+  path: "/ultimate-guide-to-pdf-editing",
+  title: "Ultimate Guide to PDF Editing — Free Online PDF Tools",
   description: "The complete guide to editing PDFs online free. Learn how to compress, merge, split, convert, sign, and edit PDFs — all in your browser with no uploads.",
-};
-
+});
 export default function UltimateGuidePage() {
   return (
     <div className="max-w-4xl mx-auto px-4 py-12">

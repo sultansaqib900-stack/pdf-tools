@@ -1,17 +1,14 @@
+import { buildMetadata } from "@/lib/seo";
 import Link from "next/link";
 import type { Metadata } from "next";
 import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 import ArticleJsonLd from "@/components/ArticleJsonLd";
 
-export const metadata: Metadata = {
-  title: "Adobe Acrobat Alternative — Free PDF Editor Online | PDFTools",
+export const metadata: Metadata = buildMetadata({
+  path: "/adobe-acrobat-alternative",
+  title: "Adobe Acrobat Alternative — Free PDF Editor Online",
   description: "Looking for an Adobe Acrobat alternative? PDFTools is a free, private PDF editor that runs entirely in your browser. No downloads, no subscriptions, no server uploads.",
-  openGraph: {
-    title: "Adobe Acrobat Alternative — Free PDF Editor",
-    description: "Free alternative to Adobe Acrobat. No downloads, no subscriptions, no server uploads.",
-  },
-};
-
+});
 export default function AdobeAcrobatAltPage() {
   return (
     <div className="max-w-4xl mx-auto px-4 py-12">

@@ -1,15 +1,12 @@
+import { buildMetadata } from "@/lib/seo";
 import type { Metadata } from "next";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = buildMetadata({
+  path: "/blog/pdf-vs-image",
   title: "PDF vs Image – When to Use Each Format for Your Documents",
   description: "Understanding when to use PDF vs image formats like JPG and PNG. Learn how to convert between formats with our free online tools.",
-  alternates: { canonical: "https://allaboutpdfediting.xyz/blog/pdf-vs-image" },
-    openGraph: {
-    title: "PDF vs Image – Which Format Should You Use?",
-    description: "PDF or JPG? Learn the difference and when to use each format for your documents.",
-  },
-};
-
+  type: "article",
+});
 import ArticleJsonLd from "@/components/ArticleJsonLd";
 import HowToJsonLd from "@/components/HowToJsonLd";
 import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";

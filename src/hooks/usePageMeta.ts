@@ -2,29 +2,16 @@
 
 import { useEffect } from "react";
 
-export function usePageMeta(title: string, description: string) {
+/**
+ * @deprecated Client-side title/description mutation is no longer needed and
+ * caused title instability (server title flipped after hydration). Every route
+ * now provides its title, description, canonical and Open Graph tags in the
+ * server HTML via `buildMetadata` (src/lib/seo.ts), which is what search
+ * engines and link unfurlers read. Kept as a no-op so existing call sites
+ * keep compiling without touching tool components.
+ */
+export function usePageMeta(_title: string, _description: string) {
   useEffect(() => {
-    document.title = title;
-    let metaDesc = document.querySelector('meta[name="description"]');
-    if (!metaDesc) {
-      metaDesc = document.createElement("meta");
-      metaDesc.setAttribute("name", "description");
-      document.head.appendChild(metaDesc);
-    }
-    metaDesc.setAttribute("content", description);
-    let ogTitle = document.querySelector('meta[property="og:title"]');
-    if (!ogTitle) {
-      ogTitle = document.createElement("meta");
-      ogTitle.setAttribute("property", "og:title");
-      document.head.appendChild(ogTitle);
-    }
-    ogTitle.setAttribute("content", title);
-    let ogDesc = document.querySelector('meta[property="og:description"]');
-    if (!ogDesc) {
-      ogDesc = document.createElement("meta");
-      ogDesc.setAttribute("property", "og:description");
-      document.head.appendChild(ogDesc);
-    }
-    ogDesc.setAttribute("content", description);
-  }, [title, description]);
+    /* intentionally empty — see comment above */
+  }, []);
 }

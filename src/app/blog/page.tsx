@@ -1,5 +1,13 @@
+import type { Metadata } from "next";
+import { buildMetadata } from "@/lib/seo";
+
 import Link from "next/link";
 
+export const metadata: Metadata = buildMetadata({
+  path: "/blog",
+  title: "PDF How-To Guides & Tutorials",
+  description: "Step-by-step guides for working with PDFs: compressing, merging, converting, redacting, signing and more — written around free tools that run in your browser.",
+});
 export default function BlogPage() {
   const posts = [
     {

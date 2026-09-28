@@ -1,5 +1,11 @@
+import { buildMetadata } from "@/lib/seo";
 import type { Metadata } from "next";
-export const metadata: Metadata = { title: "Edit PDF Online Free — Add Text and Shapes to Any PDF", description: "Edit PDF files online for free. Add text boxes, rectangles, circles, and lines to any PDF without installing software." };
+export const metadata: Metadata = buildMetadata({
+  path: "/blog/edit-pdf-online",
+  title: "Edit PDF Online Free — Add Text and Shapes to Any PDF",
+  description: "Edit PDF files online for free. Add text boxes, rectangles, circles, and lines to any PDF without installing software.",
+  type: "article",
+});
 import ArticleJsonLd from "@/components/ArticleJsonLd";
 import HowToJsonLd from "@/components/HowToJsonLd";
 import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";

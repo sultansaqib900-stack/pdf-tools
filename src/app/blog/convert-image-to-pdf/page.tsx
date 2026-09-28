@@ -1,5 +1,11 @@
+import { buildMetadata } from "@/lib/seo";
 import type { Metadata } from "next";
-export const metadata: Metadata = { title: "How to Convert Images to PDF Online Free — JPG, PNG to PDF", description: "Convert images to PDF online for free. Turn JPG, PNG, BMP and other image formats into PDF documents instantly." };
+export const metadata: Metadata = buildMetadata({
+  path: "/blog/convert-image-to-pdf",
+  title: "How to Convert Images to PDF Online Free — JPG, PNG to PDF",
+  description: "Convert images to PDF online for free. Turn JPG, PNG, BMP and other image formats into PDF documents instantly.",
+  type: "article",
+});
 import ArticleJsonLd from "@/components/ArticleJsonLd";
 import HowToJsonLd from "@/components/HowToJsonLd";
 import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";

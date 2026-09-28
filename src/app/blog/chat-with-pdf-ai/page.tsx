@@ -1,15 +1,12 @@
+import { buildMetadata } from "@/lib/seo";
 import type { Metadata } from "next";
 
-export const metadata: Metadata = {
-  title: "Chat with PDF – Free AI PDF Assistant Online | PDFTools",
+export const metadata: Metadata = buildMetadata({
+  path: "/blog/chat-with-pdf-ai",
+  title: "Chat with PDF – Free AI PDF Assistant Online",
   description: "Chat with any PDF document using AI. Upload a PDF and ask questions about its content. Free daily limit, no signup, all in your browser.",
-  alternates: { canonical: "https://allaboutpdfediting.xyz/blog/chat-with-pdf-ai" },
-    openGraph: {
-    title: "Chat with PDF – Free AI PDF Assistant",
-    description: "Upload any PDF and ask AI questions about its content. Free daily limit, no signup needed.",
-  },
-};
-
+  type: "article",
+});
 import ArticleJsonLd from "@/components/ArticleJsonLd";
 import HowToJsonLd from "@/components/HowToJsonLd";
 import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";

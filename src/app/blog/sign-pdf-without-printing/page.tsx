@@ -1,15 +1,12 @@
+import { buildMetadata } from "@/lib/seo";
 import type { Metadata } from "next";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = buildMetadata({
+  path: "/blog/sign-pdf-without-printing",
   title: "How to Sign a PDF Without Printing – Free Online e-Sign Tool",
   description: "Learn how to sign a PDF online free without printing or scanning. Use our browser-based e-sign tool to draw and add your signature in seconds.",
-  alternates: { canonical: "https://allaboutpdfediting.xyz/blog/sign-pdf-without-printing" },
-    openGraph: {
-    title: "How to Sign a PDF Without Printing",
-    description: "Draw and add your signature to PDFs instantly in your browser. No print, no scan, no upload.",
-  },
-};
-
+  type: "article",
+});
 import ArticleJsonLd from "@/components/ArticleJsonLd";
 import HowToJsonLd from "@/components/HowToJsonLd";
 import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";

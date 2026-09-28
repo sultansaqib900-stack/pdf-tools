@@ -5,6 +5,24 @@ import WebSiteJsonLd from "@/components/WebSiteJsonLd";
 import OrganizationJsonLd from "@/components/OrganizationJsonLd";
 import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
 
+import type { Metadata } from "next";
+import { buildMetadata } from "@/lib/seo";
+
+export const metadata: Metadata = {
+  ...buildMetadata({
+    path: "/es",
+    title: "PDFTools: Herramientas PDF Gratis en Español",
+    description:
+      "38 herramientas PDF gratuitas y sin límites, más 14 herramientas profesionales para IA, automatización, redacción segura y flujos legales. El procesamiento se hace en tu navegador.",
+    locale: "es",
+    hasEs: true,
+  }),
+  // The Spanish home title carries the brand itself (no ` | PDFTools` template).
+  title: { absolute: "PDFTools: Herramientas PDF Gratis en Español" },
+};
+
+
+
 const tools = [
   { title: "Comprimir PDF", desc: "Reduce el tamaño del archivo", icon: "📦", href: "/es/compress", gradient: "from-blue-500 to-blue-600" },
   { title: "Unir PDF", desc: "Combina varios PDF en uno", icon: "🔗", href: "/es/merge", gradient: "from-emerald-500 to-emerald-600" },

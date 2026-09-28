@@ -1,15 +1,12 @@
+import { buildMetadata } from "@/lib/seo";
 import type { Metadata } from "next";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = buildMetadata({
+  path: "/blog/compress-pdf-without-losing-quality",
   title: "How to Compress PDF Without Losing Quality – Free Online Tool",
   description: "Compress PDF files without losing quality using our free online tool. Reduce PDF size while keeping text sharp and images clear — all in your browser.",
-  alternates: { canonical: "https://allaboutpdfediting.xyz/blog/compress-pdf-without-losing-quality" },
-    openGraph: {
-    title: "How to Compress PDF Without Losing Quality",
-    description: "Reduce PDF file size while keeping text sharp and images clear. 100% free, no uploads, no signup.",
-  },
-};
-
+  type: "article",
+});
 import ArticleJsonLd from "@/components/ArticleJsonLd";
 import HowToJsonLd from "@/components/HowToJsonLd";
 import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";

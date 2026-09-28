@@ -1,15 +1,12 @@
+import { buildMetadata } from "@/lib/seo";
 import type { Metadata } from "next";
 
-export const metadata: Metadata = {
-  title: "How to Flatten a PDF Online Free – Merge Layers & Forms | PDFTools",
+export const metadata: Metadata = buildMetadata({
+  path: "/blog/flatten-pdf-online",
+  title: "How to Flatten a PDF Online Free – Merge Layers & Forms",
   description: "Flatten PDF files online for free. Merge form fields, annotations, and layers into permanent page content. No uploads, 100% private, all in your browser.",
-  alternates: { canonical: "https://allaboutpdfediting.xyz/blog/flatten-pdf-online" },
-    openGraph: {
-    title: "How to Flatten a PDF Online Free – No Software Needed",
-    description: "Merge form fields, annotations, and layers into permanent page content. 100% free, no uploads, no signup.",
-  },
-};
-
+  type: "article",
+});
 import ArticleJsonLd from "@/components/ArticleJsonLd";
 import HowToJsonLd from "@/components/HowToJsonLd";
 import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";

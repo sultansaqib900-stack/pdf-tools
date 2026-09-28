@@ -1,18 +1,14 @@
+import { buildMetadata } from "@/lib/seo";
 import Link from "next/link";
 import type { Metadata } from "next";
 import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 import FaqPageJsonLd from "@/components/FaqPageJsonLd";
 
-export const metadata: Metadata = {
-  title: "Free PDF Tools for Small Business — Invoices, Contracts, Forms & More | PDFTools",
+export const metadata: Metadata = buildMetadata({
+  path: "/pdf-tools-for-small-business",
+  title: "Free PDF Tools for Small Business — Invoices, Contracts, Forms & More",
   description: "10+ free PDF tools for small businesses. Merge invoices, convert contracts to PDF, compress files for email, fill forms, sign agreements, and protect business documents. No signup, 100% browser-based.",
-  openGraph: {
-    title: "Free PDF Tools for Small Business",
-    description: "Merge invoices, convert contracts, compress files for email, fill forms, and sign agreements — all free, all in your browser.",
-    url: "https://allaboutpdfediting.xyz/pdf-tools-for-small-business",
-  },
-};
-
+});
 const bizTools = [
   {
     category: "📄 Documents & Contracts",

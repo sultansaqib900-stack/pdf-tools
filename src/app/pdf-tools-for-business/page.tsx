@@ -1,16 +1,13 @@
+import { buildMetadata } from "@/lib/seo";
 import Link from "next/link";
 import type { Metadata } from "next";
 import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 
-export const metadata: Metadata = {
-  title: "PDF Tools for Business — Secure Document Management | PDFTools",
+export const metadata: Metadata = buildMetadata({
+  path: "/pdf-tools-for-business",
+  title: "PDF Tools for Business — Secure Document Management",
   description: "Free PDF tools for businesses. Compress, merge, protect, and edit business documents securely — no server uploads, no signup required.",
-  openGraph: {
-    title: "PDF Tools for Business",
-    description: "Secure business document tools. No server uploads, no signup.",
-  },
-};
-
+});
 export default function PDFToolsForBusinessPage() {
   return (
     <div className="max-w-4xl mx-auto px-4 py-12">
