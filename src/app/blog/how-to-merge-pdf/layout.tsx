@@ -5,6 +5,7 @@ export const metadata: Metadata = buildMetadata({
   path: "/blog/how-to-merge-pdf",
   title: "How to Merge PDFs Online Free — Combine Multiple PDFs Into One",
   description: "Learn how to merge PDF files online free. Combine multiple PDFs into one document in seconds. No signup, no uploads to servers.",
+  image: "https://allaboutpdfediting.xyz/blog/how-to-merge-pdf/opengraph-image",
   type: "article",
 });
 

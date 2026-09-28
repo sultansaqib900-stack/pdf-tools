@@ -239,7 +239,37 @@ aggregateRating occurrences on all formerly-faking pages: 0
 
 Note: `SiteNavigationElement` entries come from the pre-existing sitewide `SiteNavJsonLd`. Two `@type: Audience` nodes come from `AiSummaryJsonLd` (pre-existing, harmless).
 
-## Phase 5 — Performance & rendering
+## Phase 5 — Performance, Core Web Vitals, rendering — DONE (Lighthouse manual)
+
+### What changed
+
+| File(s) | Change |
+|---|---|
+| `src/lib/ogImage.tsx` | **NEW** — shared `makeOgImage(title, subtitle)` factory (ImageResponse, 1200x630) with the site style and "files stay in your browser" footer. |
+| 7 × `opengraph-image.tsx` | Per-page OG images for `/compress`, `/merge`, `/split`, `/image-to-pdf`, `/edit-pdf`, `/blog/how-to-compress-pdf`, `/blog/how-to-merge-pdf` — each names the tool/post. `buildMetadata` on those routes now points `og:image` at the per-page route; other pages fall back to the site-wide `src/app/opengraph-image.tsx`. |
+
+### Verified in place (pre-existing, confirmed working)
+
+- Heavy libraries lazy-loaded on interaction: 34 tool pages use `await import("pdf-lib")` etc. inside handlers (e.g. `src/app/compress/page.tsx` `runCompress`), and `/view` uses `next/dynamic` + `ssr: false` for the viewer. Page shell is server-rendered/static.
+- 404 status for missing pages (`/this-page-does-not-exist` → 404) and `src/app/not-found.tsx` with popular-tool links.
+- No trailing-slash duplicates: `/compress/` → 308 → `/compress`.
+- Fonts: Inter loaded with `&display=swap` (root layout). Converting to `next/font/google` was deliberately skipped — the sandbox build cannot fetch fonts (see build warning "Failed to load dynamic font") and a build-time font fetch would break deploys when the network hiccups; swap behavior is already correct.
+- Images: icons use fixed `width/height` in metadata; no unbounded `<img>` in critical paths (7 raw `<img>` tags are all in non-critical UI with layout space reserved).
+
+### Measured (localhost production build — proxy metrics, not field data)
+
+| URL | TTFB | HTML size | JS chunks |
+|---|---|---|---|
+| `/` | 13ms | 157KB | — |
+| `/compress` | 6ms | 94KB | 13 |
+| `/merge` | 6ms | 89KB | — |
+| `/blog/how-to-compress-pdf` | 4ms | 81KB | — |
+
+**Lighthouse could not run in this sandbox (no Chrome binary).** Real Lighthouse/PageSpeed runs on mobile for `/`, `/compress`, `/merge`, one blog post are listed in the manual actions — run them after deploy against the live URLs and record before/after in this file.
+
+### Host / protocol checks
+
+- HTTPS-only + single canonical host (no www/non-www duplicates) are enforced at the hosting layer (Vercel project domains). **Manual check listed below** — the repo itself hardcodes `https://allaboutpdfediting.xyz` everywhere (single host, no www variants in code).
 
 ## Phase 6 — Internal linking
 

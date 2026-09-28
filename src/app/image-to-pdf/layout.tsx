@@ -5,6 +5,7 @@ export const metadata: Metadata = buildMetadata({
   path: "/image-to-pdf",
   title: "Image to PDF Online Free — JPG PNG to PDF",
   description: "Convert JPG, PNG, and other images to PDF online for free. Combine multiple images into a single PDF document instantly in your browser.",
+  image: "https://allaboutpdfediting.xyz/image-to-pdf/opengraph-image",
 });
 export default function Layout({ children }: { children: React.ReactNode }) {
   return children;
