@@ -298,13 +298,24 @@ inbound counts: /tools 88 · /blog 612 · /qa 467 · /redact 498 · /resize 10 �
 
 | Deliverable | Where |
 |---|---|
-| Keyword map (url, primary keyword, secondary keywords, intent, target title, target H1) — 131 rows, **no two URLs share a primary keyword** (script-checked), covers every sitemap URL incl. 30 error guides and the 7 `/es` pages | `docs/keyword-map.csv` |
+| Keyword map (url, primary keyword, secondary keywords, intent, target title, target H1) — 133 rows, **no two URLs share a primary keyword** (script-checked), covers the indexable sitemap routes plus two new long-tail guides | `docs/keyword-map.csv` |
 | Full ranking strategy: privacy differentiator, long-tail plan, preset-page designs, comparison-page upkeep, E-E-A-T, freshness, backlink plan, measurement loop | `docs/ranking-strategy.md` |
 | Privacy-claim accuracy ("no upload") | `/privacy` §1 now scopes the blanket claim to the core tools and points at §5 for the labeled AI exceptions (verified against `src/app/api/chat-pdf/*`, `/api/extract-tables`) |
 | Comparison pages "Last verified" dates | added to `/vs/adobe-acrobat`, `/vs/ilovepdf`, `/vs/smallpdf` ("September 2026") |
 | `/compress` privacy section ("How We Handle Your Files") | done in Phase 3C — the pattern to copy to the top 10 tools |
 | Preset landing pages ("compress PDF to 200KB"…) | **designed, not built** — spec in `docs/ranking-strategy.md` §3. Deliberately not shipped: each preset page needs a working preset in the tool first (doorway-page risk otherwise). |
 | Visible author bylines on posts | **remaining** (JSON-LD already names the author); listed below |
+
+## Phase 8 — Deploy indexing, host canonicalization, verification, and first long-tail content — IMPLEMENTED (2026-09-28)
+
+| Deliverable | Where | Owner setup still required |
+|---|---|---|
+| Post-deploy IndexNow submission: GitHub Actions listens for successful Vercel `Production` deployment statuses, checks the deployed `/indexnow-key.txt`, reads only same-host canonical URLs from `/sitemap.xml`, and submits them to IndexNow. A workflow-dispatch path supports manual re-submission; the script also has a dry-run validation mode. | `.github/workflows/indexnow.yml`, `scripts/submit-indexnow.mjs`, `src/app/indexnow-key.txt/route.ts` | Set the same random 32-character hex `INDEXNOW_KEY` in Vercel Production and GitHub Actions secrets. Ensure Vercel posts deployment statuses to GitHub. This notifies IndexNow participants; it does not submit URLs to Google. |
+| Code-level `www` → apex permanent redirect, preserving path/query. | `next.config.ts` | Attach `www.allaboutpdfediting.xyz` to the Vercel project and keep the apex primary; a request must reach Next.js for the code rule to run. |
+| Search verification token wiring via Next metadata; existing Google token is retained as a fallback. Optional Google and Bing tokens can be set at deploy time. | `src/lib/search-verification.ts`, `src/app/layout.tsx`, `.env.example` | Add/override `GOOGLE_SITE_VERIFICATION` and/or `BING_SITE_VERIFICATION` in Vercel, then redeploy. DNS ownership verification for a Search Console Domain property remains a dashboard/DNS action. |
+| Two original long-tail articles, listed on `/blog`, included in XML sitemap/RSS/keyword map, and contextually linked from `/compress` and `/redact`. | `/blog/compress-scanned-pdf-under-1mb`, `/blog/redact-pdf-for-foia-request`; `src/app/blog/page.tsx`, `src/app/sitemap.ts`, `src/app/feed.xml/route.ts`, `docs/keyword-map.csv` | After deployment, inspect/request indexing in Google Search Console. IndexNow is not a substitute for Google URL Inspection. |
+
+The continuing handoff and exact rollout checklist are in `docs/seo-next-steps.md`.
 
 ## Manual actions for the site owner (cannot be automated from this repo)
 
@@ -316,7 +327,8 @@ inbound counts: /tools 88 · /blog 612 · /qa 467 · /redact 498 · /resize 10 �
      (changed: `/vault` rule, `/es/*` private rules, no `Host:`).
    - Submit `https://allaboutpdfediting.xyz/sitemap.xml` (176 URLs at deploy time).
    - URL Inspection → Request indexing for the top 10-20 pages (`/`, `/compress`, `/merge`,
-     `/split`, `/image-to-pdf`, `/edit-pdf`, top 10 blog posts, the 3 `/vs/*` pages).
+     `/split`, `/image-to-pdf`, `/edit-pdf`, the two new long-tail articles, top blog posts,
+     and the 3 `/vs/*` pages).
    - Pages > Not indexed: export the example URLs for EVERY row into `docs/seo-audit.md`.
      Expected: the 29 "Blocked by robots.txt" are private paths (fine); the 15 "noindex" should
      all be `/for/*` (intentional — do NOT click Validate Fix on those, it will fail forever);
@@ -328,9 +340,10 @@ inbound counts: /tools 88 · /blog 612 · /qa 467 · /redact 498 · /resize 10 �
    `/blog/how-to-compress-pdf` — record before/after scores in `docs/verification-log.md`. The
    sandbox had no Chrome, so no scores were captured here. Targets: LCP < 2.5s, INP < 200ms,
    CLS < 0.1.
-5. **Hosting checks** (Vercel project settings, not repo code): HTTPS-only enforced; decide the
-   canonical host (apex vs www) and make the other a 308 redirect — code hardcodes the apex
-   `https://allaboutpdfediting.xyz` everywhere.
+5. **Hosting checks** (Vercel project settings, not repo code): keep HTTPS-only enforced and
+   make `allaboutpdfediting.xyz` the primary domain. A code-level 308 host redirect now sends
+   `www.allaboutpdfediting.xyz/*` to the apex while preserving the path; the `www` domain must
+   still be attached to the Vercel project. Verify both scheme variants after deploy.
 6. **Search Console "queries" export** (weekly) → fold real search phrasings into
    `docs/keyword-map.csv` secondaries; rewrite titles/descriptions for impressions-but-low-CTR
    pages.

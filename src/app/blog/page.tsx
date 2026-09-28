@@ -11,6 +11,20 @@ export const metadata: Metadata = buildMetadata({
 export default function BlogPage() {
   const posts = [
     {
+      slug: "compress-scanned-pdf-under-1mb",
+      title: "How to Compress a Scanned PDF Under 1MB — Keep Text Legible",
+      excerpt: "A practical workflow to shrink scanned PDFs: check scan settings, compare compression modes, and verify readability before upload.",
+      date: "September 28, 2026",
+      readTime: "6 min read",
+    },
+    {
+      slug: "redact-pdf-for-foia-request",
+      title: "How to Redact a PDF for a FOIA Request — Step-by-Step",
+      excerpt: "Preserve the original, apply authorized redactions to a working copy, and verify every page before sharing a FOIA-related PDF.",
+      date: "September 28, 2026",
+      readTime: "7 min read",
+    },
+    {
       slug: "how-to-compress-pdf",
       title: "How to Compress a PDF — Reduce PDF File Size Online Free",
       excerpt: "Learn how to compress PDF files online free. Reduce PDF size from 20MB to under 5MB with no quality loss. No signup, no uploads.",

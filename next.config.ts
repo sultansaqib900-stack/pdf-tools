@@ -39,6 +39,15 @@ const nextConfig: NextConfig = {
 
   async redirects() {
     return [
+      // Keep the only public origin aligned with canonical URLs and metadata.
+      // This is a code-level fallback; www must still be attached to the
+      // production Vercel project for requests to reach this redirect rule.
+      {
+        source: "/:path*",
+        has: [{ type: "host", value: "www.allaboutpdfediting.xyz" }],
+        destination: "https://allaboutpdfediting.xyz/:path*",
+        permanent: true,
+      },
       // The dynamic OG image route has no extension; older metadata pointed at
       // /opengraph-image.png which 404ed. Send that variant to the real route.
       { source: "/opengraph-image.png", destination: "/opengraph-image", permanent: true },

@@ -16,6 +16,9 @@ Set these for **Production** and, when testing the protected deployment, **Previ
 | `BUTTONDOWN_API_KEY` | Yes while newsletter is shown | Newsletter delivery; the API fails visibly instead of discarding addresses |
 | `SENTRY_DSN` | Optional | Server/edge error monitoring |
 | `NEXT_PUBLIC_SENTRY_DSN` | Optional | Browser error monitoring; a Sentry DSN is public by design |
+| `GOOGLE_SITE_VERIFICATION` | Optional | Override the current Google Search Console HTML verification token; DNS-verified Domain properties do not need this tag |
+| `BING_SITE_VERIFICATION` | Optional | Bing Webmaster Tools `msvalidate.01` token |
+| `INDEXNOW_KEY` | Optional | Same 32-character key on Vercel Production and GitHub Actions secret; serves `/indexnow-key.txt` and authorizes deploy notifications |
 | `PREMIUM_ADMIN_EMAILS` | Optional | Comma-separated owner/support emails that receive **permanent Premium**. Evaluated only server-side after a real HttpOnly-cookie login; never send this value to the browser and never prefix it with `NEXT_PUBLIC_` |
 
 The code also accepts the legacy Vercel integration names `pdf_tools_KV_REST_API_URL` and `pdf_tools_KV_REST_API_TOKEN`, but the standard names above are preferred. See `.env.example` for a secret-free template.
