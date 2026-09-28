@@ -82,3 +82,20 @@ Redirects: /adobe-acrobat-alternative -> /vs/adobe-acrobat (308),
 
 Internal link crawl (454 URLs discovered from 17 seed pages): non-200: 0
 ```
+
+## Phase 3 — consolidation verification (localhost)
+
+```
+Redirects (308, permanent):
+  /blog/compress-pdf-without-losing-quality -> /blog/how-to-compress-pdf
+  /blog/merge-multiple-pdfs-into-one        -> /blog/how-to-merge-pdf
+  /blog/convert-image-to-pdf                -> /blog/how-to-convert-image-to-pdf
+  /blog/search-and-redact-pdf               -> /blog/redact-pdf-online
+  /blog/edit-pdf-metadata                   -> /blog/clean-pdf-metadata
+
+/compress raw-HTML (SSR) content check: "How PDF Compression Works", "How We Handle Your Files",
+"Frequently Asked Questions", FAQ text all present without JS.
+Sitemap: 176 URLs (5 removed), 5 distinct lastmod values, no Disallow collisions.
+Internal link crawl: 449 URLs, non-200: 0.
+vitest: 162 passed.
+```

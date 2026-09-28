@@ -158,13 +158,6 @@ export default function BlogPage() {
       readTime: "5 min read",
     },
     {
-      slug: "search-and-redact-pdf",
-      title: "How to Search and Redact Words in PDF Online Free",
-      excerpt: "Automatically find and redact specific words or phrases across your entire PDF document.",
-      date: "June 26, 2026",
-      readTime: "5 min read",
-    },
-    {
       slug: "invert-pdf-colors",
       title: "How to Invert PDF Colors Online Free — Dark Mode & High Contrast",
       excerpt: "Convert PDF colors to dark mode, grayscale, or high-contrast for better readability and accessibility.",
@@ -221,20 +214,6 @@ export default function BlogPage() {
       readTime: "6 min read",
     },
     {
-      slug: "compress-pdf-without-losing-quality",
-      title: "How to Compress a PDF Without Losing Quality (100% Free)",
-      excerpt: "Learn how to reduce PDF file size while maintaining quality using free online tools. No uploads, no signup, completely free.",
-      date: "June 24, 2026",
-      readTime: "4 min read",
-    },
-    {
-      slug: "merge-multiple-pdfs-into-one",
-      title: "How to Merge Multiple PDFs Into One Document Online Free",
-      excerpt: "Combine several PDF files into a single document without installing software. A complete guide to merging PDFs online.",
-      date: "June 24, 2026",
-      readTime: "3 min read",
-    },
-    {
       slug: "delete-pages-from-pdf",
       title: "How to Delete Pages from a PDF Online Free (No Signup)",
       excerpt: "Remove unwanted pages from a PDF document online for free. No signup, no uploads, all in your browser.",
@@ -252,13 +231,6 @@ export default function BlogPage() {
       slug: "organize-pdf-pages",
       title: "How to Reorder and Organize PDF Pages Online Free",
       excerpt: "Drag and drop to reorder pages in your PDF document. Fix scanned documents, rearrange reports, and organize presentations.",
-      date: "June 24, 2026",
-      readTime: "3 min read",
-    },
-    {
-      slug: "edit-pdf-metadata",
-      title: "How to Edit PDF Metadata Online Free — Title, Author & Keywords",
-      excerpt: "Update PDF document properties like title, author, subject, and keywords online for free without uploading files.",
       date: "June 24, 2026",
       readTime: "3 min read",
     },
@@ -338,13 +310,6 @@ export default function BlogPage() {
       excerpt: "Convert HTML to PDF online for free. Turn web pages, HTML code, or entire websites into PDF documents instantly.",
       date: "June 25, 2026",
       readTime: "5 min read",
-    },
-    {
-      slug: "convert-image-to-pdf",
-      title: "How to Convert Images to PDF Online Free — JPG, PNG to PDF",
-      excerpt: "Convert images to PDF online for free. Turn JPG, PNG, BMP and other image formats into PDF documents instantly.",
-      date: "June 25, 2026",
-      readTime: "4 min read",
     },
     {
       slug: "insert-blank-pages-pdf",

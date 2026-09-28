@@ -166,7 +166,46 @@ non-200: 0
 
 Internal link crawl verdict: **no 404/3xx/5xx targets** — `/redact`, `/vault`, `/embed`, `/resize` all resolve 200 (they are real pages; `/vault`/`/embed` are robots-blocked but linked with `nofollow`).
 
-## Phase 3 — Content quality & duplication
+## Phase 3 — Content quality & duplication — DONE (with documented remainder)
+
+### 3A. `/for/*` programmatic pages
+
+- Count: **300 pages** = 20 tools x 15 audiences (`src/lib/programmatic-seo.ts`).
+- Overlap measurement: for a fixed tool, the only per-page unique text is the title/H1/description, one swapped pain point, and the audience label. The tool grid, benefit copy, and the 3 FAQs (generated per tool, shared across all 15 audiences) are identical — **~85-95% template overlap** with each other; the body largely duplicates the parent tool page.
+- **Action taken (spec default): all 300 remain `robots: { index: false, follow: true }`, kept out of the XML sitemap.** They stay useful as landing pages for internal traffic (linked from the HTML sitemap).
+- No page has been re-enabled for indexing. To re-enable: rewrite with genuinely unique content (audience-specific scenarios, real limits, screenshots) — start with max 10 combos as the spec says. **Remains as future work.**
+
+### 3B. Overlapping blog posts — consolidated 2026-09-28
+
+| Pair | Kept (merged into) | 308 redirect from | Merged content |
+|---|---|---|---|
+| compress pair | `/blog/how-to-compress-pdf` | `/blog/compress-pdf-without-losing-quality` | "Does Compression Reduce Quality?" (lossless vs lossy), "How Much Can You Compress?", "When to Compress" |
+| merge pair | `/blog/how-to-merge-pdf` | `/blog/merge-multiple-pdfs-into-one` | "Tips for Merging", "Limits and File Sizes", "Privacy When Merging" |
+| image pair | `/blog/how-to-convert-image-to-pdf` | `/blog/convert-image-to-pdf` | formats section, extra use cases, privacy note |
+| redact pair | `/blog/redact-pdf-online` | `/blog/search-and-redact-pdf` | "When to Use Search & Redact Instead", "Redaction vs. Black Highlighting" (links both `/redact` and `/search-redact`) |
+| metadata pair | `/blog/clean-pdf-metadata` | `/blog/edit-pdf-metadata` | "Prefer to Edit Metadata Instead of Removing It?" (covers `/metadata` editor); post retitled "How to Edit or Remove PDF Metadata Online Free" |
+
+Keepers chosen by keyword value + content strength; best sections merged so each keeper now targets one primary keyword with the loser's terms as secondaries. Updated everywhere the losers were referenced: `src/lib/related-content.ts`, `src/app/blog/page.tsx`, `src/app/feed.xml/route.ts`, `src/app/sitemap.ts`, `src/lib/seo-dates.ts` (keepers' lastModified bumped to 2026-09-28 — a real content change).
+
+**Pair 6 (posts vs tool pages) — differentiated, not merged** (posts stay informational, tools commercial):
+- `blog/scan-to-pdf` H1 "How to Scan Documents to PDF Using Your Camera…" vs tool "Scan to PDF Online Free — Camera Document Scanner" (already distinct).
+- `blog/ocr-pdf-online` retitled "How to OCR a Scanned PDF — Make Scanned Files Searchable" (was cannibalizing the tool's title).
+- `blog/edit-pdf-online` retitled "How to Edit a PDF Online Without Installing Software".
+- Each post links to its tool twice; each tool links back via `related-content.ts`.
+
+**Claim-accuracy fixes found during the merge (rule: no claims the code doesn't support):**
+- `blog/how-to-convert-image-to-pdf` (+ JSON-LD, + feed) claimed WebP/BMP/GIF/TIFF support — the tool accepts **JPEG/PNG only** (`src/app/image-to-pdf/page.tsx`). Fixed everywhere.
+- `src/lib/related-content.ts` image-to-page FAQ repeated the same false format list. Fixed.
+- merge FAQ claimed "free users can merge up to 5 files" (code has **no file-count cap**). Fixed.
+- compress FAQ claimed compression never reduces quality — now explains lossless vs Balanced/Maximum (which flatten to images) accurately.
+- `blog/clean-pdf-metadata` contained a mojibake artifact ("prevents泄露ing") and a broken `text(` CSS class. Fixed.
+
+### 3C. Thin tool pages
+
+- `/compress` (the flagged page) expanded below the tool UI to ~600 words of unique content in server HTML: "How PDF Compression Works", "When to Compress a PDF", "Step-by-Step", "Limits and Browser Support" (10MB free/100MB Premium — verified in `src/lib/premium.ts`), "How We Handle Your Files" (scoped privacy claim — notes that only the labeled AI features touch the network), and **visible FAQs rendering the exact entries in `FaqPageJsonLd`** (FAQ schema now matches on-page text).
+- Every page verified to have exactly **one `<h1>`** (the only multi-h1 hit was an editor default-string in `/html-to-pdf`, not a heading).
+- Content is server-rendered: `curl` shows "How PDF Compression Works", "How We Handle Your Files", and the FAQ text in the raw HTML (client components are SSR'd by Next).
+- **Remains:** the same below-UI expansion for the other ~50 tool pages (current state: `ToolInfo` box + `RelatedContent` + `UseCaseLinks` + a short About paragraph). Recommended order: merge, split, image-to-pdf, edit-pdf, pdf-to-word, ocr-pdf, then the rest. Not done here to avoid mass-produced filler — each needs genuinely unique text.
 
 ## Phase 4 — Structured data
 

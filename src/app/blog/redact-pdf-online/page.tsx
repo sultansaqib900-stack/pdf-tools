@@ -42,6 +42,18 @@ export default function BlogPost() {
           <li>Trade secrets and confidential business data</li>
         </ul>
 
+        <h2 className="text-xl font-bold text-[var(--foreground)] pt-4">When to Use Search &amp; Redact Instead</h2>
+        <p>If the same word or phrase appears many times — a client name, case number, or account ID — finding every instance by hand is slow and easy to get wrong. The <a href="/search-redact" className="text-indigo-500 underline">Search &amp; Redact tool</a> finds every match across the document and applies permanent redaction in one pass, with whole-word matching and a match counter so you can verify nothing was missed.</p>
+        <ul className="list-disc pl-5 space-y-2">
+          <li><strong>Legal filings</strong> — redact client names and case numbers before public filing</li>
+          <li><strong>Medical records</strong> — remove patient names and dates of birth before sharing</li>
+          <li><strong>FOIA responses</strong> — redact exempt information across large documents</li>
+          <li><strong>HR and finance reports</strong> — remove employee names, salaries, or account numbers</li>
+        </ul>
+
+        <h2 className="text-xl font-bold text-[var(--foreground)] pt-4">Redaction vs. Black Highlighting</h2>
+        <p>Drawing a black shape or using a black highlight over text is not secure — the text underneath can often be selected, copied, or extracted. True redaction permanently deletes the underlying text data so it cannot be recovered. Always use a real redaction step (and check the result by trying to select the blacked-out area) for sensitive documents.</p>
+
         <div className="bg-[var(--card)] border border-[var(--card-border)] rounded-xl p-6 mt-6">
           <p className="font-semibold text-[var(--foreground)] mb-2">Need to redact sensitive content?</p>
           <a href="/redact" className="inline-block px-5 py-2.5 bg-indigo-600 text-white font-medium rounded-xl text-sm hover:bg-indigo-700 transition">Redact PDF Now →</a>

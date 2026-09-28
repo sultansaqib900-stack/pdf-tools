@@ -2,7 +2,7 @@ import { buildMetadata } from "@/lib/seo";
 import type { Metadata } from "next";
 export const metadata: Metadata = buildMetadata({
   path: "/blog/ocr-pdf-online",
-  title: "OCR PDF Online Free — Extract Text from Scanned PDFs",
+  title: "How to OCR a Scanned PDF — Make Scanned Files Searchable",
   description: "Extract text from scanned PDFs and images using free online OCR. Make scanned documents searchable and editable.",
   type: "article",
 });
@@ -12,11 +12,11 @@ import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 export default function BlogPost() {
   return (
     <article className="max-w-3xl mx-auto px-4 py-12">
-      <ArticleJsonLd title="OCR PDF Online Free — Extract Text from Scanned PDFs" description="Extract text from scanned PDFs and images using free online OCR. Make scanned documents searchable and editable." url="https://allaboutpdfediting.xyz/blog/ocr-pdf-online" datePublished="2026-06-27" />
-      <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Blog", item: "https://allaboutpdfediting.xyz/blog" }, { name: "OCR PDF Online Free — Extract Text from Scanned PDFs", item: "https://allaboutpdfediting.xyz/blog/ocr-pdf-online" }]} />
-      <HowToJsonLd name="OCR PDF Online Free — Extract Text from Scanned PDFs" description="Extract text from scanned PDFs and images using free online OCR. Make scanned documents searchable and editable." steps={[{name:"Upload — Go to our OCR PDF tool and select a scanned PDF or image.",text:"Upload — Go to our OCR PDF tool and select a scanned PDF or image."},{name:"Recognize — The OCR engine processes each page and extracts text.",text:"Recognize — The OCR engine processes each page and extracts text."},{name:"Copy or download — Copy the recognized text to your clipboard or download it ...",text:"Copy or download — Copy the recognized text to your clipboard or download it as a TXT file."}]} />
+      <ArticleJsonLd title="How to OCR a Scanned PDF — Make Scanned Files Searchable" description="Extract text from scanned PDFs and images using free online OCR. Make scanned documents searchable and editable." url="https://allaboutpdfediting.xyz/blog/ocr-pdf-online" datePublished="2026-06-27" />
+      <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Blog", item: "https://allaboutpdfediting.xyz/blog" }, { name: "How to OCR a Scanned PDF — Make Scanned Files Searchable", item: "https://allaboutpdfediting.xyz/blog/ocr-pdf-online" }]} />
+      <HowToJsonLd name="How to OCR a Scanned PDF — Make Scanned Files Searchable" description="Extract text from scanned PDFs and images using free online OCR. Make scanned documents searchable and editable." steps={[{name:"Upload — Go to our OCR PDF tool and select a scanned PDF or image.",text:"Upload — Go to our OCR PDF tool and select a scanned PDF or image."},{name:"Recognize — The OCR engine processes each page and extracts text.",text:"Recognize — The OCR engine processes each page and extracts text."},{name:"Copy or download — Copy the recognized text to your clipboard or download it ...",text:"Copy or download — Copy the recognized text to your clipboard or download it as a TXT file."}]} />
       <a href="/blog" className="text-sm text-indigo-500 hover:underline mb-6 inline-block">&larr; Back to blog</a>
-      <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">OCR PDF Online Free — Extract Text from Scanned PDFs</h1>
+      <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">How to OCR a Scanned PDF — Make Scanned Files Searchable</h1>
       <p className="text-sm text-[var(--muted)] mb-8">5 min read · Updated June 2026</p>
       <div className="text-sm text-[var(--muted)] space-y-5 leading-relaxed">
         <p>OCR (Optical Character Recognition) extracts text from scanned documents and images, turning static PDFs into searchable, editable content. Our <a href="/ocr-pdf" className="text-indigo-500 underline">free online OCR PDF tool</a> lets you recognize text from any scanned document — all in your browser with zero uploads.</p>
