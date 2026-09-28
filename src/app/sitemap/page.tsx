@@ -130,9 +130,9 @@ const groups: Group[] = [
       { href: "/qa", label: "Q&A" },
       { href: "/ultimate-guide-to-pdf-editing", label: "Ultimate Guide to PDF" },
       { href: "/best-free-pdf-editor", label: "Best Free PDF Editor" },
-      { href: "/smallpdf-alternative", label: "Smallpdf Alternative" },
-      { href: "/ilovepdf-alternative", label: "ILovePDF Alternative" },
-      { href: "/adobe-acrobat-alternative", label: "Adobe Acrobat Alternative" },
+      { href: "/vs/smallpdf", label: "Smallpdf vs PDFTools" },
+      { href: "/vs/ilovepdf", label: "iLovePDF vs PDFTools" },
+      { href: "/vs/adobe-acrobat", label: "Adobe Acrobat vs PDFTools" },
     ],
   },
   {

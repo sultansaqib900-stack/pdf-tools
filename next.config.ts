@@ -42,6 +42,10 @@ const nextConfig: NextConfig = {
       // The dynamic OG image route has no extension; older metadata pointed at
       // /opengraph-image.png which 404ed. Send that variant to the real route.
       { source: "/opengraph-image.png", destination: "/opengraph-image", permanent: true },
+      // Duplicate comparison pages consolidated into the /vs/ hub (Phase 2).
+      { source: "/adobe-acrobat-alternative", destination: "/vs/adobe-acrobat", permanent: true },
+      { source: "/ilovepdf-alternative", destination: "/vs/ilovepdf", permanent: true },
+      { source: "/smallpdf-alternative", destination: "/vs/smallpdf", permanent: true },
     ];
   },
 };

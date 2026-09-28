@@ -132,7 +132,39 @@ See `docs/verification-log.md` for the full curl output. Summary:
 - `vitest`: 32 files / 162 tests passed
 - `next build`: clean (502 static pages)
 
-## Phase 2 — Sitemap, robots, redirects
+## Phase 2 — Sitemap, robots, redirects — DONE
+
+### What changed
+
+| File | Change |
+|---|---|
+| `src/app/sitemap.ts` | Rewritten. **181 URLs** (was ~62): homepage, 55 tool pages, `/tools`, `/studio`, `/pii-guardian`, `/recipes`, `/premium`, `/qa`, `/blog` + all 56 posts, `/vs/*`, persona pages, `/about`, `/contact`, `/privacy`, `/terms`, 30 `/error/*` pages (imported from `getErrorPages()`), and the 7 `/es` pages. `lastModified` uses **real dates** — blog posts carry their `ArticleJsonLd datePublished` (2026-06-24…27), other pages their git last-change date. No `new Date()`, no `priority`/`changefreq`. hreflang `alternates.languages` (en/es/x-default) emitted for the 7 pages with real Spanish versions. Excluded: `/sitemap` (HTML), `/login`, `/signup`, `/dashboard`, `/vault`, `/embed`, `/view`, `/offline` (private/noindex; the first five are also robots-Disallowed), `/for/*` (noindex), the three `*-alternative` URLs (now 308). `/redact` and `/resize` included (200 + real content). `/vault` deliberately excluded: it is Disallowed in robots.txt, so it must not appear in the sitemap. |
+| `src/lib/seo-dates.ts` | **NEW** — `PAGE_DATES` map: the authoritative last-change date per route (feeds sitemap `lastModified`). Bump an entry when page content actually changes. |
+| `src/app/robots.ts` | Rewritten rules: removed `Host:` (Yandex-only), `Disallow: /vault/` → `/vault` (matches the nav's `/vault` link), added `/es/login`, `/es/signup`, `/es/vault`, `/es/embed`, `/es/dashboard`. Kept `Allow: /`, `/api/`, `/dashboard`, `/login`, `/signup`, `/embed` and the `Sitemap:` line. Nothing blocks `/_next/static/` or other assets. |
+| `next.config.ts` | +3 permanent redirects: `/adobe-acrobat-alternative`→`/vs/adobe-acrobat`, `/ilovepdf-alternative`→`/vs/ilovepdf`, `/smallpdf-alternative`→`/vs/smallpdf` (Next answers 308, the modern permanent equivalent of 301). |
+| `src/app/{adobe-acrobat,ilovepdf,smallpdf}-alternative/` | Page directories deleted — the URLs are preserved by the redirects. |
+| `src/app/sitemap/page.tsx` | The 3 links to `*-alternative` now point at `/vs/*`. |
+| `src/components/Header.tsx`, `src/components/Footer.tsx` | `rel="nofollow"` added to private links (`/login`, `/signup`, `/dashboard`, `/vault`, `/embed`) per spec. |
+| `scripts/check-sitemap-robots.mjs` | **NEW** — script that asserts no sitemap URL matches a robots Disallow rule and that lastModified values vary. |
+
+### Verification (localhost)
+
+```
+$ node scripts/check-sitemap-robots.mjs http://localhost:3000
+robots.txt Disallow prefixes: /api/, /vault, /dashboard, /login, /signup, /embed, /es/login, /es/signup, /es/vault, /es/embed, /es/dashboard
+sitemap URL count: 181
+distinct lastmod values: 5 (2026-06-24 .. 2026-06-27 blog, 2026-09-28 pages)
+OK: no sitemap URL matches a Disallow rule
+
+$ curl -s -o /dev/null -w "%{http_code} -> %{redirect_url}" http://localhost:3000/ilovepdf-alternative
+308 -> /vs/ilovepdf   (same for adobe-acrobat/smallpdf)
+
+$ node scripts/crawl-internal.mjs   # nav+footer+body links from 17 seed pages
+crawled URLs: 454
+non-200: 0
+```
+
+Internal link crawl verdict: **no 404/3xx/5xx targets** — `/redact`, `/vault`, `/embed`, `/resize` all resolve 200 (they are real pages; `/vault`/`/embed` are robots-blocked but linked with `nofollow`).
 
 ## Phase 3 — Content quality & duplication
 

@@ -53,7 +53,7 @@ export default function Footer() {
               <Link href="/bulk-rename" className="block hover:text-amber-700 hover:translate-x-0.5 transition-all">Bulk Rename</Link>
               <Link href="/booklet" className="block hover:text-amber-700 hover:translate-x-0.5 transition-all">Booklet Creator</Link>
               <Link href="/search-redact" className="block hover:text-amber-700 hover:translate-x-0.5 transition-all">Search & Redact</Link>
-              <Link href="/vault" className="block hover:text-amber-700 hover:translate-x-0.5 transition-all">Encrypted Vault</Link>
+              <Link href="/vault" className="block hover:text-amber-700 hover:translate-x-0.5 transition-all" rel="nofollow">Encrypted Vault</Link>
               <Link href="/split-by-bookmarks" className="block hover:text-amber-700 hover:translate-x-0.5 transition-all">Split by Bookmarks</Link>
             </div>
           </div>
@@ -87,7 +87,7 @@ export default function Footer() {
               <Link href="/privacy" className="block hover:text-[var(--foreground)] hover:translate-x-0.5 transition-all">Privacy Policy</Link>
               <Link href="/terms" className="block hover:text-[var(--foreground)] hover:translate-x-0.5 transition-all">Terms of Service</Link>
               <Link href="/sitemap" className="block hover:text-[var(--foreground)] hover:translate-x-0.5 transition-all">HTML Sitemap</Link>
-              <Link href="/embed" className="block hover:text-[var(--foreground)] hover:translate-x-0.5 transition-all">Embeddable Widget</Link>
+              <Link href="/embed" className="block hover:text-[var(--foreground)] hover:translate-x-0.5 transition-all" rel="nofollow">Embeddable Widget</Link>
             </div>
           </div>
         </div>

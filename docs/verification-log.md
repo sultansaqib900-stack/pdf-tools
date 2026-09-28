@@ -51,3 +51,34 @@ for p in "" compress merge blog/how-to-compress-pdf vs/ilovepdf es/compress; do 
 Full sweep of all 147 routes:
 ALL ROUTES: self-canonical + titled OK
 ```
+
+## Phase 2 — sitemap/robots/redirects verification (localhost)
+
+```
+$ curl -s http://localhost:3000/robots.txt
+User-Agent: *
+Allow: /
+Disallow: /api/
+Disallow: /vault
+Disallow: /dashboard
+Disallow: /login
+Disallow: /signup
+Disallow: /embed
+Disallow: /es/login
+Disallow: /es/signup
+Disallow: /es/vault
+Disallow: /es/embed
+Disallow: /es/dashboard
+
+Sitemap: https://allaboutpdfediting.xyz/sitemap.xml
+
+$ node scripts/check-sitemap-robots.mjs http://localhost:3000
+sitemap URL count: 181
+distinct lastmod values: 5
+OK: no sitemap URL matches a Disallow rule
+
+Redirects: /adobe-acrobat-alternative -> /vs/adobe-acrobat (308),
+           /ilovepdf-alternative -> /vs/ilovepdf (308), /smallpdf-alternative -> /vs/smallpdf (308)
+
+Internal link crawl (454 URLs discovered from 17 seed pages): non-200: 0
+```
