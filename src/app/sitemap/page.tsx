@@ -2,6 +2,7 @@ import { buildMetadata } from "@/lib/seo";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { seoPages } from "@/lib/programmatic-seo";
+import { getErrorPages } from "@/lib/error-pages";
 
 export const metadata: Metadata = buildMetadata({
   path: "/sitemap",
@@ -134,6 +135,10 @@ const groups: Group[] = [
       { href: "/vs/ilovepdf", label: "iLovePDF vs PDFTools" },
       { href: "/vs/adobe-acrobat", label: "Adobe Acrobat vs PDFTools" },
     ],
+  },
+  {
+    title: "PDF Error Guides",
+    links: getErrorPages().map((e) => ({ href: `/error/${e.slug}`, label: e.title })),
   },
   {
     title: "Company",

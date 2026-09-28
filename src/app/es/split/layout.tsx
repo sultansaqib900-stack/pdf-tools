@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { buildMetadata } from "@/lib/seo";
+import EsToolNav from "@/components/EsToolNav";
 
 export const metadata: Metadata = buildMetadata({
   path: "/es/split",
@@ -10,5 +11,10 @@ export const metadata: Metadata = buildMetadata({
 });
 
 export default function Layout({ children }: { children: React.ReactNode }) {
-  return children;
+  return (
+    <>
+      {children}
+      <EsToolNav current="/es/split" />
+    </>
+  );
 }

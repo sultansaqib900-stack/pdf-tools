@@ -108,3 +108,12 @@ WebApplication, WebSite, Organization; visible <nav aria-label="Breadcrumb">; Ho
 aggregateRating: 0 on every previously-faking page.
 /blog/how-to-compress-pdf JSON-LD: Article (author Person), BreadcrumbList, WebSite, Organization.
 ```
+
+## Phase 6 — link architecture verification (rendered-HTML crawl)
+
+```
+pages crawled: 480 | distinct internal hrefs: 480
+SITEMAP URLs with ZERO internal inbound links: 0   (the 30 /error/* guides were orphans; now linked from the HTML sitemap's "PDF Error Guides" group)
+/es/compress cross-links: /es, /es/tools, /es/compress, /es/merge, /es/split, /es/image-to-pdf, /es/edit-pdf
+vitest: 162 passed
+```

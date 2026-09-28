@@ -271,7 +271,28 @@ Note: `SiteNavigationElement` entries come from the pre-existing sitewide `SiteN
 
 - HTTPS-only + single canonical host (no www/non-www duplicates) are enforced at the hosting layer (Vercel project domains). **Manual check listed below** — the repo itself hardcodes `https://allaboutpdfediting.xyz` everywhere (single host, no www variants in code).
 
-## Phase 6 — Internal linking
+## Phase 6 — Internal linking & site architecture — DONE
+
+### What changed
+
+| File(s) | Change |
+|---|---|
+| `src/app/sitemap.ts` | Removed 4 stale hardcoded `/error/…` entries (one, `pdf-cross-reference-table-error`, did not even exist — it would have been a 404 in the sitemap). Error pages are generated from `getErrorPages()`. |
+| `src/app/sitemap/page.tsx` | Added a "PDF Error Guides" group listing all 30 `/error/*` guides — they were **orphan pages** (in the sitemap with zero internal inbound links). |
+| `src/components/EsToolNav.tsx` | **NEW** — Spanish cross-links nav ("Herramientas PDF en español") linking all 7 `/es` routes, rendered at the bottom of every Spanish tool page via the 5 `/es/*` layouts. Spanish pages now link to each other (and to English equivalents via the existing links + hreflang). |
+
+### Architecture verification (rendered-HTML crawl)
+
+```
+pages crawled: 480   distinct internal hrefs: 480
+SITEMAP URLs with ZERO internal inbound links: 0      (was 30 /error/* pages)
+inbound counts: /tools 88 · /blog 612 · /qa 467 · /redact 498 · /resize 10 · /vault 470 · /vs 3 · /premium 964
+```
+
+- **Hub-and-spoke**: `/tools` (88 inbound) → tool pages → guides via `RelatedContent` (3 related tools + 2-3 guides per tool page); guides link back to their tools with descriptive anchors ("compress a PDF online", not "click here" — verified in the merged posts).
+- **≤3 clicks from homepage**: every tool/blog/comparison page is in the header tool menu, footer columns, `/tools` hub or the blog index (all reachable in 1-2 clicks); error guides are 2 clicks (footer → HTML sitemap → guide).
+- **Breadcrumbs** (visible + schema) on 120+ pages — see Phase 4.
+- **ES**: 7 `/es` pages interlink via `EsToolNav` + footer; English↔Spanish pairs connected by hreflang (Phase 1) and the English-equivalent links.
 
 ## Phase 7 — Ranking strategy artifacts
 
