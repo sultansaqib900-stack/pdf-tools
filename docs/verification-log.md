@@ -99,3 +99,12 @@ Sitemap: 176 URLs (5 removed), 5 distinct lastmod values, no Disallow collisions
 Internal link crawl: 449 URLs, non-200: 0.
 vitest: 162 passed.
 ```
+
+## Phase 4 — structured data verification (localhost)
+
+```
+/compress JSON-LD: BreadcrumbList(3 items), FAQPage(4 Q/A = visible), SoftwareApplication,
+WebApplication, WebSite, Organization; visible <nav aria-label="Breadcrumb">; HowTo: 0;
+aggregateRating: 0 on every previously-faking page.
+/blog/how-to-compress-pdf JSON-LD: Article (author Person), BreadcrumbList, WebSite, Organization.
+```

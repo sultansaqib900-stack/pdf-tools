@@ -13,7 +13,7 @@ import { useToolHistory } from "@/hooks/useToolHistory";
 import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
 import HowToJsonLd from "@/components/HowToJsonLd";
 import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
-import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
+import Breadcrumbs from "@/components/Breadcrumbs";
 import FaqPageJsonLd from "@/components/FaqPageJsonLd";
 import RelatedContent from "@/components/RelatedContent";
 import { getRelatedContent } from "@/lib/related-content";
@@ -145,7 +145,7 @@ export default function OcrPdfPage() {
         url="https://allaboutpdfediting.xyz/ocr-pdf"
       />
       <HowToJsonLd name="OCR PDF" description="Extract text from scanned documents" steps={[{name:"Upload file",text:"Upload a scanned PDF or image"},{name:"Run OCR",text:"AI recognizes text from the document"},{name:"Copy or download",text:"Copy the extracted text or download as TXT"}]} />
-      <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "OCR PDF", item: "https://allaboutpdfediting.xyz/ocr-pdf" }]} />
+      <Breadcrumbs items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Tools", item: "https://allaboutpdfediting.xyz/tools" }, { name: "OCR PDF", item: "https://allaboutpdfediting.xyz/ocr-pdf" }]} />
       <FaqPageJsonLd questions={rc?.faqs} />
       <AiSummaryJsonLd name="OCR PDF" summary="Extract text from scanned PDFs and images using optical character recognition" category="OCR" inputType="PDF/Image" outputType="Text" processing="client-side" price="free" features={["Scanned PDF OCR","Image text extraction","Multi-page support","Copy to clipboard","Download as TXT"]} limits="Files up to 10MB" />
       <div className="mb-8">

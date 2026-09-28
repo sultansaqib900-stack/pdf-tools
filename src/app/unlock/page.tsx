@@ -17,7 +17,7 @@ import { downloadBytes, isPdfFile } from "@/lib/pdfBytes";
 
 import HowToJsonLd from "@/components/HowToJsonLd";
 import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
-import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
+import Breadcrumbs from "@/components/Breadcrumbs";
 import FaqPageJsonLd from "@/components/FaqPageJsonLd";
 import RelatedContent from "@/components/RelatedContent";
 import { getRelatedContent } from "@/lib/related-content";
@@ -98,7 +98,7 @@ export default function UnlockPage() {
         url="https://allaboutpdfediting.xyz/unlock"
       />
       <HowToJsonLd name="Unlock PDF Online" description="Remove password protection from PDF files" steps={[{name:"Upload PDF",text:"Select the password-protected PDF"},{name:"Enter password",text:"Type the PDF owner or user password"},{name:"Download unlocked PDF",text:"Download the PDF with password protection removed"}]} />
-      <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Unlock PDF", item: "https://allaboutpdfediting.xyz/unlock" }]} />
+      <Breadcrumbs items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Tools", item: "https://allaboutpdfediting.xyz/tools" }, { name: "Unlock PDF", item: "https://allaboutpdfediting.xyz/unlock" }]} />
       <FaqPageJsonLd questions={rc?.faqs} />
       <AiSummaryJsonLd name="Unlock PDF" summary="Remove password protection from PDF files to access and edit content freely" category="SecurityApplications" inputType="PDF" outputType="PDF" processing="client-side" price="free" features={["Password removal","Owner password unlock","User password unlock","Free tool","Client-side only"]} limits="Files up to 10MB" />
       <div className="mb-8">

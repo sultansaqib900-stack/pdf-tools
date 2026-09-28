@@ -17,7 +17,7 @@ import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
 
 import HowToJsonLd from "@/components/HowToJsonLd";
 import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
-import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
+import Breadcrumbs from "@/components/Breadcrumbs";
 import FaqPageJsonLd from "@/components/FaqPageJsonLd";
 import RelatedContent from "@/components/RelatedContent";
 import { getRelatedContent } from "@/lib/related-content";
@@ -170,7 +170,7 @@ export default function InsertBlankPage() {
         url="https://allaboutpdfediting.xyz/insert-blank"
       />
       <HowToJsonLd name="Insert Blank Pages in PDF" description="Add empty pages to any PDF document at specific positions" steps={[{name:"Upload PDF",text:"Select the PDF to add blank pages to"},{name:"Set position and count",text:"Choose where to insert blank pages and how many"},{name:"Download updated PDF",text:"Download the PDF with blank pages inserted"}]} />
-      <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Insert Blank Pages", item: "https://allaboutpdfediting.xyz/insert-blank" }]} />
+      <Breadcrumbs items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Tools", item: "https://allaboutpdfediting.xyz/tools" }, { name: "Insert Blank Pages", item: "https://allaboutpdfediting.xyz/insert-blank" }]} />
       <FaqPageJsonLd questions={rc?.faqs} />
       <AiSummaryJsonLd name="Insert Blank Pages" summary="Add empty blank pages to PDF documents at any position" category="Utilities" inputType="PDF" outputType="PDF" processing="client-side" price="free" features={["Blank page insertion","Position control","Multiple pages","Free online tool","Client-side"]} limits="Files up to 10MB" />
       <div className="mb-8">

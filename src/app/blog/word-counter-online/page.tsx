@@ -8,12 +8,12 @@ export const metadata: Metadata = buildMetadata({
 });
 import ArticleJsonLd from "@/components/ArticleJsonLd";
 import HowToJsonLd from "@/components/HowToJsonLd";
-import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
+import Breadcrumbs from "@/components/Breadcrumbs";
 export default function BlogPost() {
   return (
     <article className="max-w-3xl mx-auto px-4 py-12">
       <ArticleJsonLd title="Word Counter Online — Free Character & Word Count Tool" description="Count words, characters, sentences, and paragraphs online for free." url="https://allaboutpdfediting.xyz/blog/word-counter-online" datePublished="2026-06-25" />
-      <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Blog", item: "https://allaboutpdfediting.xyz/blog" }, { name: "Word Counter Online — Free Character &amp; Word Count Tool", item: "https://allaboutpdfediting.xyz/blog/word-counter-online" }]} />
+      <Breadcrumbs items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Blog", item: "https://allaboutpdfediting.xyz/blog" }, { name: "Word Counter Online — Free Character &amp; Word Count Tool", item: "https://allaboutpdfediting.xyz/blog/word-counter-online" }]} />
       <a href="/blog" className="text-sm text-indigo-500 hover:underline mb-6 inline-block">&larr; Back to blog</a>
       <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">Word Counter Online — Free Character & Word Count Tool</h1>
       <p className="text-sm text-[var(--muted)] mb-8">3 min read · Updated June 2026</p>

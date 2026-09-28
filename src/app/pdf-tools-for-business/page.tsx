@@ -1,7 +1,7 @@
 import { buildMetadata } from "@/lib/seo";
 import Link from "next/link";
 import type { Metadata } from "next";
-import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
+import Breadcrumbs from "@/components/Breadcrumbs";
 
 export const metadata: Metadata = buildMetadata({
   path: "/pdf-tools-for-business",
@@ -11,7 +11,7 @@ export const metadata: Metadata = buildMetadata({
 export default function PDFToolsForBusinessPage() {
   return (
     <div className="max-w-4xl mx-auto px-4 py-12">
-      <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "PDF Tools for Business", item: "https://allaboutpdfediting.xyz/pdf-tools-for-business" }]} />
+      <Breadcrumbs items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Tools", item: "https://allaboutpdfediting.xyz/tools" }, { name: "PDF Tools for Business", item: "https://allaboutpdfediting.xyz/pdf-tools-for-business" }]} />
       <h1 className="text-3xl font-bold text-[var(--foreground)] mb-3">PDF Tools for Business</h1>
       <p className="text-[var(--muted)] mb-8">Professional PDF tools for businesses of all sizes. Compress, merge, sign, protect, and edit documents — all client-side with zero server uploads. Your confidential business documents never leave your computer.</p>
 

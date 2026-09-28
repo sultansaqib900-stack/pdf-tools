@@ -19,7 +19,7 @@ import { copyPdfBytes, createPdfFile, downloadBytes, isPdfFile } from "@/lib/pdf
 
 import HowToJsonLd from "@/components/HowToJsonLd";
 import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
-import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
+import Breadcrumbs from "@/components/Breadcrumbs";
 import FaqPageJsonLd from "@/components/FaqPageJsonLd";
 import RelatedContent from "@/components/RelatedContent";
 import { getRelatedContent } from "@/lib/related-content";
@@ -140,7 +140,7 @@ export default function CompressPage() {
         url="https://allaboutpdfediting.xyz/compress"
       />
       <HowToJsonLd name="Compress PDF" description="Reduce PDF size with balanced, maximum, or lossless compression" steps={[{name:"Upload PDF",text:"Select or drop your PDF document"},{name:"Choose a mode",text:"Use visual compression for smaller files or Lossless to preserve interactive content"},{name:"Download",text:"Download the result; the original is kept if compression would make it larger"}]} />
-      <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Compress PDF", item: "https://allaboutpdfediting.xyz/compress" }]} />
+      <Breadcrumbs items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Tools", item: "https://allaboutpdfediting.xyz/tools" }, { name: "Compress PDF", item: "https://allaboutpdfediting.xyz/compress" }]} />
       <FaqPageJsonLd questions={rc?.faqs} />
       <AiSummaryJsonLd name="Compress PDF" summary="Reduce PDF size in the browser with selectable visual or lossless compression" category="UtilitiesApplication" inputType="PDF" outputType="PDF" processing="client-side" price="free" features={["Balanced compression","Maximum compression","Lossless optimization","Original retained when already smaller","Private local processing"]} limits="Free and premium file-size limits apply" />
       <div className="mb-8">

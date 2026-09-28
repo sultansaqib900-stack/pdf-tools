@@ -2,13 +2,13 @@
 import Link from "next/link";
 import ArticleJsonLd from "@/components/ArticleJsonLd";
 import HowToJsonLd from "@/components/HowToJsonLd";
-import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
+import Breadcrumbs from "@/components/Breadcrumbs";
 
 export default function HowToConvertImageToPDF() {
   return (
     <>
       <ArticleJsonLd title="How to Convert Images to PDF — JPG, PNG to PDF Online Free" description="Learn how to convert images to PDF online free. Convert JPG and PNG images to PDF documents. No signup, no uploads." url="https://allaboutpdfediting.xyz/blog/how-to-convert-image-to-pdf" datePublished="2026-06-27" />
-      <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Blog", item: "https://allaboutpdfediting.xyz/blog" }, { name: "How to Convert Images to PDF", item: "https://allaboutpdfediting.xyz/blog/how-to-convert-image-to-pdf" }]} />
+      <Breadcrumbs items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Blog", item: "https://allaboutpdfediting.xyz/blog" }, { name: "How to Convert Images to PDF", item: "https://allaboutpdfediting.xyz/blog/how-to-convert-image-to-pdf" }]} />
       <HowToJsonLd name="How to Convert Images to PDF" description="Learn how to convert images to PDF online free. Convert JPG and PNG images to PDF documents. No signup, no uploads." steps={[{name:"Go to PDFTools Image to PDF",text:"Go to PDFTools Image to PDF"},{name:"Upload one or more images (JPG or PNG)",text:"Upload one or more images (JPG or PNG)"},{name:"Drag to reorder images if uploading multiple",text:"Drag to reorder images if uploading multiple"},{name:"Choose page size and orientation (optional)",text:"Choose page size and orientation (optional)"},{name:"Click Convert and download your PDF",text:"Click Convert and download your PDF"}]} />
       <div className="max-w-3xl mx-auto px-4 py-12">
         <Link href="/blog" className="text-sm text-indigo-500 hover:underline mb-6 inline-block">&larr; Back to blog</Link>

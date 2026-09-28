@@ -18,7 +18,7 @@ import { isPdfFile, downloadBytes } from "@/lib/pdfBytes";
 
 import HowToJsonLd from "@/components/HowToJsonLd";
 import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
-import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
+import Breadcrumbs from "@/components/Breadcrumbs";
 import FaqPageJsonLd from "@/components/FaqPageJsonLd";
 import RelatedContent from "@/components/RelatedContent";
 import { getRelatedContent } from "@/lib/related-content";
@@ -283,7 +283,7 @@ export default function RedactPage() {
         url="https://allaboutpdfediting.xyz/redact"
       />
       <HowToJsonLd name="Redact PDF Online" description="Permanently black out sensitive content in PDF files" steps={[{name:"Upload PDF",text:"Select the PDF with content to redact"},{name:"Select areas to redact",text:"Draw black boxes over sensitive text and images"},{name:"Download redacted PDF",text:"Download the PDF with permanently removed content"}]} />
-      <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Redact PDF", item: "https://allaboutpdfediting.xyz/redact" }]} />
+      <Breadcrumbs items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Tools", item: "https://allaboutpdfediting.xyz/tools" }, { name: "Redact PDF", item: "https://allaboutpdfediting.xyz/redact" }]} />
       <FaqPageJsonLd questions={rc?.faqs} />
       <AiSummaryJsonLd name="Redact PDF" summary="Permanently black out sensitive text images and areas in PDF documents" category="SecurityApplications" inputType="PDF" outputType="PDF" processing="client-side" price="free" features={["Area redaction","Text blackout","Permanent removal","Client-side","No server uploads"]} limits="Files up to 10MB" />
       <div className="mb-8">

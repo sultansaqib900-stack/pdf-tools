@@ -3,7 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { buildMetadata } from "@/lib/seo";
 import { seoPages, type SeoPage } from "@/lib/programmatic-seo";
-import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
+import Breadcrumbs from "@/components/Breadcrumbs";
 import FaqPageJsonLd from "@/components/FaqPageJsonLd";
 
 const tools = [
@@ -55,7 +55,7 @@ export default async function SeoPage({ params }: { params: Promise<{ slug: stri
 
   return (
     <>
-      <BreadcrumbJsonLd
+      <Breadcrumbs
         items={[
           { name: "Home", item: "https://allaboutpdfediting.xyz" },
           { name: page.h1, item: `https://allaboutpdfediting.xyz/for/${slug}` },

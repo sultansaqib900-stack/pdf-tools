@@ -15,7 +15,7 @@ import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
 
 import HowToJsonLd from "@/components/HowToJsonLd";
 import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
-import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
+import Breadcrumbs from "@/components/Breadcrumbs";
 import FaqPageJsonLd from "@/components/FaqPageJsonLd";
 import RelatedContent from "@/components/RelatedContent";
 import { getRelatedContent } from "@/lib/related-content";
@@ -100,7 +100,7 @@ export default function FlattenPDFPage() {
         url="https://allaboutpdfediting.xyz/flatten-pdf"
       />
       <HowToJsonLd name="Flatten PDF Online" description="Render the visible PDF appearance into non-interactive page images" steps={[{name:"Upload PDF",text:"Select the PDF to flatten"},{name:"Render visible pages",text:"The tool renders forms, visible annotations, and the current layer appearance"},{name:"Download flattened PDF",text:"Download a non-interactive image-based PDF"}]} />
-      <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Flatten PDF", item: "https://allaboutpdfediting.xyz/flatten-pdf" }]} />
+      <Breadcrumbs items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Tools", item: "https://allaboutpdfediting.xyz/tools" }, { name: "Flatten PDF", item: "https://allaboutpdfediting.xyz/flatten-pdf" }]} />
       <FaqPageJsonLd questions={rc?.faqs} />
       <AiSummaryJsonLd name="Flatten PDF" summary="Render visible PDF pages as non-interactive images so visible forms and annotations become page content" category="Utilities" inputType="PDF" outputType="PDF" processing="client-side" price="free" features={["Visual form flattening","Visible annotation flattening","Active layer appearance","Image-based output","Client-side tool"]} limits="Files up to 10MB" />
       <div className="mb-8">

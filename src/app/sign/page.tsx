@@ -20,7 +20,7 @@ import { locateSignatureOnPdfPage } from "@/lib/pdfSignature";
 
 import HowToJsonLd from "@/components/HowToJsonLd";
 import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
-import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
+import Breadcrumbs from "@/components/Breadcrumbs";
 import FaqPageJsonLd from "@/components/FaqPageJsonLd";
 import RelatedContent from "@/components/RelatedContent";
 import { getRelatedContent } from "@/lib/related-content";
@@ -220,7 +220,7 @@ export default function SignPage() {
         url="https://allaboutpdfediting.xyz/sign"
       />
       <HowToJsonLd name="Sign PDF Online" description="Draw and stamp a signature at the bottom of the last PDF page" steps={[{name:"Draw signature",text:"Draw your signature with a mouse or touchscreen"},{name:"Upload PDF",text:"Select the PDF document to stamp"},{name:"Stamp and download",text:"Add the signature at the bottom center of the last page and download"}]} />
-      <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Sign PDF", item: "https://allaboutpdfediting.xyz/sign" }]} />
+      <Breadcrumbs items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Tools", item: "https://allaboutpdfediting.xyz/tools" }, { name: "Sign PDF", item: "https://allaboutpdfediting.xyz/sign" }]} />
       <FaqPageJsonLd questions={rc?.faqs} />
       <AiSummaryJsonLd name="Sign PDF" summary="Draw a signature and stamp it at the bottom center of the PDF's last page" category="BusinessApplications" inputType="PDF plus drawn signature" outputType="PDF" processing="client-side" price="free" features={["Mouse drawing","Touchscreen drawing","Transparent PNG stamp","Last-page placement","Client-side processing"]} limits="Files up to 10MB" />
       

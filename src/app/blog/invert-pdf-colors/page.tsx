@@ -1,7 +1,7 @@
 "use client";
 import ArticleJsonLd from "@/components/ArticleJsonLd";
 import HowToJsonLd from "@/components/HowToJsonLd";
-import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
+import Breadcrumbs from "@/components/Breadcrumbs";
 
 export default function BlogPost() {
   return (
@@ -12,7 +12,7 @@ export default function BlogPost() {
         url="https://allaboutpdfediting.xyz/blog/invert-pdf-colors"
         datePublished="2026-06-26"
       />
-      <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Blog", item: "https://allaboutpdfediting.xyz/blog" }, { name: "How to Invert PDF Colors Online Free", item: "https://allaboutpdfediting.xyz/blog/invert-pdf-colors" }]} />
+      <Breadcrumbs items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Blog", item: "https://allaboutpdfediting.xyz/blog" }, { name: "How to Invert PDF Colors Online Free", item: "https://allaboutpdfediting.xyz/blog/invert-pdf-colors" }]} />
       <HowToJsonLd name="How to Invert PDF Colors Online Free" description="Convert PDF colors to dark mode, grayscale, or high-contrast for better readability." steps={[{name:"Upload your PDF — Select the document you want to transform.",text:"Upload your PDF — Select the document you want to transform."},{name:"Choose a mode — Select invert, grayscale, or high-contrast from the available...",text:"Choose a mode — Select invert, grayscale, or high-contrast from the available options."},{name:"Download the result — The tool processes every page instantly. Download your ...",text:"Download the result — The tool processes every page instantly. Download your color-transformed PDF."}]} />
       <a href="/blog" className="text-sm text-indigo-500 hover:underline mb-6 inline-block">&larr; Back to blog</a>
       <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">How to Invert PDF Colors Online Free</h1>

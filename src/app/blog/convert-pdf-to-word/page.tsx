@@ -8,12 +8,12 @@ export const metadata: Metadata = buildMetadata({
 });
 import ArticleJsonLd from "@/components/ArticleJsonLd";
 import HowToJsonLd from "@/components/HowToJsonLd";
-import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
+import Breadcrumbs from "@/components/Breadcrumbs";
 export default function BlogPost() {
   return (
     <article className="max-w-3xl mx-auto px-4 py-12">
       <ArticleJsonLd title="Convert PDF to Word Online Free — PDF to DOCX Converter" description="Convert PDF to editable Word DOCX files online free. Extract text from PDF documents and download as Microsoft Word format." url="https://allaboutpdfediting.xyz/blog/convert-pdf-to-word" datePublished="2026-06-27" />
-      <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Blog", item: "https://allaboutpdfediting.xyz/blog" }, { name: "Convert PDF to Word Online Free — PDF to DOCX Converter", item: "https://allaboutpdfediting.xyz/blog/convert-pdf-to-word" }]} />
+      <Breadcrumbs items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Blog", item: "https://allaboutpdfediting.xyz/blog" }, { name: "Convert PDF to Word Online Free — PDF to DOCX Converter", item: "https://allaboutpdfediting.xyz/blog/convert-pdf-to-word" }]} />
       <HowToJsonLd name="Convert PDF to Word Online Free — PDF to DOCX Converter" description="Convert PDF to editable Word DOCX files online free. Extract text from PDF documents and download as Microsoft Word format." steps={[{name:"Upload PDF — Go to our PDF to Word tool and select your file.",text:"Upload PDF — Go to our PDF to Word tool and select your file."},{name:"Convert — Text is extracted and formatted into a DOCX document.",text:"Convert — Text is extracted and formatted into a DOCX document."},{name:"Download — Your editable Word file is ready for download.",text:"Download — Your editable Word file is ready for download."}]} />
       <a href="/blog" className="text-sm text-indigo-500 hover:underline mb-6 inline-block">&larr; Back to blog</a>
       <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">Convert PDF to Word Online Free — PDF to DOCX Converter</h1>

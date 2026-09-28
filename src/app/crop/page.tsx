@@ -18,7 +18,7 @@ import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
 
 import HowToJsonLd from "@/components/HowToJsonLd";
 import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
-import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
+import Breadcrumbs from "@/components/Breadcrumbs";
 import FaqPageJsonLd from "@/components/FaqPageJsonLd";
 import RelatedContent from "@/components/RelatedContent";
 import { getRelatedContent } from "@/lib/related-content";
@@ -129,7 +129,7 @@ export default function CropPage() {
         url="https://allaboutpdfediting.xyz/crop"
       />
       <HowToJsonLd name="Crop PDF Online" description="Remove unwanted margins and whitespace from PDF pages" steps={[{name:"Upload PDF",text:"Select the PDF to crop"},{name:"Set margins",text:"Adjust crop margins for each side of the page"},{name:"Download cropped PDF",text:"Download the PDF with trimmed page content"}]} />
-      <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Crop PDF", item: "https://allaboutpdfediting.xyz/crop" }]} />
+      <Breadcrumbs items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Tools", item: "https://allaboutpdfediting.xyz/tools" }, { name: "Crop PDF", item: "https://allaboutpdfediting.xyz/crop" }]} />
       <FaqPageJsonLd questions={rc?.faqs} />
       <AiSummaryJsonLd name="Crop PDF" summary="Remove unwanted margins and whitespace from PDF pages" category="Utilities" inputType="PDF" outputType="PDF" processing="client-side" price="free" features={["Margin cropping","Whitespace removal","Page trimming","Free online tool","Client-side"]} limits="Files up to 10MB" />
       <div className="mb-8">

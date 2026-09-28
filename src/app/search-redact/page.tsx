@@ -4,7 +4,7 @@ import { registerAdTask } from "@/lib/ads";
 
 import { useState } from "react";
 import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
-import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
+import Breadcrumbs from "@/components/Breadcrumbs";
 import { usePageMeta } from "@/hooks/usePageMeta";
 import HowToJsonLd from "@/components/HowToJsonLd";
 import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
@@ -156,8 +156,8 @@ export default function SearchRedactPage() {
       icon="⬛"
     >
       <div className="max-w-3xl mx-auto px-4 py-12">
-        <SoftwareAppJsonLd name="Search & Redact PDF" description="Automatically find and redact specific words or phrases in PDF documents." url="https://allaboutpdfediting.xyz/search-redact" image="https://allaboutpdfediting.xyz/opengraph-image" aggregateRating={{ ratingValue: 4.8, bestRating: 5, ratingCount: 167 }} />
-        <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Search & Redact", item: "https://allaboutpdfediting.xyz/search-redact" }]} />
+        <SoftwareAppJsonLd name="Search & Redact PDF" description="Automatically find and redact specific words or phrases in PDF documents." url="https://allaboutpdfediting.xyz/search-redact" image="https://allaboutpdfediting.xyz/opengraph-image" />
+        <Breadcrumbs items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Tools", item: "https://allaboutpdfediting.xyz/tools" }, { name: "Search & Redact", item: "https://allaboutpdfediting.xyz/search-redact" }]} />
         <HowToJsonLd name="Search and Redact PDF" description="Automatically find and redact specific words or phrases across a PDF document" steps={[{name:"Upload PDF",text:"Upload the PDF document you want to redact"},{name:"Enter search terms",text:"Type the words or phrases you want to find and redact"},{name:"Download redacted PDF",text:"Download the PDF with all matching content permanently blacked out"}]} />
         <AiSummaryJsonLd name="Search and Redact" summary="Auto-find and permanently redact specific words phrases or patterns across entire PDF documents" category="SecurityApplications" inputType="PDF" outputType="PDF" processing="client-side" price="premium" features={["Auto-search and redact","Batch redaction","Phrase matching","OCR for scanned PDFs","Permanent removal","Client-side processing"]} limits="Free: 5-file lifetime trial (shared); Premium: unlimited" />
         

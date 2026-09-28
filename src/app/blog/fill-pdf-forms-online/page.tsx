@@ -9,7 +9,7 @@ export const metadata: Metadata = buildMetadata({
 });
 import ArticleJsonLd from "@/components/ArticleJsonLd";
 import HowToJsonLd from "@/components/HowToJsonLd";
-import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
+import Breadcrumbs from "@/components/Breadcrumbs";
 
 export default function BlogPost() {
   return (
@@ -20,7 +20,7 @@ export default function BlogPost() {
         url="https://allaboutpdfediting.xyz/blog/fill-pdf-forms-online"
         datePublished="2026-06-25"
       />
-      <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Blog", item: "https://allaboutpdfediting.xyz/blog" }, { name: "How to Fill PDF Forms Online Free", item: "https://allaboutpdfediting.xyz/blog/fill-pdf-forms-online" }]} />
+      <Breadcrumbs items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Blog", item: "https://allaboutpdfediting.xyz/blog" }, { name: "How to Fill PDF Forms Online Free", item: "https://allaboutpdfediting.xyz/blog/fill-pdf-forms-online" }]} />
       <HowToJsonLd name="How to Fill PDF Forms Online Free" description="Fill PDF forms online for free without Adobe Acrobat..." steps={[{name:"Go to the form filler — Open our free PDF form fill tool.",text:"Go to the form filler — Open our free PDF form fill tool."},{name:"Upload your PDF — Drag and drop or click to select a PDF with fillable form f...",text:"Upload your PDF — Drag and drop or click to select a PDF with fillable form fields."},{name:"Fill and download — Complete the fields that appear, then click Fill &amp; Downlo...",text:"Fill and download — Complete the fields that appear, then click Fill &amp; Download. The completed form with flattened fields is saved instantly."}]} />
       <a href="/blog" className="text-sm text-indigo-500 hover:underline mb-6 inline-block">&larr; Back to blog</a>
       <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">How to Fill PDF Forms Online Free</h1>

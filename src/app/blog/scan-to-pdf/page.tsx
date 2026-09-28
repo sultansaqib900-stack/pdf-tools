@@ -8,12 +8,12 @@ export const metadata: Metadata = buildMetadata({
 });
 import ArticleJsonLd from "@/components/ArticleJsonLd";
 import HowToJsonLd from "@/components/HowToJsonLd";
-import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
+import Breadcrumbs from "@/components/Breadcrumbs";
 export default function BlogPost() {
   return (
     <article className="max-w-3xl mx-auto px-4 py-12">
       <ArticleJsonLd title="How to Scan Documents to PDF Using Your Camera Online Free" description="Scan documents to PDF using your device camera. Convert photos of documents to PDF instantly in your browser." url="https://allaboutpdfediting.xyz/blog/scan-to-pdf" datePublished="2026-06-27" />
-      <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Blog", item: "https://allaboutpdfediting.xyz/blog" }, { name: "How to Scan Documents to PDF Using Your Camera Online Free", item: "https://allaboutpdfediting.xyz/blog/scan-to-pdf" }]} />
+      <Breadcrumbs items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Blog", item: "https://allaboutpdfediting.xyz/blog" }, { name: "How to Scan Documents to PDF Using Your Camera Online Free", item: "https://allaboutpdfediting.xyz/blog/scan-to-pdf" }]} />
       <HowToJsonLd name="How to Scan Documents to PDF Using Your Camera Online Free" description="Scan documents to PDF using your device camera. Convert photos of documents to PDF instantly in your browser." steps={[{name:"Open the camera — Go to our Scan to PDF tool and click Open Camera.",text:"Open the camera — Go to our Scan to PDF tool and click Open Camera."},{name:"Capture pages — Position each document within the guide and tap the capture b...",text:"Capture pages — Position each document within the guide and tap the capture button."},{name:"Download PDF — All captured pages are combined into a single PDF ready to dow...",text:"Download PDF — All captured pages are combined into a single PDF ready to download."}]} />
       <a href="/blog" className="text-sm text-indigo-500 hover:underline mb-6 inline-block">&larr; Back to blog</a>
       <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">How to Scan Documents to PDF Using Your Camera Online Free</h1>

@@ -3,7 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { buildMetadata } from "@/lib/seo";
 import { getErrorPages, getErrorPage } from "@/lib/error-pages";
-import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
+import Breadcrumbs from "@/components/Breadcrumbs";
 import FaqPageJsonLd from "@/components/FaqPageJsonLd";
 
 const toolLinks: Record<string, { name: string; icon: string }> = {
@@ -43,7 +43,7 @@ export default async function ErrorPage({ params }: { params: Promise<{ slug: st
 
   return (
     <>
-      <BreadcrumbJsonLd
+      <Breadcrumbs
         items={[
           { name: "Home", item: "https://allaboutpdfediting.xyz" },
           { name: page.errorCode, item: `https://allaboutpdfediting.xyz/error/${slug}` },

@@ -8,12 +8,12 @@ export const metadata: Metadata = buildMetadata({
 });
 import ArticleJsonLd from "@/components/ArticleJsonLd";
 import HowToJsonLd from "@/components/HowToJsonLd";
-import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
+import Breadcrumbs from "@/components/Breadcrumbs";
 export default function BlogPost() {
   return (
     <article className="max-w-3xl mx-auto px-4 py-12">
       <ArticleJsonLd title="Repair PDF Online Free — Fix Corrupted PDF Files" description="Fix corrupted or damaged PDF files online free. Rebuild PDF structure and recover your documents." url="https://allaboutpdfediting.xyz/blog/repair-pdf-online" datePublished="2026-06-27" />
-      <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Blog", item: "https://allaboutpdfediting.xyz/blog" }, { name: "Repair PDF Online Free — Fix Corrupted PDF Files", item: "https://allaboutpdfediting.xyz/blog/repair-pdf-online" }]} />
+      <Breadcrumbs items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Blog", item: "https://allaboutpdfediting.xyz/blog" }, { name: "Repair PDF Online Free — Fix Corrupted PDF Files", item: "https://allaboutpdfediting.xyz/blog/repair-pdf-online" }]} />
       <HowToJsonLd name="Repair PDF Online Free — Fix Corrupted PDF Files" description="Fix corrupted or damaged PDF files online free. Rebuild PDF structure and recover your documents." steps={[{name:"Upload — Go to our Repair PDF tool and select the corrupted file.",text:"Upload — Go to our Repair PDF tool and select the corrupted file."},{name:"Repair — The tool analyzes and rebuilds the PDF structure automatically.",text:"Repair — The tool analyzes and rebuilds the PDF structure automatically."},{name:"Download — Get your repaired, working PDF file.",text:"Download — Get your repaired, working PDF file."}]} />
       <a href="/blog" className="text-sm text-indigo-500 hover:underline mb-6 inline-block">&larr; Back to blog</a>
       <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">Repair PDF Online Free — Fix Corrupted PDF Files</h1>

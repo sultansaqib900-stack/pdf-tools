@@ -2,13 +2,13 @@
 import Link from "next/link";
 import ArticleJsonLd from "@/components/ArticleJsonLd";
 import HowToJsonLd from "@/components/HowToJsonLd";
-import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
+import Breadcrumbs from "@/components/Breadcrumbs";
 
 export default function HowToCompressPDF() {
   return (
     <>
       <ArticleJsonLd title="How to Compress a PDF — Reduce PDF File Size Online Free" description="Learn how to compress PDF files online free. Reduce PDF size from 20MB to under 5MB with no quality loss. No signup, no uploads." url="https://allaboutpdfediting.xyz/blog/how-to-compress-pdf" datePublished="2026-06-27" />
-      <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Blog", item: "https://allaboutpdfediting.xyz/blog" }, { name: "How to Compress a PDF", item: "https://allaboutpdfediting.xyz/blog/how-to-compress-pdf" }]} />
+      <Breadcrumbs items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Blog", item: "https://allaboutpdfediting.xyz/blog" }, { name: "How to Compress a PDF", item: "https://allaboutpdfediting.xyz/blog/how-to-compress-pdf" }]} />
       <HowToJsonLd name="How to Compress a PDF" description="Learn how to compress PDF files online free. Reduce PDF size from 20MB to under 5MB with no quality loss. No signup, no uploads." steps={[{name:"Go to PDFTools Compress",text:"Go to PDFTools Compress"},{name:"Upload your PDF by clicking or dragging a file",text:"Upload your PDF by clicking or dragging a file"},{name:"Choose a compression level: Maximum, Balanced, or Minimum",text:"Choose a compression level: Maximum, Balanced, or Minimum"},{name:"Click Compress and wait a few seconds",text:"Click Compress and wait a few seconds"},{name:"Download your compressed PDF",text:"Download your compressed PDF"}]} />
       <div className="max-w-3xl mx-auto px-4 py-12">
         <Link href="/blog" className="text-sm text-indigo-500 hover:underline mb-6 inline-block">&larr; Back to blog</Link>

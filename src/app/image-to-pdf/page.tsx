@@ -15,7 +15,7 @@ import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
 
 import HowToJsonLd from "@/components/HowToJsonLd";
 import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
-import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
+import Breadcrumbs from "@/components/Breadcrumbs";
 import FaqPageJsonLd from "@/components/FaqPageJsonLd";
 import RelatedContent from "@/components/RelatedContent";
 import { getRelatedContent } from "@/lib/related-content";
@@ -126,7 +126,7 @@ export default function ImageToPdfPage() {
         url="https://allaboutpdfediting.xyz/image-to-pdf"
       />
       <HowToJsonLd name="Convert Image to PDF" description="Combine JPEG and PNG images into a PDF document" steps={[{name:"Upload images",text:"Select one or more JPEG or PNG images"},{name:"Arrange order",text:"Use the arrow controls to set the PDF page order"},{name:"Download PDF",text:"Download your images combined into one PDF"}]} />
-      <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Image to PDF", item: "https://allaboutpdfediting.xyz/image-to-pdf" }]} />
+      <Breadcrumbs items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Tools", item: "https://allaboutpdfediting.xyz/tools" }, { name: "Image to PDF", item: "https://allaboutpdfediting.xyz/image-to-pdf" }]} />
       <FaqPageJsonLd questions={rc?.faqs} />
       <AiSummaryJsonLd name="Image to PDF" summary="Combine JPEG and PNG images into a PDF with one page per image" category="Graphics" inputType="JPEG or PNG" outputType="PDF" processing="client-side" price="free" features={["JPEG and PNG conversion","Multi-image support","Order controls","Original pixel dimensions","Client-side only"]} limits="Each image up to 10MB" />
       <div className="mb-8">

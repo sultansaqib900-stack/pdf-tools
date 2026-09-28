@@ -1,6 +1,6 @@
 import Link from "next/link";
 import FaqPageJsonLd from "@/components/FaqPageJsonLd";
-import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
+import Breadcrumbs from "@/components/Breadcrumbs";
 import WebSiteJsonLd from "@/components/WebSiteJsonLd";
 import OrganizationJsonLd from "@/components/OrganizationJsonLd";
 import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
@@ -47,7 +47,7 @@ export default function EsHomePage() {
         url="https://allaboutpdfediting.xyz/es"
         image="https://allaboutpdfediting.xyz/opengraph-image"
       />
-      <BreadcrumbJsonLd items={[{ name: "Inicio", item: "https://allaboutpdfediting.xyz/es" }]} />
+      <Breadcrumbs items={[{ name: "Inicio", item: "https://allaboutpdfediting.xyz/es" }]} />
       <FaqPageJsonLd />
 
       <section className="relative overflow-hidden">

@@ -14,7 +14,7 @@ import ErrorBanner from "@/components/ErrorBanner";
 import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
 import HowToJsonLd from "@/components/HowToJsonLd";
 import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
-import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
+import Breadcrumbs from "@/components/Breadcrumbs";
 import FaqPageJsonLd from "@/components/FaqPageJsonLd";
 import RelatedContent from "@/components/RelatedContent";
 import UseCaseLinks from "@/components/UseCaseLinks";
@@ -122,7 +122,7 @@ export default function HtmlToPdfPage() {
         url="https://allaboutpdfediting.xyz/html-to-pdf"
       />
       <HowToJsonLd name="Convert HTML Markup to PDF" description="Render pasted HTML markup into an image-based PDF" steps={[{name:"Paste HTML markup",text:"Enter raw HTML; this tool does not fetch web-page URLs"},{name:"Review sanitized preview",text:"Preview the markup after scripts, embedded frames, and event handlers are removed"},{name:"Download PDF",text:"Render the preview into an A4 image-based PDF"}]} />
-      <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "HTML to PDF", item: "https://allaboutpdfediting.xyz/html-to-pdf" }]} />
+      <Breadcrumbs items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Tools", item: "https://allaboutpdfediting.xyz/tools" }, { name: "HTML to PDF", item: "https://allaboutpdfediting.xyz/html-to-pdf" }]} />
       <FaqPageJsonLd questions={rc?.faqs} />
       <AiSummaryJsonLd name="HTML Markup to PDF" summary="Sanitize and raster-render pasted HTML markup into an A4 PDF" category="Utilities" inputType="Raw HTML markup" outputType="Image-based PDF" processing="client-side" price="free" features={["Sanitized HTML preview","Multi-page A4 output","Inline CSS rendering","Client-side conversion"]} limits="Does not fetch page URLs; remote assets referenced by markup may make network requests or fail CORS" />
 

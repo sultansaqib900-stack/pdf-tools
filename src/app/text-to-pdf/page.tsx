@@ -15,7 +15,7 @@ import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
 
 import HowToJsonLd from "@/components/HowToJsonLd";
 import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
-import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
+import Breadcrumbs from "@/components/Breadcrumbs";
 import FaqPageJsonLd from "@/components/FaqPageJsonLd";
 import RelatedContent from "@/components/RelatedContent";
 import { getRelatedContent } from "@/lib/related-content";
@@ -144,7 +144,7 @@ export default function TextToPdfPage() {
         url="https://allaboutpdfediting.xyz/text-to-pdf"
       />
       <HowToJsonLd name="Convert Text to PDF" description="Convert entered plain text into a paginated PDF" steps={[{name:"Enter or paste text",text:"Type or paste text supported by the standard PDF Helvetica encoding"},{name:"Add optional title",text:"Optionally enter a title for the first page"},{name:"Download PDF",text:"Download the automatically wrapped and paginated PDF"}]} />
-      <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Text to PDF", item: "https://allaboutpdfediting.xyz/text-to-pdf" }]} />
+      <Breadcrumbs items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Tools", item: "https://allaboutpdfediting.xyz/tools" }, { name: "Text to PDF", item: "https://allaboutpdfediting.xyz/text-to-pdf" }]} />
       <FaqPageJsonLd questions={rc?.faqs} />
       <AiSummaryJsonLd name="Text to PDF" summary="Convert entered text into a US Letter PDF with measured wrapping and automatic page breaks" category="Utilities" inputType="Text" outputType="PDF" processing="client-side" price="free" features={["Optional title","Measured word wrapping","Explicit line breaks","Automatic pagination","Client-side"]} limits="Uses standard PDF Helvetica and its character encoding" />
       <div className="mb-8">

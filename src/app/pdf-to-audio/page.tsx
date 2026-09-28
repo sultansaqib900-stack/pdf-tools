@@ -4,7 +4,7 @@ import { registerAdTask } from "@/lib/ads";
 
 import { useState, useRef, useCallback, useEffect } from "react";
 import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
-import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
+import Breadcrumbs from "@/components/Breadcrumbs";
 import { usePageMeta } from "@/hooks/usePageMeta";
 import HowToJsonLd from "@/components/HowToJsonLd";
 import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
@@ -157,8 +157,8 @@ export default function PdfToAudioPage() {
 
   return (
       <div className="max-w-3xl mx-auto px-4 py-12">
-        <SoftwareAppJsonLd name="PDF Text-to-Speech Reader" description="Extract selectable PDF text and read it aloud with voices installed in the browser. Playback only; no audio-file export." url="https://allaboutpdfediting.xyz/pdf-to-audio" image="https://allaboutpdfediting.xyz/opengraph-image" aggregateRating={{ ratingValue: 4.7, bestRating: 5, ratingCount: 256 }} />
-        <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "PDF to Audio", item: "https://allaboutpdfediting.xyz/pdf-to-audio" }]} />
+        <SoftwareAppJsonLd name="PDF Text-to-Speech Reader" description="Extract selectable PDF text and read it aloud with voices installed in the browser. Playback only; no audio-file export." url="https://allaboutpdfediting.xyz/pdf-to-audio" image="https://allaboutpdfediting.xyz/opengraph-image" />
+        <Breadcrumbs items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Tools", item: "https://allaboutpdfediting.xyz/tools" }, { name: "PDF to Audio", item: "https://allaboutpdfediting.xyz/pdf-to-audio" }]} />
         <HowToJsonLd name="Read PDF Aloud" description="Extract selectable PDF text and play it with browser text-to-speech" steps={[{name:"Upload PDF",text:"Select a PDF document with selectable text"},{name:"Extract text",text:"Read the document's embedded text with PDF.js"},{name:"Choose voice and listen",text:"Select an available browser voice and adjust playback speed"}]} />
         <AiSummaryJsonLd name="PDF Text-to-Speech Reader" summary="Read selectable PDF text aloud using the browser's speech-synthesis voices" category="MediaApplications" inputType="PDF with selectable text" outputType="Live speech playback" processing="client-side" price="free" features={["Embedded-text extraction","Browser voice selection","Speed control","Play pause and stop controls","No audio-file export"]} limits="10MB free or 100MB Premium; scanned pages require OCR first" />
         

@@ -18,7 +18,7 @@ import { encryptPdf, getPdfEncryptionInfo } from "@/lib/pdfSecurity";
 
 import HowToJsonLd from "@/components/HowToJsonLd";
 import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
-import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
+import Breadcrumbs from "@/components/Breadcrumbs";
 import FaqPageJsonLd from "@/components/FaqPageJsonLd";
 import RelatedContent from "@/components/RelatedContent";
 import { getRelatedContent } from "@/lib/related-content";
@@ -116,7 +116,7 @@ export default function ProtectPage() {
         url="https://allaboutpdfediting.xyz/protect"
       />
       <HowToJsonLd name="Password Protect PDF" description="Add password protection to encrypt PDF files" steps={[{name:"Upload PDF",text:"Select the PDF file to protect"},{name:"Set password",text:"Enter a strong password for encryption"},{name:"Download protected PDF",text:"Download your password-encrypted PDF document"}]} />
-      <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Protect PDF", item: "https://allaboutpdfediting.xyz/protect" }]} />
+      <Breadcrumbs items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Tools", item: "https://allaboutpdfediting.xyz/tools" }, { name: "Protect PDF", item: "https://allaboutpdfediting.xyz/protect" }]} />
       <FaqPageJsonLd questions={rc?.faqs} />
       <AiSummaryJsonLd name="Password Protect PDF" summary="Encrypt PDF files with password protection to prevent unauthorized access" category="SecurityApplications" inputType="PDF" outputType="PDF" processing="client-side" price="free" features={["Password encryption","AES security","User password","Owner password","Client-side only"]} limits="Files up to 10MB" />
       <div className="mb-8">

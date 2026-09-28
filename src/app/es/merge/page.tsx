@@ -16,7 +16,7 @@ import { useToolHistory } from "@/hooks/useToolHistory";
 import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
 import HowToJsonLd from "@/components/HowToJsonLd";
 import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
-import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
+import Breadcrumbs from "@/components/Breadcrumbs";
 import FaqPageJsonLd from "@/components/FaqPageJsonLd";
 import RelatedContent from "@/components/RelatedContent";
 import { getRelatedContent } from "@/lib/related-content";
@@ -130,7 +130,7 @@ export default function EsMergePage() {
         url="https://allaboutpdfediting.xyz/es/merge"
       />
       <HowToJsonLd name="Unir PDF Online" description="Combina varios archivos PDF en un solo documento" steps={[{name:"Subir PDFs",text:"Selecciona dos o más archivos PDF para unir"},{name:"Ordenar",text:"Usa las flechas para establecer el orden deseado"},{name:"Descargar PDF",text:"Descarga el documento PDF combinado"}]} />
-      <BreadcrumbJsonLd items={[{ name: "Inicio", item: "https://allaboutpdfediting.xyz/es" }, { name: "Unir PDF", item: "https://allaboutpdfediting.xyz/es/merge" }]} />
+      <Breadcrumbs items={[{ name: "Inicio", item: "https://allaboutpdfediting.xyz/es" }, { name: "Unir PDF", item: "https://allaboutpdfediting.xyz/es/merge" }]} />
       <FaqPageJsonLd questions={rc?.faqs} />
       <AiSummaryJsonLd name="Unir PDF" summary="Combina varios documentos PDF en un solo archivo con orden personalizable" category="Utilidades" inputType="PDF" outputType="PDF" processing="lado-del-cliente" price="free" features={["Combinar múltiples archivos","Orden personalizable","Arrastrar y soltar","Procesamiento gratuito","Sin subidas"]} limits="Archivos hasta 10MB" />
       <div className="mb-8">

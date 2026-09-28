@@ -1,7 +1,7 @@
 "use client";
 import ArticleJsonLd from "@/components/ArticleJsonLd";
 import HowToJsonLd from "@/components/HowToJsonLd";
-import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
+import Breadcrumbs from "@/components/Breadcrumbs";
 
 export default function BlogPost() {
   return (
@@ -12,7 +12,7 @@ export default function BlogPost() {
         url="https://allaboutpdfediting.xyz/blog/clean-pdf-metadata"
         datePublished="2026-06-26"
       />
-      <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Blog", item: "https://allaboutpdfediting.xyz/blog" }, { name: "How to Remove Metadata from PDF Online Free", item: "https://allaboutpdfediting.xyz/blog/clean-pdf-metadata" }]} />
+      <Breadcrumbs items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Blog", item: "https://allaboutpdfediting.xyz/blog" }, { name: "How to Remove Metadata from PDF Online Free", item: "https://allaboutpdfediting.xyz/blog/clean-pdf-metadata" }]} />
       <HowToJsonLd name="How to Remove Metadata from PDF Online Free" description="Strip hidden metadata from PDF files before sharing documents publicly." steps={[{name:"Upload your PDF — Select the document containing metadata you want to remove.",text:"Upload your PDF — Select the document containing metadata you want to remove."},{name:"Review detected metadata — The tool displays all metadata fields found in you...",text:"Review detected metadata — The tool displays all metadata fields found in your document."},{name:"Strip and download — Choose which metadata to remove and download the cleaned...",text:"Strip and download — Choose which metadata to remove and download the cleaned PDF."}]} />
       <a href="/blog" className="text-sm text-indigo-500 hover:underline mb-6 inline-block">&larr; Back to blog</a>
       <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">How to Edit or Remove PDF Metadata Online Free</h1>

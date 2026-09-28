@@ -1,7 +1,7 @@
 import { buildMetadata } from "@/lib/seo";
 import Link from "next/link";
 import type { Metadata } from "next";
-import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
+import Breadcrumbs from "@/components/Breadcrumbs";
 import FaqPageJsonLd from "@/components/FaqPageJsonLd";
 
 export const metadata: Metadata = buildMetadata({
@@ -42,7 +42,7 @@ const studentTools = [
 export default function PDFToolsForStudentsPage() {
   return (
     <>
-      <BreadcrumbJsonLd
+      <Breadcrumbs
         items={[
           { name: "Home", item: "https://allaboutpdfediting.xyz" },
           { name: "PDF Tools for Students", item: "https://allaboutpdfediting.xyz/pdf-tools-for-students" },

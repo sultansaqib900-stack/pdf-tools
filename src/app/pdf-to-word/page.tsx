@@ -15,7 +15,7 @@ import { useToolHistory } from "@/hooks/useToolHistory";
 import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
 import HowToJsonLd from "@/components/HowToJsonLd";
 import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
-import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
+import Breadcrumbs from "@/components/Breadcrumbs";
 import FaqPageJsonLd from "@/components/FaqPageJsonLd";
 import RelatedContent from "@/components/RelatedContent";
 import { getRelatedContent } from "@/lib/related-content";
@@ -99,7 +99,7 @@ export default function PdfToWordPage() {
     <div className="max-w-3xl mx-auto px-4 py-12">
       <SoftwareAppJsonLd name="PDF to Word - Free Online Converter" description="Convert PDF to Word (DOCX) online for free." url="https://allaboutpdfediting.xyz/pdf-to-word" />
       <HowToJsonLd name="PDF to Word" description="Convert PDF documents to editable Word files" steps={[{name:"Upload PDF",text:"Select a PDF file to convert"},{name:"Convert",text:"Extract text and create a Word document"},{name:"Download",text:"Download your editable DOCX file"}]} />
-      <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "PDF to Word", item: "https://allaboutpdfediting.xyz/pdf-to-word" }]} />
+      <Breadcrumbs items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Tools", item: "https://allaboutpdfediting.xyz/tools" }, { name: "PDF to Word", item: "https://allaboutpdfediting.xyz/pdf-to-word" }]} />
       <FaqPageJsonLd questions={rc?.faqs} />
       <AiSummaryJsonLd name="PDF to Word" summary="Convert PDF documents to editable Word DOCX files" category="Convert" inputType="PDF" outputType="DOCX" processing="client-side" price="free" features={["PDF to Word conversion","Editable DOCX output","Text extraction","Client-side processing"]} limits="Files up to 10MB" />
       <div className="mb-8">

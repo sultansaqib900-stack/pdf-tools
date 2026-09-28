@@ -4,7 +4,7 @@ import { registerAdTask } from "@/lib/ads";
 
 import { useState, useRef, useEffect, useCallback } from "react";
 import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
-import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
+import Breadcrumbs from "@/components/Breadcrumbs";
 import { usePageMeta } from "@/hooks/usePageMeta";
 import HowToJsonLd from "@/components/HowToJsonLd";
 import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
@@ -224,7 +224,7 @@ export default function PdfDiffPage() {
           description="Rendered side-by-side and split-screen PDF comparison plus a heuristic extracted-text change list."
           url="https://allaboutpdfediting.xyz/pdf-diff"
         />
-        <BreadcrumbJsonLd
+        <Breadcrumbs
           items={[
             { name: "Home", item: "https://allaboutpdfediting.xyz" },
             { name: "PDF Diff", item: "https://allaboutpdfediting.xyz/pdf-diff" },

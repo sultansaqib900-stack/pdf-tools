@@ -207,7 +207,37 @@ Keepers chosen by keyword value + content strength; best sections merged so each
 - Content is server-rendered: `curl` shows "How PDF Compression Works", "How We Handle Your Files", and the FAQ text in the raw HTML (client components are SSR'd by Next).
 - **Remains:** the same below-UI expansion for the other ~50 tool pages (current state: `ToolInfo` box + `RelatedContent` + `UseCaseLinks` + a short About paragraph). Recommended order: merge, split, image-to-pdf, edit-pdf, pdf-to-word, ocr-pdf, then the rest. Not done here to avoid mass-produced filler — each needs genuinely unique text.
 
-## Phase 4 — Structured data
+## Phase 4 — Structured data (JSON-LD) — DONE
+
+### What changed
+
+| File(s) | Change |
+|---|---|
+| 10 tool pages (bates-numbering, booklet, bulk-rename, form-data-extract, metadata-sanitizer, pdf-diff, pdf-inverter, pdf-to-audio, qr-stamp, search-redact) | **Removed fabricated `aggregateRating` values** (e.g. `ratingValue: 4.9, ratingCount: 98`) from `SoftwareAppJsonLd` usages. Fake ratings are a manual-action risk and were in the repo already — 10 occurrences stripped, 0 remain. |
+| `src/components/Breadcrumbs.tsx` | **NEW** — visible breadcrumb `<nav aria-label="Breadcrumb">` + `BreadcrumbList` JSON-LD rendered from the SAME items array (schema can never drift from visible text). Last item unlinked; earlier items are `<Link>`s. |
+| 120 page files | `<BreadcrumbJsonLd …>` swapped to `<Breadcrumbs …>` (same items) — every page that had breadcrumb JSON-LD now shows matching visible breadcrumbs. 46 tool pages gained the "Tools" hub level (`Home › Tools › <Tool>`), blog posts keep `Home › Blog › Post`. |
+| `src/components/HowToJsonLd.tsx` | Now a **no-op** — HowTo structured data is deprecated; 105 call sites emit nothing. Visible step-by-step sections remain in the page bodies. |
+
+### Already in place (verified, not changed)
+
+- **Organization + WebSite** JSON-LD sitewide (`OrganizationJsonLd`, `WebSiteJsonLd` in `app/layout.tsx`).
+- **SoftwareApplication** on 61 tool/comparison pages (`applicationCategory: "UtilitiesApplication"`, `operatingSystem: "All"`, `offers.price: "0"`), no ratings now.
+- **Article** on every blog post (`headline`, `datePublished`, `dateModified`, `author: Person "Saqib"` (the real author named on `/about`), `publisher`, `image`).
+- **FAQPage** JSON-LD matches visible text exactly: tool FAQs render in `RelatedContent`'s visible FAQ section; `/compress` now renders `rc.faqs` in visible `<details>` blocks — same source array.
+
+### Verification (localhost raw HTML)
+
+```
+/compress:  @type counts -> BreadcrumbList 1 (3 ListItems: Home/Tools/Compress PDF),
+            FAQPage 1 (Question/Answer 4 = visible FAQ), SoftwareApplication, WebApplication,
+            WebSite, Organization; aria-label="Breadcrumb" present; HowTo: 0; aggregateRating: 0
+/blog/how-to-compress-pdf: Article 1 (Person author), BreadcrumbList 1 (Home/Blog/Post),
+            WebSite/Organization; HowTo: 0
+/: WebApplication + WebSite + Organization + FAQPage (visible hero FAQs)
+aggregateRating occurrences on all formerly-faking pages: 0
+```
+
+Note: `SiteNavigationElement` entries come from the pre-existing sitewide `SiteNavJsonLd`. Two `@type: Audience` nodes come from `AiSummaryJsonLd` (pre-existing, harmless).
 
 ## Phase 5 — Performance & rendering
 

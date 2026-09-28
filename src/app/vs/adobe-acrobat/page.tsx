@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import SavingsCalculator from "@/components/SavingsCalculator";
 import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
-import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
+import Breadcrumbs from "@/components/Breadcrumbs";
 
 export const metadata: Metadata = buildMetadata({
   path: "/vs/adobe-acrobat",
@@ -28,7 +28,7 @@ export default function VsAdobePage() {
         description="Free, private in-browser alternative to Adobe Acrobat Pro."
         url="https://allaboutpdfediting.xyz/vs/adobe-acrobat"
       />
-      <BreadcrumbJsonLd
+      <Breadcrumbs
         items={[
           { name: "Home", item: "https://allaboutpdfediting.xyz" },
           { name: "Compare", item: "https://allaboutpdfediting.xyz/vs" },

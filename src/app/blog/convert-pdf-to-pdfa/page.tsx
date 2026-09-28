@@ -8,12 +8,12 @@ export const metadata: Metadata = buildMetadata({
 });
 import ArticleJsonLd from "@/components/ArticleJsonLd";
 import HowToJsonLd from "@/components/HowToJsonLd";
-import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
+import Breadcrumbs from "@/components/Breadcrumbs";
 export default function BlogPost() {
   return (
     <article className="max-w-3xl mx-auto px-4 py-12">
       <ArticleJsonLd title="Convert PDF to PDF/A Online Free — Archive Format Converter" description="Convert PDF to PDF/A archive format for long-term preservation. Ensure your documents remain readable for decades." url="https://allaboutpdfediting.xyz/blog/convert-pdf-to-pdfa" datePublished="2026-06-27" />
-      <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Blog", item: "https://allaboutpdfediting.xyz/blog" }, { name: "Convert PDF to PDF/A Online Free — Archive Format Converter", item: "https://allaboutpdfediting.xyz/blog/convert-pdf-to-pdfa" }]} />
+      <Breadcrumbs items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Blog", item: "https://allaboutpdfediting.xyz/blog" }, { name: "Convert PDF to PDF/A Online Free — Archive Format Converter", item: "https://allaboutpdfediting.xyz/blog/convert-pdf-to-pdfa" }]} />
       <HowToJsonLd name="Convert PDF to PDF/A Online Free — Archive Format Converter" description="Convert PDF to PDF/A archive format for long-term preservation. Ensure your documents remain readable for decades." steps={[{name:"Upload PDF — Go to our PDF to PDF/A tool and select your file.",text:"Upload PDF — Go to our PDF to PDF/A tool and select your file."},{name:"Convert — The tool standardizes metadata and embeds necessary information.",text:"Convert — The tool standardizes metadata and embeds necessary information."},{name:"Download — Your archive-ready PDF/A file is ready.",text:"Download — Your archive-ready PDF/A file is ready."}]} />
       <a href="/blog" className="text-sm text-indigo-500 hover:underline mb-6 inline-block">&larr; Back to blog</a>
       <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">Convert PDF to PDF/A Online Free — Archive Format Converter</h1>

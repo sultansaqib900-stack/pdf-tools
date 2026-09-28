@@ -8,12 +8,12 @@ export const metadata: Metadata = buildMetadata({
 });
 import ArticleJsonLd from "@/components/ArticleJsonLd";
 import HowToJsonLd from "@/components/HowToJsonLd";
-import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
+import Breadcrumbs from "@/components/Breadcrumbs";
 export default function BlogPost() {
   return (
     <article className="max-w-3xl mx-auto px-4 py-12">
       <ArticleJsonLd title="How to Rotate PDF Pages Online Free" description="Rotate PDF pages online for free." url="https://allaboutpdfediting.xyz/blog/rotate-pdf-pages-online" datePublished="2026-06-25" />
-      <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Blog", item: "https://allaboutpdfediting.xyz/blog" }, { name: "How to Rotate PDF Pages Online Free", item: "https://allaboutpdfediting.xyz/blog/rotate-pdf-pages-online" }]} />
+      <Breadcrumbs items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Blog", item: "https://allaboutpdfediting.xyz/blog" }, { name: "How to Rotate PDF Pages Online Free", item: "https://allaboutpdfediting.xyz/blog/rotate-pdf-pages-online" }]} />
       <HowToJsonLd name="How to Rotate PDF Pages Online Free" description="Rotate PDF pages online for free." steps={[{name:"Open the rotator — Go to our PDF rotate tool.",text:"Open the rotator — Go to our PDF rotate tool."},{name:"Upload your PDF — Select the file with misoriented pages.",text:"Upload your PDF — Select the file with misoriented pages."},{name:"Choose rotation — Select which pages to rotate and by how much.",text:"Choose rotation — Select which pages to rotate and by how much."},{name:"Download — Your corrected PDF is ready instantly.",text:"Download — Your corrected PDF is ready instantly."}]} />
       <a href="/blog" className="text-sm text-indigo-500 hover:underline mb-6 inline-block">&larr; Back to blog</a>
       <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">How to Rotate PDF Pages Online Free</h1>

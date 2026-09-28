@@ -18,7 +18,7 @@ import type { PdfCompressionMode } from "@/lib/pdfRaster";
 
 import HowToJsonLd from "@/components/HowToJsonLd";
 import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
-import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
+import Breadcrumbs from "@/components/Breadcrumbs";
 import FaqPageJsonLd from "@/components/FaqPageJsonLd";
 import RelatedContent from "@/components/RelatedContent";
 import { getRelatedContent } from "@/lib/related-content";
@@ -166,7 +166,7 @@ export default function BatchPage() {
         url="https://allaboutpdfediting.xyz/batch"
       />
       <HowToJsonLd name="Batch Process PDF Files" description="Queue multiple PDF operations and process them in one run" steps={[{name:"Add jobs",text:"Add a row and select a PDF for each job"},{name:"Choose operations",text:"Configure compression, protection, rotation, or watermarking"},{name:"Download results",text:"Download each successful PDF from the result list"}]} />
-      <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Batch Process", item: "https://allaboutpdfediting.xyz/batch" }]} />
+      <Breadcrumbs items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Tools", item: "https://allaboutpdfediting.xyz/tools" }, { name: "Batch Process", item: "https://allaboutpdfediting.xyz/batch" }]} />
       <FaqPageJsonLd questions={rc?.faqs} />
       <AiSummaryJsonLd name="Batch Process" summary="Queue multiple PDFs and apply a configured operation to each in one run" category="Utilities" inputType="PDF" outputType="PDF" processing="client-side" price="premium" features={["Multi-file job queue","Real AES-256 protection","Compression modes","Rotation","Watermarking","Per-file results"]} limits="Premium subscribers; browser file-size limits apply" />
       <div className="mb-8">

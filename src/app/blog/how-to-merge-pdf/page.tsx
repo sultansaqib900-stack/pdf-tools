@@ -2,13 +2,13 @@
 import Link from "next/link";
 import ArticleJsonLd from "@/components/ArticleJsonLd";
 import HowToJsonLd from "@/components/HowToJsonLd";
-import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
+import Breadcrumbs from "@/components/Breadcrumbs";
 
 export default function HowToMergePDF() {
   return (
     <>
       <ArticleJsonLd title="How to Merge PDFs Online Free — Combine Multiple PDFs Into One" description="Learn how to merge PDF files online free. Combine multiple PDFs into one document in seconds. No signup, no uploads to servers." url="https://allaboutpdfediting.xyz/blog/how-to-merge-pdf" datePublished="2026-06-27" />
-      <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Blog", item: "https://allaboutpdfediting.xyz/blog" }, { name: "How to Merge PDFs", item: "https://allaboutpdfediting.xyz/blog/how-to-merge-pdf" }]} />
+      <Breadcrumbs items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Blog", item: "https://allaboutpdfediting.xyz/blog" }, { name: "How to Merge PDFs", item: "https://allaboutpdfediting.xyz/blog/how-to-merge-pdf" }]} />
       <HowToJsonLd name="How to Merge PDFs" description="Learn how to merge PDF files online free. Combine multiple PDFs into one document in seconds. No signup, no uploads to servers." steps={[{name:"Go to PDFTools Merge",text:"Go to PDFTools Merge"},{name:"Upload multiple PDFs by clicking or dragging files",text:"Upload multiple PDFs by clicking or dragging files"},{name:"Drag to reorder files into your desired sequence",text:"Drag to reorder files into your desired sequence"},{name:"Remove any unwanted files",text:"Remove any unwanted files"},{name:"Click Merge and download your combined PDF",text:"Click Merge and download your combined PDF"}]} />
       <div className="max-w-3xl mx-auto px-4 py-12">
         <Link href="/blog" className="text-sm text-indigo-500 hover:underline mb-6 inline-block">&larr; Back to blog</Link>

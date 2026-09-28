@@ -17,7 +17,7 @@ import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
 
 import HowToJsonLd from "@/components/HowToJsonLd";
 import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
-import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
+import Breadcrumbs from "@/components/Breadcrumbs";
 import FaqPageJsonLd from "@/components/FaqPageJsonLd";
 import RelatedContent from "@/components/RelatedContent";
 import { getRelatedContent } from "@/lib/related-content";
@@ -149,7 +149,7 @@ export default function AddPageNumbersPage() {
         url="https://allaboutpdfediting.xyz/add-page-numbers"
       />
       <HowToJsonLd name="Add Page Numbers to PDF" description="Insert page numbers at any position in PDF documents" steps={[{name:"Upload PDF",text:"Select the PDF to add page numbers"},{name:"Customize numbering",text:"Choose position style and starting number"},{name:"Download numbered PDF",text:"Download the PDF with page numbers added"}]} />
-      <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Add Page Numbers", item: "https://allaboutpdfediting.xyz/add-page-numbers" }]} />
+      <Breadcrumbs items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Tools", item: "https://allaboutpdfediting.xyz/tools" }, { name: "Add Page Numbers", item: "https://allaboutpdfediting.xyz/add-page-numbers" }]} />
       <FaqPageJsonLd questions={rc?.faqs} />
       <AiSummaryJsonLd name="Add Page Numbers" summary="Insert page numbers into PDF documents with customizable position and formatting" category="Utilities" inputType="PDF" outputType="PDF" processing="client-side" price="free" features={["Page numbering","Position selection","Custom start number","Style options","Free tool"]} limits="Files up to 10MB" />
       <div className="mb-8">

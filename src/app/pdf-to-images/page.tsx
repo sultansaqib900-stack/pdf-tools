@@ -15,7 +15,7 @@ import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
 
 import HowToJsonLd from "@/components/HowToJsonLd";
 import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
-import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
+import Breadcrumbs from "@/components/Breadcrumbs";
 import FaqPageJsonLd from "@/components/FaqPageJsonLd";
 import RelatedContent from "@/components/RelatedContent";
 import { getRelatedContent } from "@/lib/related-content";
@@ -148,7 +148,7 @@ export default function PdfToImagesPage() {
         url="https://allaboutpdfediting.xyz/pdf-to-images"
       />
       <HowToJsonLd name="Convert PDF to Images" description="Extract PDF pages as high-quality JPG or PNG images" steps={[{name:"Upload PDF",text:"Select the PDF to convert to images"},{name:"Choose format",text:"Select JPG or PNG output format"},{name:"Download images",text:"Download individual page images or a ZIP archive"}]} />
-      <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "PDF to Images", item: "https://allaboutpdfediting.xyz/pdf-to-images" }]} />
+      <Breadcrumbs items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Tools", item: "https://allaboutpdfediting.xyz/tools" }, { name: "PDF to Images", item: "https://allaboutpdfediting.xyz/pdf-to-images" }]} />
       <FaqPageJsonLd questions={rc?.faqs} />
       <AiSummaryJsonLd name="PDF to Images" summary="Convert PDF pages to high-quality JPG or PNG images" category="Graphics" inputType="PDF" outputType="Image" processing="client-side" price="free" features={["Page extraction","JPG PNG output","High quality","ZIP download","Free browser tool"]} limits="Files up to 10MB" />
       <canvas ref={canvasRef} className="hidden" />

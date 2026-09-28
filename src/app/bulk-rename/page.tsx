@@ -4,7 +4,7 @@ import { registerAdTask } from "@/lib/ads";
 
 import { useState } from "react";
 import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
-import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
+import Breadcrumbs from "@/components/Breadcrumbs";
 import { usePageMeta } from "@/hooks/usePageMeta";
 import HowToJsonLd from "@/components/HowToJsonLd";
 import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
@@ -128,8 +128,8 @@ export default function BulkRenamePage() {
       icon="🏷️"
     >
       <div className="max-w-3xl mx-auto px-4 py-12">
-        <SoftwareAppJsonLd name="Bulk PDF Renamer" description="Rename multiple PDF files at once using document metadata. Premium batch renamer." url="https://allaboutpdfediting.xyz/bulk-rename" image="https://allaboutpdfediting.xyz/opengraph-image" aggregateRating={{ ratingValue: 4.5, bestRating: 5, ratingCount: 98 }} />
-        <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Bulk Rename", item: "https://allaboutpdfediting.xyz/bulk-rename" }]} />
+        <SoftwareAppJsonLd name="Bulk PDF Renamer" description="Rename multiple PDF files at once using document metadata. Premium batch renamer." url="https://allaboutpdfediting.xyz/bulk-rename" image="https://allaboutpdfediting.xyz/opengraph-image" />
+        <Breadcrumbs items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Tools", item: "https://allaboutpdfediting.xyz/tools" }, { name: "Bulk Rename", item: "https://allaboutpdfediting.xyz/bulk-rename" }]} />
         <HowToJsonLd name="Bulk Rename PDF Files" description="Rename multiple PDFs at once using their embedded metadata" steps={[{name:"Upload PDF files",text:"Select multiple PDF files to rename"},{name:"Choose naming pattern",text:"Select metadata fields like title author or page count as naming pattern"},{name:"Apply new names",text:"Download files with new names based on your pattern"}]} />
         <AiSummaryJsonLd name="Bulk Rename" summary="Rename multiple PDF files simultaneously using embedded metadata fields" category="Utilities" inputType="PDF" outputType="PDF" processing="client-side" price="premium" features={["Metadata-based renaming","Batch processing","Custom naming patterns","Title author page count extraction","Client-side only"]} limits="Free: 5-file lifetime trial (shared); Premium: unlimited" />
         

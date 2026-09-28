@@ -4,7 +4,7 @@ import { registerAdTask } from "@/lib/ads";
 
 import { useState } from "react";
 import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
-import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
+import Breadcrumbs from "@/components/Breadcrumbs";
 import { usePageMeta } from "@/hooks/usePageMeta";
 import HowToJsonLd from "@/components/HowToJsonLd";
 import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
@@ -59,8 +59,8 @@ export default function MetadataSanitizerPage() {
       icon="🧹"
     >
       <div className="max-w-3xl mx-auto px-4 py-12">
-        <SoftwareAppJsonLd name="PDF Metadata Sanitizer" description="Strip hidden metadata from PDFs. Privacy cleaning tool." url="https://allaboutpdfediting.xyz/metadata-sanitizer" image="https://allaboutpdfediting.xyz/opengraph-image" aggregateRating={{ ratingValue: 4.7, bestRating: 5, ratingCount: 89 }} />
-        <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Metadata Sanitizer", item: "https://allaboutpdfediting.xyz/metadata-sanitizer" }]} />
+        <SoftwareAppJsonLd name="PDF Metadata Sanitizer" description="Strip hidden metadata from PDFs. Privacy cleaning tool." url="https://allaboutpdfediting.xyz/metadata-sanitizer" image="https://allaboutpdfediting.xyz/opengraph-image" />
+        <Breadcrumbs items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Tools", item: "https://allaboutpdfediting.xyz/tools" }, { name: "Metadata Sanitizer", item: "https://allaboutpdfediting.xyz/metadata-sanitizer" }]} />
         <HowToJsonLd name="Clean PDF Metadata" description="Rebuild a PDF without original metadata, attachments, actions, forms, or annotations" steps={[{name:"Upload PDF",text:"Select the PDF document to sanitize"},{name:"Rebuild document",text:"Copy page content into a fresh PDF while excluding document-level metadata and interactive objects"},{name:"Download cleaned PDF",text:"Download the rebuilt sanitized PDF"}]} />
         <AiSummaryJsonLd name="Metadata Sanitizer" summary="Remove hidden metadata from PDFs including author creation date software info annotations and embedded files" category="SecurityApplications" inputType="PDF" outputType="PDF" processing="client-side" price="premium" features={["Author removal","Date stripping","Software info removal","Annotation cleaning","Embedded file removal"]} limits="Free: 5-file lifetime trial (shared); Premium: unlimited" />
         

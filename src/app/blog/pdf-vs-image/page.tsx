@@ -9,7 +9,7 @@ export const metadata: Metadata = buildMetadata({
 });
 import ArticleJsonLd from "@/components/ArticleJsonLd";
 import HowToJsonLd from "@/components/HowToJsonLd";
-import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
+import Breadcrumbs from "@/components/Breadcrumbs";
 
 export default function BlogPost() {
   return (
@@ -20,7 +20,7 @@ export default function BlogPost() {
         url="https://allaboutpdfediting.xyz/blog/pdf-vs-image"
         datePublished="2026-06-24"
       />
-      <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Blog", item: "https://allaboutpdfediting.xyz/blog" }, { name: "PDF vs Image: When to Use Each Format", item: "https://allaboutpdfediting.xyz/blog/pdf-vs-image" }]} />
+      <Breadcrumbs items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Blog", item: "https://allaboutpdfediting.xyz/blog" }, { name: "PDF vs Image: When to Use Each Format", item: "https://allaboutpdfediting.xyz/blog/pdf-vs-image" }]} />
       <a href="/blog" className="text-sm text-indigo-500 hover:underline mb-6 inline-block">&larr; Back to blog</a>
       <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">PDF vs Image: When to Use Each Format</h1>
       <p className="text-sm text-[var(--muted)] mb-8">6 min read · Updated June 2026</p>

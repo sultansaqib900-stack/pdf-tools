@@ -8,12 +8,12 @@ export const metadata: Metadata = buildMetadata({
 });
 import ArticleJsonLd from "@/components/ArticleJsonLd";
 import HowToJsonLd from "@/components/HowToJsonLd";
-import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
+import Breadcrumbs from "@/components/Breadcrumbs";
 export default function BlogPost() {
   return (
     <article className="max-w-3xl mx-auto px-4 py-12">
       <ArticleJsonLd title="How to Redact PDF Online Free" description="Redact PDF documents online for free." url="https://allaboutpdfediting.xyz/blog/redact-pdf-online" datePublished="2026-06-25" />
-      <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Blog", item: "https://allaboutpdfediting.xyz/blog" }, { name: "How to Redact PDF Online Free", item: "https://allaboutpdfediting.xyz/blog/redact-pdf-online" }]} />
+      <Breadcrumbs items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Blog", item: "https://allaboutpdfediting.xyz/blog" }, { name: "How to Redact PDF Online Free", item: "https://allaboutpdfediting.xyz/blog/redact-pdf-online" }]} />
       <HowToJsonLd name="How to Redact PDF Online Free" description="Redact PDF documents online for free." steps={[{name:"Open the redaction tool — Go to our PDF Redact tool.",text:"Open the redaction tool — Go to our PDF Redact tool."},{name:"Upload your PDF — Select the document containing sensitive information.",text:"Upload your PDF — Select the document containing sensitive information."},{name:"Mark content to redact — Select text or draw over areas you want to permanent...",text:"Mark content to redact — Select text or draw over areas you want to permanently remove."},{name:"Apply and download — The redacted PDF is saved with sensitive content permane...",text:"Apply and download — The redacted PDF is saved with sensitive content permanently removed."}]} />
       <a href="/blog" className="text-sm text-indigo-500 hover:underline mb-6 inline-block">&larr; Back to blog</a>
       <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">How to Redact PDF Online Free</h1>

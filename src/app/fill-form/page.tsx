@@ -17,7 +17,7 @@ import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
 
 import HowToJsonLd from "@/components/HowToJsonLd";
 import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
-import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
+import Breadcrumbs from "@/components/Breadcrumbs";
 import FaqPageJsonLd from "@/components/FaqPageJsonLd";
 import RelatedContent from "@/components/RelatedContent";
 import { getRelatedContent } from "@/lib/related-content";
@@ -181,7 +181,7 @@ export default function FillFormPage() {
         url="https://allaboutpdfediting.xyz/fill-form"
       />
       <HowToJsonLd name="Fill PDF Form Online" description="Complete interactive PDF form fields text checkboxes dropdowns" steps={[{name:"Upload PDF form",text:"Select a PDF with interactive form fields"},{name:"Fill in fields",text:"Complete text fields checkboxes and dropdowns"},{name:"Download filled form",text:"Download the completed PDF form"}]} />
-      <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Fill PDF Form", item: "https://allaboutpdfediting.xyz/fill-form" }]} />
+      <Breadcrumbs items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Tools", item: "https://allaboutpdfediting.xyz/tools" }, { name: "Fill PDF Form", item: "https://allaboutpdfediting.xyz/fill-form" }]} />
       <FaqPageJsonLd questions={rc?.faqs} />
       <AiSummaryJsonLd name="Fill PDF Form" summary="Fill interactive PDF form fields including text checkboxes radio buttons and dropdowns" category="BusinessApplications" inputType="PDF" outputType="PDF" processing="client-side" price="free" features={["Form filling","Checkboxes","Dropdowns","Radio buttons","Free tool"]} limits="Files up to 10MB" />
       <div className="mb-8">

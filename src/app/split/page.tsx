@@ -15,7 +15,7 @@ import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
 
 import HowToJsonLd from "@/components/HowToJsonLd";
 import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
-import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
+import Breadcrumbs from "@/components/Breadcrumbs";
 import FaqPageJsonLd from "@/components/FaqPageJsonLd";
 import RelatedContent from "@/components/RelatedContent";
 import { getRelatedContent } from "@/lib/related-content";
@@ -133,7 +133,7 @@ export default function SplitPage() {
         url="https://allaboutpdfediting.xyz/split"
       />
       <HowToJsonLd name="Split PDF Pages Online" description="Separate every PDF page into a ZIP or extract one continuous page range" steps={[{name:"Upload PDF",text:"Select the PDF file to split"},{name:"Choose split method",text:"Select one continuous page range or split every page"},{name:"Download output",text:"Download the extracted PDF or ZIP of single-page PDFs"}]} />
-      <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Split PDF", item: "https://allaboutpdfediting.xyz/split" }]} />
+      <Breadcrumbs items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Tools", item: "https://allaboutpdfediting.xyz/tools" }, { name: "Split PDF", item: "https://allaboutpdfediting.xyz/split" }]} />
       <FaqPageJsonLd questions={rc?.faqs} />
       <AiSummaryJsonLd name="Split PDF" summary="Separate PDF pages into multiple documents or extract specific page ranges" category="Utilities" inputType="PDF" outputType="PDF" processing="client-side" price="free" features={["Page range extraction","Split every page","Multiple output files","Client-side processing","Free"]} limits="Files up to 10MB" />
       <div className="mb-8">

@@ -9,7 +9,7 @@ export const metadata: Metadata = buildMetadata({
 });
 import ArticleJsonLd from "@/components/ArticleJsonLd";
 import HowToJsonLd from "@/components/HowToJsonLd";
-import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
+import Breadcrumbs from "@/components/Breadcrumbs";
 
 export default function BlogPost() {
   return (
@@ -20,7 +20,7 @@ export default function BlogPost() {
         url="https://allaboutpdfediting.xyz/blog/flatten-pdf-online"
         datePublished="2026-06-25"
       />
-      <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Blog", item: "https://allaboutpdfediting.xyz/blog" }, { name: "How to Flatten a PDF Online Free", item: "https://allaboutpdfediting.xyz/blog/flatten-pdf-online" }]} />
+      <Breadcrumbs items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Blog", item: "https://allaboutpdfediting.xyz/blog" }, { name: "How to Flatten a PDF Online Free", item: "https://allaboutpdfediting.xyz/blog/flatten-pdf-online" }]} />
       <HowToJsonLd name="How to Flatten a PDF Online Free" description="Flatten PDF files online for free..." steps={[{name:"Go to the flatten tool — Open our free PDF flatten tool.",text:"Go to the flatten tool — Open our free PDF flatten tool."},{name:"Upload your PDF — Drag and drop or click to select your file.",text:"Upload your PDF — Drag and drop or click to select your file."},{name:"Click Flatten — The tool processes your file instantly. Download the flattene...",text:"Click Flatten — The tool processes your file instantly. Download the flattened version."}]} />
       <a href="/blog" className="text-sm text-indigo-500 hover:underline mb-6 inline-block">&larr; Back to blog</a>
       <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">How to Flatten a PDF Online Free</h1>

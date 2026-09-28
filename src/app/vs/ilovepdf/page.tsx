@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import SavingsCalculator from "@/components/SavingsCalculator";
 import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
-import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
+import Breadcrumbs from "@/components/Breadcrumbs";
 
 export const metadata: Metadata = buildMetadata({
   path: "/vs/ilovepdf",
@@ -26,7 +26,7 @@ export default function VsIlovepdfPage() {
         description="Zero-knowledge private alternative to iLovePDF."
         url="https://allaboutpdfediting.xyz/vs/ilovepdf"
       />
-      <BreadcrumbJsonLd
+      <Breadcrumbs
         items={[
           { name: "Home", item: "https://allaboutpdfediting.xyz" },
           { name: "Compare", item: "https://allaboutpdfediting.xyz/vs" },
