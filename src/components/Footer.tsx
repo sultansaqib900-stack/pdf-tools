@@ -1,4 +1,5 @@
 import Link from "next/link";
+import PremiumStateCta from "@/components/PremiumStateCta";
 
 export default function Footer() {
   return (
@@ -80,7 +81,14 @@ export default function Footer() {
           <div>
             <h4 className="font-extrabold text-xs uppercase tracking-wider mb-4 text-[var(--foreground)]">Company</h4>
             <div className="space-y-2 text-xs text-[var(--muted)] font-medium">
-              <Link href="/premium" className="block font-bold text-amber-500 hover:underline">⭐ Upgrade to Premium</Link>
+              <PremiumStateCta
+                upgradeLabel="⭐ Upgrade to Premium"
+                upgradeHref="/premium"
+                className="block font-bold text-amber-500 hover:underline"
+                activeLabel="✓ Premium Active"
+                activeHref="/dashboard"
+                activeClassName="block font-bold text-emerald-500 hover:underline"
+              />
               <Link href="/about" className="block hover:text-[var(--foreground)] hover:translate-x-0.5 transition-all">About Us</Link>
               <Link href="/contact" className="block hover:text-[var(--foreground)] hover:translate-x-0.5 transition-all">Contact Support</Link>
               <Link href="/qa" className="block hover:text-[var(--foreground)] hover:translate-x-0.5 transition-all">Q&A Knowledgebase</Link>

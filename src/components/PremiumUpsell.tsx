@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback } from "react";
+import { usePremiumStatus } from "@/hooks/usePremiumStatus";
 
 type UpsellMode = "file-size" | "trial-limit" | "batch" | "premium-only";
 
@@ -58,7 +59,43 @@ export default function PremiumUpsell({
   message: string;
   onClose: () => void;
 }) {
+  const { premium } = usePremiumStatus();
   if (!show) return null;
+
+  if (premium) {
+    return (
+      <div
+        className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-fade-in"
+        role="dialog"
+        aria-modal="true"
+        aria-label="Premium Active"
+      >
+        <div className="bg-[var(--card)] border border-[var(--card-border)] rounded-2xl p-6 max-w-sm w-full shadow-2xl animate-slide-up">
+          <div className="text-center">
+            <div className="text-5xl mb-4" aria-hidden="true">✅</div>
+            <h3 className="text-xl font-bold text-[var(--foreground)] mb-2">✓ Premium Active</h3>
+            <p className="text-sm text-[var(--muted)] mb-6 leading-relaxed">
+              Your Premium plan is active — every tool is unlocked without limits. No upgrade needed.
+            </p>
+            <div className="flex flex-col gap-2.5">
+              <a
+                href="/dashboard"
+                className="w-full py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold rounded-xl text-sm transition text-center"
+              >
+                Open Dashboard →
+              </a>
+              <button
+                onClick={onClose}
+                className="w-full py-2.5 bg-[var(--background)] text-[var(--foreground)] font-medium rounded-xl text-sm border border-[var(--card-border)] hover:bg-[var(--card)] transition"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   const icons: Record<UpsellMode, string> = {
     "file-size": "📦",

@@ -3,6 +3,7 @@
 import { isPdfFile } from "@/lib/pdfBytes";
 
 import { usePageMeta } from "@/hooks/usePageMeta";
+import { usePremiumStatus } from "@/hooks/usePremiumStatus";
 import ToolGrid from "@/components/ToolGrid";
 import ToolSearch from "@/components/ToolSearch";
 import FaqPageJsonLd from "@/components/FaqPageJsonLd";
@@ -165,6 +166,7 @@ function SectionReveal({ children, className = "" }: { children: React.ReactNode
 }
 
 export default function Home() {
+  const { premium } = usePremiumStatus();
   usePageMeta(
     "PDFTools - Free Online PDF Editor | 52 Online PDF Tools",
     "38 core PDF tools free and unlimited, plus 14 professional tools — led by the PDF Studio pipeline — for AI, automation, redaction, legal, and bulk workflows. Most document processing stays in your browser."
@@ -307,15 +309,26 @@ export default function Home() {
                 >
                   Open PDF Studio →
                 </Link>
-                <Link
-                  href="/premium"
-                  className="inline-flex items-center gap-2 px-7 py-3.5 border border-amber-500 bg-amber-500 text-white font-bold rounded-lg hover:bg-amber-600 transition-colors"
-                >
-                  ⭐ Get Premium
-                </Link>
+                {premium ? (
+                  <Link
+                    href="/dashboard"
+                    className="inline-flex items-center gap-2 px-7 py-3.5 border border-emerald-500 bg-emerald-500 text-white font-bold rounded-lg hover:bg-emerald-600 transition-colors"
+                  >
+                    ✓ Premium Active
+                  </Link>
+                ) : (
+                  <Link
+                    href="/premium"
+                    className="inline-flex items-center gap-2 px-7 py-3.5 border border-amber-500 bg-amber-500 text-white font-bold rounded-lg hover:bg-amber-600 transition-colors"
+                  >
+                    ⭐ Get Premium
+                  </Link>
+                )}
               </div>
               <p className="text-xs text-[var(--muted)]">
-                Three-day trial for PDF Studio only. Premium required afterwards. The 38 core tools stay free and unlimited.
+                {premium
+                  ? "Your Premium plan is active — PDF Studio and the full professional suite are unlocked."
+                  : "Three-day trial for PDF Studio only. Premium required afterwards. The 38 core tools stay free and unlimited."}
               </p>
             </div>
           </div>

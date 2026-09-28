@@ -1,5 +1,6 @@
 "use client";
 import ArticleJsonLd from "@/components/ArticleJsonLd";
+import PremiumUpgradeBox from "@/components/PremiumUpgradeBox";
 import HowToJsonLd from "@/components/HowToJsonLd";
 import Breadcrumbs from "@/components/Breadcrumbs";
 
@@ -53,11 +54,11 @@ export default function BlogPost() {
           <li>For professional binding, leave adequate margins on the binding edge</li>
         </ul>
 
-        <div className="bg-[var(--card)] border border-[var(--card-border)] rounded-xl p-6 mt-6">
-          <p className="font-semibold text-[var(--foreground)] mb-1">Premium Feature</p>
-          <p className="text-sm text-[var(--muted)] mb-3">The booklet creator is a premium tool. Upgrade to convert any PDF into printable booklet layouts.</p>
-          <a href="/premium" className="inline-block px-5 py-2.5 bg-amber-600 text-white font-medium rounded-xl text-sm hover:bg-amber-700 transition">Upgrade to Premium →</a>
-        </div>
+        <PremiumUpgradeBox
+          desc="The booklet creator is a premium tool. Upgrade to convert any PDF into printable booklet layouts."
+          toolHref="/booklet"
+          toolName="Booklet Creator"
+        />
       </div>
     </article>
   );

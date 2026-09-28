@@ -1,5 +1,6 @@
 "use client";
 import ArticleJsonLd from "@/components/ArticleJsonLd";
+import PremiumUpgradeBox from "@/components/PremiumUpgradeBox";
 import HowToJsonLd from "@/components/HowToJsonLd";
 import Breadcrumbs from "@/components/Breadcrumbs";
 
@@ -70,11 +71,11 @@ export default function BlogPost() {
         </ul>
         <p>Upload the PDF, edit the fields shown, and download the updated file — processed in your browser like all PDFTools editors.</p>
 
-        <div className="bg-[var(--card)] border border-[var(--card-border)] rounded-xl p-6 mt-6">
-          <p className="font-semibold text-[var(--foreground)] mb-1">Premium Feature</p>
-          <p className="text-sm text-[var(--muted)] mb-3">The metadata sanitizer is a premium tool. Upgrade to strip hidden metadata and protect your privacy before sharing PDFs.</p>
-          <a href="/premium" className="inline-block px-5 py-2.5 bg-amber-600 text-white font-medium rounded-xl text-sm hover:bg-amber-700 transition">Upgrade to Premium →</a>
-        </div>
+        <PremiumUpgradeBox
+          desc="The metadata sanitizer is a premium tool. Upgrade to strip hidden metadata and protect your privacy before sharing PDFs."
+          toolHref="/metadata-sanitizer"
+          toolName="Metadata Sanitizer"
+        />
       </div>
     </article>
   );

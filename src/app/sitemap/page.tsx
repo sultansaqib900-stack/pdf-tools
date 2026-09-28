@@ -147,7 +147,7 @@ const groups: Group[] = [
       { href: "/privacy", label: "Privacy Policy" },
       { href: "/terms", label: "Terms of Service" },
       { href: "/contact", label: "Contact" },
-      { href: "/premium", label: "Go Premium" },
+      { href: "/premium", label: "Premium" },
     ],
   },
 ];

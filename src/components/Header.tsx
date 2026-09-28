@@ -201,13 +201,23 @@ export default function Header() {
                 </div>
                 <div className="border-t border-[var(--card-border)] my-2" />
                 <div className="px-2">
-                  <Link
-                    href="/premium"
-                    onClick={() => setPremiumMenu(false)}
-                    className="block text-center py-2 text-xs font-bold bg-gradient-to-r from-amber-500 to-orange-600 text-white rounded-xl shadow-md shadow-amber-500/20 hover:opacity-95 transition"
-                  >
-                    View All Premium Plans →
-                  </Link>
+                  {premium ? (
+                    <Link
+                      href="/dashboard"
+                      onClick={() => setPremiumMenu(false)}
+                      className="block text-center py-2 text-xs font-bold bg-gradient-to-r from-emerald-500 to-teal-600 text-white rounded-xl shadow-md shadow-emerald-500/20 hover:opacity-95 transition"
+                    >
+                      ✓ Premium Active — Open Dashboard →
+                    </Link>
+                  ) : (
+                    <Link
+                      href="/premium"
+                      onClick={() => setPremiumMenu(false)}
+                      className="block text-center py-2 text-xs font-bold bg-gradient-to-r from-amber-500 to-orange-600 text-white rounded-xl shadow-md shadow-amber-500/20 hover:opacity-95 transition"
+                    >
+                      View All Premium Plans →
+                    </Link>
+                  )}
                 </div>
               </div>
             )}
@@ -278,8 +288,8 @@ export default function Header() {
           </div>
 
           {premium ? (
-            <span className="hidden sm:inline-flex bg-gradient-to-r from-emerald-500 to-teal-600 text-white px-4 py-2 rounded-xl text-xs font-bold shadow-md shadow-emerald-500/20">
-              ✓ Premium
+            <span className="hidden sm:inline-flex items-center gap-1.5 bg-gradient-to-r from-emerald-500 to-teal-600 text-white px-4 py-2 rounded-xl text-xs font-bold shadow-md shadow-emerald-500/20">
+              ✓ Premium Active
             </span>
           ) : (
             <Link
@@ -369,7 +379,11 @@ export default function Header() {
                 </Link>
               ))}
               <Link href="/tools" onClick={() => setMenuOpen(false)} className="block p-2 rounded-xl bg-[var(--background)] text-xs font-medium text-indigo-500 transition border border-[var(--card-border)]">All {TOOL_CATALOG.length} Tools →</Link>
-              <Link href="/premium" onClick={() => setMenuOpen(false)} className="block p-2 rounded-xl bg-[var(--background)] text-xs font-medium text-amber-500 transition border border-[var(--card-border)]">Premium Tier →</Link>
+              {premium ? (
+                <Link href="/dashboard" onClick={() => setMenuOpen(false)} className="block p-2 rounded-xl bg-[var(--background)] text-xs font-medium text-emerald-500 transition border border-emerald-500/40">✓ Premium Active →</Link>
+              ) : (
+                <Link href="/premium" onClick={() => setMenuOpen(false)} className="block p-2 rounded-xl bg-[var(--background)] text-xs font-medium text-amber-500 transition border border-[var(--card-border)]">Premium Tier →</Link>
+              )}
             </div>
           </div>
 

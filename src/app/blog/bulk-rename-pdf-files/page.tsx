@@ -1,5 +1,6 @@
 "use client";
 import ArticleJsonLd from "@/components/ArticleJsonLd";
+import PremiumUpgradeBox from "@/components/PremiumUpgradeBox";
 import HowToJsonLd from "@/components/HowToJsonLd";
 import Breadcrumbs from "@/components/Breadcrumbs";
 
@@ -56,11 +57,11 @@ export default function BlogPost() {
         </ul>
         <p>Files without metadata will use their original name with a fallback pattern.</p>
 
-        <div className="bg-[var(--card)] border border-[var(--card-border)] rounded-xl p-6 mt-6">
-          <p className="font-semibold text-[var(--foreground)] mb-1">Premium Feature</p>
-          <p className="text-sm text-[var(--muted)] mb-3">Bulk PDF renaming is a premium tool. Upgrade to rename hundreds of PDFs at once using metadata patterns.</p>
-          <a href="/premium" className="inline-block px-5 py-2.5 bg-amber-600 text-white font-medium rounded-xl text-sm hover:bg-amber-700 transition">Upgrade to Premium →</a>
-        </div>
+        <PremiumUpgradeBox
+          desc="Bulk PDF renaming is a premium tool. Upgrade to rename hundreds of PDFs at once using metadata patterns."
+          toolHref="/bulk-rename"
+          toolName="Bulk Rename"
+        />
       </div>
     </article>
   );
