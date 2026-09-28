@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { buildMetadata } from "@/lib/seo";
 import { seoPages, type SeoPage } from "@/lib/programmatic-seo";
-import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
+import Breadcrumbs from "@/components/Breadcrumbs";
 import FaqPageJsonLd from "@/components/FaqPageJsonLd";
 
 const tools = [
@@ -29,19 +30,17 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const page = seoPages.find((p) => p.slug === slug);
   if (!page) return {};
   return {
-    title: page.title,
-    description: page.description,
+    ...buildMetadata({
+      path: `/for/${slug}`,
+      title: page.title,
+      description: page.description,
+    }),
     // These are useful landing pages for visitors arriving from internal links,
     // but the audience/tool matrix is intentionally not indexed. This avoids
     // presenting hundreds of near-duplicate doorway pages to Google.
     robots: {
       index: false,
       follow: true,
-    },
-    openGraph: {
-      title: page.title,
-      description: page.description,
-      url: `https://allaboutpdfediting.xyz/for/${slug}`,
     },
   };
 }
@@ -56,7 +55,7 @@ export default async function SeoPage({ params }: { params: Promise<{ slug: stri
 
   return (
     <>
-      <BreadcrumbJsonLd
+      <Breadcrumbs
         items={[
           { name: "Home", item: "https://allaboutpdfediting.xyz" },
           { name: page.h1, item: `https://allaboutpdfediting.xyz/for/${slug}` },

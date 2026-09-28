@@ -6,7 +6,7 @@ import { isPdfFile } from "@/lib/pdfBytes";
 
 import { useState, useRef } from "react";
 import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
-import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
+import Breadcrumbs from "@/components/Breadcrumbs";
 import { usePageMeta } from "@/hooks/usePageMeta";
 import HowToJsonLd from "@/components/HowToJsonLd";
 import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
@@ -107,10 +107,10 @@ export default function BatesNumberingPage() {
       icon="🔢"
     >
       <div className="max-w-3xl mx-auto px-4 py-12">
-        <BreadcrumbJsonLd items={[{ name: "Tools", item: "https://allaboutpdfediting.xyz/tools" }, { name: "Bates Numbering", item: "https://allaboutpdfediting.xyz/bates-numbering" }]} />
+        <Breadcrumbs items={[{ name: "Tools", item: "https://allaboutpdfediting.xyz/tools" }, { name: "Bates Numbering", item: "https://allaboutpdfediting.xyz/bates-numbering" }]} />
         <HowToJsonLd name="Bates Numbering for PDF" description="Add sequential page numbers and custom labels to every page of a PDF" steps={[{name:"Upload PDF",text:"Upload the PDF document to number"},{name:"Configure numbering",text:"Set prefix suffix start number digit padding and position"},{name:"Download numbered PDF",text:"Download the PDF with Bates numbers applied to every page"}]} />
         <AiSummaryJsonLd name="Bates Numbering" summary="Add sequential page numbers letters or custom labels to every page of PDF documents for legal and professional indexing" category="BusinessApplications" inputType="PDF" outputType="PDF" processing="client-side" price="premium" features={["Sequential numbering","Custom prefix suffix","Digit padding","Position selection","Legal document support"]} limits="Free: 5-file lifetime trial (shared); Premium: unlimited" />
-        <SoftwareAppJsonLd name="Bates Numbering for PDF" description="Add sequential page numbers and labels to PDF documents." url="https://allaboutpdfediting.xyz/bates-numbering" image="https://allaboutpdfediting.xyz/opengraph-image" aggregateRating={{ ratingValue: 4.9, bestRating: 5, ratingCount: 98 }} />
+        <SoftwareAppJsonLd name="Bates Numbering for PDF" description="Add sequential page numbers and labels to PDF documents." url="https://allaboutpdfediting.xyz/bates-numbering" image="https://allaboutpdfediting.xyz/opengraph-image" />
         
         <div className="mb-8">
           <div className="flex items-center gap-3 mb-2">

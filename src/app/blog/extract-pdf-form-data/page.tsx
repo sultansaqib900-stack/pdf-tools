@@ -1,7 +1,8 @@
 "use client";
 import ArticleJsonLd from "@/components/ArticleJsonLd";
+import PremiumUpgradeBox from "@/components/PremiumUpgradeBox";
 import HowToJsonLd from "@/components/HowToJsonLd";
-import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
+import Breadcrumbs from "@/components/Breadcrumbs";
 
 export default function BlogPost() {
   return (
@@ -12,7 +13,7 @@ export default function BlogPost() {
         url="https://allaboutpdfediting.xyz/blog/extract-pdf-form-data"
         datePublished="2026-06-26"
       />
-      <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Blog", item: "https://allaboutpdfediting.xyz/blog" }, { name: "How to Extract PDF Form Data to CSV Online Free", item: "https://allaboutpdfediting.xyz/blog/extract-pdf-form-data" }]} />
+      <Breadcrumbs items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Blog", item: "https://allaboutpdfediting.xyz/blog" }, { name: "How to Extract PDF Form Data to CSV Online Free", item: "https://allaboutpdfediting.xyz/blog/extract-pdf-form-data" }]} />
       <HowToJsonLd name="How to Extract PDF Form Data to CSV Online Free" description="Extract form field data from PDF forms and export to CSV." steps={[{name:"Upload your PDF form — Select the completed PDF that contains filled AcroForm...",text:"Upload your PDF form — Select the completed PDF that contains filled AcroForm fields."},{name:"Review detected fields — The tool automatically identifies all form fields an...",text:"Review detected fields — The tool automatically identifies all form fields and their values."},{name:"Export to CSV — Download the extracted data as a spreadsheet-ready CSV file.",text:"Export to CSV — Download the extracted data as a spreadsheet-ready CSV file."}]} />
       <a href="/blog" className="text-sm text-indigo-500 hover:underline mb-6 inline-block">&larr; Back to blog</a>
       <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">How to Extract PDF Form Data to CSV Online Free</h1>
@@ -57,11 +58,11 @@ export default function BlogPost() {
           <li>Forms must use AcroForm technology (not XFA) for extraction</li>
         </ul>
 
-        <div className="bg-[var(--card)] border border-[var(--card-border)] rounded-xl p-6 mt-6">
-          <p className="font-semibold text-[var(--foreground)] mb-1">Premium Feature</p>
-          <p className="text-sm text-[var(--muted)] mb-3">Form data extraction is a premium tool. Upgrade to export PDF form field data to CSV instantly.</p>
-          <a href="/premium" className="inline-block px-5 py-2.5 bg-amber-600 text-white font-medium rounded-xl text-sm hover:bg-amber-700 transition">Upgrade to Premium →</a>
-        </div>
+        <PremiumUpgradeBox
+          desc="Form data extraction is a premium tool. Upgrade to export PDF form field data to CSV instantly."
+          toolHref="/form-data-extract"
+          toolName="Form Data Extraction"
+        />
       </div>
     </article>
   );

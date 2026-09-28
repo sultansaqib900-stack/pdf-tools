@@ -19,7 +19,7 @@ import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
 
 import HowToJsonLd from "@/components/HowToJsonLd";
 import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
-import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
+import Breadcrumbs from "@/components/Breadcrumbs";
 import FaqPageJsonLd from "@/components/FaqPageJsonLd";
 import RelatedContent from "@/components/RelatedContent";
 import { getRelatedContent } from "@/lib/related-content";
@@ -107,7 +107,7 @@ export default function WordCounterPage() {
         url="https://allaboutpdfediting.xyz/word-counter"
       />
       <HowToJsonLd name="PDF Word Counter" description="Count extracted words and characters plus PDF pages" steps={[{name:"Upload PDF",text:"Select a PDF with selectable text"},{name:"Extract text",text:"PDF.js reads text items from each page locally"},{name:"View statistics",text:"See extracted word and character counts, page count, and estimated reading time"}]} />
-      <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Word Counter", item: "https://allaboutpdfediting.xyz/word-counter" }]} />
+      <Breadcrumbs items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Tools", item: "https://allaboutpdfediting.xyz/tools" }, { name: "Word Counter", item: "https://allaboutpdfediting.xyz/word-counter" }]} />
       <FaqPageJsonLd questions={rc?.faqs} />
       <AiSummaryJsonLd name="Word Counter" summary="Count words and characters extracted from selectable PDF text, plus pages and estimated reading time" category="Utilities" inputType="PDF with selectable text" outputType="Statistics" processing="client-side" price="free" features={["Extracted word count","Extracted character count","Page count","Reading-time estimate","Client-side tool"]} limits="Scanned pages without a text layer count as zero text" />
       <div className="mb-8">

@@ -2,7 +2,7 @@
 import Link from "next/link";
 import ArticleJsonLd from "@/components/ArticleJsonLd";
 import HowToJsonLd from "@/components/HowToJsonLd";
-import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
+import Breadcrumbs from "@/components/Breadcrumbs";
 
 export default function AIPDFSummarizationPost() {
   return (
@@ -13,7 +13,7 @@ export default function AIPDFSummarizationPost() {
         url="https://allaboutpdfediting.xyz/blog/ai-pdf-summarization"
         datePublished="2026-06-27"
       />
-      <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Blog", item: "https://allaboutpdfediting.xyz/blog" }, { name: "How to Summarize PDFs with AI", item: "https://allaboutpdfediting.xyz/blog/ai-pdf-summarization" }]} />
+      <Breadcrumbs items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Blog", item: "https://allaboutpdfediting.xyz/blog" }, { name: "How to Summarize PDFs with AI", item: "https://allaboutpdfediting.xyz/blog/ai-pdf-summarization" }]} />
       <HowToJsonLd name="How to Summarize PDFs with AI" description="Learn how to use AI to summarize PDF documents online free. Extract key points, generate summaries, and save hours of reading time." steps={[{name:"Visit PDFTools Chat with PDF",text:"Visit PDFTools Chat with PDF"},{name:"Upload your PDF document (up to 10MB free)",text:"Upload your PDF document (up to 10MB free)"},{name:"Type &quot;Summarize this document&quot; or ask specific questions",text:"Type &quot;Summarize this document&quot; or ask specific questions"},{name:"Receive your AI-generated summary in seconds",text:"Receive your AI-generated summary in seconds"},{name:"Copy, save, or share the summary",text:"Copy, save, or share the summary"}]} />
       <div className="max-w-3xl mx-auto px-4 py-12">
         <Link href="/blog" className="text-sm text-indigo-500 hover:underline mb-6 inline-block">&larr; Back to blog</Link>

@@ -1,35 +1,13 @@
-interface Step {
-  name: string;
-  text: string;
-  url?: string;
-  image?: string;
-}
-
-interface Props {
+/**
+ * HowTo structured data is deprecated by Google (and never rendered visibly).
+ * Kept as a no-op so existing call sites compile; it emits NO JSON-LD.
+ * Do not reintroduce HowTo markup — use the visible step-by-step sections in
+ * the page body instead (see docs/seo-audit.md Phase 4).
+ */
+export default function HowToJsonLd(_props: {
   name: string;
   description: string;
-  steps: Step[];
-  totalTime?: string;
-  image?: string;
-}
-
-export default function HowToJsonLd({ name, description, steps, totalTime = "PT1M", image }: Props) {
-  const json = {
-    "@context": "https://schema.org",
-    "@type": "HowTo",
-    name,
-    description,
-    ...(image ? { image } : {}),
-    totalTime,
-    step: steps.map((s, i) => ({
-      "@type": "HowToStep",
-      position: i + 1,
-      name: s.name,
-      text: s.text,
-      ...(s.url ? { url: s.url } : {}),
-      ...(s.image ? { image: s.image } : {}),
-    })),
-  };
-
-  return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(json) }} />;
+  steps: { name: string; text: string }[];
+}) {
+  return null;
 }

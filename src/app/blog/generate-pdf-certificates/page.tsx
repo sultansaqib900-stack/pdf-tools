@@ -1,7 +1,8 @@
 "use client";
 import ArticleJsonLd from "@/components/ArticleJsonLd";
+import PremiumUpgradeBox from "@/components/PremiumUpgradeBox";
 import HowToJsonLd from "@/components/HowToJsonLd";
-import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
+import Breadcrumbs from "@/components/Breadcrumbs";
 
 export default function BlogPost() {
   return (
@@ -12,7 +13,7 @@ export default function BlogPost() {
         url="https://allaboutpdfediting.xyz/blog/generate-pdf-certificates"
         datePublished="2026-06-26"
       />
-      <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Blog", item: "https://allaboutpdfediting.xyz/blog" }, { name: "How to Generate PDF Certificates in Bulk Online Free", item: "https://allaboutpdfediting.xyz/blog/generate-pdf-certificates" }]} />
+      <Breadcrumbs items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Blog", item: "https://allaboutpdfediting.xyz/blog" }, { name: "How to Generate PDF Certificates in Bulk Online Free", item: "https://allaboutpdfediting.xyz/blog/generate-pdf-certificates" }]} />
       <HowToJsonLd name="How to Generate PDF Certificates in Bulk Online Free" description="Create professional PDF certificates in bulk from a customizable template and CSV data." steps={[{name:"Upload your certificate template — A PDF file with your design, logos, and bo...",text:"Upload your certificate template — A PDF file with your design, logos, and borders. Leave blank spaces where personalized text should appear."},{name:"Upload your data CSV — A file with recipient names, dates, course titles, or ...",text:"Upload your data CSV — A file with recipient names, dates, course titles, or any other personalized fields. Each row is one certificate."},{name:"Configure fields — Map CSV columns to positions on the template. Click genera...",text:"Configure fields — Map CSV columns to positions on the template. Click generate to produce all certificates as a single PDF or individual files."}]} />
       <a href="/blog" className="text-sm text-indigo-500 hover:underline mb-6 inline-block">&larr; Back to blog</a>
       <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">How to Generate PDF Certificates in Bulk Online Free</h1>
@@ -59,11 +60,11 @@ export default function BlogPost() {
           <li><code>cert_id</code> — Unique certificate identifier</li>
         </ul>
 
-        <div className="bg-[var(--card)] border border-[var(--card-border)] rounded-xl p-6 mt-6">
-          <p className="font-semibold text-[var(--foreground)] mb-1">Premium Feature</p>
-          <p className="text-sm text-[var(--muted)] mb-3">The bulk certificate generator is a premium tool. Upgrade to generate unlimited personalized certificates from your templates.</p>
-          <a href="/premium" className="inline-block px-5 py-2.5 bg-amber-600 text-white font-medium rounded-xl text-sm hover:bg-amber-700 transition">Upgrade to Premium →</a>
-        </div>
+        <PremiumUpgradeBox
+          desc="The bulk certificate generator is a premium tool. Upgrade to generate unlimited personalized certificates from your templates."
+          toolHref="/certificate-generator"
+          toolName="Certificate Generator"
+        />
       </div>
     </article>
   );

@@ -1,13 +1,19 @@
+import { buildMetadata } from "@/lib/seo";
 import type { Metadata } from "next";
-export const metadata: Metadata = { title: "How to Redact PDF Online Free — Permanently Remove Sensitive Content", description: "Redact PDF documents online for free. Permanently remove sensitive text, images, and information from PDFs." };
+export const metadata: Metadata = buildMetadata({
+  path: "/blog/redact-pdf-online",
+  title: "How to Redact PDF Online Free — Permanently Remove Sensitive Content",
+  description: "Redact PDF documents online for free. Permanently remove sensitive text, images, and information from PDFs.",
+  type: "article",
+});
 import ArticleJsonLd from "@/components/ArticleJsonLd";
 import HowToJsonLd from "@/components/HowToJsonLd";
-import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
+import Breadcrumbs from "@/components/Breadcrumbs";
 export default function BlogPost() {
   return (
     <article className="max-w-3xl mx-auto px-4 py-12">
       <ArticleJsonLd title="How to Redact PDF Online Free" description="Redact PDF documents online for free." url="https://allaboutpdfediting.xyz/blog/redact-pdf-online" datePublished="2026-06-25" />
-      <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Blog", item: "https://allaboutpdfediting.xyz/blog" }, { name: "How to Redact PDF Online Free", item: "https://allaboutpdfediting.xyz/blog/redact-pdf-online" }]} />
+      <Breadcrumbs items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Blog", item: "https://allaboutpdfediting.xyz/blog" }, { name: "How to Redact PDF Online Free", item: "https://allaboutpdfediting.xyz/blog/redact-pdf-online" }]} />
       <HowToJsonLd name="How to Redact PDF Online Free" description="Redact PDF documents online for free." steps={[{name:"Open the redaction tool — Go to our PDF Redact tool.",text:"Open the redaction tool — Go to our PDF Redact tool."},{name:"Upload your PDF — Select the document containing sensitive information.",text:"Upload your PDF — Select the document containing sensitive information."},{name:"Mark content to redact — Select text or draw over areas you want to permanent...",text:"Mark content to redact — Select text or draw over areas you want to permanently remove."},{name:"Apply and download — The redacted PDF is saved with sensitive content permane...",text:"Apply and download — The redacted PDF is saved with sensitive content permanently removed."}]} />
       <a href="/blog" className="text-sm text-indigo-500 hover:underline mb-6 inline-block">&larr; Back to blog</a>
       <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">How to Redact PDF Online Free</h1>
@@ -35,6 +41,18 @@ export default function BlogPost() {
           <li>Attorney-client privileged information</li>
           <li>Trade secrets and confidential business data</li>
         </ul>
+
+        <h2 className="text-xl font-bold text-[var(--foreground)] pt-4">When to Use Search &amp; Redact Instead</h2>
+        <p>If the same word or phrase appears many times — a client name, case number, or account ID — finding every instance by hand is slow and easy to get wrong. The <a href="/search-redact" className="text-indigo-500 underline">Search &amp; Redact tool</a> finds every match across the document and applies permanent redaction in one pass, with whole-word matching and a match counter so you can verify nothing was missed.</p>
+        <ul className="list-disc pl-5 space-y-2">
+          <li><strong>Legal filings</strong> — redact client names and case numbers before public filing</li>
+          <li><strong>Medical records</strong> — remove patient names and dates of birth before sharing</li>
+          <li><strong>FOIA responses</strong> — redact exempt information across large documents</li>
+          <li><strong>HR and finance reports</strong> — remove employee names, salaries, or account numbers</li>
+        </ul>
+
+        <h2 className="text-xl font-bold text-[var(--foreground)] pt-4">Redaction vs. Black Highlighting</h2>
+        <p>Drawing a black shape or using a black highlight over text is not secure — the text underneath can often be selected, copied, or extracted. True redaction permanently deletes the underlying text data so it cannot be recovered. Always use a real redaction step (and check the result by trying to select the blacked-out area) for sensitive documents.</p>
 
         <div className="bg-[var(--card)] border border-[var(--card-border)] rounded-xl p-6 mt-6">
           <p className="font-semibold text-[var(--foreground)] mb-2">Need to redact sensitive content?</p>

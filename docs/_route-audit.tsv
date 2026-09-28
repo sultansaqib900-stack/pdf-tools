@@ -1,0 +1,148 @@
+URL	client?	ownMeta?	canonical	og:url	robots	desc	kw	inSitemap	inboundLinks
+/	C	Y	/	https://allaboutpdfediting.xyz	index: true, follow: true, googleBot: { index: true, follow: true, "max-image-preview": "large", "max-snippet": -1, "max-video-preview": -1,	Y	Y	Y	11
+/about	S	N	INHERITED: /	INHERITED: homepage	(inherit index:true)	INHERITED		N	1
+/add-page-numbers	C	Y	(none set)	(none)	(inherit index:true)	Y		Y	5
+/adobe-acrobat-alternative	S	Y	(none set)	(none)	(inherit index:true)	Y		N	0
+/annotate	C	Y	(none set)	(none)	(inherit index:true)	Y		Y	3
+/batch	C	Y	(none set)	(none)	(inherit index:true)	Y		Y	7
+/bates-numbering	C	Y	(none set)	(none)	(inherit index:true)	partial		Y	4
+/best-free-pdf-editor	S	Y	(none set)	/compress	(inherit index:true)	Y		N	0
+/blog	S	N	INHERITED: /	INHERITED: homepage	(inherit index:true)	INHERITED		Y	66
+/blog/add-page-numbers-to-pdf	S	Y	(none set)	(none)	(inherit index:true)	Y		N	0
+/blog/add-qr-code-to-pdf	C	N	INHERITED: /	INHERITED: homepage	(inherit index:true)	INHERITED		N	0
+/blog/add-watermark-to-pdf	S	Y	(none set)	(none)	(inherit index:true)	Y		N	0
+/blog/ai-pdf-summarization	C	N	INHERITED: /	INHERITED: homepage	(inherit index:true)	INHERITED		N	0
+/blog/annotate-pdf-online	S	Y	(none set)	(none)	(inherit index:true)	Y		N	0
+/blog/automate-pdf-workflow	C	N	INHERITED: /	INHERITED: homepage	(inherit index:true)	INHERITED		N	0
+/blog/batch-process-pdf-online	S	Y	(none set)	(none)	(inherit index:true)	Y		N	0
+/blog/bates-numbering-pdf	C	N	INHERITED: /	INHERITED: homepage	(inherit index:true)	INHERITED		N	0
+/blog/bulk-rename-pdf-files	C	N	INHERITED: /	INHERITED: homepage	(inherit index:true)	INHERITED		N	0
+/blog/chat-with-pdf-ai	S	Y	https://allaboutpdfediting.xyz/blog/chat-with-pdf-ai	(none)	(inherit index:true)	Y		N	0
+/blog/clean-pdf-metadata	C	N	INHERITED: /	INHERITED: homepage	(inherit index:true)	INHERITED		N	0
+/blog/compare-pdfs-online	C	N	INHERITED: /	INHERITED: homepage	(inherit index:true)	INHERITED		N	0
+/blog/compress-pdf-without-losing-quality	S	Y	https://allaboutpdfediting.xyz/blog/compress-pdf-without-losing-quality	(none)	(inherit index:true)	Y		N	1
+/blog/convert-html-to-pdf	S	Y	(none set)	(none)	(inherit index:true)	Y		N	0
+/blog/convert-image-to-pdf	S	Y	(none set)	(none)	(inherit index:true)	Y		N	0
+/blog/convert-pdf-to-audio	C	N	INHERITED: /	INHERITED: homepage	(inherit index:true)	INHERITED		N	0
+/blog/convert-pdf-to-excel	S	Y	(none set)	(none)	(inherit index:true)	Y		N	0
+/blog/convert-pdf-to-images	S	Y	(none set)	(none)	(inherit index:true)	Y		N	0
+/blog/convert-pdf-to-pdfa	S	Y	(none set)	(none)	(inherit index:true)	Y		N	0
+/blog/convert-pdf-to-word	S	Y	(none set)	(none)	(inherit index:true)	Y		N	0
+/blog/convert-word-to-pdf	S	Y	(none set)	(none)	(inherit index:true)	Y		N	0
+/blog/create-pdf-booklet	C	N	INHERITED: /	INHERITED: homepage	(inherit index:true)	INHERITED		N	0
+/blog/crop-pdf-margins	S	Y	(none set)	(none)	(inherit index:true)	Y		N	1
+/blog/delete-pages-from-pdf	S	Y	(none set)	(none)	(inherit index:true)	Y		N	1
+/blog/edit-pdf-metadata	S	Y	(none set)	(none)	(inherit index:true)	Y		N	0
+/blog/edit-pdf-online	S	Y	(none set)	(none)	(inherit index:true)	Y		N	0
+/blog/extract-pdf-form-data	C	N	INHERITED: /	INHERITED: homepage	(inherit index:true)	INHERITED		N	0
+/blog/extract-text-from-pdf	S	Y	(none set)	(none)	(inherit index:true)	Y		N	0
+/blog/fill-pdf-forms-online	S	Y	https://allaboutpdfediting.xyz/blog/fill-pdf-forms-online	(none)	(inherit index:true)	Y		N	0
+/blog/flatten-pdf-online	S	Y	https://allaboutpdfediting.xyz/blog/flatten-pdf-online	(none)	(inherit index:true)	Y		N	0
+/blog/generate-pdf-certificates	C	N	INHERITED: /	INHERITED: homepage	(inherit index:true)	INHERITED		N	0
+/blog/google-drive-pdf-editor	C	N	INHERITED: /	INHERITED: homepage	(inherit index:true)	INHERITED		N	0
+/blog/how-to-compress-pdf	C	N	INHERITED: /	INHERITED: homepage	(inherit index:true)	INHERITED		N	0
+/blog/how-to-convert-image-to-pdf	C	N	INHERITED: /	INHERITED: homepage	(inherit index:true)	INHERITED		N	0
+/blog/how-to-merge-pdf	C	N	INHERITED: /	INHERITED: homepage	(inherit index:true)	INHERITED		N	0
+/blog/insert-blank-pages-pdf	S	Y	(none set)	(none)	(inherit index:true)	Y		N	0
+/blog/invert-pdf-colors	C	N	INHERITED: /	INHERITED: homepage	(inherit index:true)	INHERITED		N	0
+/blog/merge-multiple-pdfs-into-one	S	Y	(none set)	(none)	(inherit index:true)	Y		N	0
+/blog/ocr-pdf-online	S	Y	(none set)	(none)	(inherit index:true)	Y		N	0
+/blog/organize-pdf-pages	S	Y	(none set)	(none)	(inherit index:true)	Y		N	2
+/blog/pdf-vs-image	S	Y	https://allaboutpdfediting.xyz/blog/pdf-vs-image	(none)	(inherit index:true)	Y		N	0
+/blog/protect-pdf-with-password	S	Y	(none set)	(none)	(inherit index:true)	Y		N	0
+/blog/redact-pdf-online	S	Y	(none set)	(none)	(inherit index:true)	Y		N	0
+/blog/remove-password-from-pdf	S	Y	https://allaboutpdfediting.xyz/blog/remove-password-from-pdf	(none)	(inherit index:true)	Y		N	0
+/blog/repair-pdf-online	S	Y	(none set)	(none)	(inherit index:true)	Y		N	0
+/blog/resize-pdf-pages	S	Y	(none set)	(none)	(inherit index:true)	Y		N	1
+/blog/reverse-pdf-pages	S	Y	https://allaboutpdfediting.xyz/blog/reverse-pdf-pages	(none)	(inherit index:true)	Y		N	0
+/blog/rotate-pdf-pages-online	S	Y	(none set)	(none)	(inherit index:true)	Y		N	0
+/blog/scan-to-pdf	S	Y	(none set)	(none)	(inherit index:true)	Y		N	0
+/blog/search-and-redact-pdf	C	N	INHERITED: /	INHERITED: homepage	(inherit index:true)	INHERITED		N	0
+/blog/secure-pdf-vault	C	N	INHERITED: /	INHERITED: homepage	(inherit index:true)	INHERITED		N	0
+/blog/sign-pdf-without-printing	S	Y	https://allaboutpdfediting.xyz/blog/sign-pdf-without-printing	(none)	(inherit index:true)	Y		N	0
+/blog/split-pdf-by-bookmarks	C	N	INHERITED: /	INHERITED: homepage	(inherit index:true)	INHERITED		N	0
+/blog/split-pdf-pages-online	S	Y	(none set)	(none)	(inherit index:true)	Y		N	0
+/blog/text-to-pdf-converter	S	Y	(none set)	(none)	(inherit index:true)	Y		N	0
+/blog/word-counter-online	S	Y	(none set)	(none)	(inherit index:true)	Y		N	0
+/booklet	C	Y	(none set)	(none)	(inherit index:true)	partial		Y	2
+/bulk-rename	C	Y	(none set)	(none)	(inherit index:true)	partial		Y	3
+/certificate-generator	C	Y	(none set)	(none)	(inherit index:true)	partial		Y	4
+/chat-pdf	C	Y	(none set)	(none)	(inherit index:true)	Y		Y	10
+/compress	C	Y	(none set)	(none)	(inherit index:true)	Y		Y	16
+/contact	C	N	INHERITED: /	INHERITED: homepage	(inherit index:true)	INHERITED		N	3
+/crop	C	Y	(none set)	(none)	(inherit index:true)	Y		Y	4
+/dashboard	C	N	INHERITED: /	INHERITED: homepage	(inherit index:true)	INHERITED		N	2
+/delete-pages	C	Y	(none set)	(none)	(inherit index:true)	Y		Y	8
+/edit-pdf	C	N	INHERITED: /	INHERITED: homepage	(inherit index:true)	INHERITED		Y	4
+/embed	C	N	INHERITED: /	INHERITED: homepage	(inherit index:true)	INHERITED		N	3
+/error/[slug]	S	Y	(none set)	https://allaboutpdfediting.xyz/error/${slug}	(inherit index:true)	partial		N	0
+/es	S	Y	(none set)	https://allaboutpdfediting.xyz/es	(inherit index:true)	Y	Y	N	1
+/es/compress	C	N	INHERITED: /	INHERITED: homepage	(inherit index:true)	INHERITED		N	0
+/es/edit-pdf	C	N	INHERITED: /	INHERITED: homepage	(inherit index:true)	INHERITED		N	0
+/es/image-to-pdf	C	N	INHERITED: /	INHERITED: homepage	(inherit index:true)	INHERITED		N	0
+/es/merge	C	N	INHERITED: /	INHERITED: homepage	(inherit index:true)	INHERITED		N	0
+/es/split	C	N	INHERITED: /	INHERITED: homepage	(inherit index:true)	INHERITED		N	0
+/es/tools	S	Y	(none set)	(none)	(inherit index:true)	Y		N	2
+/extract-text	C	Y	(none set)	(none)	(inherit index:true)	Y		Y	3
+/fill-form	C	Y	(none set)	(none)	(inherit index:true)	Y		Y	4
+/flatten-pdf	C	Y	(none set)	(none)	(inherit index:true)	Y		Y	5
+/for/[slug]	S	Y	(none set)	https://allaboutpdfediting.xyz/for/${slug}	index: false, follow: true,	partial		N	0
+/form-data-extract	C	Y	(none set)	(none)	(inherit index:true)	partial		Y	1
+/html-to-pdf	C	Y	(none set)	(none)	(inherit index:true)	Y		Y	4
+/ilovepdf-alternative	S	Y	(none set)	(none)	(inherit index:true)	Y		N	0
+/image-to-pdf	C	Y	(none set)	(none)	(inherit index:true)	Y		Y	15
+/insert-blank	C	Y	(none set)	(none)	(inherit index:true)	Y		Y	4
+/login	C	N	INHERITED: /	INHERITED: homepage	(inherit index:true)	INHERITED		N	5
+/merge	C	Y	(none set)	(none)	(inherit index:true)	Y		Y	15
+/metadata	C	Y	(none set)	(none)	(inherit index:true)	Y		Y	3
+/metadata-sanitizer	C	Y	(none set)	(none)	(inherit index:true)	partial		Y	1
+/ocr-pdf	C	N	INHERITED: /	INHERITED: homepage	(inherit index:true)	INHERITED		Y	4
+/offline	C	N	INHERITED: /	INHERITED: homepage	(inherit index:true)	INHERITED		N	0
+/organize	C	Y	(none set)	(none)	(inherit index:true)	Y		Y	9
+/pdf-diff	C	Y	(none set)	(none)	(inherit index:true)	partial		Y	3
+/pdf-inverter	C	Y	(none set)	(none)	(inherit index:true)	partial		Y	2
+/pdf-to-audio	C	Y	(none set)	(none)	(inherit index:true)	partial		Y	3
+/pdf-to-excel	C	Y	(none set)	(none)	(inherit index:true)	Y		Y	5
+/pdf-to-images	C	Y	(none set)	(none)	(inherit index:true)	Y		Y	8
+/pdf-to-pdfa	C	N	INHERITED: /	INHERITED: homepage	(inherit index:true)	INHERITED		Y	3
+/pdf-to-word	C	N	INHERITED: /	INHERITED: homepage	(inherit index:true)	INHERITED		Y	4
+/pdf-tools-for-business	S	Y	(none set)	(none)	(inherit index:true)	Y		N	1
+/pdf-tools-for-lawyers	S	Y	(none set)	https://allaboutpdfediting.xyz/pdf-tools-for-lawyers	(inherit index:true)	Y		N	1
+/pdf-tools-for-small-business	S	Y	(none set)	https://allaboutpdfediting.xyz/pdf-tools-for-small-business	(inherit index:true)	Y		N	0
+/pdf-tools-for-students	S	Y	(none set)	https://allaboutpdfediting.xyz/pdf-tools-for-students	(inherit index:true)	Y		N	1
+/pdf-tools-for-teachers	S	Y	(none set)	https://allaboutpdfediting.xyz/pdf-tools-for-teachers	(inherit index:true)	Y		N	1
+/pii-guardian	C	Y	(none set)	(none)	(inherit index:true)	Y		Y	4
+/premium	C	N	INHERITED: /	INHERITED: homepage	(inherit index:true)	INHERITED		Y	71
+/privacy	S	N	INHERITED: /	INHERITED: homepage	(inherit index:true)	INHERITED		N	2
+/protect	C	Y	(none set)	(none)	(inherit index:true)	Y		Y	9
+/qa	S	Y	https://allaboutpdfediting.xyz/qa	(none)	(inherit index:true)	Y		Y	3
+/qr-stamp	C	Y	(none set)	(none)	(inherit index:true)	partial		Y	2
+/recipes	C	Y	(none set)	(none)	(inherit index:true)	Y		Y	5
+/redact	C	Y	(none set)	(none)	(inherit index:true)	Y		N	6
+/repair-pdf	C	N	INHERITED: /	INHERITED: homepage	(inherit index:true)	INHERITED		Y	2
+/resize	C	Y	(none set)	(none)	(inherit index:true)	Y		Y	5
+/reverse-pdf	C	Y	(none set)	(none)	(inherit index:true)	Y		Y	4
+/rotate	C	Y	(none set)	(none)	(inherit index:true)	Y		Y	5
+/scan-to-pdf	C	N	INHERITED: /	INHERITED: homepage	(inherit index:true)	INHERITED		Y	3
+/search-redact	C	Y	(none set)	(none)	(inherit index:true)	partial		Y	2
+/sign	C	Y	(none set)	(none)	(inherit index:true)	Y		Y	5
+/signup	C	N	INHERITED: /	INHERITED: homepage	(inherit index:true)	INHERITED		N	2
+/sitemap	S	Y	(none set)	(none)	(inherit index:true)	Y		N	1
+/smallpdf-alternative	S	Y	(none set)	(none)	(inherit index:true)	Y		N	0
+/split	C	Y	(none set)	(none)	(inherit index:true)	Y		Y	11
+/split-by-bookmarks	C	Y	(none set)	(none)	(inherit index:true)	partial		Y	3
+/studio	C	Y	https://allaboutpdfediting.xyz/studio	(none)	(inherit index:true)	Y		Y	11
+/terms	S	N	INHERITED: /	INHERITED: homepage	(inherit index:true)	INHERITED		N	1
+/text-to-pdf	C	Y	(none set)	(none)	(inherit index:true)	Y		Y	4
+/tools	S	Y	(none set)	(none)	(inherit index:true)	Y		Y	14
+/ultimate-guide-to-pdf-editing	S	Y	(none set)	(none)	(inherit index:true)	Y		N	3
+/unlock	C	Y	(none set)	(none)	(inherit index:true)	Y		Y	6
+/vault	C	Y	(none set)	(none)	(inherit index:true)	partial		N	2
+/view	C	N	INHERITED: /	INHERITED: homepage	(inherit index:true)	INHERITED		N	0
+/vs	S	Y	(none set)	(none)	(inherit index:true)	Y		Y	0
+/vs/adobe-acrobat	S	Y	(none set)	(none)	(inherit index:true)	Y		Y	2
+/vs/ilovepdf	S	Y	(none set)	(none)	(inherit index:true)	Y		Y	1
+/vs/smallpdf	S	Y	(none set)	(none)	(inherit index:true)	Y		Y	1
+/watermark	C	Y	(none set)	(none)	(inherit index:true)	Y		Y	6
+/word-counter	C	Y	(none set)	(none)	(inherit index:true)	Y		Y	3
+/word-to-pdf	C	N	INHERITED: /	INHERITED: homepage	(inherit index:true)	INHERITED		Y	4

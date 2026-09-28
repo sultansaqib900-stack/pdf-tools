@@ -19,7 +19,7 @@ import { copyPdfBytes, createPdfFile, downloadBytes, isPdfFile } from "@/lib/pdf
 
 import HowToJsonLd from "@/components/HowToJsonLd";
 import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
-import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
+import Breadcrumbs from "@/components/Breadcrumbs";
 import FaqPageJsonLd from "@/components/FaqPageJsonLd";
 import RelatedContent from "@/components/RelatedContent";
 import { getRelatedContent } from "@/lib/related-content";
@@ -140,7 +140,7 @@ export default function CompressPage() {
         url="https://allaboutpdfediting.xyz/compress"
       />
       <HowToJsonLd name="Compress PDF" description="Reduce PDF size with balanced, maximum, or lossless compression" steps={[{name:"Upload PDF",text:"Select or drop your PDF document"},{name:"Choose a mode",text:"Use visual compression for smaller files or Lossless to preserve interactive content"},{name:"Download",text:"Download the result; the original is kept if compression would make it larger"}]} />
-      <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Compress PDF", item: "https://allaboutpdfediting.xyz/compress" }]} />
+      <Breadcrumbs items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Tools", item: "https://allaboutpdfediting.xyz/tools" }, { name: "Compress PDF", item: "https://allaboutpdfediting.xyz/compress" }]} />
       <FaqPageJsonLd questions={rc?.faqs} />
       <AiSummaryJsonLd name="Compress PDF" summary="Reduce PDF size in the browser with selectable visual or lossless compression" category="UtilitiesApplication" inputType="PDF" outputType="PDF" processing="client-side" price="free" features={["Balanced compression","Maximum compression","Lossless optimization","Original retained when already smaller","Private local processing"]} limits="Free and premium file-size limits apply" />
       <div className="mb-8">
@@ -258,9 +258,47 @@ export default function CompressPage() {
       </div>
 
       <div className="max-w-3xl mx-auto mt-12 pt-8 border-t border-[var(--card-border)]">
-        <h2 className="text-xl font-bold text-[var(--foreground)] mb-3">About Compress PDF</h2>
+        <h2 className="text-xl font-bold text-[var(--foreground)] mb-3">How PDF Compression Works</h2>
         <div className="text-sm text-[var(--muted)] space-y-3 leading-relaxed">
-          <p>Our PDF compressor offers three honest modes. Balanced and Maximum rebuild pages as optimized images for meaningful reductions on scans and image-heavy documents; Lossless optimizes object streams while preserving selectable text, links, and forms. If an attempted result is larger, the original bytes are kept instead. For best results, compress PDF online free before sharing large attachments, as smaller files transfer faster and use less storage. Whether you are reducing scan quality or optimizing a presentation, this tool helps you make a smaller PDF while preserving readability. Since everything runs client-side, your files never leave your device, ensuring complete privacy and security.</p>
+          <p>Our PDF compressor offers three honest modes. <strong>Lossless</strong> optimizes object streams, subsets embedded fonts to only the characters used, and strips duplicated data — text stays selectable, links and form fields keep working, and nothing visible changes. <strong>Balanced</strong> and <strong>Maximum</strong> rebuild each page as an optimized image, which produces much smaller files on scans and image-heavy documents but flattens text and forms. If an attempted result ends up larger than the original, the tool keeps the original bytes instead.</p>
+          <p>Typical results: text-heavy PDFs (reports, invoices, contracts) shrink 40–60%, mixed documents 20–40%, and image-only scans 10–30%. A 20MB PDF usually lands at 3–5MB with Balanced mode.</p>
+        </div>
+
+        <h2 className="text-xl font-bold text-[var(--foreground)] mb-3 mt-8">When to Compress a PDF</h2>
+        <ul className="list-disc pl-5 text-sm text-[var(--muted)] space-y-2 leading-relaxed">
+          <li>Email attachments — most providers cap attachments at 10–25MB</li>
+          <li>Online applications and portals that reject files over a size limit</li>
+          <li>Cloud storage — keep Google Drive or Dropbox usage down</li>
+          <li>Messaging apps where large files fail to send</li>
+          <li>Website downloads — smaller PDFs load faster for your readers</li>
+        </ul>
+
+        <h2 className="text-xl font-bold text-[var(--foreground)] mb-3 mt-8">Step-by-Step</h2>
+        <ol className="list-decimal pl-5 text-sm text-[var(--muted)] space-y-2 leading-relaxed">
+          <li>Drop a PDF onto the tool above (or click to pick one)</li>
+          <li>Choose a mode: Lossless to keep text selectable, Balanced or Maximum for the smallest size</li>
+          <li>Press <strong>Compress</strong> and wait a few seconds — processing happens in this tab</li>
+          <li>Download the smaller file; the original on your device is untouched</li>
+        </ol>
+
+        <h2 className="text-xl font-bold text-[var(--foreground)] mb-3 mt-8">Limits and Browser Support</h2>
+        <div className="text-sm text-[var(--muted)] space-y-3 leading-relaxed">
+          <p>Free usage handles files up to <strong>10MB</strong>; Premium raises the limit to <strong>100MB</strong>. Because compression runs in your browser, very large files depend on your device's available memory — close other heavy tabs if a big document stalls. The tool works in current Chrome, Edge, Firefox, and Safari (desktop and mobile). No install, no account.</p>
+        </div>
+
+        <h2 className="text-xl font-bold text-[var(--foreground)] mb-3 mt-8">How We Handle Your Files</h2>
+        <div className="text-sm text-[var(--muted)] space-y-3 leading-relaxed">
+          <p>Compression happens entirely on your device with pdf-lib and WebAssembly. Your PDF is never uploaded to a server, never stored, and never seen by us — there is no upload step at all. This makes the tool safe for contracts, medical records, financial statements, and anything else you would not paste into a website. (Our optional AI features are separate, clearly labeled, and are the only tools that send anything over the network.)</p>
+        </div>
+
+        <h2 className="text-xl font-bold text-[var(--foreground)] mb-3 mt-8">Frequently Asked Questions</h2>
+        <div className="space-y-3">
+          {(rc?.faqs ?? []).map((f) => (
+            <details key={f.question} className="border border-[var(--card-border)] rounded-xl p-4">
+              <summary className="font-semibold text-sm text-[var(--foreground)] cursor-pointer">{f.question}</summary>
+              <p className="text-sm text-[var(--muted)] mt-2 leading-relaxed">{f.answer}</p>
+            </details>
+          ))}
         </div>
       </div>
 

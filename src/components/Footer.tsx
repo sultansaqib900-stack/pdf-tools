@@ -1,4 +1,5 @@
 import Link from "next/link";
+import PremiumStateCta from "@/components/PremiumStateCta";
 
 export default function Footer() {
   return (
@@ -53,7 +54,7 @@ export default function Footer() {
               <Link href="/bulk-rename" className="block hover:text-amber-700 hover:translate-x-0.5 transition-all">Bulk Rename</Link>
               <Link href="/booklet" className="block hover:text-amber-700 hover:translate-x-0.5 transition-all">Booklet Creator</Link>
               <Link href="/search-redact" className="block hover:text-amber-700 hover:translate-x-0.5 transition-all">Search & Redact</Link>
-              <Link href="/vault" className="block hover:text-amber-700 hover:translate-x-0.5 transition-all">Encrypted Vault</Link>
+              <Link href="/vault" className="block hover:text-amber-700 hover:translate-x-0.5 transition-all" rel="nofollow">Encrypted Vault</Link>
               <Link href="/split-by-bookmarks" className="block hover:text-amber-700 hover:translate-x-0.5 transition-all">Split by Bookmarks</Link>
             </div>
           </div>
@@ -80,14 +81,21 @@ export default function Footer() {
           <div>
             <h4 className="font-extrabold text-xs uppercase tracking-wider mb-4 text-[var(--foreground)]">Company</h4>
             <div className="space-y-2 text-xs text-[var(--muted)] font-medium">
-              <Link href="/premium" className="block font-bold text-amber-500 hover:underline">⭐ Upgrade to Premium</Link>
+              <PremiumStateCta
+                upgradeLabel="⭐ Upgrade to Premium"
+                upgradeHref="/premium"
+                className="block font-bold text-amber-500 hover:underline"
+                activeLabel="✓ Premium Active"
+                activeHref="/dashboard"
+                activeClassName="block font-bold text-emerald-500 hover:underline"
+              />
               <Link href="/about" className="block hover:text-[var(--foreground)] hover:translate-x-0.5 transition-all">About Us</Link>
               <Link href="/contact" className="block hover:text-[var(--foreground)] hover:translate-x-0.5 transition-all">Contact Support</Link>
               <Link href="/qa" className="block hover:text-[var(--foreground)] hover:translate-x-0.5 transition-all">Q&A Knowledgebase</Link>
               <Link href="/privacy" className="block hover:text-[var(--foreground)] hover:translate-x-0.5 transition-all">Privacy Policy</Link>
               <Link href="/terms" className="block hover:text-[var(--foreground)] hover:translate-x-0.5 transition-all">Terms of Service</Link>
               <Link href="/sitemap" className="block hover:text-[var(--foreground)] hover:translate-x-0.5 transition-all">HTML Sitemap</Link>
-              <Link href="/embed" className="block hover:text-[var(--foreground)] hover:translate-x-0.5 transition-all">Embeddable Widget</Link>
+              <Link href="/embed" className="block hover:text-[var(--foreground)] hover:translate-x-0.5 transition-all" rel="nofollow">Embeddable Widget</Link>
             </div>
           </div>
         </div>

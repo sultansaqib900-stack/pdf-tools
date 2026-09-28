@@ -14,7 +14,7 @@ import { useToolHistory } from "@/hooks/useToolHistory";
 import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
 import HowToJsonLd from "@/components/HowToJsonLd";
 import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
-import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
+import Breadcrumbs from "@/components/Breadcrumbs";
 import FaqPageJsonLd from "@/components/FaqPageJsonLd";
 import RelatedContent from "@/components/RelatedContent";
 import { getRelatedContent } from "@/lib/related-content";
@@ -125,7 +125,7 @@ export default function EsImageToPdfPage() {
         url="https://allaboutpdfediting.xyz/es/image-to-pdf"
       />
       <HowToJsonLd name="Convertir Imagen a PDF" description="Combina imágenes JPEG y PNG en un documento PDF" steps={[{name:"Subir imágenes",text:"Selecciona una o más imágenes JPEG o PNG"},{name:"Ordenar",text:"Usa las flechas para ordenar las páginas"},{name:"Descargar PDF",text:"Descarga tus imágenes combinadas en un PDF"}]} />
-      <BreadcrumbJsonLd items={[{ name: "Inicio", item: "https://allaboutpdfediting.xyz/es" }, { name: "Imagen a PDF", item: "https://allaboutpdfediting.xyz/es/image-to-pdf" }]} />
+      <Breadcrumbs items={[{ name: "Inicio", item: "https://allaboutpdfediting.xyz/es" }, { name: "Imagen a PDF", item: "https://allaboutpdfediting.xyz/es/image-to-pdf" }]} />
       <FaqPageJsonLd questions={rc?.faqs} />
       <AiSummaryJsonLd name="Imagen a PDF" summary="Combina imágenes JPEG y PNG en un PDF con una página por imagen" category="Gráficos" inputType="JPEG o PNG" outputType="PDF" processing="lado-del-cliente" price="free" features={["Conversión JPEG y PNG","Soporte multi-imagen","Controles de orden","Dimensiones originales","Solo cliente"]} limits="Cada imagen hasta 10MB" />
       <div className="mb-8">

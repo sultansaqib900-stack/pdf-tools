@@ -14,7 +14,7 @@ import { useToolHistory } from "@/hooks/useToolHistory";
 import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
 import HowToJsonLd from "@/components/HowToJsonLd";
 import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
-import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
+import Breadcrumbs from "@/components/Breadcrumbs";
 import FaqPageJsonLd from "@/components/FaqPageJsonLd";
 import RelatedContent from "@/components/RelatedContent";
 import { getRelatedContent } from "@/lib/related-content";
@@ -111,7 +111,7 @@ export default function EsCompressPage() {
         url="https://allaboutpdfediting.xyz/es/compress"
       />
       <HowToJsonLd name="Comprimir PDF Online Gratis" description="Reduce el tamaño del PDF con compresión equilibrada" steps={[{name:"Subir PDF",text:"Selecciona el archivo PDF que deseas comprimir"},{name:"Comprimir",text:"Haz clic en comprimir para reducir el tamaño"},{name:"Descargar PDF",text:"Descarga tu archivo PDF más pequeño"}]} />
-      <BreadcrumbJsonLd items={[{ name: "Inicio", item: "https://allaboutpdfediting.xyz/es" }, { name: "Comprimir PDF", item: "https://allaboutpdfediting.xyz/es/compress" }]} />
+      <Breadcrumbs items={[{ name: "Inicio", item: "https://allaboutpdfediting.xyz/es" }, { name: "Comprimir PDF", item: "https://allaboutpdfediting.xyz/es/compress" }]} />
       <FaqPageJsonLd questions={rc?.faqs} />
       <AiSummaryJsonLd name="Comprimir PDF" summary="Reduce el tamaño de archivos PDF con compresión visual equilibrada" category="Utilidades" inputType="PDF" outputType="PDF" processing="lado-del-cliente" price="free" features={["Compresión equilibrada","Reducción de tamaño","Buena calidad visual","Procesamiento instantáneo","Sin subidas"]} limits="Archivos hasta 10MB" />
       <div className="mb-8">

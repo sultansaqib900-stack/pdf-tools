@@ -17,38 +17,30 @@ import ToastProvider from "@/components/Toast";
 import OrganizationJsonLd from "@/components/OrganizationJsonLd";
 import WebSiteJsonLd from "@/components/WebSiteJsonLd";
 import SiteNavJsonLd from "@/components/SiteNavJsonLd";
-import HreflangTags from "@/components/HreflangTags";
 import { Analytics } from "@vercel/analytics/react";
 import Script from "next/script";
 import { AuthProvider } from "@/components/AuthProvider";
 import PrivacyHUD from "@/components/PrivacyHUD";
 
 export const metadata: Metadata = {
+  // Site-wide metadata ONLY. No page-specific title/description/canonical/
+  // openGraph.url here: children would inherit them and every page would look
+  // like a duplicate of the homepage (the canonical bug this repo fixes).
+  // Every route provides its own metadata via `buildMetadata` (src/lib/seo.ts).
   metadataBase: new URL("https://allaboutpdfediting.xyz"),
   title: {
-    default: "PDFTools — Free Online PDF Tools",
+    default: "PDFTools: Free Online PDF Tools",
     template: "%s | PDFTools",
   },
-  description:
-    "38 core PDF tools that are free and unlimited, plus 14 professional tools — led by the PDF Studio pipeline — for AI, automation, secure redaction, legal, and bulk workflows. Most file processing happens locally in your browser.",
-  keywords: ["PDF tools", "compress PDF", "merge PDF", "split PDF", "free online PDF editor", "PDF converter", "sign PDF", "protect PDF", "PDF compressor", "merge PDF files", "split PDF pages", "PDF creator", "edit PDF", "PDF merger", "PDF splitter", "PDF comparison", "PDF audio", "PDF certificates", "PDF booklet", "PDF redact", "PDF metadata"],
   openGraph: {
-    title: "PDFTools - 52 Online PDF Tools",
-    description: "38 core tools free and unlimited plus 14 professional workflows — the PDF Studio pipeline, AI, redaction, legal, and bulk processing.",
-    url: "https://allaboutpdfediting.xyz",
     siteName: "PDFTools",
     type: "website",
     locale: "en_US",
-    images: [{ url: "https://allaboutpdfediting.xyz/opengraph-image", width: 1200, height: 630 }],
   },
   twitter: {
     card: "summary_large_image",
-    title: "PDFTools - 52 Online PDF Tools",
-    description: "Free unlimited core PDF editing and conversion plus professional AI, automation, redaction, legal, and bulk workflows.",
-    images: ["https://allaboutpdfediting.xyz/opengraph-image"],
   },
   alternates: {
-    canonical: "/",
     types: {
       "application/rss+xml": "/feed.xml",
     },
@@ -101,7 +93,6 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" />
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-        <HreflangTags />
         <meta name="google-site-verification" content="N8odpQukXkhYSNhTcTrnMKWHWTi5D5h_Cre96ZVGlTw" />
         <ThemeScript />
         {process.env.NODE_ENV === "production" && (

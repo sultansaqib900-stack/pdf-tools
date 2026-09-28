@@ -1,13 +1,14 @@
+import { buildMetadata } from "@/lib/seo";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { seoPages } from "@/lib/programmatic-seo";
+import { getErrorPages } from "@/lib/error-pages";
 
-export const metadata: Metadata = {
-  title: "Sitemap — PDFTools",
+export const metadata: Metadata = buildMetadata({
+  path: "/sitemap",
+  title: "Sitemap",
   description: "Complete sitemap for PDFTools — browse all free online PDF tools, use cases, and resources.",
-};
-
-interface Group {
+});interface Group {
   title: string;
   links: { href: string; label: string }[];
 }
@@ -130,10 +131,14 @@ const groups: Group[] = [
       { href: "/qa", label: "Q&A" },
       { href: "/ultimate-guide-to-pdf-editing", label: "Ultimate Guide to PDF" },
       { href: "/best-free-pdf-editor", label: "Best Free PDF Editor" },
-      { href: "/smallpdf-alternative", label: "Smallpdf Alternative" },
-      { href: "/ilovepdf-alternative", label: "ILovePDF Alternative" },
-      { href: "/adobe-acrobat-alternative", label: "Adobe Acrobat Alternative" },
+      { href: "/vs/smallpdf", label: "Smallpdf vs PDFTools" },
+      { href: "/vs/ilovepdf", label: "iLovePDF vs PDFTools" },
+      { href: "/vs/adobe-acrobat", label: "Adobe Acrobat vs PDFTools" },
     ],
+  },
+  {
+    title: "PDF Error Guides",
+    links: getErrorPages().map((e) => ({ href: `/error/${e.slug}`, label: e.title })),
   },
   {
     title: "Company",
@@ -142,7 +147,7 @@ const groups: Group[] = [
       { href: "/privacy", label: "Privacy Policy" },
       { href: "/terms", label: "Terms of Service" },
       { href: "/contact", label: "Contact" },
-      { href: "/premium", label: "Go Premium" },
+      { href: "/premium", label: "Premium" },
     ],
   },
 ];

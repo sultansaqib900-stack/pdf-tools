@@ -2,13 +2,13 @@
 import Link from "next/link";
 import ArticleJsonLd from "@/components/ArticleJsonLd";
 import HowToJsonLd from "@/components/HowToJsonLd";
-import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
+import Breadcrumbs from "@/components/Breadcrumbs";
 
 export default function HowToMergePDF() {
   return (
     <>
       <ArticleJsonLd title="How to Merge PDFs Online Free — Combine Multiple PDFs Into One" description="Learn how to merge PDF files online free. Combine multiple PDFs into one document in seconds. No signup, no uploads to servers." url="https://allaboutpdfediting.xyz/blog/how-to-merge-pdf" datePublished="2026-06-27" />
-      <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Blog", item: "https://allaboutpdfediting.xyz/blog" }, { name: "How to Merge PDFs", item: "https://allaboutpdfediting.xyz/blog/how-to-merge-pdf" }]} />
+      <Breadcrumbs items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Blog", item: "https://allaboutpdfediting.xyz/blog" }, { name: "How to Merge PDFs", item: "https://allaboutpdfediting.xyz/blog/how-to-merge-pdf" }]} />
       <HowToJsonLd name="How to Merge PDFs" description="Learn how to merge PDF files online free. Combine multiple PDFs into one document in seconds. No signup, no uploads to servers." steps={[{name:"Go to PDFTools Merge",text:"Go to PDFTools Merge"},{name:"Upload multiple PDFs by clicking or dragging files",text:"Upload multiple PDFs by clicking or dragging files"},{name:"Drag to reorder files into your desired sequence",text:"Drag to reorder files into your desired sequence"},{name:"Remove any unwanted files",text:"Remove any unwanted files"},{name:"Click Merge and download your combined PDF",text:"Click Merge and download your combined PDF"}]} />
       <div className="max-w-3xl mx-auto px-4 py-12">
         <Link href="/blog" className="text-sm text-indigo-500 hover:underline mb-6 inline-block">&larr; Back to blog</Link>
@@ -48,6 +48,20 @@ export default function HowToMergePDF() {
         <div className="bg-indigo-50 dark:bg-indigo-950/20 border border-indigo-200 dark:border-indigo-800 rounded-xl p-5 mb-6">
           <p className="text-sm text-[var(--muted)]"><strong>Pro tip:</strong> Use <Link href="/organize" className="text-indigo-500 underline">Organize Pages</Link> after merging to reorder, rotate, or delete specific pages.</p>
         </div>
+
+        <h2 className="text-xl font-bold text-[var(--foreground)] mb-3 mt-8">Tips for Merging PDFs</h2>
+        <ul className="list-disc pl-5 text-sm text-[var(--muted)] space-y-2 mb-6">
+          <li><strong>Check the order</strong> — use the reorder controls to arrange files correctly before merging; the list shows the final page order</li>
+          <li><strong>Remove duplicates</strong> — review your file list so the same document isn't included twice</li>
+          <li><strong>Compress after merging</strong> — if the combined file is large, run <Link href="/compress" className="text-indigo-500 underline">Compress PDF</Link> on the result</li>
+          <li><strong>Add page numbers</strong> — use <Link href="/add-page-numbers" className="text-indigo-500 underline">Add Page Numbers</Link> to number the combined document</li>
+        </ul>
+
+        <h2 className="text-xl font-bold text-[var(--foreground)] mb-3 mt-8">Limits and File Sizes</h2>
+        <p className="text-sm text-[var(--muted)] mb-6">Free usage supports PDF files up to 10MB each. For larger scans and archives, Premium raises the per-file limit to 100MB. There is no fixed cap on how many files you can combine in one merge — very large batches simply take longer in the browser.</p>
+
+        <h2 className="text-xl font-bold text-[var(--foreground)] mb-3 mt-8">Privacy When Merging Documents</h2>
+        <p className="text-sm text-[var(--muted)] mb-6">The merge runs entirely in your browser with pdf-lib — your documents never leave your device, which makes it safe for confidential material like contracts, medical records, and financial statements.</p>
 
         <div className="bg-gradient-to-r from-indigo-500 to-purple-600 rounded-xl p-6 text-white text-center">
           <h2 className="text-xl font-bold mb-2">Merge PDFs Free</h2>

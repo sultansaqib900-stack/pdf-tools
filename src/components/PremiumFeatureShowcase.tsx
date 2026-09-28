@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { PREMIUM_TOOLS, PREMIUM_TOOL_COUNT, type ToolDefinition } from "@/lib/toolCatalog";
+import { usePremiumStatus } from "@/hooks/usePremiumStatus";
 
 const premiumFeatures = PREMIUM_TOOLS;
 
@@ -47,6 +48,7 @@ function FeatureCard({ feature, index }: { feature: ToolDefinition; index: numbe
 }
 
 export default function PremiumFeatureShowcase() {
+  const { premium } = usePremiumStatus();
   return (
     <div className="relative">
       <div className="absolute inset-0 bg-gradient-to-br from-amber-50/30 to-orange-50/30 dark:from-amber-950/10 dark:to-orange-950/10 rounded-3xl" />
@@ -73,14 +75,29 @@ export default function PremiumFeatureShowcase() {
         </div>
 
         <div className="text-center mt-8 relative z-10 animate-fadeIn animate-delay-300">
-          <Link
-            href="/premium"
-            className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-amber-500 to-orange-600 text-white font-bold rounded-xl hover:from-amber-600 hover:to-orange-700 transition-all shadow-lg shadow-amber-500/20 hover:shadow-xl hover:shadow-amber-500/30 hover:-translate-y-0.5 active:scale-95"
-          >
-            Unlock All Premium Features
-            <svg className="w-4 h-4 group-hover:translate-x-1 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" /></svg>
-          </Link>
-          <p className="text-xs text-[var(--muted)] mt-3">From $8.33/month · 100MB files · Unlimited usage · Unlimited AI</p>
+          {premium ? (
+            <>
+              <Link
+                href="/dashboard"
+                className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-bold rounded-xl hover:from-emerald-600 hover:to-teal-700 transition-all shadow-lg shadow-emerald-500/20 hover:shadow-xl hover:shadow-emerald-500/30 hover:-translate-y-0.5 active:scale-95"
+              >
+                ✓ Premium Active — Open Dashboard
+                <svg className="w-4 h-4 group-hover:translate-x-1 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" /></svg>
+              </Link>
+              <p className="text-xs text-[var(--muted)] mt-3">Your Premium plan is active — all {PREMIUM_TOOL_COUNT} professional tools are unlocked without limits.</p>
+            </>
+          ) : (
+            <>
+              <Link
+                href="/premium"
+                className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-amber-500 to-orange-600 text-white font-bold rounded-xl hover:from-amber-600 hover:to-orange-700 transition-all shadow-lg shadow-amber-500/20 hover:shadow-xl hover:shadow-amber-500/30 hover:-translate-y-0.5 active:scale-95"
+              >
+                Unlock All Premium Features
+                <svg className="w-4 h-4 group-hover:translate-x-1 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" /></svg>
+              </Link>
+              <p className="text-xs text-[var(--muted)] mt-3">From $8.33/month · 100MB files · Unlimited usage · Unlimited AI</p>
+            </>
+          )}
         </div>
       </div>
     </div>

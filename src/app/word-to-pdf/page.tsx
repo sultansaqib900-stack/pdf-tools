@@ -15,7 +15,7 @@ import { useToolHistory } from "@/hooks/useToolHistory";
 import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
 import HowToJsonLd from "@/components/HowToJsonLd";
 import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
-import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
+import Breadcrumbs from "@/components/Breadcrumbs";
 import FaqPageJsonLd from "@/components/FaqPageJsonLd";
 import RelatedContent from "@/components/RelatedContent";
 import { getRelatedContent } from "@/lib/related-content";
@@ -168,7 +168,7 @@ export default function WordToPdfPage() {
     <div className="max-w-3xl mx-auto px-4 py-12">
       <SoftwareAppJsonLd name="Word to PDF - Free Online Converter" description="Convert Word (DOCX) to PDF online for free." url="https://allaboutpdfediting.xyz/word-to-pdf" />
       <HowToJsonLd name="Word to PDF" description="Convert Word documents to PDF" steps={[{name:"Upload DOCX",text:"Select a Word document"},{name:"Convert",text:"Convert to PDF instantly"},{name:"Download",text:"Download your PDF"}]} />
-      <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Word to PDF", item: "https://allaboutpdfediting.xyz/word-to-pdf" }]} />
+      <Breadcrumbs items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Tools", item: "https://allaboutpdfediting.xyz/tools" }, { name: "Word to PDF", item: "https://allaboutpdfediting.xyz/word-to-pdf" }]} />
       <FaqPageJsonLd questions={rc?.faqs} />
       <AiSummaryJsonLd name="Word to PDF" summary="Convert Word DOCX documents to PDF format" category="Convert" inputType="DOCX" outputType="PDF" processing="client-side" price="free" features={["DOCX to PDF conversion","Paragraph and heading layout","Automatic page wrapping","Client-side processing"]} limits="Files up to 10MB" />
       <div className="mb-8">

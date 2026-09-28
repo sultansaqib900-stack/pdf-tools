@@ -2,7 +2,7 @@
 import Link from "next/link";
 import ArticleJsonLd from "@/components/ArticleJsonLd";
 import HowToJsonLd from "@/components/HowToJsonLd";
-import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
+import Breadcrumbs from "@/components/Breadcrumbs";
 
 export default function GoogleDrivePDFPost() {
   return (
@@ -13,7 +13,7 @@ export default function GoogleDrivePDFPost() {
         url="https://allaboutpdfediting.xyz/blog/google-drive-pdf-editor"
         datePublished="2026-06-27"
       />
-      <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Blog", item: "https://allaboutpdfediting.xyz/blog" }, { name: "How to Edit PDFs from Google Drive", item: "https://allaboutpdfediting.xyz/blog/google-drive-pdf-editor" }]} />
+      <Breadcrumbs items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Blog", item: "https://allaboutpdfediting.xyz/blog" }, { name: "How to Edit PDFs from Google Drive", item: "https://allaboutpdfediting.xyz/blog/google-drive-pdf-editor" }]} />
       <HowToJsonLd name="How to Edit PDFs from Google Drive" description="Edit PDFs stored in Google Drive directly from your browser. No downloads, no uploads to third-party servers. Compress, merge, split, and more." steps={[{name:"Open your Google Drive and locate the PDF you want to edit",text:"Open your Google Drive and locate the PDF you want to edit"},{name:"Download the PDF to your computer (or drag it directly from Drive to your bro...",text:"Download the PDF to your computer (or drag it directly from Drive to your browser)"},{name:"Visit PDFTools and choose your tool (compress, merge, split, etc.)",text:"Visit PDFTools and choose your tool (compress, merge, split, etc.)"},{name:"Upload the PDF from your computer — or simply drag and drop",text:"Upload the PDF from your computer — or simply drag and drop"},{name:"Process the file and save the result back to your Google Drive",text:"Process the file and save the result back to your Google Drive"}]} />
       <div className="max-w-3xl mx-auto px-4 py-12">
         <Link href="/blog" className="text-sm text-indigo-500 hover:underline mb-6 inline-block">&larr; Back to blog</Link>

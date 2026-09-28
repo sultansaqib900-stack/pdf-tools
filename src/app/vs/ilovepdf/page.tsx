@@ -1,14 +1,15 @@
+import { buildMetadata } from "@/lib/seo";
 import type { Metadata } from "next";
 import Link from "next/link";
 import SavingsCalculator from "@/components/SavingsCalculator";
 import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
-import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
+import Breadcrumbs from "@/components/Breadcrumbs";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = buildMetadata({
+  path: "/vs/ilovepdf",
   title: "iLovePDF vs PDFTools - Why Local Zero-Knowledge Processing Wins",
   description: "Compare iLovePDF vs PDFTools. Eliminate cloud upload risks, avoid 4-step re-upload loops, and automate multi-step workflows in 1 click.",
-};
-
+});
 export default function VsIlovepdfPage() {
   const comparisonRows = [
     { feature: "Privacy & Cloud Uploads", competitor: "Files sent to remote cloud servers", pdfTools: "100% Client-Side (0 KB Uploaded)", win: true },
@@ -25,7 +26,7 @@ export default function VsIlovepdfPage() {
         description="Zero-knowledge private alternative to iLovePDF."
         url="https://allaboutpdfediting.xyz/vs/ilovepdf"
       />
-      <BreadcrumbJsonLd
+      <Breadcrumbs
         items={[
           { name: "Home", item: "https://allaboutpdfediting.xyz" },
           { name: "Compare", item: "https://allaboutpdfediting.xyz/vs" },
@@ -41,6 +42,7 @@ export default function VsIlovepdfPage() {
         <h1 className="text-3xl sm:text-5xl font-black text-[var(--foreground)] tracking-tight">
           iLovePDF vs. PDFTools
         </h1>
+      <p className="text-xs text-[var(--muted)] mt-2 mb-6">Last verified: September 2026 — pricing and limits re-checked against iLovePDF&apos;s public documentation.</p>
         <p className="text-sm sm:text-base text-[var(--muted)] leading-relaxed">
           Stop downloading and re-uploading the same file four times. Process everything continuously in your browser with zero server uploads.
         </p>

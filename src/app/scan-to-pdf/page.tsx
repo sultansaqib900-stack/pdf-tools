@@ -14,7 +14,7 @@ import { useToolHistory } from "@/hooks/useToolHistory";
 import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
 import HowToJsonLd from "@/components/HowToJsonLd";
 import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
-import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
+import Breadcrumbs from "@/components/Breadcrumbs";
 import FaqPageJsonLd from "@/components/FaqPageJsonLd";
 import RelatedContent from "@/components/RelatedContent";
 import { getRelatedContent } from "@/lib/related-content";
@@ -123,7 +123,7 @@ export default function ScanToPdfPage() {
         url="https://allaboutpdfediting.xyz/scan-to-pdf"
       />
       <HowToJsonLd name="Scan to PDF" description="Scan documents with camera and convert to PDF" steps={[{name:"Open camera",text:"Allow camera access to start scanning"},{name:"Capture pages",text:"Take photos of each page you want to scan"},{name:"Download PDF",text:"Download all captured pages as a single PDF"}]} />
-      <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Scan to PDF", item: "https://allaboutpdfediting.xyz/scan-to-pdf" }]} />
+      <Breadcrumbs items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Tools", item: "https://allaboutpdfediting.xyz/tools" }, { name: "Scan to PDF", item: "https://allaboutpdfediting.xyz/scan-to-pdf" }]} />
       <FaqPageJsonLd questions={rc?.faqs} />
       <AiSummaryJsonLd name="Scan to PDF" summary="Use your device camera to scan documents and convert them to PDF instantly" category="Scanner" inputType="Camera" outputType="PDF" processing="client-side" price="free" features={["Camera scanning","Multi-page capture","Instant PDF conversion","Free online tool","Client-side only"]} limits="Files up to 10MB" />
       <div className="mb-8">

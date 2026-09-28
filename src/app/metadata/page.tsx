@@ -17,7 +17,7 @@ import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
 
 import HowToJsonLd from "@/components/HowToJsonLd";
 import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
-import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
+import Breadcrumbs from "@/components/Breadcrumbs";
 import FaqPageJsonLd from "@/components/FaqPageJsonLd";
 import RelatedContent from "@/components/RelatedContent";
 import { getRelatedContent } from "@/lib/related-content";
@@ -121,7 +121,7 @@ export default function MetadataPage() {
         url="https://allaboutpdfediting.xyz/metadata"
       />
       <HowToJsonLd name="Edit PDF Metadata" description="View and edit PDF document properties title author subject keywords" steps={[{name:"Upload PDF",text:"Select the PDF to edit metadata"},{name:"Edit properties",text:"Update title author subject and keywords"},{name:"Download updated PDF",text:"Download the PDF with new metadata"}]} />
-      <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Edit Metadata", item: "https://allaboutpdfediting.xyz/metadata" }]} />
+      <Breadcrumbs items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Tools", item: "https://allaboutpdfediting.xyz/tools" }, { name: "Edit Metadata", item: "https://allaboutpdfediting.xyz/metadata" }]} />
       <FaqPageJsonLd questions={rc?.faqs} />
       <AiSummaryJsonLd name="Metadata Editor" summary="View and edit PDF document properties including title author subject and keywords" category="Utilities" inputType="PDF" outputType="PDF" processing="client-side" price="free" features={["Title editing","Author editing","Subject editing","Keyword editing","Free tool"]} limits="Files up to 10MB" />
       <div className="mb-8">

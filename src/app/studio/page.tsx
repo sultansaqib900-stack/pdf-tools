@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import Image from "next/image";
 import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
-import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
+import Breadcrumbs from "@/components/Breadcrumbs";
 import { getPipelineDocument, pushPipelineStep, setPipelineDocument } from "@/lib/pdfPipeline";
 import { scanPdfForPii, redactSelectedPii, type PiiMatch } from "@/lib/piiScanner";
 import { DEFAULT_RECIPES, executePdfRecipe, type PdfRecipe } from "@/lib/pdfRecipes";
@@ -730,7 +730,7 @@ function StudioWorkspace() {
         url="https://allaboutpdfediting.xyz/studio"
         image="https://allaboutpdfediting.xyz/opengraph-image"
       />
-      <BreadcrumbJsonLd
+      <Breadcrumbs
         items={[
           { name: "Home", item: "https://allaboutpdfediting.xyz" },
           { name: "PDF Studio", item: "https://allaboutpdfediting.xyz/studio" },

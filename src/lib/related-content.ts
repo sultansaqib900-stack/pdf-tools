@@ -23,8 +23,8 @@ export interface ToolRelatedContent {
 }
 
 const allBlogs: Record<string, BlogRef> = {
-  "compress": { title: "How to Compress PDF Without Losing Quality", href: "/blog/how-to-compress-pdf", description: "Learn how to reduce PDF file size while maintaining quality." },
-  "merge": { title: "How to Merge Multiple PDFs Into One", href: "/blog/merge-multiple-pdfs-into-one", description: "Combine PDF files into a single document." },
+  "compress": { title: "How to Compress a PDF", href: "/blog/how-to-compress-pdf", description: "Reduce PDF file size — with or without quality loss." },
+  "merge": { title: "How to Merge PDFs Into One File", href: "/blog/how-to-merge-pdf", description: "Combine PDF files into a single document." },
   "split": { title: "How to Split PDF Pages Online", href: "/blog/split-pdf-pages-online", description: "Extract pages or split into separate files." },
   "image-to-pdf": { title: "How to Convert Image to PDF", href: "/blog/how-to-convert-image-to-pdf", description: "Convert JPG, PNG to PDF online." },
   "pdf-to-images": { title: "Convert PDF to Images", href: "/blog/convert-pdf-to-images", description: "Extract pages as high-quality images." },
@@ -35,7 +35,7 @@ const allBlogs: Record<string, BlogRef> = {
   "protect": { title: "How to Protect PDF With Password", href: "/blog/protect-pdf-with-password", description: "Encrypt your PDF files." },
   "unlock": { title: "How to Remove Password from PDF", href: "/blog/remove-password-from-pdf", description: "Remove PDF password protection." },
   "sign": { title: "How to Sign PDF Without Printing", href: "/blog/sign-pdf-without-printing", description: "Add a visible electronic-signature mark to a PDF." },
-  "compress-long": { title: "PDF Compression Guide", href: "/blog/compress-pdf-without-losing-quality", description: "Complete guide to PDF compression." },
+  "compress-long": { title: "PDF Compression Guide", href: "/blog/how-to-compress-pdf", description: "Complete guide to PDF compression." },
   "ocr-pdf": { title: "OCR PDF Online", href: "/blog/ocr-pdf-online", description: "Extract text from scanned PDFs." },
   "edit-pdf": { title: "How to Edit PDF Online", href: "/blog/edit-pdf-online", description: "Add text and shapes to PDFs." },
   "delete-pages": { title: "Delete Pages from PDF", href: "/blog/delete-pages-from-pdf", description: "Remove unwanted pages." },
@@ -48,7 +48,7 @@ const allBlogs: Record<string, BlogRef> = {
   "annotate": { title: "Annotate PDF Online", href: "/blog/annotate-pdf-online", description: "Highlight and comment on PDF." },
   "redact": { title: "Redact PDF Online", href: "/blog/redact-pdf-online", description: "Black out sensitive content." },
   "extract-text": { title: "Extract Text from PDF", href: "/blog/extract-text-from-pdf", description: "Extract text content from PDF." },
-  "metadata": { title: "Edit PDF Metadata", href: "/blog/edit-pdf-metadata", description: "View and edit PDF properties." },
+  "metadata": { title: "Edit or Remove PDF Metadata", href: "/blog/clean-pdf-metadata", description: "View, edit, or strip PDF properties." },
   "fill-form": { title: "Fill PDF Forms Online", href: "/blog/fill-pdf-forms-online", description: "Complete PDF form fields." },
   "flatten-pdf": { title: "Flatten PDF Online", href: "/blog/flatten-pdf-online", description: "Merge layers into content." },
   "html-to-pdf": { title: "Convert HTML to PDF", href: "/blog/convert-html-to-pdf", description: "Convert HTML to PDF." },
@@ -60,7 +60,7 @@ const allBlogs: Record<string, BlogRef> = {
   "form-data-extract": { title: "Extract PDF Form Data", href: "/blog/extract-pdf-form-data", description: "Extract form data to CSV." },
   "bulk-rename": { title: "Bulk Rename PDF Files", href: "/blog/bulk-rename-pdf-files", description: "Rename by metadata." },
   "booklet": { title: "Create PDF Booklet", href: "/blog/create-pdf-booklet", description: "N-up booklet creator." },
-  "search-redact": { title: "Search and Redact PDF", href: "/blog/search-and-redact-pdf", description: "Auto-redact words." },
+  "search-redact": { title: "Redact PDF Online", href: "/blog/redact-pdf-online", description: "Permanently redact text and search terms." },
   "pdf-inverter": { title: "Invert PDF Colors", href: "/blog/invert-pdf-colors", description: "Dark mode PDF viewer." },
   "vault": { title: "Secure PDF Vault", href: "/blog/secure-pdf-vault", description: "Encrypted document storage." },
   "qr-stamp": { title: "Add QR Code to PDF", href: "/blog/add-qr-code-to-pdf", description: "QR code stamping." },
@@ -81,9 +81,9 @@ export const relatedContent: Record<string, ToolRelatedContent> = {
       { title: "Resize PDF", description: "Change page size", href: "/resize", icon: "📐" },
       { title: "PDF to Images", description: "Extract pages as images", href: "/pdf-to-images", icon: "📸" },
     ],
-    relatedBlogs: [allBlogs["compress"], allBlogs["compress-long"], allBlogs["pdf-to-images"]],
+    relatedBlogs: [allBlogs["compress"], allBlogs["pdf-to-images"]],
     faqs: [
-      { question: "Does PDF compression reduce quality?", answer: "Our compressor uses smart optimization that reduces file size while preserving visual quality. Text-based PDFs compress very well with no visible quality loss." },
+      { question: "Does PDF compression reduce quality?", answer: "Lossless mode never changes visible content — it only removes redundant data. Balanced and Maximum rebuild pages as optimized images, so very small text can soften; pick Lossless when text must stay selectable." },
       { question: "How much can I compress a PDF?", answer: "Typical compression ratios range from 30-80% depending on content. Image-heavy PDFs compress more than text-only PDFs." },
       { question: "Is it safe to compress PDFs online?", answer: "Yes. All processing happens in your browser. Your files never leave your device." },
       { question: "Can I compress a PDF for email?", answer: "Yes. Most email providers limit attachments to 25MB. Our tool can compress large PDFs to under 10MB." },
@@ -98,7 +98,7 @@ export const relatedContent: Record<string, ToolRelatedContent> = {
     relatedBlogs: [allBlogs["merge"], allBlogs["organize"], allBlogs["split"]],
     faqs: [
       { question: "Can I merge different page sizes?", answer: "Yes. Our merger handles PDFs with different page sizes and orientations, combining them into one document." },
-      { question: "Is there a limit on how many files I can merge?", answer: "Free users can merge up to 5 files. Premium users can merge unlimited files in batch." },
+      { question: "Is there a limit on how many files I can merge?", answer: "There is no fixed file-count cap — add as many PDFs as you need. Each free file can be up to 10MB (Premium raises this to 100MB)." },
       { question: "Does merging reduce quality?", answer: "No. Pages are copied without recompression, preserving original quality." },
     ],
   },
@@ -123,7 +123,7 @@ export const relatedContent: Record<string, ToolRelatedContent> = {
     ],
     relatedBlogs: [allBlogs["image-to-pdf"], allBlogs["scan-to-pdf"], allBlogs["pdf-to-images"]],
     faqs: [
-      { question: "What image formats are supported?", answer: "JPG, PNG, WebP, BMP, GIF, and TIFF are all supported." },
+      { question: "What image formats are supported?", answer: "JPG/JPEG and PNG images. Each image becomes one PDF page; other formats are rejected so nothing is misread." },
       { question: "Can I combine multiple images into one PDF?", answer: "Yes. Select multiple images and they'll be combined into a single multi-page PDF." },
       { question: "Is there a size limit?", answer: "Free users can convert images up to 10MB total. Premium users get 100MB limit." },
     ],

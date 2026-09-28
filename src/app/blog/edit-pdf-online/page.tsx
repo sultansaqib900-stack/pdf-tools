@@ -1,16 +1,22 @@
+import { buildMetadata } from "@/lib/seo";
 import type { Metadata } from "next";
-export const metadata: Metadata = { title: "Edit PDF Online Free — Add Text and Shapes to Any PDF", description: "Edit PDF files online for free. Add text boxes, rectangles, circles, and lines to any PDF without installing software." };
+export const metadata: Metadata = buildMetadata({
+  path: "/blog/edit-pdf-online",
+  title: "How to Edit a PDF Online Without Installing Software",
+  description: "Edit PDF files online for free. Add text boxes, rectangles, circles, and lines to any PDF without installing software.",
+  type: "article",
+});
 import ArticleJsonLd from "@/components/ArticleJsonLd";
 import HowToJsonLd from "@/components/HowToJsonLd";
-import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
+import Breadcrumbs from "@/components/Breadcrumbs";
 export default function BlogPost() {
   return (
     <article className="max-w-3xl mx-auto px-4 py-12">
-      <ArticleJsonLd title="Edit PDF Online Free — Add Text and Shapes to Any PDF" description="Edit PDF files online for free. Add text boxes, rectangles, circles, and lines to any PDF without installing software." url="https://allaboutpdfediting.xyz/blog/edit-pdf-online" datePublished="2026-06-27" />
-      <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Blog", item: "https://allaboutpdfediting.xyz/blog" }, { name: "Edit PDF Online Free — Add Text and Shapes to Any PDF", item: "https://allaboutpdfediting.xyz/blog/edit-pdf-online" }]} />
-      <HowToJsonLd name="Edit PDF Online Free — Add Text and Shapes to Any PDF" description="Edit PDF files online for free. Add text boxes, rectangles, circles, and lines to any PDF without installing software." steps={[{name:"Upload — Go to our Edit PDF tool and select your file.",text:"Upload — Go to our Edit PDF tool and select your file."},{name:"Edit — Use the toolbar to add text boxes, rectangles, circles, or lines. Cust...",text:"Edit — Use the toolbar to add text boxes, rectangles, circles, or lines. Customize colors, font size, and position."},{name:"Download — Save your edited PDF with all changes applied.",text:"Download — Save your edited PDF with all changes applied."}]} />
+      <ArticleJsonLd title="How to Edit a PDF Online Without Installing Software" description="Edit PDF files online for free. Add text boxes, rectangles, circles, and lines to any PDF without installing software." url="https://allaboutpdfediting.xyz/blog/edit-pdf-online" datePublished="2026-06-27" />
+      <Breadcrumbs items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Blog", item: "https://allaboutpdfediting.xyz/blog" }, { name: "How to Edit a PDF Online Without Installing Software", item: "https://allaboutpdfediting.xyz/blog/edit-pdf-online" }]} />
+      <HowToJsonLd name="How to Edit a PDF Online Without Installing Software" description="Edit PDF files online for free. Add text boxes, rectangles, circles, and lines to any PDF without installing software." steps={[{name:"Upload — Go to our Edit PDF tool and select your file.",text:"Upload — Go to our Edit PDF tool and select your file."},{name:"Edit — Use the toolbar to add text boxes, rectangles, circles, or lines. Cust...",text:"Edit — Use the toolbar to add text boxes, rectangles, circles, or lines. Customize colors, font size, and position."},{name:"Download — Save your edited PDF with all changes applied.",text:"Download — Save your edited PDF with all changes applied."}]} />
       <a href="/blog" className="text-sm text-indigo-500 hover:underline mb-6 inline-block">&larr; Back to blog</a>
-      <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">Edit PDF Online Free — Add Text and Shapes to Any PDF</h1>
+      <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">How to Edit a PDF Online Without Installing Software</h1>
       <p className="text-sm text-[var(--muted)] mb-8">5 min read · Updated June 2026</p>
       <div className="text-sm text-[var(--muted)] space-y-5 leading-relaxed">
         <p>Editing PDFs usually requires expensive software like Adobe Acrobat. Our <a href="/edit-pdf" className="text-indigo-500 underline">free online PDF editor</a> lets you add text boxes, draw shapes, and annotate any PDF directly in your browser — no installation, no uploads, no fees.</p>

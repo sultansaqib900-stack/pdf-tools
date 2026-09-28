@@ -55,7 +55,9 @@ export default function DashboardPage() {
           <p className="text-sm text-[var(--muted)]">{user.email}</p>
         </div>
         <div className="flex items-center gap-3">
-          {!isPremium && (
+          {isPremium ? (
+            <span className="px-4 py-2 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-medium rounded-xl text-sm shadow-md shadow-emerald-500/20">✓ Premium Active</span>
+          ) : (
             <Link href="/premium" className="px-4 py-2 bg-gradient-to-r from-amber-500 to-orange-600 text-white font-medium rounded-xl text-sm hover:from-amber-600 hover:to-orange-700 transition">Upgrade to Premium</Link>
           )}
           <button onClick={logout} className="px-4 py-2 border border-[var(--card-border)] rounded-xl text-sm text-[var(--muted)] hover:text-red-500 transition">Sign Out</button>
@@ -68,7 +70,7 @@ export default function DashboardPage() {
           <p className="text-xs text-[var(--muted)]">Saved Files</p>
         </div>
         <div className="border border-[var(--card-border)] rounded-xl p-4 bg-[var(--card)]">
-          <p className={`text-2xl font-bold ${isPremium ? "text-amber-500" : "text-[var(--foreground)]"}`}>{isPremium ? "Premium" : "Free"}</p>
+          <p className={`text-2xl font-bold ${isPremium ? "text-emerald-500" : "text-[var(--foreground)]"}`}>{isPremium ? "Premium Active" : "Free"}</p>
           <p className="text-xs text-[var(--muted)]">Plan</p>
         </div>
         <div className="border border-[var(--card-border)] rounded-xl p-4 bg-[var(--card)]">

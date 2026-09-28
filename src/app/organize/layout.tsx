@@ -1,10 +1,11 @@
+import { buildMetadata } from "@/lib/seo";
 import type { Metadata } from "next";
 
-export const metadata: Metadata = {
-  title: "Organize PDF Pages Online Free — Reorder & Rearrange | PDFTools",
+export const metadata: Metadata = buildMetadata({
+  path: "/organize",
+  title: "Organize PDF Pages Online Free — Reorder & Rearrange",
   description: "Drag and drop to reorder pages in your PDF document online for free. No uploads, 100% free, all in your browser. Rearrange and organize your PDF in seconds.",
-};
-
+});
 export default function Layout({ children }: { children: React.ReactNode }) {
   return children;
 }

@@ -1,13 +1,19 @@
+import { buildMetadata } from "@/lib/seo";
 import type { Metadata } from "next";
-export const metadata: Metadata = { title: "Convert Word to PDF Online Free — DOCX to PDF Converter", description: "Convert Word DOCX documents to PDF online free. Turn your Word files into professional PDFs instantly." };
+export const metadata: Metadata = buildMetadata({
+  path: "/blog/convert-word-to-pdf",
+  title: "Convert Word to PDF Online Free — DOCX to PDF Converter",
+  description: "Convert Word DOCX documents to PDF online free. Turn your Word files into professional PDFs instantly.",
+  type: "article",
+});
 import ArticleJsonLd from "@/components/ArticleJsonLd";
 import HowToJsonLd from "@/components/HowToJsonLd";
-import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
+import Breadcrumbs from "@/components/Breadcrumbs";
 export default function BlogPost() {
   return (
     <article className="max-w-3xl mx-auto px-4 py-12">
       <ArticleJsonLd title="Convert Word to PDF Online Free — DOCX to PDF Converter" description="Convert Word DOCX documents to PDF online free. Turn your Word files into professional PDFs instantly." url="https://allaboutpdfediting.xyz/blog/convert-word-to-pdf" datePublished="2026-06-27" />
-      <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Blog", item: "https://allaboutpdfediting.xyz/blog" }, { name: "Convert Word to PDF Online Free — DOCX to PDF Converter", item: "https://allaboutpdfediting.xyz/blog/convert-word-to-pdf" }]} />
+      <Breadcrumbs items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Blog", item: "https://allaboutpdfediting.xyz/blog" }, { name: "Convert Word to PDF Online Free — DOCX to PDF Converter", item: "https://allaboutpdfediting.xyz/blog/convert-word-to-pdf" }]} />
       <HowToJsonLd name="Convert Word to PDF Online Free — DOCX to PDF Converter" description="Convert Word DOCX documents to PDF online free. Turn your Word files into professional PDFs instantly." steps={[{name:"Upload DOCX — Go to our Word to PDF tool and select your Word document.",text:"Upload DOCX — Go to our Word to PDF tool and select your Word document."},{name:"Convert — Your document is processed client-side using mammoth.js and pdf-lib.",text:"Convert — Your document is processed client-side using mammoth.js and pdf-lib."},{name:"Download — Your professional PDF is ready instantly.",text:"Download — Your professional PDF is ready instantly."}]} />
       <a href="/blog" className="text-sm text-indigo-500 hover:underline mb-6 inline-block">&larr; Back to blog</a>
       <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">Convert Word to PDF Online Free — DOCX to PDF Converter</h1>

@@ -16,7 +16,7 @@ import { useToolHistory } from "@/hooks/useToolHistory";
 import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
 import HowToJsonLd from "@/components/HowToJsonLd";
 import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
-import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
+import Breadcrumbs from "@/components/Breadcrumbs";
 import FaqPageJsonLd from "@/components/FaqPageJsonLd";
 import RelatedContent from "@/components/RelatedContent";
 import { getRelatedContent } from "@/lib/related-content";
@@ -87,7 +87,7 @@ export default function RepairPdfPage() {
     <div className="max-w-3xl mx-auto px-4 py-12">
       <SoftwareAppJsonLd name="Re-save PDF - Browser PDF Structure Rebuilder" description="Re-serialize a readable PDF to rebuild object streams and cross-reference data. It cannot recover files that cannot be parsed." url="https://allaboutpdfediting.xyz/repair-pdf" />
       <HowToJsonLd name="Re-save a Readable PDF" description="Parse and re-serialize a readable PDF into a fresh byte stream" steps={[{name:"Upload PDF",text:"Select a PDF that can still be opened"},{name:"Re-save structure",text:"Parse readable objects and write fresh object streams and cross-references"},{name:"Download",text:"Download the re-saved PDF"}]} />
-      <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Repair PDF", item: "https://allaboutpdfediting.xyz/repair-pdf" }]} />
+      <Breadcrumbs items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Tools", item: "https://allaboutpdfediting.xyz/tools" }, { name: "Repair PDF", item: "https://allaboutpdfediting.xyz/repair-pdf" }]} />
       <FaqPageJsonLd questions={rc?.faqs} />
       <AiSummaryJsonLd name="Re-save PDF" summary="Parse a readable PDF and re-serialize it with fresh object streams and cross-reference data" category="Utilities" inputType="Readable PDF" outputType="PDF" processing="client-side" price="free" features={["PDF re-serialization","Cross-reference rewrite","Object-stream output","Explicit failure for unreadable files"]} limits="Cannot recover PDFs that pdf-lib cannot parse" />
       <div className="mb-8">

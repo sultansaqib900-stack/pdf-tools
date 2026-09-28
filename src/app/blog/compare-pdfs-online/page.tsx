@@ -1,7 +1,8 @@
 "use client";
 import ArticleJsonLd from "@/components/ArticleJsonLd";
+import PremiumUpgradeBox from "@/components/PremiumUpgradeBox";
 import HowToJsonLd from "@/components/HowToJsonLd";
-import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
+import Breadcrumbs from "@/components/Breadcrumbs";
 
 export default function BlogPost() {
   return (
@@ -12,7 +13,7 @@ export default function BlogPost() {
         url="https://allaboutpdfediting.xyz/blog/compare-pdfs-online"
         datePublished="2026-06-26"
       />
-      <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Blog", item: "https://allaboutpdfediting.xyz/blog" }, { name: "How to Compare Two PDF Files Online Free", item: "https://allaboutpdfediting.xyz/blog/compare-pdfs-online" }]} />
+      <Breadcrumbs items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Blog", item: "https://allaboutpdfediting.xyz/blog" }, { name: "How to Compare Two PDF Files Online Free", item: "https://allaboutpdfediting.xyz/blog/compare-pdfs-online" }]} />
       <HowToJsonLd name="How to Compare Two PDF Files Online Free" description="Compare two PDF files side by side and spot text differences instantly." steps={[{name:"Upload the original PDF — Drag and drop or select the older version of your d...",text:"Upload the original PDF — Drag and drop or select the older version of your document."},{name:"Upload the revised PDF — Select the newer version you want to compare against.",text:"Upload the revised PDF — Select the newer version you want to compare against."},{name:"View the differences — The tool processes both files instantly and shows high...",text:"View the differences — The tool processes both files instantly and shows highlighted changes."}]} />
       <a href="/blog" className="text-sm text-indigo-500 hover:underline mb-6 inline-block">&larr; Back to blog</a>
       <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">How to Compare Two PDF Files Online Free</h1>
@@ -66,11 +67,11 @@ export default function BlogPost() {
           <li><strong>Compliance officers</strong> — Ensure policy documents match approved versions</li>
         </ul>
 
-        <div className="bg-[var(--card)] border border-[var(--card-border)] rounded-xl p-6 mt-6">
-          <p className="font-semibold text-[var(--foreground)] mb-1">Premium Feature</p>
-          <p className="text-sm text-[var(--muted)] mb-3">PDF comparison is available to premium subscribers. Upgrade to access this and 10 other advanced PDF tools.</p>
-          <a href="/premium" className="inline-block px-5 py-2.5 bg-amber-600 text-white font-medium rounded-xl text-sm hover:bg-amber-700 transition">Upgrade to Premium →</a>
-        </div>
+        <PremiumUpgradeBox
+          desc="PDF comparison is available to premium subscribers. Upgrade to access this and 10 other advanced PDF tools."
+          toolHref="/pdf-diff"
+          toolName="PDF Diff"
+        />
       </div>
     </article>
   );

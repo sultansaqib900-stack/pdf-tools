@@ -1,3 +1,11 @@
+import type { Metadata } from "next";
+import { buildMetadata } from "@/lib/seo";
+
+export const metadata: Metadata = buildMetadata({
+  path: "/terms",
+  title: "Terms of Service",
+  description: "Terms of service for PDFTools: acceptable use, free and premium tiers, availability, and limitations of this in-browser PDF tool suite.",
+});
 export default function TermsPage() {
   return (
     <div className="max-w-3xl mx-auto px-4 py-16">

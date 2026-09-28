@@ -6,6 +6,7 @@ import LemonSqueezyCheckout from "@/components/LemonSqueezyCheckout";
 import { LS_CONFIG } from "@/lib/lemonsqueezy";
 import { confirmPremium, claimPremium } from "@/lib/premium";
 import Link from "next/link";
+import { usePremiumStatus } from "@/hooks/usePremiumStatus";
 import ProductJsonLd from "@/components/ProductJsonLd";
 import { useAuth } from "@/components/AuthProvider";
 import { PREMIUM_TOOLS, PREMIUM_TOOL_COUNT } from "@/lib/toolCatalog";
@@ -148,15 +149,20 @@ function ClaimSection() {
 }
 
 export default function PremiumPage() {
+  const { premium } = usePremiumStatus();
   return (
     <div className="max-w-5xl mx-auto px-4 py-12">
       <div className="text-center mb-12">
-        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-gradient-to-r from-amber-500 to-orange-600 text-white text-sm font-semibold mb-4">
-          ⭐ Premium
+        <div className={`inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-white text-sm font-semibold mb-4 ${premium ? "bg-gradient-to-r from-emerald-500 to-teal-600" : "bg-gradient-to-r from-amber-500 to-orange-600"}`}>
+          {premium ? "✓ Premium Active" : "⭐ Premium"}
         </div>
-        <h1 className="text-4xl font-bold text-[var(--foreground)] mb-4">Go Premium</h1>
+        <h1 className="text-4xl font-bold text-[var(--foreground)] mb-4">{premium ? "✓ Premium Active" : "Go Premium"}</h1>
         <p className="text-lg text-[var(--muted)] max-w-2xl mx-auto">
-          Basic tools are <strong>free and unlimited</strong>. Professional tools include a <strong>5-file lifetime trial</strong> shared across all of them — Premium removes the trial limit and unlocks <strong>{PREMIUM_TOOL_COUNT} professional tools</strong>, larger files, and unlimited AI questions.
+          {premium ? (
+            <>Your Premium plan is active — all <strong>{PREMIUM_TOOL_COUNT} professional tools</strong> are unlocked with unlimited usage, larger files, and unlimited AI questions. Manage it from your <a href="/dashboard" className="text-emerald-500 font-semibold hover:underline">dashboard</a>.</>
+          ) : (
+            <>Basic tools are <strong>free and unlimited</strong>. Professional tools include a <strong>5-file lifetime trial</strong> shared across all of them — Premium removes the trial limit and unlocks <strong>{PREMIUM_TOOL_COUNT} professional tools</strong>, larger files, and unlimited AI questions.</>
+          )}
         </p>
         {!LS_CONFIG.enabled && (
           <p className="mt-3 text-sm text-amber-500 bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800 inline-block px-4 py-2 rounded-lg">
@@ -194,9 +200,11 @@ export default function PremiumPage() {
       </div>
 
       {/* Pricing */}
+      {!premium && (
       <p className="text-center text-xs text-[var(--muted)] mb-4">
         Tip: <Link href="/login" className="text-indigo-500 font-semibold hover:underline">sign in before checkout</Link> to enable verified cross-device account recovery.
       </p>
+      )}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
         {plans.map((plan) => (
           <div key={plan.name} className={`rounded-xl border p-6 flex flex-col ${plan.highlighted ? "border-amber-500 ring-2 ring-amber-500 bg-[var(--card)] scale-105 md:scale-105" : "border-[var(--card-border)] bg-[var(--card)]"}`}>
@@ -215,7 +223,13 @@ export default function PremiumPage() {
                 </li>
               ))}
             </ul>
-            {plan.checkoutUrl ? (
+            {premium ? (
+              plan.checkoutUrl ? (
+                <Link href="/dashboard" className="w-full block text-center py-2.5 rounded-xl font-medium bg-gradient-to-r from-emerald-500 to-teal-600 text-white hover:opacity-95 transition shadow-md shadow-emerald-500/20">✓ Premium Active</Link>
+              ) : (
+                <Link href="/tools" className="w-full block text-center py-2.5 rounded-xl font-medium bg-[var(--background)] text-[var(--foreground)] border border-[var(--card-border)] hover:border-emerald-400 transition">Open Tool Suite →</Link>
+              )
+            ) : plan.checkoutUrl ? (
               <LemonSqueezyCheckout label={`Buy ${plan.name}`} variant={plan.highlighted ? "primary" : "secondary"} disabled={!LS_CONFIG.enabled} planKey={plan.planKey as "monthly" | "yearly" | undefined} />
             ) : (
               <button className="w-full py-2.5 rounded-xl font-medium bg-[var(--background)] text-[var(--foreground)] border border-[var(--card-border)] cursor-default">Get Started Free</button>

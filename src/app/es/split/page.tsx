@@ -17,7 +17,7 @@ import { useToolHistory } from "@/hooks/useToolHistory";
 import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
 import HowToJsonLd from "@/components/HowToJsonLd";
 import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
-import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
+import Breadcrumbs from "@/components/Breadcrumbs";
 import FaqPageJsonLd from "@/components/FaqPageJsonLd";
 import RelatedContent from "@/components/RelatedContent";
 import { getRelatedContent } from "@/lib/related-content";
@@ -133,7 +133,7 @@ export default function EsSplitPage() {
         url="https://allaboutpdfediting.xyz/es/split"
       />
       <HowToJsonLd name="Dividir PDF Online" description="Separa páginas PDF en varios archivos o extrae páginas específicas" steps={[{name:"Subir PDF",text:"Selecciona el archivo PDF para dividir"},{name:"Elegir método",text:"Selecciona un rango continuo o divide cada página"},{name:"Descargar",text:"Descarga el PDF extraído o un ZIP con PDFs de una página"}]} />
-      <BreadcrumbJsonLd items={[{ name: "Inicio", item: "https://allaboutpdfediting.xyz/es" }, { name: "Dividir PDF", item: "https://allaboutpdfediting.xyz/es/split" }]} />
+      <Breadcrumbs items={[{ name: "Inicio", item: "https://allaboutpdfediting.xyz/es" }, { name: "Dividir PDF", item: "https://allaboutpdfediting.xyz/es/split" }]} />
       <FaqPageJsonLd questions={rc?.faqs} />
       <AiSummaryJsonLd name="Dividir PDF" summary="Separa páginas PDF en varios documentos o extrae rangos de páginas específicos" category="Utilidades" inputType="PDF" outputType="PDF o ZIP" processing="lado-del-cliente" price="free" features={["Extraer rango de páginas","Dividir cada página","Múltiples archivos de salida","Procesamiento local","Gratis"]} limits="Archivos hasta 10MB" />
       <div className="mb-8">

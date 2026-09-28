@@ -201,13 +201,23 @@ export default function Header() {
                 </div>
                 <div className="border-t border-[var(--card-border)] my-2" />
                 <div className="px-2">
-                  <Link
-                    href="/premium"
-                    onClick={() => setPremiumMenu(false)}
-                    className="block text-center py-2 text-xs font-bold bg-gradient-to-r from-amber-500 to-orange-600 text-white rounded-xl shadow-md shadow-amber-500/20 hover:opacity-95 transition"
-                  >
-                    View All Premium Plans →
-                  </Link>
+                  {premium ? (
+                    <Link
+                      href="/dashboard"
+                      onClick={() => setPremiumMenu(false)}
+                      className="block text-center py-2 text-xs font-bold bg-gradient-to-r from-emerald-500 to-teal-600 text-white rounded-xl shadow-md shadow-emerald-500/20 hover:opacity-95 transition"
+                    >
+                      ✓ Premium Active — Open Dashboard →
+                    </Link>
+                  ) : (
+                    <Link
+                      href="/premium"
+                      onClick={() => setPremiumMenu(false)}
+                      className="block text-center py-2 text-xs font-bold bg-gradient-to-r from-amber-500 to-orange-600 text-white rounded-xl shadow-md shadow-amber-500/20 hover:opacity-95 transition"
+                    >
+                      View All Premium Plans →
+                    </Link>
+                  )}
                 </div>
               </div>
             )}
@@ -223,7 +233,7 @@ export default function Header() {
                 <Link href="/blog" onClick={() => setResourcesMenu(false)} className="block px-4 py-2 text-xs text-[var(--muted)] hover:text-indigo-500 hover:bg-indigo-50/50 dark:hover:bg-indigo-950/20 transition">📚 Guides & Blog</Link>
                 <Link href="/ultimate-guide-to-pdf-editing" onClick={() => setResourcesMenu(false)} className="block px-4 py-2 text-xs text-[var(--muted)] hover:text-indigo-500 hover:bg-indigo-50/50 dark:hover:bg-indigo-950/20 transition">📖 Ultimate Guide</Link>
                 <Link href="/qa" onClick={() => setResourcesMenu(false)} className="block px-4 py-2 text-xs text-[var(--muted)] hover:text-indigo-500 hover:bg-indigo-50/50 dark:hover:bg-indigo-950/20 transition">❓ Q&A Support</Link>
-                <Link href="/embed" onClick={() => setResourcesMenu(false)} className="block px-4 py-2 text-xs text-[var(--muted)] hover:text-indigo-500 hover:bg-indigo-50/50 dark:hover:bg-indigo-950/20 transition">🔌 Embed Widget</Link>
+                <Link href="/embed" onClick={() => setResourcesMenu(false)} className="block px-4 py-2 text-xs text-[var(--muted)] hover:text-indigo-500 hover:bg-indigo-50/50 dark:hover:bg-indigo-950/20 transition" rel="nofollow">🔌 Embed Widget</Link>
                 <Link href="/contact" onClick={() => setResourcesMenu(false)} className="block px-4 py-2 text-xs text-[var(--muted)] hover:text-indigo-500 hover:bg-indigo-50/50 dark:hover:bg-indigo-950/20 transition">📧 Contact Us</Link>
               </div>
             )}
@@ -278,8 +288,8 @@ export default function Header() {
           </div>
 
           {premium ? (
-            <span className="hidden sm:inline-flex bg-gradient-to-r from-emerald-500 to-teal-600 text-white px-4 py-2 rounded-xl text-xs font-bold shadow-md shadow-emerald-500/20">
-              ✓ Premium
+            <span className="hidden sm:inline-flex items-center gap-1.5 bg-gradient-to-r from-emerald-500 to-teal-600 text-white px-4 py-2 rounded-xl text-xs font-bold shadow-md shadow-emerald-500/20">
+              ✓ Premium Active
             </span>
           ) : (
             <Link
@@ -293,6 +303,7 @@ export default function Header() {
           {user ? (
             <Link
               href="/dashboard"
+              rel="nofollow"
               title={user.email}
               className="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl border border-[var(--card-border)] text-xs font-bold text-[var(--foreground)] hover:border-indigo-500 transition-all max-w-[120px] sm:max-w-[160px] shrink-0"
             >
@@ -301,6 +312,7 @@ export default function Header() {
           ) : (
             <Link
               href="/login"
+              rel="nofollow"
               className="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-indigo-600 text-white text-xs font-bold hover:bg-indigo-700 transition-all shadow-md shadow-indigo-600/20"
             >
               Sign In
@@ -367,7 +379,11 @@ export default function Header() {
                 </Link>
               ))}
               <Link href="/tools" onClick={() => setMenuOpen(false)} className="block p-2 rounded-xl bg-[var(--background)] text-xs font-medium text-indigo-500 transition border border-[var(--card-border)]">All {TOOL_CATALOG.length} Tools →</Link>
-              <Link href="/premium" onClick={() => setMenuOpen(false)} className="block p-2 rounded-xl bg-[var(--background)] text-xs font-medium text-amber-500 transition border border-[var(--card-border)]">Premium Tier →</Link>
+              {premium ? (
+                <Link href="/dashboard" onClick={() => setMenuOpen(false)} className="block p-2 rounded-xl bg-[var(--background)] text-xs font-medium text-emerald-500 transition border border-emerald-500/40">✓ Premium Active →</Link>
+              ) : (
+                <Link href="/premium" onClick={() => setMenuOpen(false)} className="block p-2 rounded-xl bg-[var(--background)] text-xs font-medium text-amber-500 transition border border-[var(--card-border)]">Premium Tier →</Link>
+              )}
             </div>
           </div>
 
@@ -377,18 +393,18 @@ export default function Header() {
               <Link href="/blog" onClick={() => setMenuOpen(false)} className="block p-2 rounded-xl bg-[var(--background)] text-xs font-medium text-[var(--muted)] hover:text-[var(--foreground)] transition border border-[var(--card-border)]">📚 Guides &amp; Blog</Link>
               <Link href="/ultimate-guide-to-pdf-editing" onClick={() => setMenuOpen(false)} className="block p-2 rounded-xl bg-[var(--background)] text-xs font-medium text-[var(--muted)] hover:text-[var(--foreground)] transition border border-[var(--card-border)]">📖 Ultimate Guide</Link>
               <Link href="/qa" onClick={() => setMenuOpen(false)} className="block p-2 rounded-xl bg-[var(--background)] text-xs font-medium text-[var(--muted)] hover:text-[var(--foreground)] transition border border-[var(--card-border)]">❓ Q&amp;A Support</Link>
-              <Link href="/embed" onClick={() => setMenuOpen(false)} className="block p-2 rounded-xl bg-[var(--background)] text-xs font-medium text-[var(--muted)] hover:text-[var(--foreground)] transition border border-[var(--card-border)]">🔌 Embed Widget</Link>
+              <Link href="/embed" onClick={() => setMenuOpen(false)} className="block p-2 rounded-xl bg-[var(--background)] text-xs font-medium text-[var(--muted)] hover:text-[var(--foreground)] transition border border-[var(--card-border)]" rel="nofollow">🔌 Embed Widget</Link>
               <Link href="/contact" onClick={() => setMenuOpen(false)} className="block p-2 rounded-xl bg-[var(--background)] text-xs font-medium text-[var(--muted)] hover:text-[var(--foreground)] transition border border-[var(--card-border)]">📧 Contact Us</Link>
             </div>
           </div>
 
           <div className="pt-2 border-t border-[var(--card-border)] flex gap-3">
             {user ? (
-              <Link href="/dashboard" onClick={() => setMenuOpen(false)} className="flex-1 py-3 text-center bg-indigo-600 text-white font-bold rounded-xl text-xs">My Account</Link>
+              <Link href="/dashboard" onClick={() => setMenuOpen(false)} className="flex-1 py-3 text-center bg-indigo-600 text-white font-bold rounded-xl text-xs" rel="nofollow">My Account</Link>
             ) : (
               <>
-                <Link href="/login" onClick={() => setMenuOpen(false)} className="flex-1 py-3 text-center border border-[var(--card-border)] text-[var(--foreground)] font-bold rounded-xl text-xs">Sign In</Link>
-                <Link href="/signup" onClick={() => setMenuOpen(false)} className="flex-1 py-3 text-center bg-indigo-600 text-white font-bold rounded-xl text-xs">Create Account</Link>
+                <Link href="/login" onClick={() => setMenuOpen(false)} className="flex-1 py-3 text-center border border-[var(--card-border)] text-[var(--foreground)] font-bold rounded-xl text-xs" rel="nofollow">Sign In</Link>
+                <Link href="/signup" onClick={() => setMenuOpen(false)} className="flex-1 py-3 text-center bg-indigo-600 text-white font-bold rounded-xl text-xs" rel="nofollow">Create Account</Link>
               </>
             )}
           </div>

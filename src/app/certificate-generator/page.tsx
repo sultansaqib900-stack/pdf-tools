@@ -4,7 +4,7 @@ import { registerAdTask } from "@/lib/ads";
 
 import { useState } from "react";
 import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
-import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
+import Breadcrumbs from "@/components/Breadcrumbs";
 import { usePageMeta } from "@/hooks/usePageMeta";
 import HowToJsonLd from "@/components/HowToJsonLd";
 import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
@@ -221,7 +221,7 @@ export default function CertificateGeneratorPage() {
       tool="certificate-generator" title="Bulk PDF Certificate Generator" description="Create personalized PDF certificates and diplomas in bulk from a fillable PDF or {{COLUMN}} text placeholders and a CSV participant list." icon="🏆">
       <div className="max-w-3xl mx-auto px-4 py-12">
         <SoftwareAppJsonLd name="PDF Certificate Generator" description="Generate personalized PDF certificates in bulk from a template and CSV. Premium." url="https://allaboutpdfediting.xyz/certificate-generator" image="https://allaboutpdfediting.xyz/opengraph-image" />
-        <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Certificate Generator", item: "https://allaboutpdfediting.xyz/certificate-generator" }]} />
+        <Breadcrumbs items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Tools", item: "https://allaboutpdfediting.xyz/tools" }, { name: "Certificate Generator", item: "https://allaboutpdfediting.xyz/certificate-generator" }]} />
         <HowToJsonLd name="Generate PDF Certificates in Bulk" description="Create personalized PDF certificates in bulk from a template and CSV data" steps={[{name:"Prepare template",text:"Use PDF form fields or text such as {{NAME}} matching your CSV headers"},{name:"Upload CSV data",text:"Upload a CSV file with one participant per row"},{name:"Generate certificates",text:"Download one PDF or a ZIP containing all generated certificates"}]} />
         <AiSummaryJsonLd name="Certificate Generator" summary="Bulk-generate personalized PDF certificates from fillable fields or named placeholders and CSV data" category="BusinessApplications" inputType="PDF+CSV" outputType="PDF or ZIP" processing="client-side" price="premium" features={["Bulk certificate generation","Quoted CSV support","Fillable form support","Text placeholders","ZIP download","Client-side rendering"]} limits="Free: 5-file lifetime trial (shared); Premium: unlimited, 250 rows per batch" />
 

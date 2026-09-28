@@ -19,7 +19,7 @@ import { getPipelineDocument } from "@/lib/pdfPipeline";
 
 import HowToJsonLd from "@/components/HowToJsonLd";
 import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
-import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
+import Breadcrumbs from "@/components/Breadcrumbs";
 import FaqPageJsonLd from "@/components/FaqPageJsonLd";
 import RelatedContent from "@/components/RelatedContent";
 import { getRelatedContent } from "@/lib/related-content";
@@ -147,7 +147,7 @@ export default function WatermarkPage() {
         url="https://allaboutpdfediting.xyz/watermark"
       />
       <HowToJsonLd name="Watermark PDF" description="Add customizable text watermarks to PDF pages" steps={[{name:"Upload PDF",text:"Select the PDF file to watermark"},{name:"Customize watermark",text:"Enter text set opacity rotation and position"},{name:"Apply and download",text:"Click Add Watermark and download your protected PDF"}]} />
-      <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Watermark PDF", item: "https://allaboutpdfediting.xyz/watermark" }]} />
+      <Breadcrumbs items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Tools", item: "https://allaboutpdfediting.xyz/tools" }, { name: "Watermark PDF", item: "https://allaboutpdfediting.xyz/watermark" }]} />
       <FaqPageJsonLd questions={rc?.faqs} />
       <AiSummaryJsonLd name="Watermark PDF" summary="Add custom text watermarks to PDF pages with full control over opacity position and rotation" category="UtilitiesApplication" inputType="PDF" outputType="PDF" processing="client-side" price="free" features={["Custom text watermark","Opacity control","Position and rotation options","Batch page watermarking","Free and private"]} limits="Files up to 10MB" />
       <div className="mb-8">

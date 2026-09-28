@@ -1,13 +1,15 @@
+import type { Metadata } from "next";
+import { buildMetadata } from "@/lib/seo";
 import Link from "next/link";
-import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
+import Breadcrumbs from "@/components/Breadcrumbs";
 import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
 import ToolSearch from "@/components/ToolSearch";
 
-export const metadata = {
-  title: "Todas las Herramientas PDF Gratuitas | PDFTools",
+export const metadata: Metadata = buildMetadata({
+  path: "/es/tools",
+  title: "Todas las Herramientas PDF Gratuitas",
   description: "Explora todas las herramientas PDF gratuitas en línea: comprimir, unir, dividir, editar, firmar, convertir y más.",
-};
-
+});
 const toolCategories = [
   {
     name: "Convertir y Comprimir",
@@ -61,7 +63,7 @@ export default function EsToolsPage() {
         url="https://allaboutpdfediting.xyz/es/tools"
         image="https://allaboutpdfediting.xyz/opengraph-image"
       />
-      <BreadcrumbJsonLd
+      <Breadcrumbs
         items={[
           { name: "Inicio", item: "https://allaboutpdfediting.xyz/es" },
           { name: "Herramientas", item: "https://allaboutpdfediting.xyz/es/tools" },

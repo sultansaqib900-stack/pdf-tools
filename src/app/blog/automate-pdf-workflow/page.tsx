@@ -2,7 +2,7 @@
 import Link from "next/link";
 import ArticleJsonLd from "@/components/ArticleJsonLd";
 import HowToJsonLd from "@/components/HowToJsonLd";
-import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
+import Breadcrumbs from "@/components/Breadcrumbs";
 
 export default function AutomatePDFWorkflowPost() {
   return (
@@ -13,7 +13,7 @@ export default function AutomatePDFWorkflowPost() {
         url="https://allaboutpdfediting.xyz/blog/automate-pdf-workflow"
         datePublished="2026-06-27"
       />
-      <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Blog", item: "https://allaboutpdfediting.xyz/blog" }, { name: "How to Automate PDF Workflows", item: "https://allaboutpdfediting.xyz/blog/automate-pdf-workflow" }]} />
+      <Breadcrumbs items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Blog", item: "https://allaboutpdfediting.xyz/blog" }, { name: "How to Automate PDF Workflows", item: "https://allaboutpdfediting.xyz/blog/automate-pdf-workflow" }]} />
       <HowToJsonLd name="How to Automate PDF Workflows" description="Learn how to automate PDF processing workflows. Batch compress, watermark, merge, and rename PDFs automatically. Save hours of manual work." steps={[{name:"Collect all monthly reports (10-15 PDFs)",text:"Collect all monthly reports (10-15 PDFs)"},{name:"Use Batch Process to compress all files at once → reduces 200MB to 40MB",text:"Use Batch Process to compress all files at once → reduces 200MB to 40MB"},{name:"Use Merge PDFs to combine into one monthly report",text:"Use Merge PDFs to combine into one monthly report"},{name:"Use Watermark to add &quot;Confidential&quot; stamp",text:"Use Watermark to add &quot;Confidential&quot; stamp"},{name:"Use Protect PDF to add password protection",text:"Use Protect PDF to add password protection"},{name:"Total time: 2 minutes (vs. 30 minutes manual)",text:"Total time: 2 minutes (vs. 30 minutes manual)"}]} />
       <div className="max-w-3xl mx-auto px-4 py-12">
         <Link href="/blog" className="text-sm text-indigo-500 hover:underline mb-6 inline-block">&larr; Back to blog</Link>

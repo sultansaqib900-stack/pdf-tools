@@ -1,14 +1,15 @@
+import { buildMetadata } from "@/lib/seo";
 import type { Metadata } from "next";
 import Link from "next/link";
 import SavingsCalculator from "@/components/SavingsCalculator";
 import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
-import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
+import Breadcrumbs from "@/components/Breadcrumbs";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = buildMetadata({
+  path: "/vs/smallpdf",
   title: "SmallPDF vs PDFTools - Free Unlimited Browser PDF Editor",
   description: "Compare SmallPDF ($108/yr) vs PDFTools. No daily 2-file limit, no 60-minute wait queues, and 100% private in-browser document processing.",
-};
-
+});
 export default function VsSmallpdfPage() {
   const comparisonRows = [
     { feature: "Free Daily Limit", competitor: "Only 2 documents / day", pdfTools: "Unlimited basic tools", win: true },
@@ -25,7 +26,7 @@ export default function VsSmallpdfPage() {
         description="Private in-browser alternative to SmallPDF without wait limits."
         url="https://allaboutpdfediting.xyz/vs/smallpdf"
       />
-      <BreadcrumbJsonLd
+      <Breadcrumbs
         items={[
           { name: "Home", item: "https://allaboutpdfediting.xyz" },
           { name: "Compare", item: "https://allaboutpdfediting.xyz/vs" },
@@ -41,6 +42,7 @@ export default function VsSmallpdfPage() {
         <h1 className="text-3xl sm:text-5xl font-black text-[var(--foreground)] tracking-tight">
           SmallPDF vs. PDFTools
         </h1>
+      <p className="text-xs text-[var(--muted)] mt-2 mb-6">Last verified: September 2026 — pricing and limits re-checked against Smallpdf&apos;s public documentation.</p>
         <p className="text-sm sm:text-base text-[var(--muted)] leading-relaxed">
           Never hit a &quot;Daily limit reached, wait 60 minutes&quot; screen again. Unlimited in-browser speed and complete air-gapped document privacy.
         </p>

@@ -1,18 +1,15 @@
+import { buildMetadata } from "@/lib/seo";
 import type { Metadata } from "next";
 
-export const metadata: Metadata = {
-  title: "How to Reverse PDF Pages Online Free – Flip Page Order Instantly | PDFTools",
+export const metadata: Metadata = buildMetadata({
+  path: "/blog/reverse-pdf-pages",
+  title: "How to Reverse PDF Pages Online Free – Flip Page Order Instantly",
   description: "Reverse PDF page order online for free. Flip the entire page sequence of any PDF — last page becomes first. No uploads, 100% private, all in your browser.",
-  alternates: { canonical: "https://allaboutpdfediting.xyz/blog/reverse-pdf-pages" },
-    openGraph: {
-    title: "How to Reverse PDF Pages Online Free – Flip Page Order",
-    description: "Reverse the entire page sequence of any PDF instantly. 100% free, no uploads, no signup.",
-  },
-};
-
+  type: "article",
+});
 import ArticleJsonLd from "@/components/ArticleJsonLd";
 import HowToJsonLd from "@/components/HowToJsonLd";
-import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
+import Breadcrumbs from "@/components/Breadcrumbs";
 
 export default function BlogPost() {
   return (
@@ -23,7 +20,7 @@ export default function BlogPost() {
         url="https://allaboutpdfediting.xyz/blog/reverse-pdf-pages"
         datePublished="2026-06-25"
       />
-      <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Blog", item: "https://allaboutpdfediting.xyz/blog" }, { name: "How to Reverse PDF Pages Online Free", item: "https://allaboutpdfediting.xyz/blog/reverse-pdf-pages" }]} />
+      <Breadcrumbs items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Blog", item: "https://allaboutpdfediting.xyz/blog" }, { name: "How to Reverse PDF Pages Online Free", item: "https://allaboutpdfediting.xyz/blog/reverse-pdf-pages" }]} />
       <HowToJsonLd name="How to Reverse PDF Pages Online Free" description="Reverse PDF page order online for free..." steps={[{name:"Go to the reverser — Open our free PDF page reverser.",text:"Go to the reverser — Open our free PDF page reverser."},{name:"Upload your PDF — Drag and drop or click to select your file.",text:"Upload your PDF — Drag and drop or click to select your file."},{name:"Click Reverse — The tool flips all pages instantly. Download the reversed ver...",text:"Click Reverse — The tool flips all pages instantly. Download the reversed version."}]} />
       <a href="/blog" className="text-sm text-indigo-500 hover:underline mb-6 inline-block">&larr; Back to blog</a>
       <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">How to Reverse PDF Pages Online Free</h1>

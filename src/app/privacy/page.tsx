@@ -1,3 +1,11 @@
+import type { Metadata } from "next";
+import { buildMetadata } from "@/lib/seo";
+
+export const metadata: Metadata = buildMetadata({
+  path: "/privacy",
+  title: "Privacy Policy — How PDFTools Handles Your Files",
+  description: "PDFTools processes most files entirely in your browser — nothing is uploaded to our servers. Read exactly what is stored (account data only), what is never collected, and why.",
+});
 export default function PrivacyPage() {
   return (
     <div className="max-w-3xl mx-auto px-4 py-16">
@@ -6,12 +14,20 @@ export default function PrivacyPage() {
 
         <h2 className="text-lg font-semibold text-[var(--foreground)] pt-2">1. File Processing (100% Client-Side)</h2>
         <p>
-          PDFTools processes all files entirely in your browser using <strong>pdf-lib</strong> and <strong>WebAssembly</strong>.
-          Files are <strong>never uploaded</strong> to any server. All reading, editing, and rendering happens locally on your device.
+          The core PDFTools — compress, merge, split, edit, convert, sign, redact, and the rest of
+          the tool grid — process files entirely in your browser using <strong>pdf-lib</strong> and
+          <strong>WebAssembly</strong>. For these tools, files are <strong>never uploaded</strong> to
+          any server: all reading, editing, and rendering happens locally on your device.
         </p>
         <p>
-          Your documents never leave your computer. We cannot access, view, store, or retrieve any file you process.
-          Once you close the page or download the result, the data is gone from browser memory.
+          Your documents never leave your computer when using these tools. We cannot access, view,
+          store, or retrieve any file you process. Once you close the page or download the result,
+          the data is gone from browser memory.
+        </p>
+        <p>
+          <strong>The only exceptions</strong> are the clearly labeled AI features (Chat with PDF,
+          AI OCR, and scanned-table extraction), which send the extracted text or rendered page
+          image needed for the AI request — never the raw PDF file. Details are in section 5 below.
         </p>
 
         <h2 className="text-lg font-semibold text-[var(--foreground)] pt-2">2. Data Retention</h2>

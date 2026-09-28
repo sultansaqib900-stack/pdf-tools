@@ -1,18 +1,15 @@
+import { buildMetadata } from "@/lib/seo";
 import type { Metadata } from "next";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = buildMetadata({
+  path: "/blog/remove-password-from-pdf",
   title: "How to Remove Password from PDF – Unlock PDF Files Online Free",
   description: "Learn how to remove password from PDF files online free. Unlock protected PDFs instantly in your browser with no uploads required.",
-  alternates: { canonical: "https://allaboutpdfediting.xyz/blog/remove-password-from-pdf" },
-    openGraph: {
-    title: "How to Remove Password from PDF – Free Unlock Tool",
-    description: "Unlock password-protected PDFs instantly in your browser. 100% free, no upload, no signup.",
-  },
-};
-
+  type: "article",
+});
 import ArticleJsonLd from "@/components/ArticleJsonLd";
 import HowToJsonLd from "@/components/HowToJsonLd";
-import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
+import Breadcrumbs from "@/components/Breadcrumbs";
 
 export default function BlogPost() {
   return (
@@ -23,7 +20,7 @@ export default function BlogPost() {
         url="https://allaboutpdfediting.xyz/blog/remove-password-from-pdf"
         datePublished="2026-06-24"
       />
-      <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Blog", item: "https://allaboutpdfediting.xyz/blog" }, { name: "How to Remove Password from PDF Files", item: "https://allaboutpdfediting.xyz/blog/remove-password-from-pdf" }]} />
+      <Breadcrumbs items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Blog", item: "https://allaboutpdfediting.xyz/blog" }, { name: "How to Remove Password from PDF Files", item: "https://allaboutpdfediting.xyz/blog/remove-password-from-pdf" }]} />
       <HowToJsonLd name="How to Remove Password from PDF Files" description="Remove password protection from PDF files online for free..." steps={[{name:"Go to the unlock tool — Visit our free PDF unlock page.",text:"Go to the unlock tool — Visit our free PDF unlock page."},{name:"Upload your PDF — Select the password-protected file from your device.",text:"Upload your PDF — Select the password-protected file from your device."},{name:"Enter the password — Type the password and click Unlock. Download the unlocke...",text:"Enter the password — Type the password and click Unlock. Download the unlocked version instantly."}]} />
       <a href="/blog" className="text-sm text-indigo-500 hover:underline mb-6 inline-block">&larr; Back to blog</a>
       <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">How to Remove Password from PDF Files</h1>

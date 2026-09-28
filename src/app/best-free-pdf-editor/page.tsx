@@ -1,15 +1,12 @@
+import { buildMetadata } from "@/lib/seo";
 import Link from "next/link";
 import type { Metadata } from "next";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = buildMetadata({
+  path: "/best-free-pdf-editor",
   title: "Best Free PDF Editor Online 2026 — Top 10 Free PDF Tools Compared",
   description: "Compare the best free PDF editors online in 2026. Free alternatives to Adobe Acrobat, SmallPDF, and iLovePDF. No uploads, no signup, all browser-based.",
-  openGraph: {
-    title: "Best Free PDF Editor Online 2026 — Top 10 Compared",
-    description: "Free alternatives to Adobe Acrobat. No uploads, no signup, all browser-based.",
-  },
-};
-
+});
 const comparisons = [
   { name: "PDFTools", url: "/compress", free: true, uploads: false, limit: "10MB", batch: false, signup: false, ads: false, rating: 5 },
   { name: "SmallPDF", url: "https://smallpdf.com", free: false, uploads: true, limit: "2/day", batch: false, signup: true, ads: false, rating: 4 },

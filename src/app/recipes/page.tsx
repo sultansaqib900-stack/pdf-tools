@@ -3,7 +3,7 @@
 import RecipeRunner from "@/components/RecipeRunner";
 import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
 import HowToJsonLd from "@/components/HowToJsonLd";
-import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
+import Breadcrumbs from "@/components/Breadcrumbs";
 import FaqPageJsonLd from "@/components/FaqPageJsonLd";
 import ToolInfo from "@/components/ToolInfo";
 
@@ -39,7 +39,7 @@ export default function RecipesPage() {
           { name: "Execute Chained Pipeline", text: "Click Run Recipe to execute all operations sequentially without re-uploading" },
         ]}
       />
-      <BreadcrumbJsonLd
+      <Breadcrumbs
         items={[
           { name: "Home", item: "https://allaboutpdfediting.xyz" },
           { name: "PDF Recipes", item: "https://allaboutpdfediting.xyz/recipes" },

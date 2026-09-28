@@ -1,9 +1,27 @@
 import Link from "next/link";
 import FaqPageJsonLd from "@/components/FaqPageJsonLd";
-import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
+import Breadcrumbs from "@/components/Breadcrumbs";
 import WebSiteJsonLd from "@/components/WebSiteJsonLd";
 import OrganizationJsonLd from "@/components/OrganizationJsonLd";
 import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
+
+import type { Metadata } from "next";
+import { buildMetadata } from "@/lib/seo";
+
+export const metadata: Metadata = {
+  ...buildMetadata({
+    path: "/es",
+    title: "PDFTools: Herramientas PDF Gratis en Español",
+    description:
+      "38 herramientas PDF gratuitas y sin límites, más 14 herramientas profesionales para IA, automatización, redacción segura y flujos legales. El procesamiento se hace en tu navegador.",
+    locale: "es",
+    hasEs: true,
+  }),
+  // The Spanish home title carries the brand itself (no ` | PDFTools` template).
+  title: { absolute: "PDFTools: Herramientas PDF Gratis en Español" },
+};
+
+
 
 const tools = [
   { title: "Comprimir PDF", desc: "Reduce el tamaño del archivo", icon: "📦", href: "/es/compress", gradient: "from-blue-500 to-blue-600" },
@@ -29,7 +47,7 @@ export default function EsHomePage() {
         url="https://allaboutpdfediting.xyz/es"
         image="https://allaboutpdfediting.xyz/opengraph-image"
       />
-      <BreadcrumbJsonLd items={[{ name: "Inicio", item: "https://allaboutpdfediting.xyz/es" }]} />
+      <Breadcrumbs items={[{ name: "Inicio", item: "https://allaboutpdfediting.xyz/es" }]} />
       <FaqPageJsonLd />
 
       <section className="relative overflow-hidden">

@@ -1,17 +1,18 @@
+import { buildMetadata } from "@/lib/seo";
 import Link from "next/link";
 import type { Metadata } from "next";
-import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
+import Breadcrumbs from "@/components/Breadcrumbs";
 import ArticleJsonLd from "@/components/ArticleJsonLd";
 
-export const metadata: Metadata = {
-  title: "Ultimate Guide to PDF Editing — Free Online PDF Tools | PDFTools",
+export const metadata: Metadata = buildMetadata({
+  path: "/ultimate-guide-to-pdf-editing",
+  title: "Ultimate Guide to PDF Editing — Free Online PDF Tools",
   description: "The complete guide to editing PDFs online free. Learn how to compress, merge, split, convert, sign, and edit PDFs — all in your browser with no uploads.",
-};
-
+});
 export default function UltimateGuidePage() {
   return (
     <div className="max-w-4xl mx-auto px-4 py-12">
-      <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Ultimate Guide to PDF Editing", item: "https://allaboutpdfediting.xyz/ultimate-guide-to-pdf-editing" }]} />
+      <Breadcrumbs items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Tools", item: "https://allaboutpdfediting.xyz/tools" }, { name: "Ultimate Guide to PDF Editing", item: "https://allaboutpdfediting.xyz/ultimate-guide-to-pdf-editing" }]} />
       <ArticleJsonLd title="Ultimate Guide to PDF Editing — Free Online PDF Tools" description="The complete guide to editing PDFs online free. Learn how to compress, merge, split, convert, sign, and edit PDFs — all in your browser with no uploads." url="https://allaboutpdfediting.xyz/ultimate-guide-to-pdf-editing" datePublished="2026-06-27" dateModified="2026-06-27" />
       <h1 className="text-3xl font-bold text-[var(--foreground)] mb-3">The Ultimate Guide to PDF Editing</h1>
       <p className="text-[var(--muted)] mb-2">A complete resource for working with PDFs online — from basic edits to advanced features. All tools run in your browser with zero server uploads.</p>

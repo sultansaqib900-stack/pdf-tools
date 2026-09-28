@@ -15,7 +15,7 @@ import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
 import { downloadBytes, isPdfFile } from "@/lib/pdfBytes";
 import HowToJsonLd from "@/components/HowToJsonLd";
 import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
-import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
+import Breadcrumbs from "@/components/Breadcrumbs";
 import FaqPageJsonLd from "@/components/FaqPageJsonLd";
 import RelatedContent from "@/components/RelatedContent";
 import { getRelatedContent } from "@/lib/related-content";
@@ -85,7 +85,7 @@ export default function PdfToPdfaPage() {
     <div className="max-w-3xl mx-auto px-4 py-12">
       <SoftwareAppJsonLd name="PDF to PDF/A - Free Online Converter" description="Convert PDF to PDF/A archive format for long-term preservation." url="https://allaboutpdfediting.xyz/pdf-to-pdfa" />
       <HowToJsonLd name="PDF to PDF/A" description="Convert PDFs to PDF/A archive format" steps={[{name:"Upload PDF",text:"Select a PDF file"},{name:"Convert",text:"Convert to PDF/A archive format"},{name:"Download",text:"Download your archived PDF"}]} />
-      <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "PDF to PDF/A", item: "https://allaboutpdfediting.xyz/pdf-to-pdfa" }]} />
+      <Breadcrumbs items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Tools", item: "https://allaboutpdfediting.xyz/tools" }, { name: "PDF to PDF/A", item: "https://allaboutpdfediting.xyz/pdf-to-pdfa" }]} />
       <FaqPageJsonLd questions={rc?.faqs} />
       <AiSummaryJsonLd name="PDF to PDF/A" summary="Convert PDF documents to PDF/A format for long-term archival and preservation" category="Convert" inputType="PDF" outputType="PDF/A" processing="client-side" price="free" features={["PDF to PDF/A conversion","Archive format","Long-term preservation","Metadata embedding"]} limits="Files up to 10MB" />
       <div className="mb-8">

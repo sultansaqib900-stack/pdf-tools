@@ -1,18 +1,14 @@
+import { buildMetadata } from "@/lib/seo";
 import Link from "next/link";
 import type { Metadata } from "next";
-import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
+import Breadcrumbs from "@/components/Breadcrumbs";
 import FaqPageJsonLd from "@/components/FaqPageJsonLd";
 
-export const metadata: Metadata = {
-  title: "Free PDF Tools for College Students — Compress, Merge, Edit & More | PDFTools",
+export const metadata: Metadata = buildMetadata({
+  path: "/pdf-tools-for-students",
+  title: "Free PDF Tools for College Students — Compress, Merge, Edit & More",
   description: "12 free PDF tools every student needs. Compress lecture slides for email, merge research papers, convert assignments to PDF, extract text from scanned textbooks, and more. Zero signup, 100% browser-based.",
-  openGraph: {
-    title: "Free PDF Tools for College Students — Save Time on Document Busywork",
-    description: "Compress, merge, split, and edit PDFs for free. No uploads, no signup, no student email required. Everything runs in your browser.",
-    url: "https://allaboutpdfediting.xyz/pdf-tools-for-students",
-  },
-};
-
+});
 const studentTools = [
   {
     category: "📚 Study & Reading",
@@ -46,7 +42,7 @@ const studentTools = [
 export default function PDFToolsForStudentsPage() {
   return (
     <>
-      <BreadcrumbJsonLd
+      <Breadcrumbs
         items={[
           { name: "Home", item: "https://allaboutpdfediting.xyz" },
           { name: "PDF Tools for Students", item: "https://allaboutpdfediting.xyz/pdf-tools-for-students" },

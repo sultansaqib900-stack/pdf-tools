@@ -17,7 +17,7 @@ import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
 
 import HowToJsonLd from "@/components/HowToJsonLd";
 import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
-import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
+import Breadcrumbs from "@/components/Breadcrumbs";
 import FaqPageJsonLd from "@/components/FaqPageJsonLd";
 import RelatedContent from "@/components/RelatedContent";
 import { getRelatedContent } from "@/lib/related-content";
@@ -130,7 +130,7 @@ export default function DeletePagesPage() {
         url="https://allaboutpdfediting.xyz/delete-pages"
       />
       <HowToJsonLd name="Delete PDF Pages" description="Remove unwanted pages from PDF documents" steps={[{name:"Upload PDF",text:"Select the PDF with pages to remove"},{name:"Select pages to delete",text:"Choose specific pages or page ranges to remove"},{name:"Download PDF",text:"Download the PDF with selected pages removed"}]} />
-      <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Delete Pages", item: "https://allaboutpdfediting.xyz/delete-pages" }]} />
+      <Breadcrumbs items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Tools", item: "https://allaboutpdfediting.xyz/tools" }, { name: "Delete Pages", item: "https://allaboutpdfediting.xyz/delete-pages" }]} />
       <FaqPageJsonLd questions={rc?.faqs} />
       <AiSummaryJsonLd name="Delete Pages" summary="Remove unwanted specific pages or page ranges from PDF documents" category="Utilities" inputType="PDF" outputType="PDF" processing="client-side" price="free" features={["Page deletion","Range selection","Multiple page removal","Free tool","Client-side"]} limits="Files up to 10MB" />
       <div className="mb-8">

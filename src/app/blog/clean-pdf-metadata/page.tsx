@@ -1,25 +1,26 @@
 "use client";
 import ArticleJsonLd from "@/components/ArticleJsonLd";
+import PremiumUpgradeBox from "@/components/PremiumUpgradeBox";
 import HowToJsonLd from "@/components/HowToJsonLd";
-import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
+import Breadcrumbs from "@/components/Breadcrumbs";
 
 export default function BlogPost() {
   return (
     <article className="max-w-3xl mx-auto px-4 py-12">
       <ArticleJsonLd
-        title="How to Remove Metadata from PDF Online Free — Clean Your Documents"
+        title="How to Edit or Remove PDF Metadata Online Free — Clean Your Documents"
         description="Strip hidden metadata from PDF files before sharing documents publicly."
         url="https://allaboutpdfediting.xyz/blog/clean-pdf-metadata"
         datePublished="2026-06-26"
       />
-      <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Blog", item: "https://allaboutpdfediting.xyz/blog" }, { name: "How to Remove Metadata from PDF Online Free", item: "https://allaboutpdfediting.xyz/blog/clean-pdf-metadata" }]} />
+      <Breadcrumbs items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Blog", item: "https://allaboutpdfediting.xyz/blog" }, { name: "How to Remove Metadata from PDF Online Free", item: "https://allaboutpdfediting.xyz/blog/clean-pdf-metadata" }]} />
       <HowToJsonLd name="How to Remove Metadata from PDF Online Free" description="Strip hidden metadata from PDF files before sharing documents publicly." steps={[{name:"Upload your PDF — Select the document containing metadata you want to remove.",text:"Upload your PDF — Select the document containing metadata you want to remove."},{name:"Review detected metadata — The tool displays all metadata fields found in you...",text:"Review detected metadata — The tool displays all metadata fields found in your document."},{name:"Strip and download — Choose which metadata to remove and download the cleaned...",text:"Strip and download — Choose which metadata to remove and download the cleaned PDF."}]} />
       <a href="/blog" className="text-sm text-indigo-500 hover:underline mb-6 inline-block">&larr; Back to blog</a>
-      <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">How to Remove Metadata from PDF Online Free</h1>
+      <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">How to Edit or Remove PDF Metadata Online Free</h1>
       <p className="text-sm text-[var(--muted)] mb-8">5 min read · Updated June 2026</p>
 
       <div className="text-sm text-[var(--muted)] space-y-5 leading-relaxed">
-        <p>Every PDF you create contains hidden metadata — your name, the software used, creation dates, and sometimes even editing history. Before sharing a document publicly or with clients, stripping this metadata protects your privacy and prevents泄露ing sensitive information about your workflow and identity.</p>
+        <p>Every PDF you create contains hidden metadata — your name, the software used, creation dates, and sometimes even editing history. Before sharing a document publicly or with clients, stripping this metadata protects your privacy and prevents leaking sensitive information about your workflow and identity.</p>
 
         <h2 className="text-xl font-bold text-[var(--foreground)] pt-4">What Metadata PDFs Contain</h2>
         <ul className="list-disc pl-5 space-y-2">
@@ -60,11 +61,21 @@ export default function BlogPost() {
           <li>Document-level JavaScript and actions</li>
         </ul>
 
-        <div className="bg-[var(--card)] border border-[var(--card-border)] rounded-xl p-6 mt-6">
-          <p className="font-semibold text-[var(--foreground)] mb-1">Premium Feature</p>
-          <p className="text-sm text-[var(--muted)] mb-3">The metadata sanitizer is a premium tool. Upgrade to strip hidden metadata and protect your privacy before sharing PDFs.</p>
-          <a href="/premium" className="inline-block px-5 py-2.5 bg-amber-600 text-white font-medium rounded-xl text-sm hover:bg-amber-700 transition">Upgrade to Premium →</a>
-        </div>
+        <h2 className="text-xl font-bold text-[var(--foreground)] pt-4">Prefer to Edit Metadata Instead of Removing It?</h2>
+        <p>Some documents need better metadata, not less — proper titles and authors make files easier to find, help search engines index public PDFs, and look professional when shared. The free <a href="/metadata" className="text-indigo-500 underline">PDF Metadata Editor</a> lets you update the fields in place:</p>
+        <ul className="list-disc pl-5 space-y-2">
+          <li><strong>Title</strong> — the name displayed in PDF readers and search results</li>
+          <li><strong>Author</strong> — the creator or organization behind the document</li>
+          <li><strong>Subject</strong> — a short description of the document's content</li>
+          <li><strong>Keywords</strong> — tags that improve searchability in document libraries</li>
+        </ul>
+        <p>Upload the PDF, edit the fields shown, and download the updated file — processed in your browser like all PDFTools editors.</p>
+
+        <PremiumUpgradeBox
+          desc="The metadata sanitizer is a premium tool. Upgrade to strip hidden metadata and protect your privacy before sharing PDFs."
+          toolHref="/metadata-sanitizer"
+          toolName="Metadata Sanitizer"
+        />
       </div>
     </article>
   );

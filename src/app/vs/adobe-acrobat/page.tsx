@@ -1,14 +1,15 @@
+import { buildMetadata } from "@/lib/seo";
 import type { Metadata } from "next";
 import Link from "next/link";
 import SavingsCalculator from "@/components/SavingsCalculator";
 import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
-import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
+import Breadcrumbs from "@/components/Breadcrumbs";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = buildMetadata({
+  path: "/vs/adobe-acrobat",
   title: "Adobe Acrobat Pro vs PDFTools - The Private, Free Alternative",
   description: "Compare Adobe Acrobat Pro ($240/yr) vs PDFTools. 100% in-browser privacy, zero cloud document uploads, multi-step Studio, and PII auto-redaction.",
-};
-
+});
 export default function VsAdobePage() {
   const comparisonRows = [
     { feature: "Annual Cost per User", adobe: "$240 - $360 / year", pdfTools: "$0 / Lifetime Free", winner: "pdfTools" },
@@ -27,7 +28,7 @@ export default function VsAdobePage() {
         description="Free, private in-browser alternative to Adobe Acrobat Pro."
         url="https://allaboutpdfediting.xyz/vs/adobe-acrobat"
       />
-      <BreadcrumbJsonLd
+      <Breadcrumbs
         items={[
           { name: "Home", item: "https://allaboutpdfediting.xyz" },
           { name: "Compare", item: "https://allaboutpdfediting.xyz/vs" },
@@ -43,6 +44,7 @@ export default function VsAdobePage() {
         <h1 className="text-3xl sm:text-5xl font-black text-[var(--foreground)] tracking-tight">
           Adobe Acrobat Pro vs. PDFTools
         </h1>
+      <p className="text-xs text-[var(--muted)] mt-2 mb-6">Last verified: September 2026 — pricing and limits re-checked against Adobe Acrobat Pro&apos;s public documentation.</p>
         <p className="text-sm sm:text-base text-[var(--muted)] leading-relaxed">
           Why pay $240/year per person when you can edit, sign, auto-redact, and compress documents with complete air-gapped privacy for free?
         </p>

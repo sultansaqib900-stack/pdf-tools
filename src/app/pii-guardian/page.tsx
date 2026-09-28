@@ -3,7 +3,7 @@
 import PiiGuardian from "@/components/PiiGuardian";
 import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
 import HowToJsonLd from "@/components/HowToJsonLd";
-import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
+import Breadcrumbs from "@/components/Breadcrumbs";
 import FaqPageJsonLd from "@/components/FaqPageJsonLd";
 import ToolInfo from "@/components/ToolInfo";
 
@@ -39,7 +39,7 @@ export default function PiiGuardianPage() {
           { name: "Review and Export", text: "Review matches; Premium can burn permanent blackouts and export a new PDF" },
         ]}
       />
-      <BreadcrumbJsonLd
+      <Breadcrumbs
         items={[
           { name: "Home", item: "https://allaboutpdfediting.xyz" },
           { name: "PII Guardian", item: "https://allaboutpdfediting.xyz/pii-guardian" },

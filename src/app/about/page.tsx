@@ -1,4 +1,12 @@
+import type { Metadata } from "next";
+import { buildMetadata } from "@/lib/seo";
 
+
+export const metadata: Metadata = buildMetadata({
+  path: "/about",
+  title: "About PDFTools — Private, In-Browser PDF Tools",
+  description: "PDFTools is run by an independent developer building free PDF tools that process files locally in your browser. Learn who we are, why privacy comes first, and how to reach us.",
+});
 export default function AboutPage() {
   return (
     <div className="max-w-3xl mx-auto px-4 py-16">

@@ -15,7 +15,7 @@ import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
 
 import HowToJsonLd from "@/components/HowToJsonLd";
 import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
-import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
+import Breadcrumbs from "@/components/Breadcrumbs";
 import FaqPageJsonLd from "@/components/FaqPageJsonLd";
 import RelatedContent from "@/components/RelatedContent";
 import { getRelatedContent } from "@/lib/related-content";
@@ -376,7 +376,7 @@ export default function AnnotatePage() {
         url="https://allaboutpdfediting.xyz/annotate"
       />
       <HowToJsonLd name="Annotate PDF Online" description="Add visual highlights, underlines, and strikethroughs to PDFs" steps={[{name:"Upload PDF",text:"Select the PDF document to annotate"},{name:"Draw visual markup",text:"Drag rectangles over content to highlight, underline, or strike it"},{name:"Download annotated PDF",text:"Download the PDF with the visual markup burned onto its pages"}]} />
-      <BreadcrumbJsonLd items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Annotate PDF", item: "https://allaboutpdfediting.xyz/annotate" }]} />
+      <Breadcrumbs items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Tools", item: "https://allaboutpdfediting.xyz/tools" }, { name: "Annotate PDF", item: "https://allaboutpdfediting.xyz/annotate" }]} />
       <FaqPageJsonLd questions={rc?.faqs} />
       <AiSummaryJsonLd name="Annotate PDF" summary="Burn visual highlight rectangles, underline lines, and strikethrough lines onto PDF pages" category="Graphics" inputType="PDF" outputType="PDF" processing="client-side" price="free" features={["Highlight overlays","Underline overlays","Strikethrough overlays","Rotated-page coordinate mapping","Client-side tool"]} limits="Files up to 10MB" />
       <div className="mb-8">

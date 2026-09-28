@@ -1,14 +1,15 @@
+import { buildMetadata } from "@/lib/seo";
 import type { Metadata } from "next";
 import Link from "next/link";
 import SavingsCalculator from "@/components/SavingsCalculator";
 import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
-import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
+import Breadcrumbs from "@/components/Breadcrumbs";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = buildMetadata({
+  path: "/vs",
   title: "Compare PDF Tools - PDFTools vs Adobe, iLovePDF, SmallPDF",
   description: "Compare PDFTools against Adobe Acrobat Pro, iLovePDF, and SmallPDF. 100% client-side privacy, multi-step pipeline studio, and PII auto-redaction.",
-};
-
+});
 export default function CompareIndexPage() {
   const competitors = [
     {
@@ -44,7 +45,7 @@ export default function CompareIndexPage() {
         description="Compare PDFTools against Adobe Acrobat Pro, iLovePDF, and SmallPDF."
         url="https://allaboutpdfediting.xyz/vs"
       />
-      <BreadcrumbJsonLd
+      <Breadcrumbs
         items={[
           { name: "Home", item: "https://allaboutpdfediting.xyz" },
           { name: "Compare", item: "https://allaboutpdfediting.xyz/vs" },
