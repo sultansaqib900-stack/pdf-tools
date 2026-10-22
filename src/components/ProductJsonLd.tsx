@@ -14,8 +14,8 @@ export default function ProductJsonLd() {
       {
         "@type": "Offer",
         name: "Premium Monthly",
-        price: "12",
-        priceCurrency: "USD",
+        price: "2500",
+        priceCurrency: "PKR",
         priceValidUntil: "2027-12-31",
         availability: "https://schema.org/InStock",
         url: "https://allaboutpdfediting.xyz/premium",
@@ -23,8 +23,8 @@ export default function ProductJsonLd() {
       {
         "@type": "Offer",
         name: "Premium Yearly",
-        price: "100",
-        priceCurrency: "USD",
+        price: "12500",
+        priceCurrency: "PKR",
         priceValidUntil: "2027-12-31",
         availability: "https://schema.org/InStock",
         url: "https://allaboutpdfediting.xyz/premium",

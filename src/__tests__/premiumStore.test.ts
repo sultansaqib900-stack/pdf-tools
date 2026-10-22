@@ -73,14 +73,14 @@ describe("authoritative Premium store", () => {
       expiresAt: future,
       eventTimestamp: "2026-01-01T00:00:00.000Z",
       subscriptionId: "subscription-verified",
-      variantId: "1824885",
+      variantId: "2279735",
     });
 
     expect(await getPremiumStatusByEmail("verified@example.com")).toBe(true);
     await revokePremiumByEmail("verified@example.com", undefined, {
       eventTimestamp: "2026-02-01T00:00:00.000Z",
       subscriptionId: "subscription-verified",
-      variantId: "1824885",
+      variantId: "2279735",
     });
     expect(await getPremiumStatusByEmail("verified@example.com")).toBe(false);
   });
@@ -105,13 +105,13 @@ describe("authoritative Premium store", () => {
       expiresAt: future,
       eventTimestamp: "2026-01-01T00:00:00.000Z",
       subscriptionId: "subscription-1",
-      variantId: "1824885",
+      variantId: "2279735",
     });
     await bindPremiumUser("user-1", "buyer@example.com");
     await revokePremiumByEmail("buyer@example.com", undefined, {
       eventTimestamp: "2026-02-01T00:00:00.000Z",
       subscriptionId: "subscription-1",
-      variantId: "1824885",
+      variantId: "2279735",
     });
 
     expect(await getPremiumStatus("device")).toBe(false);
@@ -121,19 +121,19 @@ describe("authoritative Premium store", () => {
       expiresAt: future,
       eventTimestamp: "2026-01-15T00:00:00.000Z",
       subscriptionId: "subscription-1",
-      variantId: "1824885",
+      variantId: "2279735",
     });
     expect(await getPremiumStatus("device")).toBe(false);
     expect(await getPremiumSubscriptionBinding("subscription-1")).toEqual(expect.objectContaining({
       email: "buyer@example.com",
-      variantId: "1824885",
+      variantId: "2279735",
     }));
 
     await setPremiumByEmail("buyer@example.com", "device", {
       expiresAt: future,
       eventTimestamp: "2026-03-01T00:00:00.000Z",
       subscriptionId: "subscription-1",
-      variantId: "1824885",
+      variantId: "2279735",
     });
     expect(await getPremiumStatus("device")).toBe(true);
     expect(await getPremiumStatusByUserId("user-1")).toBe(true);
@@ -145,21 +145,21 @@ describe("authoritative Premium store", () => {
       eventTimestamp: "2026-01-01T00:00:00.000Z",
       orderId: "order-a",
       subscriptionId: "subscription-a",
-      variantId: "1824885",
+      variantId: "2279735",
     });
     await setPremiumByEmail("multi@example.com", undefined, {
       expiresAt: future,
       eventTimestamp: "2026-01-02T00:00:00.000Z",
       orderId: "order-b",
       subscriptionId: "subscription-b",
-      variantId: "1824911",
+      variantId: "2279736",
     });
 
     await revokePremiumByEmail("multi@example.com", undefined, {
       eventTimestamp: "2026-02-01T00:00:00.000Z",
       orderId: "order-a",
       subscriptionId: "subscription-a",
-      variantId: "1824885",
+      variantId: "2279735",
     });
     expect(await getPremiumStatus("multi-device")).toBe(true);
 
@@ -167,7 +167,7 @@ describe("authoritative Premium store", () => {
       eventTimestamp: "2026-02-02T00:00:00.000Z",
       orderId: "order-b",
       subscriptionId: "subscription-b",
-      variantId: "1824911",
+      variantId: "2279736",
     });
     expect(await getPremiumStatus("multi-device")).toBe(false);
   });
@@ -177,19 +177,19 @@ describe("authoritative Premium store", () => {
       expiresAt: future,
       eventTimestamp: "2026-01-01T00:00:00.000Z",
       orderId: "order-1",
-      variantId: "1824885",
+      variantId: "2279735",
     });
     await setPremiumByEmail("correlated@example.com", undefined, {
       expiresAt: future,
       eventTimestamp: "2026-01-02T00:00:00.000Z",
       orderId: "order-1",
       subscriptionId: "subscription-1",
-      variantId: "1824885",
+      variantId: "2279735",
     });
     await revokePremiumByEmail("correlated@example.com", undefined, {
       eventTimestamp: "2026-02-01T00:00:00.000Z",
       orderId: "order-1",
-      variantId: "1824885",
+      variantId: "2279735",
     });
 
     expect(await getPremiumStatus("correlated-device")).toBe(false);

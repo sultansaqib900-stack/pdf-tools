@@ -2,13 +2,13 @@ export const LS_CONFIG = {
   storeSlug: "khanbrand",
 
   variants: {
-    premiumMonthly: "1824885",
-    premiumYearly: "1824911",
+    premiumMonthly: "2279735",
+    premiumYearly: "2279736",
   },
 
   checkoutBaseUrls: {
-    premiumMonthly: "https://khanbrand.lemonsqueezy.com/checkout/buy/a09b2382-cfaa-4fb2-9ba9-6c269dd92a0e",
-    premiumYearly: "https://khanbrand.lemonsqueezy.com/checkout/buy/e009ffff-808b-4593-9156-c42e31eb06ba",
+    premiumMonthly: "https://khanbrand.lemonsqueezy.com/checkout/buy/56df7a55-fe05-4938-9640-f0c7dadfd26d",
+    premiumYearly: "https://khanbrand.lemonsqueezy.com/checkout/buy/6645622c-1e35-447a-96d1-001926cf09f1",
   },
 
   redirectBaseUrl: "https://allaboutpdfediting.xyz/premium",

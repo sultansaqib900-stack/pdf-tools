@@ -12,7 +12,6 @@ Set these for **Production** and, when testing the protected deployment, **Previ
 | `KV_REST_API_TOKEN` | Yes | Upstash Redis REST token |
 | `GEMINI_API_KEY` | Yes for advertised AI | Chat PDF, OCR preview, and scanned-table extraction |
 | `LEMONSQUEEZY_WEBHOOK_SECRET` | Yes for checkout | HMAC verification and fail-closed checkout initialization |
-| `LEMONSQUEEZY_ALLOW_TEST_MODE` | Yes | Set to `false` in Production; only use `true` on an isolated, webhook-reachable staging deployment |
 | `BUTTONDOWN_API_KEY` | Yes while newsletter is shown | Newsletter delivery; the API fails visibly instead of discarding addresses |
 | `SENTRY_DSN` | Optional | Server/edge error monitoring |
 | `NEXT_PUBLIC_SENTRY_DSN` | Optional | Browser error monitoring; a Sentry DSN is public by design |
@@ -28,14 +27,16 @@ The code also accepts the legacy Vercel integration names `pdf_tools_KV_REST_API
 - Production webhook URL: `https://allaboutpdfediting.xyz/api/webhook`
 - The webhook secret must exactly match `LEMONSQUEEZY_WEBHOOK_SECRET`.
 - Confirm the configured Premium variant IDs are still:
-  - Monthly: `1824885`
-  - Yearly: `1824911`
+  - Monthly: `2279735`
+  - Yearly: `2279736`
 - Subscribe the webhook to at least:
   - `order_created`, `order_refunded`
   - `subscription_created`, `subscription_updated`, `subscription_cancelled`
   - `subscription_resumed`, `subscription_expired`, `subscription_unpaused`
   - `subscription_payment_success`, `subscription_payment_recovered`, `subscription_payment_refunded`
-- Keep `LEMONSQUEEZY_ALLOW_TEST_MODE=false` in Production.
+- Create the webhook with Lemon Squeezy Test mode turned **off**, and set its signing secret in Vercel Production.
+- Test-mode events are always ignored, even if the obsolete `LEMONSQUEEZY_ALLOW_TEST_MODE` variable is still set. Remove that variable from Vercel.
+- Checkout links and variant IDs in `src/lib/lemonsqueezy.ts` use the live products. Redeploy after updating the webhook secret.
 - **Migration requirement:** resend a current signed subscription event for every active customer before or immediately when promoting this release. Old boolean entitlements are intentionally rejected because the previous confirmation and arbitrary-email flows could forge them without payment.
 
 ## 3. Verified Pre-Deploy Checks
@@ -161,7 +162,7 @@ Unexpected `429`, `500`, or `503` responses in these probes indicate missing/unr
 - Confirm Chat allows three free questions, OCR one free preview, and scanned-table extraction one free preview.
 - Confirm PII Guardian masks page-1 findings for free users and does not export redactions.
 - Confirm only the two starter Recipes run for free users.
-- Complete one real low-value production checkout, or use a separate webhook-reachable staging deployment:
+- Complete one real low-value production checkout, (test-mode events are intentionally ignored):
   - pending nonce alone does not activate Premium;
   - the signed configured-variant webhook activates it;
   - account/device recovery works;

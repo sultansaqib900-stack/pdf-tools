@@ -43,7 +43,7 @@ function orderPayload(overrides: Record<string, unknown> = {}) {
       attributes: {
         user_email: "buyer@example.com",
         status: "paid",
-        first_order_item: { variant_id: 1824885 },
+        first_order_item: { variant_id: 2279735 },
         created_at: "2026-01-01T00:00:00.000Z",
         ...overrides,
       },
@@ -70,12 +70,26 @@ describe("Lemon Squeezy Premium webhook", () => {
     expect(kvMocks.setPremiumByEmail).not.toHaveBeenCalled();
   });
 
-  it("ignores signed test-mode purchases unless explicitly enabled", async () => {
+  it.each(["false", "true"])("ignores signed test-mode purchases even with legacy override %s", async (override) => {
+    vi.stubEnv("LEMONSQUEEZY_ALLOW_TEST_MODE", override);
     const { POST } = await import("@/app/api/webhook/route");
     const payload = orderPayload({ test_mode: true });
     const response = await POST(signedRequest(payload));
     expect(response.status).toBe(200);
     expect(kvMocks.setPremiumByEmail).not.toHaveBeenCalled();
+  });
+
+  it("ignores test mode in event metadata before touching payment state", async () => {
+    const { POST } = await import("@/app/api/webhook/route");
+    const payload = orderPayload();
+    const response = await POST(signedRequest({
+      ...payload,
+      meta: { ...payload.meta, test_mode: true },
+    }));
+    expect(await response.json()).toEqual({ received: true, ignored: "test-mode" });
+    expect(kvMocks.getPremiumSubscriptionBinding).not.toHaveBeenCalled();
+    expect(kvMocks.setPremiumByEmail).not.toHaveBeenCalled();
+    expect(kvMocks.revokePremiumByEmail).not.toHaveBeenCalled();
   });
 
   it("activates and links only a matching server-created checkout", async () => {
@@ -94,7 +108,7 @@ describe("Lemon Squeezy Premium webhook", () => {
     expect(kvMocks.setPremiumByEmail).toHaveBeenCalledWith(
       "buyer@example.com",
       "client-1",
-      expect.objectContaining({ variantId: "1824885", orderId: "order-1" }),
+      expect.objectContaining({ variantId: "2279735", orderId: "order-1" }),
     );
     expect(kvMocks.bindPremiumUser).toHaveBeenCalledWith("user-1", "buyer@example.com");
     expect(kvMocks.setCheckoutRecord).toHaveBeenCalledWith(
@@ -127,7 +141,7 @@ describe("Lemon Squeezy Premium webhook", () => {
         attributes: {
           order_id: "order-1",
           user_email: "buyer@example.com",
-          variant_id: 1824885,
+          variant_id: 2279735,
           status: "active",
           renews_at: "2026-03-01T00:00:00.000Z",
           created_at: "2026-01-01T00:00:01.000Z",
@@ -144,7 +158,7 @@ describe("Lemon Squeezy Premium webhook", () => {
       expect.objectContaining({
         orderId: "order-1",
         subscriptionId: "subscription-1",
-        variantId: "1824885",
+        variantId: "2279735",
       }),
     );
   });
@@ -152,7 +166,7 @@ describe("Lemon Squeezy Premium webhook", () => {
   it("uses the stored subscription mapping for renewal invoice events", async () => {
     kvMocks.getPremiumSubscriptionBinding.mockResolvedValue({
       email: "buyer@example.com",
-      variantId: "1824885",
+      variantId: "2279735",
     });
     const payload = {
       meta: { event_name: "subscription_payment_success" },
@@ -175,7 +189,7 @@ describe("Lemon Squeezy Premium webhook", () => {
       undefined,
       expect.objectContaining({
         subscriptionId: "subscription-1",
-        variantId: "1824885",
+        variantId: "2279735",
       }),
     );
   });
@@ -216,7 +230,7 @@ describe("Lemon Squeezy Premium webhook", () => {
   it("revokes an expired mapped subscription", async () => {
     kvMocks.getPremiumSubscriptionBinding.mockResolvedValue({
       email: "buyer@example.com",
-      variantId: "1824885",
+      variantId: "2279735",
     });
     const payload = {
       meta: { event_name: "subscription_expired" },
@@ -238,7 +252,7 @@ describe("Lemon Squeezy Premium webhook", () => {
       undefined,
       expect.objectContaining({
         subscriptionId: "subscription-1",
-        variantId: "1824885",
+        variantId: "2279735",
       }),
     );
   });
@@ -246,7 +260,7 @@ describe("Lemon Squeezy Premium webhook", () => {
   it("revokes a mapped subscription that moves to an unconfigured product variant", async () => {
     kvMocks.getPremiumSubscriptionBinding.mockResolvedValue({
       email: "buyer@example.com",
-      variantId: "1824885",
+      variantId: "2279735",
     });
     const payload = {
       meta: { event_name: "subscription_updated" },
@@ -269,7 +283,7 @@ describe("Lemon Squeezy Premium webhook", () => {
       undefined,
       expect.objectContaining({
         subscriptionId: "subscription-1",
-        variantId: "1824885",
+        variantId: "2279735",
       }),
     );
     expect(kvMocks.setPremiumByEmail).not.toHaveBeenCalled();
@@ -311,7 +325,7 @@ describe("Lemon Squeezy Premium webhook", () => {
   it("keeps the stored entitlement owner when a subscription billing email changes", async () => {
     kvMocks.getPremiumSubscriptionBinding.mockResolvedValue({
       email: "buyer@example.com",
-      variantId: "1824885",
+      variantId: "2279735",
     });
     const payload = {
       meta: { event_name: "subscription_updated" },

@@ -57,7 +57,8 @@ export async function POST(req: Request) {
     const attributes = event.data?.attributes || {};
     const customData = event.meta?.custom_data || {};
     const testMode = event.meta?.test_mode === true || attributes.test_mode === true;
-    if (testMode && process.env.LEMONSQUEEZY_ALLOW_TEST_MODE !== "true") {
+    // Live-only: test events must never grant or revoke production access.
+    if (testMode) {
       return NextResponse.json({ received: true, ignored: "test-mode" });
     }
     const clientId = typeof customData.client_id === "string" ? customData.client_id : undefined;
