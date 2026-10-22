@@ -8,8 +8,12 @@ import {
 describe("LS_CONFIG", () => {
   it("has store checkout URLs and configured variants", () => {
     expect(LS_CONFIG.storeSlug).toBe("khanbrand");
-    expect(LS_CONFIG.checkoutBaseUrls.premiumMonthly).toContain("lemonsqueezy.com");
-    expect(LS_CONFIG.checkoutBaseUrls.premiumYearly).toContain("lemonsqueezy.com");
+    expect(LS_CONFIG.checkoutBaseUrls.premiumMonthly).toBe("https://khanbrand.lemonsqueezy.com/checkout/buy/56df7a55-fe05-4938-9640-f0c7dadfd26d");
+    expect(LS_CONFIG.variants.premiumMonthly).toBe("2279735");
+    expect(LS_CONFIG.checkoutBaseUrls.premiumYearly).toBe("https://khanbrand.lemonsqueezy.com/checkout/buy/6645622c-1e35-447a-96d1-001926cf09f1");
+    expect(LS_CONFIG.variants.premiumYearly).toBe("2279736");
+    expect(isConfiguredVariant("1824885")).toBe(false);
+    expect(isConfiguredVariant("1824911")).toBe(false);
     expect(isConfiguredVariant(LS_CONFIG.variants.premiumMonthly)).toBe(true);
     expect(isConfiguredVariant(LS_CONFIG.variants.premiumYearly)).toBe(true);
     expect(isConfiguredVariant("attacker-variant")).toBe(false);

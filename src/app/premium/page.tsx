@@ -14,7 +14,7 @@ import { PREMIUM_TOOLS, PREMIUM_TOOL_COUNT } from "@/lib/toolCatalog";
 const plans = [
   {
     name: "Free",
-    price: "$0",
+    price: "Rs 0",
     period: "forever",
     features: ["All basic tools — unlimited use", "PDF Studio workspace included", "Professional tools: 5 lifetime trial files (shared)", "Max 10MB files (100MB in PDF Studio)", "No account required", "AI chat preview: 3 questions/day"],
     highlighted: false,
@@ -23,7 +23,7 @@ const plans = [
   },
   {
     name: "Premium Monthly",
-    price: "$12",
+    price: "Rs 2,500",
     period: "/month",
     features: ["Unlimited basic AND professional tools — no trial limit", "Max 100MB files", "Batch processing up to 20 files", "Unlimited AI questions", `${PREMIUM_TOOL_COUNT} professional premium tools`, "Priority email support", "Future premium tools"],
     highlighted: true,
@@ -32,9 +32,9 @@ const plans = [
   },
   {
     name: "Premium Yearly",
-    price: "$8.33",
-    period: "/month",
-    features: ["Everything in Monthly", "2 months free", "Priority support", "Best value — save $44/year"],
+    price: "Rs 12,500",
+    period: "/year",
+    features: ["Everything in Monthly", "Billed yearly in PKR", "Priority support", "Best value — save Rs 17,500/year"],
     highlighted: false,
     checkoutUrl: LS_CONFIG.checkoutBaseUrls.premiumYearly,
     planKey: "yearly",
