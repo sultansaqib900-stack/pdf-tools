@@ -105,7 +105,35 @@ export default function Footer() {
             <span className="w-2 h-2 rounded-full bg-emerald-400" />
             <span>100% Client-Side Privacy: No files ever uploaded to any server.</span>
           </div>
-          <p>&copy; {new Date().getFullYear()} PDFTools (allaboutpdfediting.xyz). All rights reserved.</p>
+          <div className="flex items-center gap-2">
+            <p>&copy; {new Date().getFullYear()} PDFTools (allaboutpdfediting.xyz). All rights reserved.</p>
+            <details className="inline-block">
+              <summary
+                className="list-none cursor-pointer text-[var(--muted)]/40 hover:text-[var(--muted)] select-none"
+                aria-label="Directory listings"
+              >
+                &middot;
+              </summary>
+              <div className="mt-2">
+                <a
+                  href="https://launchpadly.co/startup/pdf-tools?ref=badge"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  data-launchpadly-badge="pdf-tools"
+                  data-launchpadly-badge-variant="listed-on"
+                >
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src="https://launchpadly.co/embed/badges/startup/pdf-tools.svg?variant=listed-on"
+                    alt="Launchpadly Startup Directory"
+                    width="260"
+                    height="48"
+                    style={{ display: "block", border: 0 }}
+                  />
+                </a>
+              </div>
+            </details>
+          </div>
         </div>
       </div>
     </footer>

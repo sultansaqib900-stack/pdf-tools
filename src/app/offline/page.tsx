@@ -3,10 +3,6 @@
 import Link from "next/link";
 
 export default function OfflinePage() {
-  <!-- Launchpadly — PDF Tools (listed-on) -->
-<a href="https://launchpadly.co/startup/pdf-tools?ref=badge" target="_blank" rel="noopener noreferrer" data-launchpadly-badge="pdf-tools" data-launchpadly-badge-variant="listed-on">
-  <img src="https://launchpadly.co/embed/badges/startup/pdf-tools.svg?variant=listed-on" alt="Launchpadly Startup Directory" width="260" height="48" style="display:block;border:0;" />
-</a>
   return (
     <div className="max-w-xl mx-auto px-4 py-32 text-center">
       <div className="mb-6 inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-amber-100 dark:bg-amber-950/30 text-amber-600 dark:text-amber-400">
@@ -29,6 +25,26 @@ export default function OfflinePage() {
         >
           Retry Connection
         </button>
+      </div>
+
+      {/* Launchpadly — PDF Tools (listed-on) */}
+      <div className="mt-12 flex justify-center">
+        <a
+          href="https://launchpadly.co/startup/pdf-tools?ref=badge"
+          target="_blank"
+          rel="noopener noreferrer"
+          data-launchpadly-badge="pdf-tools"
+          data-launchpadly-badge-variant="listed-on"
+        >
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="https://launchpadly.co/embed/badges/startup/pdf-tools.svg?variant=listed-on"
+            alt="Launchpadly Startup Directory"
+            width="260"
+            height="48"
+            style={{ display: "block", border: 0 }}
+          />
+        </a>
       </div>
     </div>
   );
