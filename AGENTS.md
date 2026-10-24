@@ -35,6 +35,16 @@ Build premium-only PDF features, redesign UI to make them visible, apply compreh
 - Moved from the dark glassmorphism look to a flat, light, iLovePDF/Adobe-style design: light paper background, white cards, solid buttons, no blur/glow/gradient text.
 - `globals.css` redefines the three themes as light palettes and adds global overrides (no backdrop-filter, solid gradient buttons, calmer radii/shadows) so all 300+ pages update without per-file edits. `ThemeScript` no longer forces the `dark` class.
 
+### Full Production Pre-Flight, Hardening & Deployment (2026-10-24)
+- **Next.js Security Upgrade**: Upgraded `next` and `eslint-config-next` to `16.4.3` (`^16.4.3`), completely resolving critical advisories GHSA-vcvr-r3jv-pc5j (next/og ImageResponse RCE), GHSA-2464-fhr4-w9xw (sharp/librsvg Image Optimization SVG RCE), GHSA-673q-mjm6-r5xr (`use cache` RCE), and GHSA-p3m5-59mp-jv5r (Server Actions DoS). Lockfile updated with `npm audit fix` resulting in **0 vulnerabilities**.
+- **Unified Pricing Source of Truth**: Centralized all pricing definitions in `src/lib/pricing.ts` (Rs 2,500/mo, Rs 12,500/yr; Lemon Squeezy variants 2279735/2279736; 58.3% annual savings). Synchronized across homepage, premium page, pricing calculators, comparison matrices, and ProductJsonLd.
+- **UI/UX & Discovery Modernization**: Restructured homepage hierarchy, redesigned ToolGrid and ToolSearch with accessible keyboard navigation (`ArrowUp`/`ArrowDown`/`Enter`) and category filters, updated Header and Footer, and integrated PrivacyHUD for real-time proof of in-browser processing.
+- **PDF Processing Reliability**: Destructive canvas rasterization in `src/lib/pdfRaster.ts` for `/redact` (removes all text glyphs, vector paths, form layers, and attachments), transparent empty-password decryption in `loadPdfForEditing()` across all tools, and canvas bounds clamping to 18M pixels to prevent mobile Safari/Chrome OOM crashes.
+- **Document Vault**: Client-side AES-256-GCM encryption with PBKDF2 (250k iterations) stored in IndexedDB (`pdftools_secure_vault`).
+- **Technical SEO Hardening**: Single-pass XML sitemap emitter in `src/app/sitemap.ts` eliminating duplicate Spanish URLs, bidirectional hreflang links, stripped keyword stuffing across 14 tool pages, and 0 broken internal links verified via crawler test.
+- **Automated Test Suite**: 44 test files, 237 tests passing (100% pass rate). 503 production routes compiled cleanly with Next.js 16.4.3 Turbopack.
+- **Git & Deployment**: Pushed commit `da774d6` to `origin/master` triggering Vercel Production deployment.
+
 ### Done
 - **Built 13 premium-only PDF tools** (all premium-gated, not just limit-removal):
   - `/pdf-diff` — Compare two PDFs side by side with highlighted differences
