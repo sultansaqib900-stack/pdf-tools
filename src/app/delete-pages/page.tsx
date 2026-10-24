@@ -1,7 +1,6 @@
 "use client";
 
-import { isPdfFile } from "@/lib/pdfBytes";
-
+import { isPdfFile, loadPdfForEditing, downloadBytes, formatPdfErrorMessage, validatePdfOutput } from "@/lib/pdfBytes";
 import { useState, useCallback, useEffect, useRef } from "react";
 import ToolInfo from "@/components/ToolInfo";
 import FreeWaitTimer from "@/components/FreeWaitTimer";
@@ -14,6 +13,7 @@ import { isPremium, checkFileSize } from "@/lib/premium";
 import { useUsage } from "@/hooks/useUsage";
 import { useToolHistory } from "@/hooks/useToolHistory";
 import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
+import PipelineActionBar from "@/components/PipelineActionBar";
 
 import HowToJsonLd from "@/components/HowToJsonLd";
 import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
@@ -21,17 +21,21 @@ import Breadcrumbs from "@/components/Breadcrumbs";
 import FaqPageJsonLd from "@/components/FaqPageJsonLd";
 import RelatedContent from "@/components/RelatedContent";
 import { getRelatedContent } from "@/lib/related-content";
-import PipelineActionBar from "@/components/PipelineActionBar";
 import UseCaseLinks from "@/components/UseCaseLinks";
 
 const rc = getRelatedContent("delete-pages");
+
+interface PageItem {
+  index: number;
+  checked: boolean;
+}
 
 export default function DeletePagesPage() {
   const usage = useUsage();
   const upsell = usePremiumUpsell();
   const { trackToolVisit, trackExport } = useToolHistory();
   const [file, setFile] = useState<File | null>(null);
-  const [pages, setPages] = useState<{ index: number; checked: boolean }[]>([]);
+  const [pages, setPages] = useState<PageItem[]>([]);
   const [processing, setProcessing] = useState(false);
   const [success, setSuccess] = useState(false);
   const [dragging, setDragging] = useState(false);
@@ -43,20 +47,41 @@ export default function DeletePagesPage() {
 
   useEffect(() => { trackToolVisit("delete-pages"); }, []);
 
+  useEffect(() => {
+    return () => {
+      if (downloadUrl) URL.revokeObjectURL(downloadUrl);
+    };
+  }, [downloadUrl]);
+
   const handleFile = useCallback(async (f: File | null) => {
-    if (!f || !isPdfFile(f)) return;
+    if (!f) return;
+    if (!isPdfFile(f)) {
+      setError("Please select a valid PDF file.");
+      return;
+    }
     const check = checkFileSize(f.size);
     if (!check.ok) { upsell.showUpsell("file-size"); return; }
-    setFile(f);
+    
     setSuccess(false);
     setError(null);
-    const { PDFDocument } = await import("pdf-lib");
-    const bytes = await f.arrayBuffer();
-    originalBytes.current = bytes;
-    const pdf = await PDFDocument.load(bytes);
-    const count = pdf.getPageCount();
-    setPages(Array.from({ length: count }, (_, i) => ({ index: i, checked: true })));
-  }, []);
+    setResultBytes(null);
+    setDownloadUrl(null);
+
+    try {
+      const bytes = await f.arrayBuffer();
+      const pdf = await loadPdfForEditing(bytes);
+      const count = pdf.getPageCount();
+      if (count === 0) {
+        throw new Error("This PDF document contains no pages.");
+      }
+      originalBytes.current = bytes;
+      setFile(f);
+      setPages(Array.from({ length: count }, (_, i) => ({ index: i, checked: true })));
+    } catch (err) {
+      setFile(null);
+      setError(formatPdfErrorMessage(err, "Failed to load PDF. The document may be corrupted or password-protected."));
+    }
+  }, [upsell]);
 
   const togglePage = (index: number) => {
     setPages((prev) => prev.map((p) => (p.index === index ? { ...p, checked: !p.checked } : p)));
@@ -77,31 +102,44 @@ export default function DeletePagesPage() {
       const { PDFDocument } = await import("pdf-lib");
       const bytes = await file.arrayBuffer();
       originalBytes.current = bytes;
-      const sourcePdf = await PDFDocument.load(bytes);
+      const sourcePdf = await loadPdfForEditing(bytes);
       const indicesToKeep = pages.filter((p) => p.checked).map((p) => p.index);
 
-      if (indicesToKeep.length === 0) { setError("Select at least one page to keep."); setProcessing(false); return; }
+      if (indicesToKeep.length === 0) {
+        setError("Select at least one page to keep. You cannot delete all pages.");
+        setProcessing(false);
+        return;
+      }
+
+      if (indicesToKeep.length === pages.length) {
+        setError("All pages are currently selected. Uncheck the pages you wish to remove.");
+        setProcessing(false);
+        return;
+      }
 
       const newPdf = await PDFDocument.create();
       const copiedPages = await newPdf.copyPages(sourcePdf, indicesToKeep);
       copiedPages.forEach((p) => newPdf.addPage(p));
 
       const pdfBytes = await newPdf.save({ useObjectStreams: true });
+      const validation = await validatePdfOutput(pdfBytes);
+      if (!validation.ok) {
+        throw new Error(validation.error || "Generated document is invalid.");
+      }
+
       setResultBytes(pdfBytes);
-      const blob = new Blob([pdfBytes as unknown as BlobPart], { type: "application/pdf" });
-      const url = URL.createObjectURL(blob);
+      const url = downloadBytes(pdfBytes, `filtered-${file.name}`);
       setDownloadUrl(url);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `filtered-${file.name}`;
-      a.click();
       trackExport(file.name, "Delete Pages", pdfBytes.length);
       setSuccess(true);
-    } catch { setError("Failed to delete pages."); }
-    setProcessing(false);
-  }, [file, pages]);
+    } catch (err) {
+      setError(formatPdfErrorMessage(err, "Failed to delete pages from PDF."));
+    } finally {
+      setProcessing(false);
+    }
+  }, [file, pages, usage, upsell, trackExport]);
 
-  const process = useCallback(async () => {
+  const deletePages = useCallback(async () => {
     if (!isPremium()) {
       const remaining = await usage.peekUsage();
       if (remaining <= 0) { upsell.showUpsell("trial-limit"); return; }
@@ -109,36 +147,47 @@ export default function DeletePagesPage() {
       return;
     }
     runDelete();
-    }, [usage, upsell, runDelete])
+  }, [usage, upsell, runDelete]);
 
   const restoreOriginal = useCallback(async () => {
-    if (!originalBytes.current) return;
-    const blob = new Blob([originalBytes.current], { type: "application/pdf" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `original-${file?.name || "restored.pdf"}`;
-    a.click();
-    window.setTimeout(() => URL.revokeObjectURL(url), 60_000);
+    if (!originalBytes.current || !file) return;
+    downloadBytes(originalBytes.current, `original-${file.name}`);
   }, [file]);
+
+  const resetTool = useCallback(() => {
+    setFile(null);
+    setPages([]);
+    setError(null);
+    setSuccess(false);
+    setResultBytes(null);
+    if (downloadUrl) URL.revokeObjectURL(downloadUrl);
+    setDownloadUrl(null);
+    originalBytes.current = null;
+  }, [downloadUrl]);
+
+  const checkedCount = pages.filter((p) => p.checked).length;
+  const removedCount = pages.length - checkedCount;
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-12">
       <SoftwareAppJsonLd
-        name="Delete Pages from PDF - Free Online Tool"
-        description="Remove unwanted pages from PDF documents online for free. Delete specific pages instantly."
+        name="Delete PDF Pages - Free Online PDF Tool"
+        description="Delete pages from PDF documents online for free. Remove unwanted PDF pages instantly in your browser."
         url="https://allaboutpdfediting.xyz/delete-pages"
       />
-      <HowToJsonLd name="Delete PDF Pages" description="Remove unwanted pages from PDF documents" steps={[{name:"Upload PDF",text:"Select the PDF with pages to remove"},{name:"Select pages to delete",text:"Choose specific pages or page ranges to remove"},{name:"Download PDF",text:"Download the PDF with selected pages removed"}]} />
+      <HowToJsonLd name="Delete PDF Pages Online" description="Remove unwanted pages from a PDF" steps={[{name:"Upload PDF",text:"Select the PDF document to remove pages from"},{name:"Select pages",text:"Uncheck the pages you want to delete"},{name:"Download",text:"Download the modified PDF without the deleted pages"}]} />
       <Breadcrumbs items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Tools", item: "https://allaboutpdfediting.xyz/tools" }, { name: "Delete Pages", item: "https://allaboutpdfediting.xyz/delete-pages" }]} />
       <FaqPageJsonLd questions={rc?.faqs} />
-      <AiSummaryJsonLd name="Delete Pages" summary="Remove unwanted specific pages or page ranges from PDF documents" category="Utilities" inputType="PDF" outputType="PDF" processing="client-side" price="free" features={["Page deletion","Range selection","Multiple page removal","Free tool","Client-side"]} limits="Files up to 10MB" />
+      <AiSummaryJsonLd name="Delete Pages" summary="Visually select and remove unwanted pages from any PDF with instant browser processing" category="Utilities" inputType="PDF" outputType="PDF" processing="client-side" price="free" features={["Page thumbnail selection","Keep/remove toggles","Instant processing","No file uploads","Undo support"]} limits="Files up to 10MB" />
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">Delete Pages from PDF</h1>
-        <p className="text-[var(--muted)]">Remove unwanted pages from your PDF document.</p>
+        <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">Delete PDF Pages</h1>
+        <p className="text-[var(--muted)]">Uncheck the pages you want to remove, then download the result.</p>
       </div>
 
-      <ToolInfo name="Delete PDF Pages" description="Your file stays private. All processing happens locally in your browser using pdf-lib — no uploads, no servers. Select which pages to remove and download the result instantly." />
+      <ToolInfo
+        name="Delete PDF Pages"
+        description="Your file stays on your device. All processing happens locally in your browser using pdf-lib — no uploads, no servers. Select which pages to remove and download the result instantly."
+      />
 
       <div className="mb-4">
         <UsageBar remaining={usage.remaining} unlimited={usage.unlimited} tier={usage.tier} />
@@ -153,92 +202,114 @@ export default function DeletePagesPage() {
             dragging ? "border-indigo-500 bg-indigo-50 dark:bg-indigo-950/30" : "border-[var(--card-border)] bg-[var(--background)]"
           }`}
         >
-          <input type="file" accept="application/pdf" onChange={(e) => handleFile(e.target.files?.[0] ?? null)} className="hidden" id="fileInput" />
+          <input
+            type="file"
+            accept="application/pdf"
+            onChange={(e) => handleFile(e.target.files?.[0] || null)}
+            className="hidden"
+            id="fileInput"
+          />
           <label htmlFor="fileInput" className="cursor-pointer flex flex-col items-center gap-3">
             <span className="text-5xl">🗑️</span>
             <span className="text-indigo-500 font-medium hover:underline">
               {file ? file.name : "Click to select or drag & drop a PDF"}
             </span>
-            {file && <span className="text-sm text-[var(--muted)]">{(file.size / 1024).toFixed(1)} KB &middot; {pages.length} pages</span>}
-            {!file && <span className="text-xs text-[var(--muted)]">Any PDF up to 10MB</span>}
+            {file && (
+              <div className="flex items-center gap-2">
+                <span className="text-xs text-[var(--muted)]">{pages.length} page{pages.length > 1 ? "s" : ""}</span>
+                <span>·</span>
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    resetTool();
+                  }}
+                  className="text-xs text-red-500 hover:text-red-700 underline font-medium"
+                >
+                  Change file
+                </button>
+              </div>
+            )}
+            {!file && <span className="text-xs text-[var(--muted)]">Max {isPremium() ? "100MB" : "10MB"} · 100% Private Client-Side</span>}
           </label>
         </div>
 
         {pages.length > 0 && (
-          <div className="mt-6">
-            <div className="flex items-center justify-between mb-3">
-              <span className="text-sm font-medium text-[var(--foreground)]">Select pages to keep ({pages.filter((p) => p.checked).length} of {pages.length})</span>
-              <button onClick={toggleAll} className="text-xs text-indigo-500 hover:underline">
-                {pages.every((p) => p.checked) ? "Deselect all" : "Select all"}
+          <div className="mt-6 space-y-4">
+            <div className="flex items-center justify-between">
+              <span className="text-sm font-medium text-[var(--foreground)]">
+                Keeping {checkedCount} of {pages.length} pages
+                {removedCount > 0 && <span className="text-red-500 ml-1">({removedCount} will be deleted)</span>}
+              </span>
+              <button
+                type="button"
+                onClick={toggleAll}
+                className="text-xs text-indigo-500 hover:text-indigo-600 font-medium"
+              >
+                {pages.every((p) => p.checked) ? "Uncheck all" : "Select all"}
               </button>
             </div>
-            <div className="grid grid-cols-5 sm:grid-cols-8 gap-2">
-              {pages.map((p) => (
+
+            <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 gap-2 max-h-60 overflow-y-auto p-2 bg-[var(--background)] rounded-lg border border-[var(--card-border)]">
+              {pages.map((page) => (
                 <button
-                  key={p.index}
-                  onClick={() => togglePage(p.index)}
-                  className={`aspect-square rounded-xl text-sm font-medium border transition ${
-                    p.checked
-                      ? "bg-indigo-600 text-white border-indigo-600"
-                      : "border-[var(--card-border)] text-[var(--muted)] hover:border-red-400 hover:text-red-500"
+                  key={page.index}
+                  type="button"
+                  onClick={() => togglePage(page.index)}
+                  className={`p-3 rounded-lg border text-center font-medium text-xs transition ${
+                    page.checked
+                      ? "border-indigo-500 bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400"
+                      : "border-[var(--card-border)] bg-[var(--card)] text-[var(--muted)] opacity-50 line-through"
                   }`}
                 >
-                  {p.index + 1}
+                  Page {page.index + 1}
                 </button>
               ))}
             </div>
-          </div>
-        )}
 
-        {showTimer && <FreeWaitTimer onDone={() => { setShowTimer(false); runDelete(); }} />}
+            {showTimer && <FreeWaitTimer onDone={() => { setShowTimer(false); runDelete(); }} />}
 
-        <ProgressBar processing={processing} fileSize={file?.size} label="Deleting pages..." />
-
-        {pages.length > 0 && (
-          <>
             <button
-              onClick={process}
-              disabled={processing || pages.filter((p) => p.checked).length === pages.length || showTimer}
-              className="mt-6 w-full py-3 bg-indigo-600 text-white font-medium rounded-xl hover:bg-indigo-700 disabled:opacity-40 disabled:cursor-not-allowed transition shadow-sm"
+              onClick={deletePages}
+              disabled={processing || showTimer || checkedCount === 0 || removedCount === 0}
+              className="w-full py-3 bg-indigo-600 text-white font-medium rounded-xl hover:bg-indigo-700 disabled:opacity-40 disabled:cursor-not-allowed transition shadow-sm"
             >
               {processing ? (
                 <span className="flex items-center justify-center gap-2">
                   <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none"/><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
-                  Deleting pages...
+                  Processing...
                 </span>
-              ) : `Delete ${pages.length - pages.filter((p) => p.checked).length} page(s)`}
+              ) : removedCount > 0 ? `Remove ${removedCount} page${removedCount > 1 ? "s" : ""} & download (${checkedCount} pages left)` : "Select pages to remove"}
             </button>
 
             {!isPremium() && (
               <p className="mt-3 text-center text-xs text-[var(--muted)]">
-                Free users limited to 10MB &amp; 5s wait.{ " " }
-                <a href="/premium" className="text-indigo-500 font-medium hover:underline">Upgrade for no limits</a>
+                Free users limited to 10MB files.{" "}
+                <a href="/premium" className="text-indigo-500 font-medium hover:underline">Upgrade for 100MB files & batch</a>
               </p>
             )}
-          </>
-        )}
 
-        {error && <ErrorBanner message={error} onRetry={runDelete} onDismiss={() => setError(null)} />}
+            {error && <ErrorBanner message={error} onRetry={runDelete} onDismiss={() => setError(null)} />}
 
-        <SuccessAnimation show={success} message="Pages deleted successfully!" details={`${pages.filter((p) => p.checked).length} of ${pages.length} pages kept`} onRestore={restoreOriginal} />
+            <SuccessAnimation show={success} message="Pages deleted successfully!" onRestore={restoreOriginal} />
 
-        {success && (
-          <PipelineActionBar
-            pdfBytes={resultBytes}
-            filename={`filtered-${file?.name || "document.pdf"}`}
-            downloadUrl={downloadUrl}
-            currentToolName="Delete Pages"
-          />
+            {success && resultBytes && (
+              <PipelineActionBar
+                pdfBytes={resultBytes}
+                filename={`filtered-${file?.name || "document.pdf"}`}
+                downloadUrl={downloadUrl}
+                currentToolName="Delete Pages"
+              />
+            )}
+          </div>
         )}
       </div>
-
 
       <div className="max-w-3xl mx-auto mt-12 pt-8 border-t border-[var(--card-border)]">
         <h2 className="text-xl font-bold text-[var(--foreground)] mb-3">About Delete PDF Pages</h2>
         <div className="text-sm text-[var(--muted)] space-y-3 leading-relaxed">
-          <p>Remove unwanted pages from PDF files online for free. Select the pages you want to keep, and the tool creates a new PDF with only those pages. Perfect for removing blank pages, covers, or sections you don't need.</p>
-          <p>All processing happens locally in your browser using pdf-lib — no uploads, no servers, complete privacy. Your original file is never transmitted or stored.</p>
-          <p>Keywords: delete pages from PDF online free, remove PDF pages, PDF page remover, delete PDF pages without acrobat.</p>
+          <p>Remove unwanted, blank, or duplicate pages from any PDF document quickly and securely. Whether you have accidental blank pages from a scanner, sensitive pages that should not be shared, or unnecessary cover sheets, our delete PDF pages tool lets you select exactly which pages to keep and which to remove. To delete pages from PDF online free, upload your document, click on the page numbers you want to exclude, and download the trimmed version instantly. All processing happens entirely inside your browser using pdf-lib — your files are never uploaded to any remote server, guaranteeing full confidentiality for private contracts, financial statements, and medical records. It takes just seconds to clean up your PDFs before emailing or publishing them.</p>
         </div>
       </div>
       <RelatedContent slug="delete-pages" />

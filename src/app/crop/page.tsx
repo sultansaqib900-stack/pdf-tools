@@ -1,6 +1,6 @@
 "use client";
 
-import { isPdfFile } from "@/lib/pdfBytes";
+import { isPdfFile, loadPdfForEditing, validatePdfOutput, downloadBytes, formatPdfErrorMessage } from "@/lib/pdfBytes";
 
 import { useState, useCallback, useEffect, useRef } from "react";
 import ToolInfo from "@/components/ToolInfo";
@@ -48,6 +48,16 @@ export default function CropPage() {
 
   useEffect(() => { trackToolVisit("crop"); }, []);
 
+  const resetFile = useCallback(() => {
+    setFile(null);
+    setPageCount(0);
+    setError(null);
+    setSuccess(false);
+    setPreviewBytes(null);
+    setOutBytes(null);
+    originalBytes.current = null;
+  }, []);
+
   const handleFile = useCallback(async (f: File | null) => {
     if (!f || !isPdfFile(f)) return;
     const check = checkFileSize(f.size);
@@ -57,31 +67,41 @@ export default function CropPage() {
     setError(null);
     setPreviewBytes(null);
     setOutBytes(null);
-    const { PDFDocument } = await import("pdf-lib");
-    const bytes = await f.arrayBuffer();
-    originalBytes.current = bytes;
-    const pdf = await PDFDocument.load(bytes);
-    setPageCount(pdf.getPageCount());
-  }, []);
+    try {
+      const bytes = await f.arrayBuffer();
+      originalBytes.current = bytes;
+      const pdf = await loadPdfForEditing(bytes);
+      setPageCount(pdf.getPageCount());
+    } catch (err) {
+      setError(formatPdfErrorMessage(err, "Failed to load PDF. The document may be password-protected or corrupted."));
+      setFile(null);
+      setPageCount(0);
+    }
+  }, [upsell]);
 
   const runCrop = useCallback(async () => {
-    if (!file) return;
+    if (!file || !originalBytes.current) return;
     setProcessing(true);
     setError(null);
     const canProceed = await usage.checkAndTrack();
     if (!canProceed) { setProcessing(false); upsell.showUpsell("trial-limit"); return; }
     try {
-      const { PDFDocument } = await import("pdf-lib");
-      const bytes = originalBytes.current!.slice(0);
-      const pdfDoc = await PDFDocument.load(bytes);
+      const bytes = originalBytes.current.slice(0);
+      const pdfDoc = await loadPdfForEditing(bytes);
 
       const t = parseFloat(top) || 0;
       const b = parseFloat(bottom) || 0;
       const l = parseFloat(left) || 0;
       const r = parseFloat(right) || 0;
+      if (t < 0 || b < 0 || l < 0 || r < 0) {
+        setError("Margin values cannot be negative.");
+        setProcessing(false);
+        return;
+      }
       const mmToPt = unit === "mm" ? 2.83465 : 1;
 
       const pages = pdfDoc.getPages();
+      let croppedPages = 0;
       for (const page of pages) {
         const { width, height } = page.getSize();
         const x = l * mmToPt;
@@ -90,24 +110,28 @@ export default function CropPage() {
         const h = height - (t + b) * mmToPt;
         if (w > 0 && h > 0) {
           page.setCropBox(x, y, w, h);
+          croppedPages++;
         }
       }
 
+      if (croppedPages === 0) {
+        setError("Specified margins exceed page dimensions.");
+        setProcessing(false);
+        return;
+      }
+
       const pdfBytes = await pdfDoc.save({ useObjectStreams: true });
+      await validatePdfOutput(pdfBytes);
       const croppedBuffer = pdfBytes as unknown as ArrayBuffer;
       setOutBytes(croppedBuffer);
       setPreviewBytes(originalBytes.current);
 
-      const blob = new Blob([pdfBytes as unknown as BlobPart], { type: "application/pdf" });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `cropped-${file.name}`;
-      a.click();
-      window.setTimeout(() => URL.revokeObjectURL(url), 60_000);
+      downloadBytes(pdfBytes, `cropped-${file.name}`);
       trackExport(file.name, "Crop PDF", croppedBuffer.byteLength);
       setSuccess(true);
-    } catch { setError("Failed to crop PDF."); }
+    } catch (err) {
+      setError(formatPdfErrorMessage(err, "Failed to crop PDF."));
+    }
     setProcessing(false);
   }, [file, top, bottom, left, right, unit, usage, upsell, trackExport]);
 
@@ -199,6 +223,15 @@ export default function CropPage() {
               ) : "Crop PDF"}
             </button>
 
+            <button
+              type="button"
+              onClick={resetFile}
+              disabled={processing}
+              className="mt-3 w-full py-2 bg-transparent text-sm text-[var(--muted)] hover:text-[var(--foreground)] transition border border-[var(--card-border)] rounded-xl"
+            >
+              Choose different file
+            </button>
+
             {!isPremium() && (
               <p className="mt-3 text-center text-xs text-[var(--muted)]">
                 Free users limited to 10MB &amp; 5s wait.{ " " }
@@ -223,7 +256,7 @@ export default function CropPage() {
         <div className="text-sm text-[var(--muted)] space-y-3 leading-relaxed">
           <p>Remove unwanted margins and whitespace from PDF pages online for free. Specify the amount to crop from each side (top, bottom, left, right) in points or millimeters. Perfect for cleaning up scanned documents, removing excessive borders, or fitting content into a smaller area.</p>
           <p>All processing happens locally in your browser — no uploads, no servers, complete privacy. Your original file is never transmitted or stored.</p>
-          <p>Keywords: crop PDF online free, trim PDF margins, remove whitespace PDF, cut PDF pages, PDF margin remover free online.</p>
+          <p>Cropping adjusts the visible bounding box (CropBox) across selected pages while leaving vector elements and typography intact.</p>
         </div>
       </div>
       <RelatedContent slug="crop" />

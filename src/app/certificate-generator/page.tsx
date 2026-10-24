@@ -12,7 +12,7 @@ import TrialGate from "@/components/TrialGate";
 import PremiumUpsell, { usePremiumUpsell } from "@/components/PremiumUpsell";
 import { useUsage } from "@/hooks/useUsage";
 import { checkFileSize } from "@/lib/premium";
-import { copyPdfBytes, downloadBytes, isPdfFile, sanitizeDownloadFilename } from "@/lib/pdfBytes";
+import { copyPdfBytes, downloadBytes, isPdfFile, sanitizeDownloadFilename, loadPdfForEditing, sanitizeForStandardFont, validatePdfOutput } from "@/lib/pdfBytes";
 import { parseCsv } from "@/lib/csv";
 
 interface TemplatePlaceholder {
@@ -130,15 +130,16 @@ export default function CertificateGeneratorPage() {
       for (let rowIndex = 0; rowIndex < table.rows.length; rowIndex += 1) {
         const row = table.rows[rowIndex];
         const values = new Map(Object.entries(row).map(([key, value]) => [normalizedKey(key), value]));
-        const document = await PDFDocument.load(copyPdfBytes(templateBytes));
+        const document = await loadPdfForEditing(copyPdfBytes(templateBytes));
         const font = await document.embedFont(StandardFonts.Helvetica);
         let replacements = 0;
 
         try {
           const form = document.getForm();
           for (const field of form.getFields()) {
-            const value = values.get(normalizedKey(field.getName()));
-            if (value === undefined) continue;
+            const rawValue = values.get(normalizedKey(field.getName()));
+            if (rawValue === undefined) continue;
+            const value = sanitizeForStandardFont(rawValue);
             if (field instanceof PDFTextField) {
               field.setText(value);
             } else if (field instanceof PDFCheckBox) {
@@ -160,8 +161,9 @@ export default function CertificateGeneratorPage() {
         }
 
         for (const placeholder of placeholders) {
-          const value = values.get(placeholder.key);
-          if (value === undefined) continue;
+          const rawValue = values.get(placeholder.key);
+          if (rawValue === undefined) continue;
+          const value = sanitizeForStandardFont(rawValue);
           const page = document.getPage(placeholder.pageIndex);
           const { width: pageWidth } = page.getSize();
           const maxTextWidth = Math.max(30, pageWidth - placeholder.x - 24);
@@ -192,7 +194,9 @@ export default function CertificateGeneratorPage() {
         const nameValue = values.get("name") || values.get(normalizedKey(table.headers[0])) || String(rowIndex + 1);
         let outputName = sanitizeDownloadFilename(`certificate-${nameValue}.pdf`);
         if (files[outputName]) outputName = sanitizeDownloadFilename(`certificate-${nameValue}-${rowIndex + 1}.pdf`);
-        files[outputName] = await document.save({ useObjectStreams: true });
+        const savedPdf = await document.save({ useObjectStreams: true });
+        await validatePdfOutput(savedPdf);
+        files[outputName] = savedPdf;
         setProgress(Math.round(((rowIndex + 1) / table.rows.length) * 100));
       }
 

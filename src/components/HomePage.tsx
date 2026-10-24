@@ -1,7 +1,6 @@
 "use client";
 
 import { isPdfFile } from "@/lib/pdfBytes";
-
 import { usePageMeta } from "@/hooks/usePageMeta";
 import { usePremiumStatus } from "@/hooks/usePremiumStatus";
 import ToolGrid from "@/components/ToolGrid";
@@ -14,17 +13,43 @@ import dynamic from "next/dynamic";
 import { setPipelineDocument } from "@/lib/pdfPipeline";
 import SavingsCalculator from "@/components/SavingsCalculator";
 import { FREE_TOOL_COUNT, PREMIUM_TOOL_COUNT, TOOL_CATALOG } from "@/lib/toolCatalog";
+import { PRICING_CONFIG, ANNUAL_SAVINGS } from "@/lib/pricing";
 
 const LiveStats = dynamic(() => import("@/components/LiveStats"));
 const EmailSubscribe = dynamic(() => import("@/components/EmailSubscribe"));
 const FeedbackSection = dynamic(() => import("@/components/FeedbackSection"));
 const RecentTools = dynamic(() => import("@/components/RecentTools"));
-const PremiumFeatureShowcase = dynamic(() => import("@/components/PremiumFeatureShowcase"));
 
-function AnimatedHero() {
+function SectionReveal({ children, className = "" }: { children: React.ReactNode; className?: string }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const obs = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) { setVisible(true); obs.disconnect(); } },
+      { threshold: 0.08 }
+    );
+    if (ref.current) obs.observe(ref.current);
+    return () => obs.disconnect();
+  }, []);
+
+  return (
+    <div ref={ref} className={`${className} transition-all duration-500 ease-out ${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}>
+      {children}
+    </div>
+  );
+}
+
+export default function Home() {
+  const { premium } = usePremiumStatus();
   const router = useRouter();
   const [isDragging, setIsDragging] = useState(false);
   const [uploading, setUploading] = useState(false);
+
+  usePageMeta(
+    "PDFTools - Free Online PDF Editor | 51 Client-Side PDF Tools",
+    "38 core PDF tools free and unlimited with local browser processing, plus 13 professional tools — including the PDF Studio pipeline — for legal, bulk, and security workflows."
+  );
 
   const handleDrop = useCallback(async (e: React.DragEvent) => {
     e.preventDefault();
@@ -46,358 +71,383 @@ function AnimatedHero() {
     router.push("/studio");
   }, [router]);
 
-  return (
-    <section className="relative overflow-hidden pt-16 pb-20 px-4">
-      <div className="max-w-5xl mx-auto text-center relative z-10">
-        {/* Top Feature Pill */}
-        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[var(--card)] border border-[var(--card-border)] text-[var(--muted)] text-xs font-bold mb-6">
-          <span>{TOOL_CATALOG.length} PDF tools · Everything runs in your browser</span>
-        </div>
-
-        {/* Hero Headline */}
-        <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-[var(--foreground)] mb-5 leading-[1.15]">
-          Every PDF tool you need, <span className="text-[var(--accent)]">free and in one place</span>
-        </h1>
-
-        {/* Subtitle */}
-        <p className="text-base sm:text-lg text-[var(--muted)] max-w-2xl mx-auto mb-10 leading-relaxed">
-          {FREE_TOOL_COUNT} core tools — merge, split, compress, OCR, e-sign, redact, convert, and organise — free and unlimited with no account. {PREMIUM_TOOL_COUNT} professional tools for legal and bulk work.
-        </p>
-
-        {/* Interactive Quick-Drop Studio Launcher */}
-        <div className="max-w-xl mx-auto mb-10">
-          <label
-            onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
-            onDragLeave={() => setIsDragging(false)}
-            onDrop={handleDrop}
-            className={`block border-2 border-dashed rounded-xl p-6 sm:p-8 text-center transition-colors cursor-pointer bg-[var(--card)] ${
-              isDragging
-                ? "border-[var(--accent)] bg-indigo-50"
-                : "border-[var(--card-border)] hover:border-[var(--card-hover-border)]"
-            }`}
-          >
-            <input type="file" accept=".pdf" onChange={handleFileSelect} className="hidden" />
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <div className="w-14 h-14 rounded-lg bg-[var(--accent)] text-white flex items-center justify-center text-2xl">
-                {uploading ? "⏳" : "⚡"}
-              </div>
-              <div className="text-left">
-                <p className="text-sm font-bold text-[var(--foreground)]">
-                  {uploading ? "Loading PDF into Studio..." : "Drop PDF here to launch the Studio Pipeline"}
-                  <span className="ml-2 align-middle text-[10px] font-bold uppercase px-2 py-0.5 rounded bg-amber-500 text-white">Premium</span>
-                </p>
-                <p className="text-xs text-[var(--muted)] mt-0.5">
-                  or click to browse · PDF Studio is included with Premium.
-                </p>
-              </div>
-            </div>
-          </label>
-        </div>
-
-        {/* Hero CTAs */}
-        <div className="flex flex-wrap items-center justify-center gap-4 mb-10">
-          <Link
-            href="/studio"
-            className="px-7 py-3.5 bg-[var(--accent)] text-white font-bold text-sm rounded-lg hover:bg-[var(--accent-hover)] transition-colors"
-          >
-            <span>Open PDF Studio</span>
-            <span>→</span>
-          </Link>
-          <Link
-            href="/recipes"
-            className="px-5 py-3.5 border border-[var(--card-border)] bg-[var(--card)] text-[var(--foreground)] hover:border-[var(--card-hover-border)] font-bold text-sm rounded-lg transition-colors"
-          >
-            ⭐ Recipes · Free Preview
-          </Link>
-          <Link
-            href="/pii-guardian"
-            className="px-5 py-3.5 border border-[var(--card-border)] bg-[var(--card)] text-[var(--foreground)] hover:border-[var(--card-hover-border)] font-bold text-sm rounded-lg transition-colors"
-          >
-            ⭐ PII Scan · Free Preview
-          </Link>
-          <Link
-            href="/vs/adobe-acrobat"
-            className="px-5 py-3.5 border border-[var(--card-border)] bg-[var(--card)] hover:border-[var(--card-hover-border)] text-[var(--foreground)] font-bold text-sm rounded-lg transition-colors"
-          >
-            ⚔️ vs Adobe Pro
-          </Link>
-        </div>
-
-        {/* Feature Badges */}
-        <div className="flex flex-wrap justify-center gap-3 text-xs text-[var(--muted)]">
-          {[
-            { icon: "🔒", label: "100% Client-Side Privacy" },
-            { icon: "⚡", label: "Local Browser Processing" },
-            { icon: "🆓", label: "No Signup Required" },
-            { icon: "📁", label: "Zero Server Uploads" },
-          ].map((badge) => (
-            <span
-              key={badge.label}
-              className="px-3.5 py-1.5 rounded-full bg-[var(--card)] border border-[var(--card-border)] flex items-center gap-1.5 shadow-sm"
-            >
-              <span>{badge.icon}</span>
-              <span className="font-medium text-[var(--foreground)]">{badge.label}</span>
-            </span>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function SectionReveal({ children, className = "" }: { children: React.ReactNode; className?: string }) {
-  const ref = useRef<HTMLDivElement>(null);
-  const [visible, setVisible] = useState(false);
-
-  useEffect(() => {
-    const obs = new IntersectionObserver(
-      ([entry]) => { if (entry.isIntersecting) { setVisible(true); obs.disconnect(); } },
-      { threshold: 0.1 }
-    );
-    if (ref.current) obs.observe(ref.current);
-    return () => obs.disconnect();
-  }, []);
-
-  return (
-    <div ref={ref} className={`${className} transition-all duration-700 ease-out ${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
-      {children}
-    </div>
-  );
-}
-
-export default function Home() {
-  const { premium } = usePremiumStatus();
-  usePageMeta(
-    "PDFTools - Free Online PDF Editor | 52 Online PDF Tools",
-    "38 core PDF tools free and unlimited, plus 14 professional tools — led by the PDF Studio pipeline — for AI, automation, redaction, legal, and bulk workflows. Most document processing stays in your browser."
-  );
+  const popularTools = [
+    {
+      name: "Compress PDF",
+      desc: "Reduce file size while keeping text and images sharp.",
+      href: "/compress",
+      icon: (
+        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+          <polyline points="4 14 10 14 10 20"/><polyline points="20 10 14 10 14 4"/><line x1="14" y1="10" x2="21" y2="3"/><line x1="3" y1="21" x2="10" y2="14"/>
+        </svg>
+      ),
+      tag: "Popular",
+    },
+    {
+      name: "Merge PDF",
+      desc: "Combine multiple PDF files into one clean document.",
+      href: "/merge",
+      icon: (
+        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+          <rect x="8" y="2" width="13" height="13" rx="2"/><path d="M5 8v11a2 2 0 0 0 2 2h11"/>
+        </svg>
+      ),
+      tag: "Popular",
+    },
+    {
+      name: "Split PDF",
+      desc: "Extract specific page ranges or split each page into a separate file.",
+      href: "/split",
+      icon: (
+        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+          <circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><line x1="20" y1="4" x2="8.12" y2="15.88"/><line x1="14.47" y1="14.48" x2="20" y2="20"/><line x1="8.12" y1="8.12" x2="12" y2="12"/>
+        </svg>
+      ),
+      tag: "Popular",
+    },
+    {
+      name: "Edit PDF",
+      desc: "Add text overlays, dates, watermarks, notes, and visual markup.",
+      href: "/edit-pdf",
+      icon: (
+        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+          <path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
+        </svg>
+      ),
+      tag: "Essential",
+    },
+    {
+      name: "Sign PDF",
+      desc: "Draw, type, or stamp your signature onto any page.",
+      href: "/sign",
+      icon: (
+        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+          <path d="M20.5 4.5l-2-2a2 2 0 0 0-2.8 0L3 15.2V21h5.8L20.5 7.3a2 2 0 0 0 0-2.8z"/><path d="M14.5 7.5l2 2"/>
+        </svg>
+      ),
+      tag: "Essential",
+    },
+    {
+      name: "PDF to Word",
+      desc: "Extract text and tables from PDF directly into an editable Word document.",
+      href: "/pdf-to-word",
+      icon: (
+        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/>
+        </svg>
+      ),
+      tag: "Convert",
+    },
+  ];
 
   return (
     <div>
-      <AnimatedHero />
+      {/* 1. HERO SECTION: Concise headline + verified privacy */}
+      <section className="pt-12 pb-10 px-4 sm:px-6">
+        <div className="max-w-5xl mx-auto text-center">
+          
+          {/* Privacy Verification Pill */}
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[var(--card)] border border-[var(--card-border)] text-xs text-[var(--muted)] mb-5 shadow-sm">
+            <span className="w-2 h-2 rounded-full bg-emerald-500" />
+            <span className="font-semibold text-[var(--foreground)]">Client-Side Privacy</span>
+            <span>·</span>
+            <span>Core tools run 100% in your browser</span>
+          </div>
 
-      {/* Instant Search Bar */}
-      <section className="max-w-5xl mx-auto px-4 -mt-4 mb-10">
+          {/* Headline */}
+          <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-[var(--foreground)] mb-4 leading-tight">
+            Every PDF tool you need, <br className="hidden sm:inline" />
+            <span className="text-[var(--accent)]">processed locally in your browser</span>
+          </h1>
+
+          {/* Subtitle */}
+          <p className="text-base sm:text-lg text-[var(--muted)] max-w-2xl mx-auto mb-8 leading-relaxed">
+            {FREE_TOOL_COUNT} core tools free and unlimited with zero server file uploads. Plus {PREMIUM_TOOL_COUNT} advanced tools for professional workflows. No account or installation required.
+          </p>
+
+          {/* 2. PROMINENT ENTRY POINT: Top 6 Most Important Tools */}
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 max-w-5xl mx-auto mb-8 text-left">
+            {popularTools.map((t) => (
+              <Link
+                key={t.name}
+                href={t.href}
+                className="p-3.5 sm:p-4 rounded-xl border border-[var(--card-border)] bg-[var(--card)] hover:border-[var(--accent)] hover:shadow-md transition-all flex flex-col justify-between group"
+              >
+                <div>
+                  <div className="w-9 h-9 rounded-lg bg-[var(--accent)]/10 text-[var(--accent)] flex items-center justify-center mb-2.5 group-hover:bg-[var(--accent)] group-hover:text-white transition-colors">
+                    {t.icon}
+                  </div>
+                  <h2 className="text-xs sm:text-sm font-bold text-[var(--foreground)] group-hover:text-[var(--accent)] transition-colors leading-tight mb-1">
+                    {t.name}
+                  </h2>
+                  <p className="text-[11px] text-[var(--muted)] line-clamp-2 leading-relaxed">
+                    {t.desc}
+                  </p>
+                </div>
+                <div className="mt-2.5 pt-2 border-t border-[var(--card-border)]/60 flex items-center justify-between text-[10px] font-semibold text-[var(--accent)]">
+                  <span>Open Tool</span>
+                  <span>→</span>
+                </div>
+              </Link>
+            ))}
+          </div>
+
+          {/* Quick-Drop PDF Studio Launcher */}
+          <div className="max-w-xl mx-auto">
+            <label
+              onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
+              onDragLeave={() => setIsDragging(false)}
+              onDrop={handleDrop}
+              className={`block border-2 border-dashed rounded-xl p-4 sm:p-5 text-center transition-all cursor-pointer bg-[var(--card)] ${
+                isDragging
+                  ? "border-[var(--accent)] bg-indigo-50/50 dark:bg-indigo-950/20"
+                  : "border-[var(--card-border)] hover:border-[var(--accent)]"
+              }`}
+            >
+              <input type="file" accept=".pdf" onChange={handleFileSelect} className="hidden" />
+              <div className="flex items-center justify-center gap-3">
+                <span className="w-8 h-8 rounded-lg bg-[var(--accent)] text-white flex items-center justify-center text-sm font-bold shrink-0">
+                  {uploading ? "⏳" : "⚡"}
+                </span>
+                <div className="text-left text-xs">
+                  <span className="font-bold text-[var(--foreground)]">
+                    {uploading ? "Loading into Studio..." : "Drop PDF here to open the Studio Pipeline"}
+                  </span>
+                  <span className="ml-2 align-middle text-[10px] font-bold uppercase px-1.5 py-0.5 rounded bg-amber-500 text-white">PRO</span>
+                  <p className="text-[11px] text-[var(--muted)] mt-0.5">
+                    Multi-step editing in one continuous workspace without repeated file downloads.
+                  </p>
+                </div>
+              </div>
+            </label>
+          </div>
+        </div>
+      </section>
+
+      {/* 3. SEARCHABLE TOOL DIRECTORY: ToolSearch */}
+      <section className="max-w-6xl mx-auto px-4 sm:px-6 mb-6">
         <ToolSearch />
       </section>
 
-      {/* Flagship Breakthrough Spotlight Cards */}
+      {/* 4. ORGANIZED TOOL DIRECTORY: ToolGrid by supported categories */}
+      <section className="max-w-6xl mx-auto px-4 sm:px-6 mb-16">
+        <ToolGrid />
+      </section>
+
+      {/* 5. CONCISE PDF STUDIO WORKSPACE SPOTLIGHT */}
       <SectionReveal>
-        <section className="max-w-6xl mx-auto px-4 mb-16">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-            {/* Spotlight 1: PDF Studio */}
-            <Link
-              href="/studio"
-              className="p-6 rounded-xl border border-[var(--card-border)] bg-[var(--card)] hover:border-[var(--card-hover-border)] transition-colors group"
-            >
-              <div className="w-12 h-12 rounded-lg bg-indigo-600 text-white flex items-center justify-center text-2xl font-bold mb-4">
-                ⚡
+        <section className="max-w-6xl mx-auto px-4 sm:px-6 mb-16">
+          <div className="p-6 sm:p-8 rounded-2xl bg-[var(--card)] border border-[var(--card-border)] shadow-sm">
+            <div className="grid md:grid-cols-12 gap-6 items-center">
+              <div className="md:col-span-7 space-y-3">
+                <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-md bg-amber-500/10 text-amber-700 dark:text-amber-400 text-xs font-bold">
+                  <span>⚡ PDF Studio Pipeline</span>
+                  <span>·</span>
+                  <span>Included with Premium</span>
+                </div>
+                <h2 className="text-2xl sm:text-3xl font-extrabold text-[var(--foreground)] tracking-tight">
+                  Stop downloading and re-uploading for every small edit
+                </h2>
+                <p className="text-sm text-[var(--muted)] leading-relaxed">
+                  PDF Studio chains all your editing steps into a single browser session. Load your document once, then reorder pages, delete sections, apply e-signatures, stamp watermarks, and compress before exporting the final file.
+                </p>
+                <div className="flex flex-wrap gap-1.5 pt-1">
+                  {["Reorder Pages", "Delete & Rotate", "e-Signatures", "Watermarking", "AES-256 Encryption", "Compression"].map((step) => (
+                    <span key={step} className="text-xs font-medium px-2.5 py-1 rounded-md bg-[var(--card-border)]/50 text-[var(--foreground)]">
+                      ✓ {step}
+                    </span>
+                  ))}
+                </div>
               </div>
-              <span className="text-[10px] font-bold uppercase px-2 py-0.5 rounded bg-amber-500 text-white">
-                PDF Studio · Premium
-              </span>
-              <h3 className="text-lg font-extrabold text-[var(--foreground)] mt-2 mb-1 group-hover:text-[var(--accent)] transition">
-                PDF Studio Workspace
-              </h3>
-              <p className="text-xs text-[var(--muted)] leading-relaxed">
-                Included with Premium: reorder, delete pages, sign, watermark, protect, and compress in one session — yours to keep.
-              </p>
-            </Link>
-
-            {/* Spotlight 2: PII Guardian */}
-            <Link
-              href="/pii-guardian"
-              className="p-6 rounded-3xl border border-red-500/40 bg-gradient-to-br from-red-950/40 via-[var(--card)] to-rose-950/30 hover:border-red-500 hover:scale-[1.02] transition-all shadow-xl group"
-            >
-              <div className="w-12 h-12 rounded-lg bg-red-600 text-white flex items-center justify-center text-2xl font-bold mb-4">
-                🛡️
+              <div className="md:col-span-5 bg-[var(--background)] p-5 rounded-xl border border-[var(--card-border)] text-center space-y-3">
+                <div className="text-xs font-bold text-[var(--muted)] uppercase tracking-wider">
+                  Continuous Workspace
+                </div>
+                <p className="text-xs text-[var(--foreground)] font-medium">
+                  100% in-browser processing. Up to 100MB documents supported for Premium members.
+                </p>
+                <div className="pt-2 flex flex-col gap-2">
+                  <Link
+                    href="/studio"
+                    className="w-full py-2.5 bg-[var(--accent)] text-white font-bold text-xs rounded-lg hover:bg-[var(--accent-hover)] transition-colors shadow-sm"
+                  >
+                    Launch PDF Studio →
+                  </Link>
+                  <Link
+                    href="/premium"
+                    className="w-full py-2.5 border border-[var(--card-border)] bg-[var(--card)] hover:border-[var(--accent)] text-[var(--foreground)] font-bold text-xs rounded-lg transition-colors"
+                  >
+                    View All Premium Tools &amp; Pricing
+                  </Link>
+                </div>
               </div>
-              <span className="text-[10px] font-extrabold uppercase px-2.5 py-0.5 rounded-full bg-red-500/20 text-red-300 border border-red-500/30">
-                Premium · Free Scan Preview
-              </span>
-              <h3 className="text-lg font-extrabold text-[var(--foreground)] mt-2 mb-1 group-hover:text-red-600 transition">
-                PII Guardian Auto-Redact
-              </h3>
-              <p className="text-xs text-[var(--muted)] leading-relaxed">
-                1-Click scanner for Social Security Numbers, credit cards, emails, and phone numbers with 100% browser privacy.
-              </p>
-            </Link>
-
-            {/* Spotlight 3: PDF Recipes */}
-            <Link
-              href="/recipes"
-              className="p-6 rounded-xl border border-[var(--card-border)] bg-[var(--card)] hover:border-[var(--card-hover-border)] transition-colors group"
-            >
-              <div className="w-12 h-12 rounded-lg bg-purple-600 text-white flex items-center justify-center text-2xl font-bold mb-4">
-                ⚡
-              </div>
-              <span className="text-[10px] font-extrabold uppercase px-2.5 py-0.5 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/30">
-                Premium · 2 Free Recipes
-              </span>
-              <h3 className="text-lg font-extrabold text-[var(--foreground)] mt-2 mb-1 group-hover:text-purple-600 transition">
-                1-Click Workflow Recipes
-              </h3>
-              <p className="text-xs text-[var(--muted)] leading-relaxed">
-                Automate Court E-Filing, Executive Signoff, and Grant Review sequences in a single click locally.
-              </p>
-            </Link>
+            </div>
           </div>
         </section>
       </SectionReveal>
 
-      {/* Interactive Workflow Pipeline Showcase Section */}
+      {/* 6. CLEAR FREE VS PREMIUM COMPARISON */}
       <SectionReveal>
-        <section className="max-w-6xl mx-auto px-4 mb-16">
-          <div className="p-8 sm:p-12 rounded-xl bg-[var(--card)] border border-[var(--card-border)]">
-            <div className="text-center max-w-3xl mx-auto mb-10">
-              <span className="text-xs font-bold uppercase tracking-widest px-2.5 py-1 rounded bg-amber-500 text-white mb-3 inline-block">
-                PDF Studio — included with Premium
-              </span>
-              <h2 className="text-2xl sm:text-4xl font-extrabold text-[var(--foreground)] mb-4">
-                Stop Re-Uploading Your PDF For Every Small Edit
-              </h2>
-              <p className="text-sm sm:text-base text-[var(--muted)]">
-                PDF Studio chains every step in one session. Load a document once, then organise, sign, and export — no downloading and re-uploading between steps:
-              </p>
-              <div className="flex flex-wrap justify-center gap-2 mt-4">
-                {["Organize & delete pages", "Rotate", "e-Sign", "Watermark", "Protect (AES-256)", "Compress"].map((step) => (
-                  <span key={step} className="text-xs font-semibold px-3 py-1.5 rounded bg-indigo-50 text-indigo-700 border border-indigo-200">
-                    {step}
+        <section className="max-w-5xl mx-auto px-4 sm:px-6 mb-16">
+          <div className="text-center max-w-2xl mx-auto mb-8">
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-[var(--foreground)] mb-2">
+              Simple, Transparent Plans
+            </h2>
+            <p className="text-xs sm:text-sm text-[var(--muted)]">
+              Core PDF tools are genuinely free and unlimited. Upgrade when you need advanced legal, bulk, and studio workflows.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-6 items-stretch">
+            {/* Free Plan Card */}
+            <div className="p-6 rounded-2xl border border-[var(--card-border)] bg-[var(--card)] shadow-sm flex flex-col justify-between">
+              <div>
+                <div className="flex items-center justify-between mb-3">
+                  <span className="text-xs font-extrabold uppercase px-2.5 py-1 rounded bg-[var(--card-border)] text-[var(--foreground)]">
+                    Free Plan
                   </span>
-                ))}
+                  <span className="text-lg font-extrabold text-[var(--foreground)]">$0 / forever</span>
+                </div>
+                <h3 className="text-lg font-bold text-[var(--foreground)] mb-2">
+                  38 Unlimited Core Tools
+                </h3>
+                <p className="text-xs text-[var(--muted)] mb-5 leading-relaxed">
+                  Ideal for students, personal use, and day-to-day PDF tasks with full privacy.
+                </p>
+                <ul className="space-y-2 text-xs text-[var(--foreground)]">
+                  <li className="flex items-center gap-2">
+                    <span className="text-emerald-500 font-bold">✓</span>
+                    <span>38 core tools: Compress, Merge, Split, e-Sign, Rotate, etc.</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <span className="text-emerald-500 font-bold">✓</span>
+                    <span>No daily caps, monthly quotas, or account requirement</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <span className="text-emerald-500 font-bold">✓</span>
+                    <span>100% client-side browser processing</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <span className="text-emerald-500 font-bold">✓</span>
+                    <span>Files up to 10MB per task</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <span className="text-[var(--muted)]">ℹ</span>
+                    <span className="text-[var(--muted)]">Monetag vignette ads support free maintenance</span>
+                  </li>
+                </ul>
+              </div>
+              <div className="mt-6 pt-4 border-t border-[var(--card-border)]">
+                <Link
+                  href="/tools"
+                  className="block text-center py-2.5 rounded-lg border border-[var(--card-border)] text-xs font-bold text-[var(--foreground)] hover:border-[var(--accent)] transition-colors"
+                >
+                  Use Free Tools Now
+                </Link>
               </div>
             </div>
 
-            {/* Workflow Comparison Grid */}
-            <div className="grid md:grid-cols-2 gap-6 items-stretch">
-              {/* The Old Way */}
-              <div className="p-6 rounded-2xl border border-red-500/20 bg-red-950/10 text-xs space-y-3">
-                <p className="font-bold text-red-600 uppercase tracking-wider flex items-center gap-1.5">
-                  <span>✕</span> Traditional PDF Websites (Slow &amp; Tedious)
-                </p>
-                <div className="space-y-2 text-[var(--muted)]">
-                  <div className="p-2.5 rounded-lg bg-red-50 border border-red-100">1. Upload PDF to server &amp; wait for slow queue</div>
-                  <div className="p-2.5 rounded-lg bg-red-50 border border-red-100">2. Delete pages &amp; download result to hard drive</div>
-                  <div className="p-2.5 rounded-lg bg-red-50 border border-red-100">3. Re-upload same file to add a visible e-signature</div>
-                  <div className="p-2.5 rounded-lg bg-red-50 border border-red-100">4. Download again, re-upload for compression</div>
-                  <div className="p-2.5 rounded-lg bg-red-50 border border-red-100">5. 10 minutes wasted + files stored on random servers</div>
-                </div>
+            {/* Premium Plan Card */}
+            <div className="p-6 rounded-2xl border-2 border-amber-500 bg-[var(--card)] shadow-sm flex flex-col justify-between relative">
+              <div className="absolute -top-3 right-6 bg-amber-500 text-white text-[10px] font-bold uppercase px-2 py-0.5 rounded shadow-sm">
+                Save 58% Yearly
               </div>
-
-              {/* PDFTools Studio Way */}
-              <div className="p-6 rounded-2xl border border-emerald-500/30 bg-emerald-950/15 text-xs space-y-3 shadow-lg shadow-emerald-500/5">
-                <p className="font-bold text-emerald-600 uppercase tracking-wider flex items-center gap-1.5">
-                  <span>✓</span> PDFTools Studio Pipeline (Instant &amp; Private)
-                </p>
-                <div className="space-y-2 text-[var(--foreground)]">
-                  <div className="p-2.5 rounded-lg bg-emerald-50 border border-emerald-100 font-medium">1. Drop PDF once — loaded into local browser memory</div>
-                  <div className="p-2.5 rounded-lg bg-emerald-50 border border-emerald-100 font-medium">2. Delete &amp; rotate pages with visual thumbnails</div>
-                  <div className="p-2.5 rounded-lg bg-emerald-50 border border-emerald-100 font-medium">3. Stamp your e-signature on page 1 without reloading</div>
-                  <div className="p-2.5 rounded-lg bg-emerald-50 border border-emerald-100 font-medium">4. Add watermark &amp; compress in the exact same workspace</div>
-                  <div className="p-2.5 rounded-lg bg-emerald-600 text-white font-bold text-center">
-                    One session · Locally processed
+              <div>
+                <div className="flex items-center justify-between mb-3">
+                  <span className="text-xs font-extrabold uppercase px-2.5 py-1 rounded bg-amber-500 text-white">
+                    Premium Member
+                  </span>
+                  <div className="text-right">
+                    <span className="text-lg font-extrabold text-[var(--foreground)]">{PRICING_CONFIG.yearly.priceFormatted}</span>
+                    <span className="text-xs text-[var(--muted)]"> / year</span>
                   </div>
                 </div>
+                <h3 className="text-lg font-bold text-[var(--foreground)] mb-2">
+                  PDF Studio &amp; 13 Professional Tools
+                </h3>
+                <p className="text-xs text-[var(--muted)] mb-5 leading-relaxed">
+                  For legal professionals, businesses, and power users who need advanced workflows.
+                </p>
+                <ul className="space-y-2 text-xs text-[var(--foreground)]">
+                  <li className="flex items-center gap-2">
+                    <span className="text-amber-500 font-bold">✓</span>
+                    <span><strong>PDF Studio workspace:</strong> multi-step pipeline</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <span className="text-amber-500 font-bold">✓</span>
+                    <span><strong>13 advanced tools:</strong> Bates numbering, PDF Diff, PII Redaction, Booklets, Bulk Rename, etc.</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <span className="text-amber-500 font-bold">✓</span>
+                    <span>Large files up to 100MB</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <span className="text-amber-500 font-bold">✓</span>
+                    <span>100% Ad-Free experience</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <span className="text-amber-500 font-bold">✓</span>
+                    <span>Monthly option available at {PRICING_CONFIG.monthly.priceFormatted}/month</span>
+                  </li>
+                </ul>
               </div>
-            </div>
-
-            <div className="mt-8 text-center space-y-3">
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
-                <Link
-                  href="/studio"
-                  className="inline-flex items-center gap-2 px-7 py-3.5 bg-[var(--accent)] text-white font-bold rounded-lg hover:bg-[var(--accent-hover)] transition-colors"
-                >
-                  Open PDF Studio →
-                </Link>
+              <div className="mt-6 pt-4 border-t border-[var(--card-border)]">
                 {premium ? (
                   <Link
                     href="/dashboard"
-                    className="inline-flex items-center gap-2 px-7 py-3.5 border border-emerald-500 bg-emerald-500 text-white font-bold rounded-lg hover:bg-emerald-600 transition-colors"
+                    className="block text-center py-2.5 rounded-lg bg-emerald-600 text-white text-xs font-bold hover:bg-emerald-700 transition-colors shadow-sm"
                   >
-                    ✓ Premium Active
+                    ✓ Premium Active — Open Dashboard
                   </Link>
                 ) : (
                   <Link
                     href="/premium"
-                    className="inline-flex items-center gap-2 px-7 py-3.5 border border-amber-500 bg-amber-500 text-white font-bold rounded-lg hover:bg-amber-600 transition-colors"
+                    className="block text-center py-2.5 rounded-lg bg-amber-600 text-white text-xs font-bold hover:bg-amber-700 transition-colors shadow-sm"
                   >
-                    ⭐ Get Premium
+                    Upgrade to Premium →
                   </Link>
                 )}
               </div>
-              <p className="text-xs text-[var(--muted)]">
-                {premium
-                  ? "Your Premium plan is active — PDF Studio and the full professional suite are unlocked."
-                  : "Three-day trial for PDF Studio only. Premium required afterwards. The 38 core tools stay free and unlimited."}
-              </p>
             </div>
           </div>
         </section>
       </SectionReveal>
 
-      {/* Main Tool Grid (Filtered by Categories) */}
-      <section className="max-w-6xl mx-auto px-4 mb-16">
-        <ToolGrid />
-      </section>
-
-      {/* ROI & Savings Calculator Section */}
+      {/* 7. AUDIENCE WORKFLOWS & TUTORIALS */}
       <SectionReveal>
-        <section className="max-w-5xl mx-auto px-4 mb-16">
-          <SavingsCalculator />
-        </section>
-      </SectionReveal>
-
-      {/* Premium Feature Showcase */}
-      <SectionReveal>
-        <section className="max-w-6xl mx-auto px-4 mb-16">
-          <PremiumFeatureShowcase />
-        </section>
-      </SectionReveal>
-
-      {/* Live Community Processing Stats */}
-      <SectionReveal>
-        <section className="max-w-6xl mx-auto px-4 mb-16">
-          <LiveStats />
-        </section>
-      </SectionReveal>
-
-      {/* Audience Clusters & Solutions Directory */}
-      <SectionReveal>
-        <section className="max-w-6xl mx-auto px-4 mb-16">
-          <div className="text-center max-w-2xl mx-auto mb-10">
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-[var(--foreground)] mb-3">
-              Engineered For Every Workflow
+        <section className="max-w-6xl mx-auto px-4 sm:px-6 mb-16">
+          <div className="text-center max-w-2xl mx-auto mb-8">
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-[var(--foreground)] mb-2">
+              Engineered for Every Workflow
             </h2>
-            <p className="text-sm text-[var(--muted)]">
-              Tailored solutions for students, lawyers, teachers, and small businesses.
+            <p className="text-xs sm:text-sm text-[var(--muted)]">
+              Tailored solutions and workflows for students, lawyers, teachers, and small businesses.
             </p>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {[
-              { title: "For Students", href: "/pdf-tools-for-students", desc: "Compress thesis papers, merge research PDFs, extract study notes, and convert images.", icon: "🎓", gradient: "from-blue-500/20 to-indigo-500/20" },
-              { title: "For Legal Teams", href: "/pdf-tools-for-lawyers", desc: "Add Bates numbering, redact sensitive client PII, compare contract versions, and e-sign.", icon: "⚖️", gradient: "from-purple-500/20 to-pink-500/20" },
-              { title: "For Educators", href: "/pdf-tools-for-teachers", desc: "Generate bulk certificates from CSV data, split classroom assignments, and grade PDF docs.", icon: "📚", gradient: "from-emerald-500/20 to-teal-500/20" },
-              { title: "For Businesses", href: "/pdf-tools-for-business", desc: "Extract financial tables into Excel, batch process receipts, and sanitize hidden metadata.", icon: "💼", gradient: "from-amber-500/20 to-orange-500/20" },
+              { title: "For Students", href: "/pdf-tools-for-students", desc: "Compress thesis papers, merge research citations, extract notes, and convert images.", icon: "🎓" },
+              { title: "For Legal Teams", href: "/pdf-tools-for-lawyers", desc: "Sequential Bates numbering, contract Diff comparisons, client PII redaction, and e-signatures.", icon: "⚖️" },
+              { title: "For Educators", href: "/pdf-tools-for-teachers", desc: "Bulk certificate generation from CSV rosters, split student tests, and organize classroom materials.", icon: "📚" },
+              { title: "For Businesses", href: "/pdf-tools-for-business", desc: "Extract tabular financial reports to CSV/Excel, batch rename receipts, and sanitize metadata.", icon: "💼" },
             ].map((cluster) => (
               <Link
                 key={cluster.title}
                 href={cluster.href}
-                className="p-6 rounded-3xl border border-[var(--card-border)] bg-[var(--card)] hover:border-indigo-500/50 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group flex flex-col justify-between"
+                className="p-5 rounded-xl border border-[var(--card-border)] bg-[var(--card)] hover:border-[var(--accent)] hover:shadow-sm transition-all flex flex-col justify-between group"
               >
                 <div>
-                  <div className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${cluster.gradient} flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition-transform`}>
-                    {cluster.icon}
-                  </div>
-                  <h3 className="text-base font-bold text-[var(--foreground)] group-hover:text-[var(--accent)] transition mb-2">
+                  <div className="text-2xl mb-3">{cluster.icon}</div>
+                  <h3 className="text-sm font-bold text-[var(--foreground)] group-hover:text-[var(--accent)] transition-colors mb-1.5">
                     {cluster.title}
                   </h3>
                   <p className="text-xs text-[var(--muted)] leading-relaxed">
                     {cluster.desc}
                   </p>
                 </div>
-                <div className="mt-4 pt-3 border-t border-[var(--card-border)] text-xs font-semibold text-[var(--accent)] flex items-center justify-between">
-                  <span>Explore Solution</span>
+                <div className="mt-4 pt-3 border-t border-[var(--card-border)]/60 text-xs font-semibold text-[var(--accent)] flex items-center justify-between">
+                  <span>Explore Workflow</span>
                   <span>→</span>
                 </div>
               </Link>
@@ -406,23 +456,36 @@ export default function Home() {
         </section>
       </SectionReveal>
 
-      {/* User Reviews & Feedback */}
+      {/* 8. SECONDARY SECTIONS: Savings Calculator */}
       <SectionReveal>
-        <section className="max-w-6xl mx-auto px-4 mb-16">
+        <section className="max-w-5xl mx-auto px-4 sm:px-6 mb-16">
+          <SavingsCalculator />
+        </section>
+      </SectionReveal>
+
+      {/* Community Processing Stats & Feedback */}
+      <SectionReveal>
+        <section className="max-w-6xl mx-auto px-4 sm:px-6 mb-16">
+          <LiveStats />
+        </section>
+      </SectionReveal>
+
+      <SectionReveal>
+        <section className="max-w-6xl mx-auto px-4 sm:px-6 mb-16">
           <FeedbackSection />
         </section>
       </SectionReveal>
 
       {/* Recent Tools History */}
       <SectionReveal>
-        <section className="max-w-6xl mx-auto px-4 mb-16">
+        <section className="max-w-6xl mx-auto px-4 sm:px-6 mb-16">
           <RecentTools />
         </section>
       </SectionReveal>
 
-      {/* Email Newsletter Subscription */}
+      {/* Newsletter */}
       <SectionReveal>
-        <section className="max-w-4xl mx-auto px-4 mb-16">
+        <section className="max-w-4xl mx-auto px-4 sm:px-6 mb-16">
           <EmailSubscribe />
         </section>
       </SectionReveal>
@@ -430,7 +493,7 @@ export default function Home() {
       {/* SEO FAQs */}
       <FaqPageJsonLd
         questions={[
-          { question: "Is PDFTools truly free?", answer: "Yes! All core tools (Compress, Merge, Split, e-Sign, Watermark, Delete Pages, Rotate, and 30+ more) are 100% free and unlimited — no daily or monthly caps. Selected professional tools share a one-time 5-file lifetime trial. PDF Studio is included with Premium." },
+          { question: "Is PDFTools truly free?", answer: "Yes! All 38 core tools (Compress, Merge, Split, e-Sign, Watermark, Delete Pages, Rotate, and 30+ more) are 100% free and unlimited — no daily or monthly caps. Selected professional tools share a one-time 5-file lifetime trial. PDF Studio is included with Premium." },
           { question: "Are my PDF files uploaded to your servers?", answer: "Core PDF tools and PDF Studio process documents locally in your browser without uploading your PDFs. Optional AI chat sends extracted text, and AI OCR sends page images, to an AI service." },
           { question: "What is the PDF Studio Pipeline?", answer: "PDF Studio chains edits on one document without downloading and re-uploading between steps. PDF Studio is included with Premium and stays unlocked forever." },
           { question: "What is the PII Guardian?", answer: "PII Guardian detects common sensitive-data patterns locally. Free users can preview first-page matches; Premium can scan and securely raster-redact complete documents after review." },

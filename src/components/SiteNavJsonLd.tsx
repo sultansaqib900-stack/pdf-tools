@@ -36,7 +36,6 @@ const navItems = [
   { name: "Booklet Creator", url: "/booklet" },
   { name: "Search & Redact", url: "/search-redact" },
   { name: "Color Inverter", url: "/pdf-inverter" },
-  { name: "PDF Vault", url: "/vault" },
   { name: "QR Code Stamp", url: "/qr-stamp" },
   { name: "Metadata Sanitizer", url: "/metadata-sanitizer" },
   { name: "Split by Bookmarks", url: "/split-by-bookmarks" },

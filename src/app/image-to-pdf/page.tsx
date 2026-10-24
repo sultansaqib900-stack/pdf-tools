@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import ToolInfo from "@/components/ToolInfo";
 import FreeWaitTimer from "@/components/FreeWaitTimer";
 import UsageBar from "@/components/UsageBar";
@@ -20,7 +20,7 @@ import FaqPageJsonLd from "@/components/FaqPageJsonLd";
 import RelatedContent from "@/components/RelatedContent";
 import { getRelatedContent } from "@/lib/related-content";
 import UseCaseLinks from "@/components/UseCaseLinks";
-import { downloadBytes } from "@/lib/pdfBytes";
+import { downloadBytes, validatePdfOutput, formatPdfErrorMessage } from "@/lib/pdfBytes";
 
 const rc = getRelatedContent("image-to-pdf");
 
@@ -34,8 +34,26 @@ export default function ImageToPdfPage() {
   const [showTimer, setShowTimer] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
+  const imagesRef = useRef(images);
+
+  useEffect(() => {
+    imagesRef.current = images;
+  }, [images]);
+
+  useEffect(() => {
+    return () => {
+      imagesRef.current.forEach((img) => URL.revokeObjectURL(img.preview));
+    };
+  }, []);
 
   useEffect(() => { trackToolVisit("image-to-pdf"); }, []);
+
+  const clearAll = useCallback(() => {
+    images.forEach((img) => URL.revokeObjectURL(img.preview));
+    setImages([]);
+    setError(null);
+    setSuccess(false);
+  }, [images]);
 
   const addImages = useCallback((list: FileList | null) => {
     if (!list) return;
@@ -98,12 +116,12 @@ export default function ImageToPdfPage() {
         page.drawImage(image, { x: 0, y: 0, width: image.width, height: image.height });
       }
       const pdfBytes = await pdfDoc.save({ useObjectStreams: true });
+      await validatePdfOutput(pdfBytes);
       downloadBytes(pdfBytes, "images.pdf");
       trackExport(images[0]?.file.name || "images.pdf", "Image to PDF", pdfBytes.byteLength);
       setSuccess(true);
     } catch (err) {
-      console.error(err);
-      setError("Failed to convert images to PDF.");
+      setError(formatPdfErrorMessage(err, "Failed to convert images to PDF."));
     }
     setProcessing(false);
   }, [images]);
@@ -176,7 +194,7 @@ export default function ImageToPdfPage() {
           <div className="mt-5">
             <div className="flex items-center justify-between mb-3">
               <span className="text-sm font-medium text-[var(--muted)]">{images.length} image{images.length > 1 ? "s" : ""}</span>
-              <button onClick={() => { images.forEach((i) => URL.revokeObjectURL(i.preview)); setImages([]); }} className="text-red-500 hover:text-red-600 text-xs">Clear all</button>
+              <button onClick={clearAll} className="text-red-500 hover:text-red-600 text-xs">Clear all</button>
             </div>
             <div className="grid grid-cols-4 sm:grid-cols-6 gap-3">
               {images.map((img, i) => (

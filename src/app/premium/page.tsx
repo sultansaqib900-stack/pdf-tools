@@ -10,47 +10,10 @@ import { usePremiumStatus } from "@/hooks/usePremiumStatus";
 import ProductJsonLd from "@/components/ProductJsonLd";
 import { useAuth } from "@/components/AuthProvider";
 import { PREMIUM_TOOLS, PREMIUM_TOOL_COUNT } from "@/lib/toolCatalog";
+import { PLANS, FEATURE_COMPARISON_ROWS, ANNUAL_SAVINGS } from "@/lib/pricing";
 
-const plans = [
-  {
-    name: "Free",
-    price: "Rs 0",
-    period: "forever",
-    features: ["All basic tools — unlimited use", "PDF Studio workspace included", "Professional tools: 5 lifetime trial files (shared)", "Max 10MB files (100MB in PDF Studio)", "No account required", "AI chat preview: 3 questions/day"],
-    highlighted: false,
-    checkoutUrl: null,
-    planKey: null as string | null,
-  },
-  {
-    name: "Premium Monthly",
-    price: "Rs 2,500",
-    period: "/month",
-    features: ["Unlimited basic AND professional tools — no trial limit", "Max 100MB files", "Batch processing up to 20 files", "Unlimited AI questions", `${PREMIUM_TOOL_COUNT} professional premium tools`, "Priority email support", "Future premium tools"],
-    highlighted: true,
-    checkoutUrl: LS_CONFIG.checkoutBaseUrls.premiumMonthly,
-    planKey: "monthly",
-  },
-  {
-    name: "Premium Yearly",
-    price: "Rs 12,500",
-    period: "/year",
-    features: ["Everything in Monthly", "Billed yearly in PKR", "Priority support", "Best value — save Rs 17,500/year"],
-    highlighted: false,
-    checkoutUrl: LS_CONFIG.checkoutBaseUrls.premiumYearly,
-    planKey: "yearly",
-  },
-];
-
-const featureRows = [
-  { feature: "Basic tools (Compress, Merge, Split, Sign, …)", free: "Unlimited", monthly: "Unlimited", yearly: "Unlimited" },
-  { feature: "PDF Studio", free: "—", monthly: "Included forever", yearly: "Included forever" },
-  { feature: "Professional tools trial", free: "5 files — lifetime, shared", monthly: "Unlimited", yearly: "Unlimited" },
-  { feature: "File size limit", free: "10MB; Studio trial: 100MB", monthly: "100MB", yearly: "100MB" },
-  { feature: "Batch processing", free: "—", monthly: "20 files", yearly: "20 files" },
-  { feature: "AI chat questions", free: "3/day preview", monthly: "Unlimited", yearly: "Unlimited" },
-  { feature: "Priority support", free: "—", monthly: "Email", yearly: "Priority email" },
-  { feature: "Future tools", free: "—", monthly: "✓", yearly: "✓" },
-];
+const plans = PLANS;
+const featureRows = FEATURE_COMPARISON_ROWS;
 
 const premiumTools = PREMIUM_TOOLS.map((tool) => ({
   icon: tool.icon,
@@ -236,6 +199,11 @@ export default function PremiumPage() {
             )}
           </div>
         ))}
+      </div>
+
+      {/* Regional Billing Note */}
+      <div className="mb-12 p-4 rounded-xl bg-[var(--card)] border border-[var(--card-border)] text-center text-xs text-[var(--muted)]">
+        <p><strong className="text-[var(--foreground)]">Transparent Regional Pricing:</strong> Subscriptions are billed in Pakistani Rupees (PKR) through our Lemon Squeezy store. International payment cards are accepted and automatically converted by your bank at checkout (approx. $9 USD/month or $45 USD/year equivalent). No hidden fees or surprise renewals.</p>
       </div>
 
       {/* Feature Comparison Table */}

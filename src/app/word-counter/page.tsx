@@ -208,7 +208,7 @@ export default function WordCounterPage() {
         <div className="text-sm text-[var(--muted)] space-y-3 leading-relaxed">
           <p>Our free PDF word counter lets you count words, characters, and pages in any PDF document instantly. Whether you are a student checking an essay, a professional preparing a report with specific length requirements, or a writer tracking your progress, this tool gives you accurate statistics with zero effort.</p>
           <p>The tool uses PDF.js to extract text from every page of your PDF and computes word counts, character counts (with and without spaces), total pages, and estimated reading time based on 200 words per minute. Everything runs in your browser — your document never leaves your device, ensuring complete privacy.</p>
-          <p>Keywords: PDF word counter, count words in PDF, PDF character count, PDF page counter, word count PDF online free, PDF word count tool.</p>
+          <p>Text extraction and analysis are performed entirely in client-side WebAssembly, supporting Unicode characters and multilingual text.</p>
         </div>
       </div>
 

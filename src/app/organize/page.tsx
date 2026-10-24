@@ -1,6 +1,6 @@
 "use client";
 
-import { isPdfFile } from "@/lib/pdfBytes";
+import { isPdfFile, loadPdfForEditing, validatePdfOutput, downloadBytes, formatPdfErrorMessage } from "@/lib/pdfBytes";
 
 import { useState, useCallback, useEffect, useRef } from "react";
 import ToolInfo from "@/components/ToolInfo";
@@ -43,6 +43,15 @@ export default function OrganizePage() {
 
   useEffect(() => { trackToolVisit("organize"); }, []);
 
+  const resetFile = useCallback(() => {
+    setFile(null);
+    setOrder([]);
+    setPageCount(0);
+    setError(null);
+    setSuccess(false);
+    originalBytes.current = null;
+  }, []);
+
   const handleFile = useCallback(async (f: File | null) => {
     if (!f || !isPdfFile(f)) return;
     const check = checkFileSize(f.size);
@@ -50,14 +59,20 @@ export default function OrganizePage() {
     setFile(f);
     setSuccess(false);
     setError(null);
-    const { PDFDocument } = await import("pdf-lib");
-    const bytes = await f.arrayBuffer();
-    originalBytes.current = bytes;
-    const pdf = await PDFDocument.load(bytes);
-    const count = pdf.getPageCount();
-    setPageCount(count);
-    setOrder(Array.from({ length: count }, (_, i) => i));
-  }, []);
+    try {
+      const bytes = await f.arrayBuffer();
+      originalBytes.current = bytes;
+      const pdf = await loadPdfForEditing(bytes);
+      const count = pdf.getPageCount();
+      setPageCount(count);
+      setOrder(Array.from({ length: count }, (_, i) => i));
+    } catch (err) {
+      setError(formatPdfErrorMessage(err, "Failed to load PDF. The document may be password-protected or corrupted."));
+      setFile(null);
+      setOrder([]);
+      setPageCount(0);
+    }
+  }, [upsell]);
 
   const movePage = useCallback((from: number, to: number) => {
     if (from === to) return;
@@ -104,26 +119,22 @@ export default function OrganizePage() {
     if (!canProceed) { setProcessing(false); upsell.showUpsell("trial-limit"); return; }
     try {
       const { PDFDocument } = await import("pdf-lib");
-      const bytes = await file.arrayBuffer();
-      originalBytes.current = bytes;
-      const sourcePdf = await PDFDocument.load(bytes);
+      const bytes = originalBytes.current || (await file.arrayBuffer());
+      const sourcePdf = await loadPdfForEditing(bytes);
       const newPdf = await PDFDocument.create();
       const pages = await newPdf.copyPages(sourcePdf, order);
       pages.forEach((p) => newPdf.addPage(p));
 
       const pdfBytes = await newPdf.save({ useObjectStreams: true });
-      const blob = new Blob([pdfBytes as unknown as BlobPart], { type: "application/pdf" });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `reorganized-${file.name}`;
-      a.click();
-      window.setTimeout(() => URL.revokeObjectURL(url), 60_000);
+      await validatePdfOutput(pdfBytes);
+      downloadBytes(pdfBytes, `reorganized-${file.name}`);
       trackExport(file.name, "Organize Pages", pdfBytes.length);
       setSuccess(true);
-    } catch { setError("Failed to reorganize."); }
+    } catch (err) {
+      setError(formatPdfErrorMessage(err, "Failed to reorganize PDF pages."));
+    }
     setProcessing(false);
-  }, [file, order]);
+  }, [file, order, usage, upsell, trackExport]);
 
   const process = useCallback(async () => {
     if (!isPremium()) {
@@ -245,6 +256,15 @@ export default function OrganizePage() {
               ) : "Save New Order"}
             </button>
 
+            <button
+              type="button"
+              onClick={resetFile}
+              disabled={processing}
+              className="mt-3 w-full py-2 bg-transparent text-sm text-[var(--muted)] hover:text-[var(--foreground)] transition border border-[var(--card-border)] rounded-xl"
+            >
+              Choose different file
+            </button>
+
             {!isPremium() && (
               <p className="mt-3 text-center text-xs text-[var(--muted)]">
                 Free users limited to 10MB &amp; 5s wait.{ " " }
@@ -265,7 +285,7 @@ export default function OrganizePage() {
         <div className="text-sm text-[var(--muted)] space-y-3 leading-relaxed">
           <p>Rearrange pages in your PDF document online for free. Drag and drop pages into any order you want. Perfect for fixing scanned documents where pages are out of order, rearranging sections in a report, or organizing a multi-page presentation.</p>
           <p>All processing happens locally in your browser — no uploads, no servers, complete privacy. Your original file is never transmitted or stored.</p>
-          <p>Keywords: organize PDF pages online free, reorder PDF pages, rearrange PDF file, PDF page organizer free online.</p>
+          <p>Page reordering executes directly in memory, constructing an updated page tree while preserving bookmarks, fonts, and annotations.</p>
         </div>
       </div>
 

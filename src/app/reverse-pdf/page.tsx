@@ -1,6 +1,6 @@
 "use client";
 
-import { isPdfFile } from "@/lib/pdfBytes";
+import { isPdfFile, loadPdfForEditing, validatePdfOutput, downloadBytes, formatPdfErrorMessage } from "@/lib/pdfBytes";
 
 import { useState, useCallback, useEffect, useRef } from "react";
 import ToolInfo from "@/components/ToolInfo";
@@ -38,14 +38,34 @@ export default function ReversePDFPage() {
 
   useEffect(() => { trackToolVisit("reverse-pdf"); }, []);
 
-  const handleFile = useCallback((f: File | null) => {
+  const [pageCount, setPageCount] = useState(0);
+
+  const resetFile = useCallback(() => {
+    setFile(null);
+    setPageCount(0);
+    setError(null);
+    setSuccess(false);
+    originalBytes.current = null;
+  }, []);
+
+  const handleFile = useCallback(async (f: File | null) => {
     if (!f || !isPdfFile(f)) return;
     const check = checkFileSize(f.size);
     if (!check.ok) { upsell.showUpsell("file-size"); return; }
     setFile(f);
     setSuccess(false);
     setError(null);
-  }, []);
+    try {
+      const bytes = await f.arrayBuffer();
+      originalBytes.current = bytes;
+      const pdf = await loadPdfForEditing(bytes);
+      setPageCount(pdf.getPageCount());
+    } catch (err) {
+      setError(formatPdfErrorMessage(err, "Failed to load PDF. The document may be password-protected or corrupted."));
+      setFile(null);
+      setPageCount(0);
+    }
+  }, [upsell]);
 
   const runReverse = useCallback(async () => {
     if (!file) return;
@@ -55,29 +75,23 @@ export default function ReversePDFPage() {
     if (!canProceed) { setProcessing(false); upsell.showUpsell("trial-limit"); return; }
     try {
       const { PDFDocument } = await import("pdf-lib");
-      const bytes = await file.arrayBuffer();
-      originalBytes.current = bytes;
-      const pdfDoc = await PDFDocument.load(bytes);
-      const pages = pdfDoc.getPages();
-      const indices = pages.map((_, i) => i).reverse();
+      const bytes = originalBytes.current || (await file.arrayBuffer());
+      const pdfDoc = await loadPdfForEditing(bytes);
+      const totalPages = pdfDoc.getPageCount();
+      const indices = Array.from({ length: totalPages }, (_, i) => i).reverse();
       const reversedDoc = await PDFDocument.create();
       const copiedPages = await reversedDoc.copyPages(pdfDoc, indices);
       copiedPages.forEach((p) => reversedDoc.addPage(p));
       const reversedBytes = await reversedDoc.save({ useObjectStreams: true });
-      const blob = new Blob([reversedBytes as unknown as BlobPart], { type: "application/pdf" });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `reversed-${file.name}`;
-      a.click();
-      window.setTimeout(() => URL.revokeObjectURL(url), 60_000);
+      await validatePdfOutput(reversedBytes);
+      downloadBytes(reversedBytes, `reversed-${file.name}`);
       trackExport(file.name, "Reverse PDF Order", reversedBytes.length);
       setSuccess(true);
-    } catch {
-      setError("Failed to reverse page order.");
+    } catch (err) {
+      setError(formatPdfErrorMessage(err, "Failed to reverse page order."));
     }
     setProcessing(false);
-  }, [file]);
+  }, [file, usage, upsell, trackExport]);
 
   const reverse = useCallback(async () => {
     if (!isPremium()) {
@@ -140,7 +154,7 @@ export default function ReversePDFPage() {
             <span className="text-indigo-500 font-medium hover:underline">
               {file ? file.name : "Click to select or drag & drop a PDF"}
             </span>
-            {file && <span className="text-sm text-[var(--muted)]">{(file.size / 1024).toFixed(1)} KB</span>}
+            {file && <span className="text-sm text-[var(--muted)]">{(file.size / 1024).toFixed(1)} KB{pageCount > 0 ? ` · ${pageCount} pages` : ""}</span>}
             {!file && <span className="text-xs text-[var(--muted)]">Any PDF file</span>}
           </label>
         </div>
@@ -164,6 +178,15 @@ export default function ReversePDFPage() {
               ) : "Reverse PDF Order"}
             </button>
 
+            <button
+              type="button"
+              onClick={resetFile}
+              disabled={processing}
+              className="mt-3 w-full py-2 bg-transparent text-sm text-[var(--muted)] hover:text-[var(--foreground)] transition border border-[var(--card-border)] rounded-xl"
+            >
+              Choose different file
+            </button>
+
             {!isPremium() && (
               <p className="mt-3 text-center text-xs text-[var(--muted)]">
                 Free users limited to 10MB files.{ " " }
@@ -184,7 +207,7 @@ export default function ReversePDFPage() {
         <div className="text-sm text-[var(--muted)] space-y-3 leading-relaxed">
           <p>Reverse the page order of any PDF file online for free. This tool takes all pages in your PDF and flips the sequence — the last page becomes first, and the first page becomes last. Useful when scanning documents from back to front, or when you need to reorganize a document that was assembled in reverse order.</p>
           <p>All processing happens in your browser using pdf-lib — no uploads, no servers, complete privacy. Upload your PDF and download the reversed version instantly.</p>
-          <p>Keywords: reverse PDF pages online free, flip PDF order, invert page sequence, reverse PDF file, reorder PDF pages.</p>
+          <p>Reverses the document's page array without re-encoding images or degrading vector elements, ensuring identical visual quality.</p>
         </div>
       </div>
       <RelatedContent slug="reverse-pdf" />

@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { PREMIUM_TOOLS, PREMIUM_TOOL_COUNT, type ToolDefinition } from "@/lib/toolCatalog";
 import { usePremiumStatus } from "@/hooks/usePremiumStatus";
+import { PRICING_CONFIG, ANNUAL_SAVINGS } from "@/lib/pricing";
 
 const premiumFeatures = PREMIUM_TOOLS;
 
@@ -95,7 +96,7 @@ export default function PremiumFeatureShowcase() {
                 Unlock All Premium Features
                 <svg className="w-4 h-4 group-hover:translate-x-1 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" /></svg>
               </Link>
-              <p className="text-xs text-[var(--muted)] mt-3">Rs 2,500/month or Rs 12,500/year · 100MB files · Unlimited usage · Unlimited AI</p>
+              <p className="text-xs text-[var(--muted)] mt-3">{PRICING_CONFIG.monthly.priceFormatted}/month or {PRICING_CONFIG.yearly.priceFormatted}/year ({ANNUAL_SAVINGS.effectiveMonthlyFormatted}) · 100MB files · Unlimited usage · Unlimited AI</p>
             </>
           )}
         </div>

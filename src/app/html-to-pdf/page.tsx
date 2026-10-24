@@ -19,20 +19,26 @@ import FaqPageJsonLd from "@/components/FaqPageJsonLd";
 import RelatedContent from "@/components/RelatedContent";
 import UseCaseLinks from "@/components/UseCaseLinks";
 import { getRelatedContent } from "@/lib/related-content";
-import jsPDF from "jspdf";
-import html2canvas from "html2canvas";
 
 const rc = getRelatedContent("html-to-pdf");
 
-function sanitizePreviewHtml(source: string): string {
+export function sanitizePreviewHtml(source: string): string {
   if (typeof DOMParser === "undefined") return "";
   const document = new DOMParser().parseFromString(source, "text/html");
-  document.querySelectorAll("script, iframe, object, embed, base, meta, link").forEach((element) => element.remove());
+  document.querySelectorAll("script, iframe, object, embed, base, meta, link, form, input, button, applet").forEach((element) => element.remove());
   document.querySelectorAll("*").forEach((element) => {
     for (const attribute of Array.from(element.attributes)) {
       const name = attribute.name.toLowerCase();
-      const value = attribute.value.trim().toLowerCase();
-      if (name.startsWith("on") || name === "srcdoc" || ((name === "href" || name === "src") && value.startsWith("javascript:"))) {
+      const rawValue = attribute.value || "";
+      const normalizedValue = rawValue.replace(/[\u0000-\u0020\s]+/g, "").toLowerCase();
+      if (
+        name.startsWith("on") ||
+        name === "srcdoc" ||
+        name === "formaction" ||
+        name === "action" ||
+        (name.includes("href") && (normalizedValue.startsWith("javascript:") || normalizedValue.startsWith("data:") || normalizedValue.startsWith("vbscript:"))) ||
+        (name === "src" && (normalizedValue.startsWith("javascript:") || normalizedValue.startsWith("vbscript:")))
+      ) {
         element.removeAttribute(attribute.name);
       }
     }
@@ -67,6 +73,11 @@ export default function HtmlToPdfPage() {
     try {
       const container = previewRef.current;
       if (!container) throw new Error("The HTML preview is unavailable.");
+
+      const [{ default: html2canvas }, { default: jsPDF }] = await Promise.all([
+        import("html2canvas"),
+        import("jspdf"),
+      ]);
 
       const canvas = await html2canvas(container, {
         useCORS: true,

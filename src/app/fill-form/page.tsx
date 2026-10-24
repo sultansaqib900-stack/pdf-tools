@@ -330,7 +330,7 @@ export default function FillFormPage() {
         <div className="text-sm text-[var(--muted)] space-y-3 leading-relaxed">
           <p>Fill PDF forms online for free. This tool detects all form fields in your PDF — including text fields, checkboxes, dropdown menus, list boxes, and radio buttons — and displays them in an easy-to-use interface. Fill in the values, click submit, and download the completed form with fields permanently flattened.</p>
           <p>All processing happens in your browser using pdf-lib — no uploads, no servers, complete privacy. Your data never leaves your device.</p>
-          <p>Keywords: fill PDF form online free, complete PDF forms, PDF form filler, fillable PDF, submit PDF form, flatten PDF form fields.</p>
+          <p>Supports standard interactive AcroForms. The generated document preserves filled entries and serializes them into valid field appearance streams.</p>
         </div>
       </div>
       <RelatedContent slug="fill-form" />

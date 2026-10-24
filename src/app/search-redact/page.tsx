@@ -13,7 +13,7 @@ import PremiumUpsell, { usePremiumUpsell } from "@/components/PremiumUpsell";
 import { useUsage } from "@/hooks/useUsage";
 import { checkFileSize } from "@/lib/premium";
 import { secureRedactPdf, type PdfRedactionArea } from "@/lib/pdfRaster";
-import { copyPdfBytes, downloadBytes, isPdfFile } from "@/lib/pdfBytes";
+import { copyPdfBytes, downloadBytes, isPdfFile, validatePdfOutput, formatPdfErrorMessage } from "@/lib/pdfBytes";
 import { findPositionedTextMatches, type PositionedTextItem } from "@/lib/textSearch";
 
 export default function SearchRedactPage() {
@@ -137,12 +137,13 @@ export default function SearchRedactPage() {
       }
       setMatchCount(occurrenceCount);
       const pdfBytes = await secureRedactPdf(bytes, redactions);
+      await validatePdfOutput(pdfBytes);
       downloadBytes(pdfBytes, `redacted-${file.name}`);
       registerAdTask();
       setSuccess(true);
     } catch (redactError) {
       await usage.releaseReservation(reservation);
-      setError(redactError instanceof Error ? redactError.message : "Failed to redact. The file may be encrypted or corrupted.");
+      setError(formatPdfErrorMessage(redactError, "Failed to redact document. The file may be password-protected or corrupted."));
     } finally {
       setProcessing(false);
     }
@@ -190,11 +191,16 @@ export default function SearchRedactPage() {
         </div>
 
         {success && (
-          <div className="mt-4 p-4 bg-emerald-500/10 border border-emerald-500/30 rounded-2xl text-center">
+          <div role="status" aria-live="polite" className="mt-4 p-4 bg-emerald-500/10 border border-emerald-500/30 rounded-2xl text-center">
             <p className="text-sm text-emerald-600 dark:text-emerald-400 font-bold">✅ {matchCount} occurrence(s) redacted — file downloaded!</p>
           </div>
         )}
-        {error && <div className="mt-6 p-4 bg-red-500/10 border border-red-500/30 rounded-2xl text-red-500 text-sm">{error}</div>}
+        {error && <div role="alert" aria-live="assertive" className="mt-6 p-4 bg-red-500/10 border border-red-500/30 rounded-2xl text-red-500 text-sm">{error}</div>}
+
+        <div className="mt-8 p-5 bg-[var(--card)] border border-[var(--card-border)] rounded-2xl text-xs text-[var(--muted)] space-y-2">
+          <h3 className="font-bold text-[var(--foreground)] text-sm">Security &amp; Redaction Guarantee</h3>
+          <p><strong>True Raster Redaction:</strong> When redactions are applied, matching pages are permanently converted into high-resolution pixel layers with opaque black masks burned in. The underlying vector text stream, searchable font glyphs, and character coordinates are completely erased—not merely visually hidden behind an overlaid box.</p>
+        </div>
       </div>
       <PremiumUpsell show={upsell.state.show} mode={upsell.state.mode} message={upsell.state.message} onClose={upsell.hideUpsell} />
     </TrialGate>

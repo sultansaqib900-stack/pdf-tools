@@ -51,34 +51,61 @@ export default function FeedbackWidget() {
   return (
     <div ref={ref} className="fixed bottom-4 right-4 z-50">
       {open ? (
-        <div className="bg-[var(--card)]/95 backdrop-blur-lg border border-[var(--card-border)] rounded-xl shadow-2xl p-4 w-72 animate-scaleIn origin-bottom-right">
-          <h3 className="font-semibold text-sm text-[var(--foreground)] mb-3">Send Feedback</h3>
+        <div
+          role="dialog"
+          aria-modal="false"
+          aria-label="Feedback dialog"
+          className="bg-[var(--card)]/95 backdrop-blur-lg border border-[var(--card-border)] rounded-xl shadow-2xl p-4 w-72 animate-scaleIn origin-bottom-right"
+        >
+          <div className="flex justify-between items-center mb-3">
+            <h3 className="font-semibold text-sm text-[var(--foreground)]">Send Feedback</h3>
+            <button
+              type="button"
+              onClick={() => setOpen(false)}
+              aria-label="Close feedback dialog"
+              className="text-xs text-[var(--muted)] hover:text-[var(--foreground)] p-1 rounded"
+            >
+              &#10005;
+            </button>
+          </div>
           <form onSubmit={handleSubmit} className="space-y-3">
-            <input
-              type="text"
-              placeholder="Your name"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              className="w-full px-3 py-2 text-sm rounded-lg bg-[var(--background)] border border-[var(--card-border)] text-[var(--foreground)] focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all"
-              required
-            />
-            <textarea
-              placeholder="Tell us what you think..."
-              value={text}
-              onChange={(e) => setText(e.target.value)}
-              rows={3}
-              className="w-full px-3 py-2 text-sm rounded-lg bg-[var(--background)] border border-[var(--card-border)] text-[var(--foreground)] focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all resize-none"
-              required
-            />
-            <div className="flex gap-1">
+            <div>
+              <label htmlFor="feedback-widget-name" className="sr-only">Your Name</label>
+              <input
+                id="feedback-widget-name"
+                type="text"
+                placeholder="Your name"
+                aria-label="Your name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                className="w-full px-3 py-2 text-sm rounded-lg bg-[var(--background)] border border-[var(--card-border)] text-[var(--foreground)] focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all"
+                required
+              />
+            </div>
+            <div>
+              <label htmlFor="feedback-widget-text" className="sr-only">Feedback message</label>
+              <textarea
+                id="feedback-widget-text"
+                placeholder="Tell us what you think..."
+                aria-label="Feedback message"
+                value={text}
+                onChange={(e) => setText(e.target.value)}
+                rows={3}
+                className="w-full px-3 py-2 text-sm rounded-lg bg-[var(--background)] border border-[var(--card-border)] text-[var(--foreground)] focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all resize-none"
+                required
+              />
+            </div>
+            <div className="flex gap-1" role="group" aria-label="Rating selection">
               {stars.map((s) => (
                 <button
                   key={s}
                   type="button"
+                  aria-label={`${s} star${s > 1 ? "s" : ""}`}
+                  aria-pressed={rating === s}
                   onClick={() => setRating(s)}
                   onMouseEnter={() => setHoverRating(s)}
                   onMouseLeave={() => setHoverRating(0)}
-                  className={`text-lg transition-all duration-150 ${
+                  className={`text-lg transition-all duration-150 p-1 ${
                     (hoverRating || rating) >= s
                       ? "text-amber-400 scale-110"
                       : "text-[var(--muted)] hover:text-amber-300"
@@ -99,11 +126,13 @@ export default function FeedbackWidget() {
         </div>
       ) : (
         <button
+          type="button"
           onClick={() => setOpen(true)}
           className="w-12 h-12 bg-gradient-to-br from-indigo-500 to-purple-600 text-white rounded-full shadow-lg hover:shadow-xl hover:shadow-indigo-500/30 hover:scale-110 transition-all active:scale-90 flex items-center justify-center text-lg animate-glowPulse"
+          aria-label="Send feedback"
           title="Send feedback"
         >
-          💬
+          <span aria-hidden="true">💬</span>
         </button>
       )}
     </div>

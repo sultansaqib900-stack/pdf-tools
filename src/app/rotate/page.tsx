@@ -1,7 +1,6 @@
 "use client";
 
-import { isPdfFile } from "@/lib/pdfBytes";
-
+import { isPdfFile, loadPdfForEditing, downloadBytes, formatPdfErrorMessage, validatePdfOutput } from "@/lib/pdfBytes";
 import { useState, useCallback, useEffect, useRef } from "react";
 import ToolInfo from "@/components/ToolInfo";
 import FreeWaitTimer from "@/components/FreeWaitTimer";
@@ -42,47 +41,63 @@ export default function RotatePage() {
   useEffect(() => { trackToolVisit("rotate"); }, []);
 
   const handleFile = useCallback(async (f: File | null) => {
-    if (!f || !isPdfFile(f)) return;
+    if (!f) return;
+    if (!isPdfFile(f)) {
+      setError("Please select a valid PDF file.");
+      return;
+    }
     const check = checkFileSize(f.size);
     if (!check.ok) { upsell.showUpsell("file-size"); return; }
-    setFile(f);
+    
+    setError(null);
     setSuccess(false);
-    const bytes = await f.arrayBuffer();
-    originalBytes.current = bytes;
-    const { PDFDocument } = await import("pdf-lib");
-    const pdf = await PDFDocument.load(bytes);
-    setPageCount(pdf.getPageCount());
-  }, []);
+
+    try {
+      const bytes = await f.arrayBuffer();
+      const pdf = await loadPdfForEditing(bytes);
+      const count = pdf.getPageCount();
+      if (count === 0) {
+        throw new Error("This PDF document contains no pages.");
+      }
+      originalBytes.current = bytes;
+      setFile(f);
+      setPageCount(count);
+    } catch (err) {
+      setFile(null);
+      setError(formatPdfErrorMessage(err, "Failed to load PDF. The document may be corrupted or password-protected."));
+    }
+  }, [upsell]);
 
   const runRotate = useCallback(async () => {
     if (!file) return;
     setProcessing(true);
+    setError(null);
     const canProceed = await usage.checkAndTrack();
     if (!canProceed) { setProcessing(false); upsell.showUpsell("trial-limit"); return; }
     try {
-      const { PDFDocument, degrees } = await import("pdf-lib");
+      const { degrees } = await import("pdf-lib");
       const bytes = await file.arrayBuffer();
-      const pdfDoc = await PDFDocument.load(bytes);
+      const pdfDoc = await loadPdfForEditing(bytes);
       const pages = pdfDoc.getPages();
       for (const page of pages) {
         const current = page.getRotation().angle;
         page.setRotation(degrees(current + rotation));
       }
       const rotatedBytes = await pdfDoc.save({ useObjectStreams: true });
-      const blob = new Blob([rotatedBytes.slice()], { type: "application/pdf" });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `rotated-${file.name}`;
-      a.click();
-      window.setTimeout(() => URL.revokeObjectURL(url), 60_000);
+      const validation = await validatePdfOutput(rotatedBytes);
+      if (!validation.ok) {
+        throw new Error(validation.error || "Generated rotated document is invalid.");
+      }
+
+      downloadBytes(rotatedBytes, `rotated-${file.name}`);
       trackExport(file.name, "Rotate PDF", rotatedBytes.byteLength);
       setSuccess(true);
-    } catch {
-      setError("Failed to rotate PDF.");
+    } catch (err) {
+      setError(formatPdfErrorMessage(err, "Failed to rotate PDF."));
+    } finally {
+      setProcessing(false);
     }
-    setProcessing(false);
-  }, [file, rotation]);
+  }, [file, rotation, usage, upsell, trackExport]);
 
   const rotate = useCallback(async () => {
     if (!isPremium()) {
@@ -92,40 +107,41 @@ export default function RotatePage() {
       return;
     }
     runRotate();
-    }, [usage, upsell, runRotate])
+  }, [usage, upsell, runRotate]);
 
   const restoreOriginal = useCallback(async () => {
-    if (!originalBytes.current) return;
-    const blob = new Blob([originalBytes.current], { type: "application/pdf" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `original-${file?.name || "restored.pdf"}`;
-    a.click();
-    window.setTimeout(() => URL.revokeObjectURL(url), 60_000);
+    if (!originalBytes.current || !file) return;
+    downloadBytes(originalBytes.current, `original-${file.name}`);
   }, [file]);
+
+  const resetTool = useCallback(() => {
+    setFile(null);
+    setPageCount(0);
+    setError(null);
+    setSuccess(false);
+    originalBytes.current = null;
+  }, []);
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-12">
       <SoftwareAppJsonLd
-        name="Rotate PDF - Free Online Tool"
-        description="Rotate PDF pages online for free. Change page orientation to portrait or landscape in your browser."
+        name="Rotate PDF - Free Online PDF Tool"
+        description="Rotate PDF pages 90, 180, or 270 degrees online for free. Permanent rotation processed in your browser."
         url="https://allaboutpdfediting.xyz/rotate"
       />
-      <HowToJsonLd name="Rotate PDF Pages" description="Rotate PDF pages by 90 180 or 270 degrees" steps={[{name:"Upload PDF",text:"Select the PDF with pages to rotate"},{name:"Select rotation",text:"Choose 90 180 or 270 degree rotation"},{name:"Download rotated PDF",text:"Download the PDF with corrected page orientation"}]} />
+      <HowToJsonLd name="Rotate PDF Online" description="Rotate PDF pages permanently" steps={[{name:"Upload PDF",text:"Select or drop the PDF file to rotate"},{name:"Choose angle",text:"Select 90, 180, or 270 degrees"},{name:"Download",text:"Download the permanently rotated PDF"}]} />
       <Breadcrumbs items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Tools", item: "https://allaboutpdfediting.xyz/tools" }, { name: "Rotate PDF", item: "https://allaboutpdfediting.xyz/rotate" }]} />
       <FaqPageJsonLd questions={rc?.faqs} />
-      <AiSummaryJsonLd name="Rotate PDF" summary="Rotate PDF pages by 90 180 or 270 degrees to fix orientation issues" category="Utilities" inputType="PDF" outputType="PDF" processing="client-side" price="free" features={["Page rotation","90 180 270 degrees","Orientation fix","Free online tool","Client-side only"]} limits="Files up to 10MB" />
+      <AiSummaryJsonLd name="Rotate PDF" summary="Rotate all pages of a PDF by 90, 180, or 270 degrees with instant client-side processing" category="Utilities" inputType="PDF" outputType="PDF" processing="client-side" price="free" features={["90/180/270 degree rotation","All pages rotated","Instant client-side processing","Free and unlimited","No file uploads"]} limits="Files up to 10MB" />
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">Rotate PDF</h1>
-        <p className="text-[var(--muted)]">Rotate all pages in a PDF by 90, 180, or 270 degrees.</p>
+        <p className="text-[var(--muted)]">Rotate PDF pages permanently by 90, 180, or 270 degrees.</p>
       </div>
 
       <ToolInfo
         name="Rotate PDF"
-        description="Your PDF never leaves your device. Rotation is applied locally using pdf-lib in your browser — no uploads, no servers. Pick your angle and download the fixed document instantly."
+        description="Your file stays on your device. Rotation happens entirely in your browser using pdf-lib — no uploads, no servers. Select your rotation angle and download the rotated PDF instantly."
       />
-
 
       <div className="mb-4">
         <UsageBar remaining={usage.remaining} unlimited={usage.unlimited} tier={usage.tier} />
@@ -143,7 +159,7 @@ export default function RotatePage() {
           <input
             type="file"
             accept="application/pdf"
-            onChange={(e) => handleFile(e.target.files?.[0] ?? null)}
+            onChange={(e) => handleFile(e.target.files?.[0] || null)}
             className="hidden"
             id="fileInput"
           />
@@ -152,11 +168,26 @@ export default function RotatePage() {
             <span className="text-indigo-500 font-medium hover:underline">
               {file ? file.name : "Click to select or drag & drop a PDF"}
             </span>
-            {pageCount > 0 && <span className="text-sm text-[var(--muted)]">{pageCount} page{pageCount > 1 ? "s" : ""}</span>}
+            {file && (
+              <div className="flex items-center gap-2">
+                <span className="text-xs text-[var(--muted)]">{pageCount} page{pageCount > 1 ? "s" : ""}</span>
+                <span>·</span>
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    resetTool();
+                  }}
+                  className="text-xs text-red-500 hover:text-red-700 underline font-medium"
+                >
+                  Change file
+                </button>
+              </div>
+            )}
+            {!file && <span className="text-xs text-[var(--muted)]">Max {isPremium() ? "100MB" : "10MB"} · 100% Private Client-Side</span>}
           </label>
         </div>
-
-        <ProgressBar processing={processing} fileSize={file?.size} label="Rotating PDF..." />
 
         {file && (
           <div className="mt-6 space-y-4">
@@ -166,6 +197,7 @@ export default function RotatePage() {
                 {[90, 180, 270].map((angle) => (
                   <button
                     key={angle}
+                    type="button"
                     onClick={() => setRotation(angle)}
                     className={`flex-1 py-2.5 rounded-lg border text-sm font-medium transition ${
                       rotation === angle
@@ -196,7 +228,7 @@ export default function RotatePage() {
 
             {!isPremium() && (
               <p className="mt-3 text-center text-xs text-[var(--muted)]">
-                Free users limited to 10MB files.{ " " }
+                Free users limited to 10MB files.{" "}
                 <a href="/premium" className="text-indigo-500 font-medium hover:underline">Upgrade for 100MB files & batch</a>
               </p>
             )}

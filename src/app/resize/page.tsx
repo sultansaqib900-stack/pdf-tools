@@ -1,6 +1,6 @@
 "use client";
 
-import { isPdfFile } from "@/lib/pdfBytes";
+import { isPdfFile, loadPdfForEditing, validatePdfOutput, downloadBytes, formatPdfErrorMessage } from "@/lib/pdfBytes";
 
 import { useState, useCallback, useEffect, useRef } from "react";
 import ToolInfo from "@/components/ToolInfo";
@@ -54,6 +54,14 @@ export default function ResizePage() {
 
   useEffect(() => { trackToolVisit("resize"); }, []);
 
+  const resetFile = useCallback(() => {
+    setFile(null);
+    setPageCount(0);
+    setError(null);
+    setSuccess(false);
+    originalBytes.current = null;
+  }, []);
+
   const handleFile = useCallback(async (f: File | null) => {
     if (!f || !isPdfFile(f)) return;
     const check = checkFileSize(f.size);
@@ -61,12 +69,17 @@ export default function ResizePage() {
     setFile(f);
     setSuccess(false);
     setError(null);
-    const { PDFDocument } = await import("pdf-lib");
-    const bytes = await f.arrayBuffer();
-    originalBytes.current = bytes;
-    const pdf = await PDFDocument.load(bytes);
-    setPageCount(pdf.getPageCount());
-  }, []);
+    try {
+      const bytes = await f.arrayBuffer();
+      originalBytes.current = bytes;
+      const pdf = await loadPdfForEditing(bytes);
+      setPageCount(pdf.getPageCount());
+    } catch (err) {
+      setError(formatPdfErrorMessage(err, "Failed to load PDF. The document may be password-protected or corrupted."));
+      setFile(null);
+      setPageCount(0);
+    }
+  }, [upsell]);
 
   const runResize = useCallback(async () => {
     if (!file) return;
@@ -75,10 +88,8 @@ export default function ResizePage() {
     const canProceed = await usage.checkAndTrack();
     if (!canProceed) { setProcessing(false); upsell.showUpsell("trial-limit"); return; }
     try {
-      const { PDFDocument } = await import("pdf-lib");
-      const bytes = await file.arrayBuffer();
-      originalBytes.current = bytes;
-      const pdfDoc = await PDFDocument.load(bytes);
+      const bytes = originalBytes.current || (await file.arrayBuffer());
+      const pdfDoc = await loadPdfForEditing(bytes);
 
       let targetW: number, targetH: number;
       if (mode === "preset") {
@@ -87,7 +98,7 @@ export default function ResizePage() {
       } else {
         targetW = parseFloat(customW); targetH = parseFloat(customH);
         if (!targetW || !targetH || targetW < 50 || targetH < 50) {
-          setError("Enter valid dimensions (min 50)."); setProcessing(false); return;
+          setError("Enter valid dimensions (min 50pt)."); setProcessing(false); return;
         }
       }
 
@@ -101,18 +112,15 @@ export default function ResizePage() {
       }
 
       const pdfBytes = await pdfDoc.save({ useObjectStreams: true });
-      const blob = new Blob([pdfBytes as unknown as BlobPart], { type: "application/pdf" });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `resized-${file.name}`;
-      a.click();
-      window.setTimeout(() => URL.revokeObjectURL(url), 60_000);
+      await validatePdfOutput(pdfBytes);
+      downloadBytes(pdfBytes, `resized-${file.name}`);
       trackExport(file.name, "Resize PDF", pdfBytes.length);
       setSuccess(true);
-    } catch { setError("Failed to resize PDF."); }
+    } catch (err) {
+      setError(formatPdfErrorMessage(err, "Failed to resize PDF."));
+    }
     setProcessing(false);
-  }, [file, selectedSize, mode, customW, customH]);
+  }, [file, selectedSize, mode, customW, customH, usage, upsell, trackExport]);
 
   const process = useCallback(async () => {
     if (!isPremium()) {
@@ -232,6 +240,15 @@ export default function ResizePage() {
               ) : `Resize to ${mode === "preset" ? selectedSize.split(" ")[0] : `${customW}×${customH}`}`}
             </button>
 
+            <button
+              type="button"
+              onClick={resetFile}
+              disabled={processing}
+              className="mt-3 w-full py-2 bg-transparent text-sm text-[var(--muted)] hover:text-[var(--foreground)] transition border border-[var(--card-border)] rounded-xl"
+            >
+              Choose different file
+            </button>
+
             {!isPremium() && (
               <p className="mt-3 text-center text-xs text-[var(--muted)]">
                 Free users limited to 10MB &amp; 5s wait.{ " " }
@@ -252,7 +269,7 @@ export default function ResizePage() {
         <div className="text-sm text-[var(--muted)] space-y-3 leading-relaxed">
           <p>Change the page size of PDF documents online for free. Choose from standard formats like A4, Letter, Legal, A3, or set custom dimensions. Perfect for resizing documents to meet submission requirements, printing standards, or formatting needs.</p>
           <p>All processing happens locally in your browser — no uploads, no servers, complete privacy. Note that page content is not scaled; only the page boundaries are adjusted.</p>
-          <p>Keywords: resize PDF online free, change PDF page size, PDF to A4 online, PDF page dimensions, change PDF paper size.</p>
+          <p>Updates the MediaBox boundaries across selected pages to ensure compatibility with international paper dimensions and publishing standards.</p>
         </div>
       </div>
 

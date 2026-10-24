@@ -21,7 +21,7 @@ import RelatedContent from "@/components/RelatedContent";
 import { getRelatedContent } from "@/lib/related-content";
 import UseCaseLinks from "@/components/UseCaseLinks";
 import { createZipArchive } from "@/lib/archive";
-import { isPdfFile, downloadBytes } from "@/lib/pdfBytes";
+import { isPdfFile, downloadBytes, loadPdfForEditing, validatePdfOutput, formatPdfErrorMessage } from "@/lib/pdfBytes";
 
 const rc = getRelatedContent("split");
 
@@ -44,29 +44,45 @@ export default function SplitPage() {
   useEffect(() => { trackToolVisit("split"); }, []);
 
   const handleFile = useCallback(async (f: File | null) => {
-    if (!f || !isPdfFile(f)) return;
+    if (!f) return;
+    if (!isPdfFile(f)) {
+      setError("Please select a valid PDF file.");
+      return;
+    }
     const check = checkFileSize(f.size);
     if (!check.ok) { upsell.showUpsell("file-size"); return; }
-    setFile(f);
-    const bytes = await f.arrayBuffer();
-    originalBytes.current = bytes;
-    const { PDFDocument: PDFDoc } = await import("pdf-lib");
-    const pdf = await PDFDoc.load(bytes);
-    const count = pdf.getPageCount();
-    setPageCount(count);
-    setEndPage(count);
-    setStartPage(1);
-  }, []);
+
+    setError(null);
+    setSuccess(false);
+
+    try {
+      const bytes = await f.arrayBuffer();
+      const pdf = await loadPdfForEditing(bytes);
+      const count = pdf.getPageCount();
+      if (count === 0) {
+        throw new Error("This PDF document contains no pages.");
+      }
+      originalBytes.current = bytes;
+      setFile(f);
+      setPageCount(count);
+      setEndPage(count);
+      setStartPage(1);
+    } catch (err) {
+      setFile(null);
+      setError(formatPdfErrorMessage(err, "Failed to load PDF. The file may be encrypted or corrupted."));
+    }
+  }, [upsell]);
 
   const runSplit = useCallback(async () => {
-    if (!file) return;
+    if (!file || pageCount === 0) return;
     setProcessing(true);
+    setError(null);
     const canProceed = await usage.checkAndTrack();
     if (!canProceed) { setProcessing(false); upsell.showUpsell("trial-limit"); return; }
     try {
       const { PDFDocument } = await import("pdf-lib");
       const bytes = await file.arrayBuffer();
-      const sourcePdf = await PDFDocument.load(bytes);
+      const sourcePdf = await loadPdfForEditing(bytes);
 
       if (mode === "all") {
         const outputFiles: { name: string; bytes: Uint8Array }[] = [];
@@ -75,9 +91,10 @@ export default function SplitPage() {
           const newPdf = await PDFDocument.create();
           const [page] = await newPdf.copyPages(sourcePdf, [i]);
           newPdf.addPage(page);
+          const singleBytes = await newPdf.save({ useObjectStreams: true });
           outputFiles.push({
             name: `page-${String(i + 1).padStart(padding, "0")}.pdf`,
-            bytes: await newPdf.save({ useObjectStreams: true }),
+            bytes: singleBytes,
           });
         }
         const archive = createZipArchive(outputFiles);
@@ -85,24 +102,34 @@ export default function SplitPage() {
         downloadBytes(archive, `${baseName}-pages.zip`, "application/zip");
         trackExport(file.name, "Split PDF", archive.byteLength);
       } else {
-        if (startPage > endPage) {
-          throw new Error("The first page must not come after the last page.");
+        const s = Math.max(1, Math.min(pageCount, startPage));
+        const e = Math.max(1, Math.min(pageCount, endPage));
+
+        if (s > e) {
+          throw new Error("The start page cannot come after the end page.");
         }
-        const s = startPage - 1;
-        const e = endPage - 1;
+
         const newPdf = await PDFDocument.create();
-        const pages = await newPdf.copyPages(sourcePdf, Array.from({ length: e - s + 1 }, (_, i) => s + i));
+        const pageIndices = Array.from({ length: e - s + 1 }, (_, i) => s - 1 + i);
+        const pages = await newPdf.copyPages(sourcePdf, pageIndices);
         pages.forEach((p) => newPdf.addPage(p));
         const pdfBytes = await newPdf.save({ useObjectStreams: true });
-        downloadBytes(pdfBytes, `pages-${startPage}-${endPage}-${file.name}`);
+
+        const validation = await validatePdfOutput(pdfBytes);
+        if (!validation.ok) {
+          throw new Error(validation.error || "Generated split document is invalid.");
+        }
+
+        downloadBytes(pdfBytes, `pages-${s}-${e}-${file.name}`);
         trackExport(file.name, "Split PDF", pdfBytes.byteLength);
       }
       setSuccess(true);
     } catch (splitError) {
-      setError(splitError instanceof Error ? splitError.message : "Failed to split PDF. The file may be encrypted or corrupted.");
+      setError(formatPdfErrorMessage(splitError, "Failed to split PDF. The file may be encrypted or corrupted."));
+    } finally {
+      setProcessing(false);
     }
-    setProcessing(false);
-  }, [file, mode, startPage, endPage]);
+  }, [file, mode, startPage, endPage, pageCount, usage, upsell, trackExport]);
 
   const split = useCallback(async () => {
     if (!isPremium()) {
@@ -112,40 +139,41 @@ export default function SplitPage() {
       return;
     }
     runSplit();
-    }, [usage, upsell, runSplit])
+  }, [usage, upsell, runSplit]);
 
   const restoreOriginal = useCallback(async () => {
-    if (!originalBytes.current) return;
-    const blob = new Blob([originalBytes.current], { type: "application/pdf" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `original-${file?.name || "restored.pdf"}`;
-    a.click();
-    window.setTimeout(() => URL.revokeObjectURL(url), 60_000);
+    if (!originalBytes.current || !file) return;
+    downloadBytes(originalBytes.current, `original-${file.name}`);
   }, [file]);
+
+  const resetTool = useCallback(() => {
+    setFile(null);
+    setPageCount(0);
+    setError(null);
+    setSuccess(false);
+    originalBytes.current = null;
+  }, []);
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-12">
       <SoftwareAppJsonLd
         name="Split PDF - Free Online PDF Tool"
-        description="Split PDF files online for free. Extract pages from PDF documents instantly in your browser. No uploads."
+        description="Split PDF files into individual pages or extract page ranges online for free. Fast, secure, and client-side processing."
         url="https://allaboutpdfediting.xyz/split"
       />
-      <HowToJsonLd name="Split PDF Pages Online" description="Separate every PDF page into a ZIP or extract one continuous page range" steps={[{name:"Upload PDF",text:"Select the PDF file to split"},{name:"Choose split method",text:"Select one continuous page range or split every page"},{name:"Download output",text:"Download the extracted PDF or ZIP of single-page PDFs"}]} />
+      <HowToJsonLd name="Split PDF Pages Online" description="Extract individual pages or ranges from a PDF" steps={[{name:"Upload PDF",text:"Select or drop the PDF you want to split"},{name:"Choose split mode",text:"Choose to extract all pages into a ZIP or specify a page range"},{name:"Download",text:"Download the extracted pages or page range"}]} />
       <Breadcrumbs items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Tools", item: "https://allaboutpdfediting.xyz/tools" }, { name: "Split PDF", item: "https://allaboutpdfediting.xyz/split" }]} />
       <FaqPageJsonLd questions={rc?.faqs} />
-      <AiSummaryJsonLd name="Split PDF" summary="Separate PDF pages into multiple documents or extract specific page ranges" category="Utilities" inputType="PDF" outputType="PDF" processing="client-side" price="free" features={["Page range extraction","Split every page","Multiple output files","Client-side processing","Free"]} limits="Files up to 10MB" />
+      <AiSummaryJsonLd name="Split PDF" summary="Extract page ranges or split into individual pages packaged as a ZIP" category="Utilities" inputType="PDF" outputType="PDF/ZIP" processing="client-side" price="free" features={["Extract all pages","Extract page range","ZIP download","Free processing","No file uploads"]} limits="Files up to 10MB" />
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">Split PDF</h1>
-        <p className="text-[var(--muted)]">Extract pages or split into separate files.</p>
+        <p className="text-[var(--muted)]">Extract individual pages into a ZIP or save a specific page range.</p>
       </div>
 
       <ToolInfo
         name="Split PDF"
-        description="Your file stays private. Splitting happens locally in your browser using pdf-lib. Select pages, choose your range, and download — no uploads, no servers, complete privacy."
+        description="Your files stay on your device. Splitting is done entirely in your browser using pdf-lib — no uploads, no servers involved. Extract individual pages or ranges and download instantly."
       />
-
 
       <div className="mb-4">
         <UsageBar remaining={usage.remaining} unlimited={usage.unlimited} tier={usage.tier} />
@@ -172,7 +200,24 @@ export default function SplitPage() {
             <span className="text-indigo-500 font-medium hover:underline">
               {file ? file.name : "Click to select or drag & drop a PDF"}
             </span>
-            {pageCount > 0 && <span className="text-sm text-[var(--muted)]">{pageCount} page{pageCount > 1 ? "s" : ""}</span>}
+            {pageCount > 0 && (
+              <div className="flex items-center gap-2">
+                <span className="text-sm text-[var(--muted)]">{pageCount} page{pageCount > 1 ? "s" : ""}</span>
+                <span>·</span>
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    resetTool();
+                  }}
+                  className="text-xs text-red-500 hover:text-red-700 underline font-medium"
+                >
+                  Change file
+                </button>
+              </div>
+            )}
+            {!file && <span className="text-xs text-[var(--muted)]">Max {isPremium() ? "100MB" : "10MB"} · 100% Private Client-Side</span>}
           </label>
         </div>
 
@@ -183,7 +228,7 @@ export default function SplitPage() {
             <div className="flex gap-6">
               <label className="flex items-center gap-2 cursor-pointer">
                 <input type="radio" name="mode" checked={mode === "all"} onChange={() => setMode("all")} className="accent-indigo-600" />
-                <span className="text-sm text-[var(--foreground)]">Extract all pages</span>
+                <span className="text-sm text-[var(--foreground)]">Extract all pages (ZIP)</span>
               </label>
               <label className="flex items-center gap-2 cursor-pointer">
                 <input type="radio" name="mode" checked={mode === "range"} onChange={() => setMode("range")} className="accent-indigo-600" />
@@ -193,10 +238,24 @@ export default function SplitPage() {
 
             {mode === "range" && (
               <div className="flex flex-wrap items-center gap-3 p-4 bg-[var(--background)] border border-[var(--card-border)] rounded-lg">
-                <label className="text-sm text-[var(--muted)]">From:</label>
-                <input type="number" min={1} max={pageCount} value={startPage} onChange={(e) => setStartPage(Math.max(1, Math.min(pageCount, Number(e.target.value))))} className="w-20 px-3 py-1.5 border border-[var(--card-border)] rounded-lg text-sm bg-[var(--card)] text-[var(--foreground)]" />
-                <label className="text-sm text-[var(--muted)]">To:</label>
-                <input type="number" min={1} max={pageCount} value={endPage} onChange={(e) => setEndPage(Math.max(1, Math.min(pageCount, Number(e.target.value))))} className="w-20 px-3 py-1.5 border border-[var(--card-border)] rounded-lg text-sm bg-[var(--card)] text-[var(--foreground)]" />
+                <label className="text-sm text-[var(--muted)]">From page:</label>
+                <input
+                  type="number"
+                  min={1}
+                  max={pageCount}
+                  value={startPage}
+                  onChange={(e) => setStartPage(Math.max(1, Math.min(pageCount, Number(e.target.value))))}
+                  className="w-20 px-3 py-1.5 border border-[var(--card-border)] rounded-lg text-sm bg-[var(--card)] text-[var(--foreground)]"
+                />
+                <label className="text-sm text-[var(--muted)]">To page:</label>
+                <input
+                  type="number"
+                  min={1}
+                  max={pageCount}
+                  value={endPage}
+                  onChange={(e) => setEndPage(Math.max(1, Math.min(pageCount, Number(e.target.value))))}
+                  className="w-20 px-3 py-1.5 border border-[var(--card-border)] rounded-lg text-sm bg-[var(--card)] text-[var(--foreground)]"
+                />
                 <span className="text-xs text-[var(--muted)]">(1–{pageCount})</span>
               </div>
             )}
@@ -208,32 +267,27 @@ export default function SplitPage() {
               disabled={processing || showTimer}
               className="w-full py-3 bg-indigo-600 text-white font-medium rounded-xl hover:bg-indigo-700 disabled:opacity-40 disabled:cursor-not-allowed transition shadow-sm"
             >
-              {processing ? (
-                <span className="flex items-center justify-center gap-2">
-                  <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none"/><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
-                  Splitting...
-                </span>
-              ) : mode === "all" ? `Split ${pageCount} pages to ZIP` : `Extract pages ${startPage}–${endPage}`}
+              {processing ? "Splitting..." : mode === "all" ? "Extract All Pages to ZIP" : `Extract Pages ${startPage}–${endPage}`}
             </button>
 
             {!isPremium() && (
               <p className="mt-3 text-center text-xs text-[var(--muted)]">
-                Free users limited to 10MB files.{ " " }
+                Free users limited to 10MB files.{" "}
                 <a href="/premium" className="text-indigo-500 font-medium hover:underline">Upgrade for 100MB files & batch</a>
               </p>
             )}
+
+            {error && <ErrorBanner message={error} onRetry={runSplit} onDismiss={() => setError(null)} />}
+
+            <SuccessAnimation show={success} message="PDF split successfully!" onRestore={restoreOriginal} />
           </div>
         )}
-
-        {error && <ErrorBanner message={error} onRetry={runSplit} onDismiss={() => setError(null)} />}
-
-        <SuccessAnimation show={success} message="Split complete!" onRestore={restoreOriginal} />
       </div>
 
       <div className="max-w-3xl mx-auto mt-12 pt-8 border-t border-[var(--card-border)]">
         <h2 className="text-xl font-bold text-[var(--foreground)] mb-3">About Split PDF</h2>
         <div className="text-sm text-[var(--muted)] space-y-3 leading-relaxed">
-          <p>Need to split PDF online free? Our tool lets you extract PDF pages or split every page into individual files, giving you complete flexibility over how you manage your documents. Choose between extracting a specific page range or splitting the entire document into separate pages — the choice is yours. This is ideal when you need only certain sections from a large report, want to share pages one at a time, or need to reorganize content by removing specific pages. Processing happens entirely client-side using pdf-lib, meaning your document never leaves your browser. To extract PDF pages, simply upload your file, select your range, and download. Each extracted page preserves original quality and formatting, so you get clean, accurate results every time.</p>
+          <p>Separate a large document into individual pages or extract precisely the page range you need. Split PDF operates entirely within your browser — no files are transmitted to any server, guaranteeing privacy for confidential reports, invoices, or records.</p>
         </div>
       </div>
       <RelatedContent slug="split" />

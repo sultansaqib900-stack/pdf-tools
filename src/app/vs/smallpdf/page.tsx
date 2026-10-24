@@ -8,15 +8,15 @@ import Breadcrumbs from "@/components/Breadcrumbs";
 export const metadata: Metadata = buildMetadata({
   path: "/vs/smallpdf",
   title: "SmallPDF vs PDFTools - Free Unlimited Browser PDF Editor",
-  description: "Compare SmallPDF ($108/yr) vs PDFTools. No daily 2-file limit, no 60-minute wait queues, and 100% private in-browser document processing.",
+  description: "Compare SmallPDF ($108/yr) vs PDFTools. No daily 2-file limit, no 60-minute wait queues, and private in-browser document processing for core tools.",
 });
 export default function VsSmallpdfPage() {
   const comparisonRows = [
-    { feature: "Free Daily Limit", competitor: "Only 2 documents / day", pdfTools: "Unlimited basic tools", win: true },
+    { feature: "Free Daily Limit", competitor: "Only 2 documents / day", pdfTools: "Unlimited 38 basic tools", win: true },
     { feature: "Wait Queue / Timers", competitor: "Forced 60-minute wait timers", pdfTools: "Instant Client Processing", win: true },
-    { feature: "Privacy & Cloud Storage", competitor: "Documents stored in remote cloud", pdfTools: "100% In-Browser RAM (Zero Uploads)", win: true },
-    { feature: "Chained Operations", competitor: "Siloed tool pages", pdfTools: "PDF Studio Multi-Step Pipeline", win: true },
-    { feature: "Annual Price", competitor: "$108 / year per user", pdfTools: "$0 / Lifetime Free", win: true },
+    { feature: "Privacy & Cloud Storage", competitor: "Documents stored in remote cloud", pdfTools: "In-Browser RAM (Zero server uploads for core tools)", win: true },
+    { feature: "Chained Operations", competitor: "Siloed tool pages", pdfTools: "PDF Studio Multi-Step Pipeline (Premium)", win: true },
+    { feature: "Annual Price", competitor: "$108 / year per user", pdfTools: "$0 Core Suite (Premium: Rs 12,500/year)", win: true },
   ];
 
   return (
@@ -42,9 +42,9 @@ export default function VsSmallpdfPage() {
         <h1 className="text-3xl sm:text-5xl font-black text-[var(--foreground)] tracking-tight">
           SmallPDF vs. PDFTools
         </h1>
-      <p className="text-xs text-[var(--muted)] mt-2 mb-6">Last verified: September 2026 — pricing and limits re-checked against Smallpdf&apos;s public documentation.</p>
+        <p className="text-xs text-[var(--muted)] mt-2 mb-6">Last verified: September 2026 — pricing and limits re-checked against Smallpdf&apos;s public documentation.</p>
         <p className="text-sm sm:text-base text-[var(--muted)] leading-relaxed">
-          Never hit a &quot;Daily limit reached, wait 60 minutes&quot; screen again. Unlimited in-browser speed and complete air-gapped document privacy.
+          Never hit a &quot;Daily limit reached, wait 60 minutes&quot; screen again. Unlimited in-browser speed and private client-side document processing for core tools.
         </p>
 
         <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
@@ -52,13 +52,19 @@ export default function VsSmallpdfPage() {
             href="/studio"
             className="px-6 py-3.5 bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-extrabold rounded-2xl shadow-xl shadow-indigo-500/25 hover:opacity-95 text-sm transition"
           >
-            ⚡ Open Free PDF Studio
+            ⚡ Open PDF Studio (Premium)
           </Link>
           <Link
             href="/compress"
             className="px-6 py-3.5 bg-[var(--card)] border border-[var(--card-border)] hover:border-indigo-500 text-[var(--foreground)] font-bold rounded-2xl text-sm transition"
           >
             📦 Instant Compress
+          </Link>
+          <Link
+            href="/tools"
+            className="px-6 py-3.5 bg-[var(--card)] border border-[var(--card-border)] hover:border-indigo-500 text-[var(--foreground)] font-bold rounded-2xl text-sm transition"
+          >
+            Explore 38 Free Core Tools
           </Link>
         </div>
       </div>

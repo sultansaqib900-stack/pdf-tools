@@ -280,7 +280,7 @@ export default function BatchPage() {
         <div className="text-sm text-[var(--muted)] space-y-3 leading-relaxed">
           <p>Process multiple PDFs at once with our Batch Processing tool. Select the operation for each file — compress, password protect, rotate, or add a watermark — and run them all simultaneously.</p>
           <p>This is a Premium feature for power users who work with multiple PDFs regularly. Each file is processed independently and downloaded automatically once ready.</p>
-          <p>Keywords: batch process PDF files, bulk PDF processing online, process multiple PDFs at once.</p>
+          <p>All batch operations run asynchronously within your browser session, preserving file integrity and ensuring zero external data leaks.</p>
         </div>
       </div>
 

@@ -1,5 +1,5 @@
 import { PDFDocument, PDFName } from "pdf-lib";
-import { copyPdfBytes, type PdfBinary } from "./pdfBytes";
+import { copyPdfBytes, loadPdfForEditing, type PdfBinary } from "./pdfBytes";
 
 export interface PdfMetadataSnapshot {
   title: string;
@@ -22,7 +22,7 @@ export interface SanitizedPdfResult {
  * objects from being serialized into the result.
  */
 export async function sanitizePdf(input: PdfBinary): Promise<SanitizedPdfResult> {
-  const source = await PDFDocument.load(copyPdfBytes(input), { updateMetadata: false });
+  const source = await loadPdfForEditing(copyPdfBytes(input), { updateMetadata: false });
   const before: PdfMetadataSnapshot = {
     title: source.getTitle() || "(none)",
     author: source.getAuthor() || "(none)",

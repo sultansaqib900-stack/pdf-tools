@@ -1,7 +1,6 @@
 "use client";
 
 import { registerAdTask } from "@/lib/ads";
-
 import { useState } from "react";
 import type { PDFPage } from "pdf-lib";
 import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
@@ -13,7 +12,7 @@ import TrialGate from "@/components/TrialGate";
 import PremiumUpsell, { usePremiumUpsell } from "@/components/PremiumUpsell";
 import { useUsage } from "@/hooks/useUsage";
 import { checkFileSize } from "@/lib/premium";
-import { downloadBytes } from "@/lib/pdfBytes";
+import { downloadBytes, loadPdfForEditing, validatePdfOutput, formatPdfErrorMessage } from "@/lib/pdfBytes";
 
 type Layout = "booklet" | "2x2" | "4x4";
 
@@ -39,14 +38,17 @@ export default function BookletPage() {
     try {
       const { PDFDocument } = await import("pdf-lib");
       const bytes = await file.arrayBuffer();
-      const srcDoc = await PDFDocument.load(bytes);
+      const srcDoc = await loadPdfForEditing(bytes);
       const newDoc = await PDFDocument.create();
       const totalPages = srcDoc.getPageCount();
       if (totalPages === 0) throw new Error("The PDF has no pages.");
       const firstPage = srcDoc.getPage(0);
       const srcW = firstPage.getWidth();
       const srcH = firstPage.getHeight();
-      const embeddedPages = await newDoc.embedPdf(bytes, Array.from({ length: totalPages }, (_, index) => index));
+
+      // Ensure embedded bytes are cleanly decrypted if source was permission-protected
+      const cleanBytes = await srcDoc.save();
+      const embeddedPages = await newDoc.embedPdf(cleanBytes, Array.from({ length: totalPages }, (_, index) => index));
 
       const drawInCell = (
         sheet: PDFPage,
@@ -114,15 +116,27 @@ export default function BookletPage() {
         }
       }
 
-      const pdfBytes = await newDoc.save();
+      const pdfBytes = await newDoc.save({ useObjectStreams: true });
+      const validation = await validatePdfOutput(pdfBytes);
+      if (!validation.ok) {
+        throw new Error(validation.error || "Generated booklet document is invalid.");
+      }
+
       downloadBytes(pdfBytes, `${layout}-${file.name}`);
       registerAdTask();
       setSuccess(true);
-    } catch {
+    } catch (err) {
       await usage.releaseReservation(reservation);
-      setError("Failed to create booklet. The file may be corrupted or encrypted.");
+      setError(formatPdfErrorMessage(err, "Failed to create booklet. The file may be corrupted or encrypted."));
+    } finally {
+      setProcessing(false);
     }
-    setProcessing(false);
+  };
+
+  const resetFile = () => {
+    setFile(null);
+    setError(null);
+    setSuccess(false);
   };
 
   return (
@@ -148,8 +162,20 @@ export default function BookletPage() {
 
         <div className="bg-[var(--card)] border border-[var(--card-border)] rounded-2xl p-6 sm:p-8 space-y-6 shadow-xl">
           <div className="border-2 border-dashed border-[var(--card-border)] hover:border-indigo-500/50 rounded-2xl p-6 text-center">
-            <input type="file" accept=".pdf" onChange={(e) => setFile(e.target.files?.[0] || null)} className="text-sm file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:bg-indigo-600 file:text-white file:text-xs file:font-semibold w-full cursor-pointer" />
-            {file && <p className="text-xs text-emerald-600 dark:text-emerald-400 mt-2 font-medium">Selected: {file.name} ({(file.size / 1024).toFixed(0)} KB)</p>}
+            <input type="file" accept=".pdf,application/pdf" onChange={(e) => setFile(e.target.files?.[0] || null)} className="text-sm file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:bg-indigo-600 file:text-white file:text-xs file:font-semibold w-full cursor-pointer" />
+            {file && (
+              <div className="flex items-center justify-center gap-2 mt-2">
+                <p className="text-xs text-emerald-600 dark:text-emerald-400 font-medium">Selected: {file.name} ({(file.size / 1024).toFixed(0)} KB)</p>
+                <span>·</span>
+                <button
+                  type="button"
+                  onClick={resetFile}
+                  className="text-xs text-red-500 hover:text-red-700 underline font-medium"
+                >
+                  Change file
+                </button>
+              </div>
+            )}
           </div>
 
           <div>
@@ -158,45 +184,48 @@ export default function BookletPage() {
               {[
                 { value: "booklet" as Layout, label: "📖 Booklet", desc: "Front/back stitch order" },
                 { value: "2x2" as Layout, label: "📐 2×2 Grid", desc: "4 pages per sheet" },
-                { value: "4x4" as Layout, label: "📐 4×4 Grid", desc: "16 pages per sheet" },
-              ].map(l => (
+                { value: "4x4" as Layout, label: "🖨️ 4×4 Grid", desc: "16 pages per sheet" },
+              ].map((item) => (
                 <button
-                  key={l.value}
+                  key={item.value}
                   type="button"
-                  onClick={() => setLayout(l.value)}
-                  className={`p-4 rounded-2xl border text-center transition-all duration-200 ${layout === l.value ? "border-amber-500 bg-amber-500/10 ring-2 ring-amber-500/30" : "border-[var(--card-border)] bg-[var(--background)] hover:border-amber-400/50"}`}
+                  onClick={() => setLayout(item.value)}
+                  className={`p-4 rounded-xl border text-left transition-all ${
+                    layout === item.value
+                      ? "border-amber-500 bg-amber-500/10 shadow-sm"
+                      : "border-[var(--card-border)] hover:border-amber-500/40"
+                  }`}
                 >
-                  <div className="text-3xl mb-1">{l.label.split(" ")[0]}</div>
-                  <p className="text-xs font-bold text-[var(--foreground)]">{l.label.split(" ").slice(1).join(" ")}</p>
-                  <p className="text-[10px] text-[var(--muted)] mt-0.5">{l.desc}</p>
+                  <div className="font-bold text-sm text-[var(--foreground)]">{item.label}</div>
+                  <div className="text-xs text-[var(--muted)] mt-1">{item.desc}</div>
                 </button>
               ))}
             </div>
           </div>
 
-          {layout === "booklet" && (
-            <p className="text-xs text-[var(--muted)]">Output sides are ordered for duplex saddle-stitch printing. Print at actual size, flip on the short edge, stack, fold, and verify your printer&apos;s duplex orientation with a test sheet.</p>
-          )}
+          <div className="p-4 bg-[var(--background)] rounded-xl border border-[var(--card-border)] text-xs text-[var(--muted)] space-y-1">
+            <div className="font-bold text-[var(--foreground)]">Printing Instructions:</div>
+            {layout === "booklet" && <div>Print dual-sided (flip on short edge). Fold pages in half and staple along the spine.</div>}
+            {layout === "2x2" && <div>Prints 4 scaled pages on each sheet. Great for review and reducing paper usage.</div>}
+            {layout === "4x4" && <div>Prints 16 scaled thumbnail pages on each sheet. Ideal for index/catalog printing.</div>}
+          </div>
+
+          {error && <div className="p-3 bg-red-500/10 border border-red-500/30 rounded-xl text-xs text-red-500 font-semibold">{error}</div>}
 
           <button
             onClick={generate}
             disabled={!file || processing}
-            className="w-full py-4 bg-gradient-to-r from-amber-500 to-orange-600 text-white font-bold rounded-2xl hover:opacity-95 disabled:opacity-40 transition-all text-base shadow-lg shadow-amber-500/25 active:scale-[0.99]"
+            className="w-full py-4 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white font-bold rounded-2xl text-sm transition-all shadow-lg shadow-amber-500/20 disabled:opacity-40"
           >
-            {processing ? "Generating Booklet..." : "⚡ Generate & Download Booklet"}
+            {processing ? "Generating Booklet..." : "Generate & Download Booklet"}
           </button>
-        </div>
 
-        {success && (
-          <div className="mt-6 p-5 bg-emerald-500/10 border border-emerald-500/30 rounded-2xl text-center text-sm text-emerald-600 dark:text-emerald-400 font-semibold animate-scaleIn">
-            ✅ Booklet created and downloaded successfully!
-          </div>
-        )}
-        {error && (
-          <div className="mt-6 p-5 bg-red-500/10 border border-red-500/30 rounded-2xl text-red-500 text-sm">
-            {error}
-          </div>
-        )}
+          {success && (
+            <div className="p-4 bg-emerald-500/10 border border-emerald-500/30 rounded-xl text-xs text-emerald-600 font-semibold text-center">
+              ✓ Booklet created and download initiated! Check your downloads folder.
+            </div>
+          )}
+        </div>
       </div>
       <PremiumUpsell show={upsell.state.show} mode={upsell.state.mode} message={upsell.state.message} onClose={upsell.hideUpsell} />
     </TrialGate>

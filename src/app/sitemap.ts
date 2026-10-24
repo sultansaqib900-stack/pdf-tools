@@ -21,7 +21,6 @@ type Entry = { path: string; lastModified: string };
 
 /** Non-blog indexable pages with their real last-change date. */
 const PAGES: Entry[] = [
-
   { path: "/", lastModified: "2026-09-28" },
   { path: "/tools", lastModified: "2026-09-28" },
   { path: "/studio", lastModified: "2026-09-28" },
@@ -103,7 +102,6 @@ const PAGES: Entry[] = [
 
 /** Blog posts with their real publish date (from ArticleJsonLd datePublished). */
 const BLOG: Entry[] = [
-
   { path: "/blog/add-page-numbers-to-pdf", lastModified: "2026-06-25" },
   { path: "/blog/add-qr-code-to-pdf", lastModified: "2026-06-26" },
   { path: "/blog/add-watermark-to-pdf", lastModified: "2026-06-25" },
@@ -161,22 +159,23 @@ const BLOG: Entry[] = [
 
 function entry({ path, lastModified }: Entry): MetadataRoute.Sitemap {
   const date = new Date(lastModified);
-  const en = `${BASE}${path}`;
-  const slug = path.replace(/^\/es\/?/, "").replace(/^\//, "");
-  const out: MetadataRoute.Sitemap = [];
+  const cleanPath = !path || path === "/" ? "" : path.replace(/\/+$/, "");
+  const url = cleanPath ? `${BASE}${cleanPath}` : BASE;
+  const slug = cleanPath.replace(/^\/es$/, "").replace(/^\/es\//, "").replace(/^\//, "");
   const withEs = ES_SLUGS.has(slug);
+  const enUrl = `${BASE}/${slug}`.replace(/\/$/, "") || BASE;
+  const esUrl = `${BASE}/es${slug ? `/${slug}` : ""}`;
   const languages = withEs
-    ? { en: `${BASE}/${slug}`.replace(/\/$/, "") || BASE, es: `${BASE}/es${slug ? `/${slug}` : ""}`, "x-default": `${BASE}/${slug}`.replace(/\/$/, "") || BASE }
+    ? { en: enUrl, es: esUrl, "x-default": enUrl }
     : undefined;
-  out.push({ url: en, lastModified: date, ...(languages ? { alternates: { languages } } : {}) });
-  if (withEs) {
-    out.push({
-      url: `${BASE}/es${slug ? `/${slug}` : ""}`,
+
+  return [
+    {
+      url,
       lastModified: date,
-      alternates: { languages },
-    });
-  }
-  return out;
+      ...(languages ? { alternates: { languages } } : {}),
+    },
+  ];
 }
 
 export default function sitemap(): MetadataRoute.Sitemap {

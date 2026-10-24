@@ -26,7 +26,7 @@ const defaultQuestions: QA[] = [
   },
   {
     question: "How does the free trial for professional tools work?",
-    answer: "Professional tools (PDF Studio, PDF Diff, Bates Numbering, Certificate Generator, and the rest of the Premium suite) include a one-time trial of 5 files. The allowance is lifetime and shared across all professional tools - not per tool, per day, or per month. Failed or invalid files never consume the allowance.",
+    answer: "Professional tools (PDF Diff, Bates Numbering, Certificate Generator, and the rest of the professional suite) include a one-time trial of 5 files. PDF Studio is an exclusive Premium workspace. The trial allowance is lifetime and shared across standalone professional tools — not per tool, per day, or per month. Failed or invalid files never consume the allowance.",
   },
   {
     question: "Which browsers are supported?",

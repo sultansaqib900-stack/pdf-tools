@@ -185,9 +185,9 @@ export default function UnlockPage() {
       <div className="max-w-3xl mx-auto mt-12 pt-8 border-t border-[var(--card-border)]">
         <h2 className="text-xl font-bold text-[var(--foreground)] mb-3">About Unlock PDF</h2>
         <div className="text-sm text-[var(--muted)] space-y-3 leading-relaxed">
-          <p>Remove password protection from PDF files online for free. If you have a PDF that requires a password to view, you can unlock it using this tool. Perfect for when you've forgotten the password on your own document or received a password-protected file from a trusted source.</p>
+          <p>Remove password protection from PDF files online. When you have the valid password to an encrypted document, this tool permanently strips the password requirement so you can open, print, and share the file without repeatedly entering credentials.</p>
           <p>All password validation and decryption happen in your browser with the Web Crypto API — no uploads, no servers, complete privacy. Simply provide the correct password and download the unlocked version instantly.</p>
-          <p>Keywords: unlock PDF online free, remove PDF password, decrypt PDF file, remove PDF protection online free.</p>
+          <p>Decryption removes standard user passwords and permissions encryption, producing a clean, unrestricted document.</p>
         </div>
       </div>
       <RelatedContent slug="unlock" />

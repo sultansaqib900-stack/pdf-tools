@@ -1,6 +1,6 @@
 "use client";
 
-import { isPdfFile } from "@/lib/pdfBytes";
+import { isPdfFile, loadPdfForEditing, validatePdfOutput, downloadBytes, formatPdfErrorMessage } from "@/lib/pdfBytes";
 
 import { useState, useCallback, useEffect, useRef } from "react";
 import ToolInfo from "@/components/ToolInfo";
@@ -42,6 +42,14 @@ export default function InsertBlankPage() {
 
   useEffect(() => { trackToolVisit("insert-blank"); }, []);
 
+  const resetFile = useCallback(() => {
+    setFile(null);
+    setPageCount(0);
+    setError(null);
+    setSuccess(false);
+    originalBytes.current = null;
+  }, []);
+
   const handleFile = useCallback(async (f: File | null) => {
     if (!f || !isPdfFile(f)) return;
     const check = checkFileSize(f.size);
@@ -49,11 +57,17 @@ export default function InsertBlankPage() {
     setFile(f);
     setSuccess(false);
     setError(null);
-    const bytes = await f.arrayBuffer();
-    const { PDFDocument } = await import("pdf-lib");
-    const pdf = await PDFDocument.load(bytes);
-    setPageCount(pdf.getPageCount());
-  }, []);
+    try {
+      const bytes = await f.arrayBuffer();
+      originalBytes.current = bytes;
+      const pdf = await loadPdfForEditing(bytes);
+      setPageCount(pdf.getPageCount());
+    } catch (err) {
+      setError(formatPdfErrorMessage(err, "Failed to load PDF. The document may be password-protected or corrupted."));
+      setFile(null);
+      setPageCount(0);
+    }
+  }, [upsell]);
 
   const runInsert = useCallback(async () => {
     if (!file) return;
@@ -63,83 +77,46 @@ export default function InsertBlankPage() {
     if (!canProceed) { setProcessing(false); upsell.showUpsell("trial-limit"); return; }
     try {
       const { PDFDocument } = await import("pdf-lib");
-      const bytes = await file.arrayBuffer();
-      originalBytes.current = bytes;
-      const pdfDoc = await PDFDocument.load(bytes);
+      const bytes = originalBytes.current || (await file.arrayBuffer());
+      const pdfDoc = await loadPdfForEditing(bytes);
+      const totalPages = pdfDoc.getPageCount();
       const firstPage = pdfDoc.getPage(0);
       const { width, height } = firstPage.getSize();
 
-      if (mode === "end") {
-        for (let i = 0; i < count; i++) {
-          pdfDoc.addPage([width, height]);
-        }
+      let insertIdx = totalPages;
+      if (mode === "before") {
+        insertIdx = Math.max(0, Math.min(refPage - 1, totalPages));
       } else if (mode === "after") {
-        const insertIdx = Math.min(refPage, pdfDoc.getPageCount());
-        const pages = pdfDoc.getPages();
-        const toCopy = pages.slice(0, insertIdx);
-        const rest = pages.slice(insertIdx);
-        const newDoc = await PDFDocument.create();
-        const copiedFront = await newDoc.copyPages(pdfDoc, toCopy.map((_, i) => i));
-        copiedFront.forEach((p) => newDoc.addPage(p));
-        for (let i = 0; i < count; i++) {
-          newDoc.addPage([width, height]);
-        }
-        const copiedRest = await newDoc.copyPages(pdfDoc, rest.map((_, i) => insertIdx + i));
-        copiedRest.forEach((p) => newDoc.addPage(p));
-        const saved = await newDoc.save({ useObjectStreams: true });
-        const blob = new Blob([saved as unknown as BlobPart], { type: "application/pdf" });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = `inserted-${file.name}`;
-        a.click();
-        window.setTimeout(() => URL.revokeObjectURL(url), 60_000);
-        trackExport(file.name, "Insert Blank Pages", saved.length);
-        setSuccess(true);
-        setProcessing(false);
-        return;
-      } else if (mode === "before") {
-        const insertIdx = Math.max(0, Math.min(refPage - 1, pdfDoc.getPageCount()));
-        const pages = pdfDoc.getPages();
-        const toCopy = pages.slice(0, insertIdx);
-        const rest = pages.slice(insertIdx);
-        const newDoc = await PDFDocument.create();
-        const copiedFront = await newDoc.copyPages(pdfDoc, toCopy.map((_, i) => i));
-        copiedFront.forEach((p) => newDoc.addPage(p));
-        for (let i = 0; i < count; i++) {
-          newDoc.addPage([width, height]);
-        }
-        const copiedRest = await newDoc.copyPages(pdfDoc, rest.map((_, i) => insertIdx + i));
-        copiedRest.forEach((p) => newDoc.addPage(p));
-        const saved = await newDoc.save({ useObjectStreams: true });
-        const blob = new Blob([saved as unknown as BlobPart], { type: "application/pdf" });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = `inserted-${file.name}`;
-        a.click();
-        window.setTimeout(() => URL.revokeObjectURL(url), 60_000);
-        trackExport(file.name, "Insert Blank Pages", saved.length);
-        setSuccess(true);
-        setProcessing(false);
-        return;
+        insertIdx = Math.max(0, Math.min(refPage, totalPages));
       }
 
-      const pdfBytes = await pdfDoc.save({ useObjectStreams: true });
-      const blob = new Blob([pdfBytes as unknown as BlobPart], { type: "application/pdf" });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `inserted-${file.name}`;
-      a.click();
-      window.setTimeout(() => URL.revokeObjectURL(url), 60_000);
+      const newDoc = await PDFDocument.create();
+      if (insertIdx > 0) {
+        const frontIndices = Array.from({ length: insertIdx }, (_, i) => i);
+        const frontPages = await newDoc.copyPages(pdfDoc, frontIndices);
+        frontPages.forEach((p) => newDoc.addPage(p));
+      }
+
+      for (let i = 0; i < count; i++) {
+        newDoc.addPage([width, height]);
+      }
+
+      if (insertIdx < totalPages) {
+        const backIndices = Array.from({ length: totalPages - insertIdx }, (_, i) => insertIdx + i);
+        const backPages = await newDoc.copyPages(pdfDoc, backIndices);
+        backPages.forEach((p) => newDoc.addPage(p));
+      }
+
+      const pdfBytes = await newDoc.save({ useObjectStreams: true });
+      await validatePdfOutput(pdfBytes);
+      downloadBytes(pdfBytes, `inserted-${file.name}`);
       trackExport(file.name, "Insert Blank Pages", pdfBytes.length);
       setSuccess(true);
-    } catch {
-      setError("Failed to insert blank pages. The file may be encrypted or corrupted.");
+    } catch (err) {
+      setError(formatPdfErrorMessage(err, "Failed to insert blank pages."));
     }
     setProcessing(false);
-  }, [file, count, mode, refPage]);
+  }, [file, count, mode, refPage, usage, upsell, trackExport]);
 
   const insert = useCallback(async () => {
     if (!isPremium()) {
@@ -277,6 +254,15 @@ export default function InsertBlankPage() {
               ) : `Insert ${count} blank page${count > 1 ? "s" : ""}`}
             </button>
 
+            <button
+              type="button"
+              onClick={resetFile}
+              disabled={processing}
+              className="mt-3 w-full py-2 bg-transparent text-sm text-[var(--muted)] hover:text-[var(--foreground)] transition border border-[var(--card-border)] rounded-xl"
+            >
+              Choose different file
+            </button>
+
             {!isPremium() && (
               <p className="mt-3 text-center text-xs text-[var(--muted)]">
                 Free users limited to 10MB files.{ " " }
@@ -297,7 +283,7 @@ export default function InsertBlankPage() {
         <div className="text-sm text-[var(--muted)] space-y-3 leading-relaxed">
           <p>Our free insert blank PDF pages tool lets you add empty pages to any PDF document. You can insert multiple blank pages at the end of your document, before a specific page, or after a specific page — perfect for adding section dividers, note pages, or formatting your document layout.</p>
           <p>All processing is done locally in your browser using pdf-lib, so your files never leave your device. The blank pages match the dimensions of your first page to keep your document consistent. Whether you are preparing a report, creating a workbook, or organizing scanned documents, this tool helps you structure your PDF exactly how you need it.</p>
-          <p>Keywords: insert blank pages in PDF online free, add empty pages to PDF, PDF page inserter, add blank page to PDF, insert page into PDF.</p>
+          <p>Inserted pages automatically adopt the orientation and media dimensions of the neighboring page to maintain uniform printing and display.</p>
         </div>
       </div>
 

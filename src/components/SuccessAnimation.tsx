@@ -16,7 +16,11 @@ export default function SuccessAnimation({
   if (!show) return null;
 
   return (
-    <div className="mt-6 p-6 bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-200 dark:border-emerald-800 rounded-xl animate-successBounce">
+    <div
+      role="status"
+      aria-live="polite"
+      className="mt-6 p-6 bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-200 dark:border-emerald-800 rounded-xl animate-successBounce"
+    >
       <div className="flex items-start gap-4">
         <div className="shrink-0 w-10 h-10 rounded-full bg-emerald-100 dark:bg-emerald-900/40 flex items-center justify-center">
           <svg className="w-6 h-6 text-emerald-600 dark:text-emerald-400 animate-successScale" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">

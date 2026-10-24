@@ -520,7 +520,7 @@ export default function AnnotatePage() {
         <div className="text-sm text-[var(--muted)] space-y-3 leading-relaxed">
           <p>Add highlights, underlines, and strikethroughs to your PDF documents. Select an annotation mode, then click and drag over any text to mark it up. All annotations are drawn as colored rectangles and lines — perfect for studying, reviewing documents, or marking up drafts.</p>
           <p>Perfect for: highlighting key passages in research papers, underlining important clauses in contracts, strikethrough text in drafts, and reviewing PDF documents with visual annotations.</p>
-          <p>All processing happens locally in your browser — no uploads, no servers, complete privacy. Keywords: annotate PDF online free, highlight PDF, underline PDF, strikethrough PDF, PDF annotation tool.</p>
+          <p>All processing happens locally in your browser — your files are never transmitted to a remote server, ensuring complete document privacy.</p>
         </div>
       </div>
 

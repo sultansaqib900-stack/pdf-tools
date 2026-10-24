@@ -12,7 +12,7 @@ import TrialGate from "@/components/TrialGate";
 import PremiumUpsell, { usePremiumUpsell } from "@/components/PremiumUpsell";
 import { useUsage } from "@/hooks/useUsage";
 import { checkFileSize } from "@/lib/premium";
-import { copyPdfBytes, isPdfFile } from "@/lib/pdfBytes";
+import { copyPdfBytes, isPdfFile, loadPdfForEditing, validatePdfOutput, formatPdfErrorMessage } from "@/lib/pdfBytes";
 
 export default function SplitByBookmarksPage() {
   usePageMeta("Split PDF by Bookmarks - Extract Chapters | PDFTools Premium", "Split PDF documents into separate files based on bookmarks and outline structure. Extract chapters, sections, and parts automatically. Premium feature.");
@@ -94,7 +94,7 @@ export default function SplitByBookmarksPage() {
       bookmarks.sort((a, b) => a.page - b.page);
       const boundaries = bookmarks.filter((bookmark, index, list) => index === 0 || bookmark.page !== list[index - 1].page);
       const { PDFDocument } = await import("pdf-lib");
-      const srcDoc = await PDFDocument.load(copyPdfBytes(bytes));
+      const srcDoc = await loadPdfForEditing(copyPdfBytes(bytes));
       const parts: { name: string; pageStart: number; pageEnd: number }[] = [];
       if (boundaries[0].page > 1) {
         parts.push({ name: "Front matter", pageStart: 1, pageEnd: boundaries[0].page - 1 });
@@ -118,7 +118,8 @@ export default function SplitByBookmarksPage() {
         for (let i = part.pageStart; i <= part.pageEnd; i++) indices.push(i - 1);
         const copied = await newDoc.copyPages(srcDoc, indices);
         for (const p of copied) newDoc.addPage(p);
-        const pdfBytes = await newDoc.save();
+        const pdfBytes = await newDoc.save({ useObjectStreams: true });
+        await validatePdfOutput(pdfBytes);
         const blob = new Blob([pdfBytes as unknown as BlobPart], { type: "application/pdf" });
         urls.push(URL.createObjectURL(blob));
       }
@@ -126,7 +127,7 @@ export default function SplitByBookmarksPage() {
       registerAdTask();
     } catch (processError) {
       await usage.releaseReservation(reservation);
-      setError(processError instanceof Error ? processError.message : "Failed to process PDF. Try a different file.");
+      setError(formatPdfErrorMessage(processError, "Failed to process PDF. Try a different file."));
     } finally {
       setProcessing(false);
     }

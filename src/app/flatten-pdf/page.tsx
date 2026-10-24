@@ -176,7 +176,7 @@ export default function FlattenPDFPage() {
         <div className="text-sm text-[var(--muted)] space-y-3 leading-relaxed">
           <p>This tool performs full visual flattening: PDF.js renders the currently visible appearance of each page, including visible form widgets and annotations, and rebuilds the document from those page images. The resulting pages no longer contain interactive fields, links, or selectable text.</p>
           <p>Only the currently visible optional-content state is rendered; hidden layer states are discarded rather than merged. Processing happens locally in your browser with no file upload.</p>
-          <p>Keywords: flatten PDF online free, merge layers in PDF, flatten form fields, make PDF permanent, flatten annotations.</p>
+          <p>Flattening is recommended before submitting forms, printing, or sharing legal documents to prevent unintended modifications to field values.</p>
         </div>
       </div>
       <RelatedContent slug="flatten-pdf" />

@@ -2,10 +2,10 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState, lazy, Suspense, useEffect } from "react";
+import { useState, lazy, Suspense, useEffect, useRef } from "react";
 import { useAuth } from "@/components/AuthProvider";
 import { usePremiumStatus } from "@/hooks/usePremiumStatus";
-import { PREMIUM_TOOLS, PREMIUM_TOOL_COUNT, TOOL_CATALOG } from "@/lib/toolCatalog";
+import { PREMIUM_TOOLS, TOOL_CATALOG } from "@/lib/toolCatalog";
 import { localeSwitchHref, pathLocale as detectPathLocale } from "@/lib/i18n";
 
 const ShareModal = lazy(() => import("./ShareModal"));
@@ -18,15 +18,42 @@ export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   const { premium } = usePremiumStatus();
   const [shareOpen, setShareOpen] = useState(false);
-  const [premiumMenu, setPremiumMenu] = useState(false);
-  const [resourcesMenu, setResourcesMenu] = useState(false);
-  const [toolsMenu, setToolsMenu] = useState(false);
-  const [themeMenu, setThemeMenu] = useState(false);
+
+  // Accessible active dropdown state: null | 'tools' | 'premium' | 'resources' | 'theme'
+  const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
+  const navRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const currentTheme = document.documentElement.getAttribute("data-theme") || "midnight";
     setTheme(currentTheme);
   }, []);
+
+  // Close menus on outside click or Escape key
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setActiveDropdown(null);
+        setMenuOpen(false);
+      }
+    };
+    const handleClickOutside = (e: MouseEvent) => {
+      if (navRef.current && !navRef.current.contains(e.target as Node)) {
+        setActiveDropdown(null);
+      }
+    };
+    document.addEventListener("keydown", handleKeyDown);
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  // Close mobile menu and dropdowns on route change
+  useEffect(() => {
+    setMenuOpen(false);
+    setActiveDropdown(null);
+  }, [pathname]);
 
   const pathLocale = detectPathLocale(pathname);
 
@@ -40,24 +67,12 @@ export default function Header() {
     setTheme(id);
     document.documentElement.setAttribute("data-theme", id);
     localStorage.setItem("theme", id);
-    setThemeMenu(false);
+    setActiveDropdown(null);
   };
 
-  const navLinks = [
-    { href: "/studio", label: "⚡ PDF Studio", highlight: true },
-    { href: "/recipes", label: "⭐ Recipes" },
-    { href: "/pii-guardian", label: "⭐ PII Guardian" },
-    { href: "/vs/adobe-acrobat", label: "⚔️ vs Adobe" },
-    { href: "/compress", label: "Compress" },
-  ];
-
-  /**
-   * Top-bar entries. The bar must fit ~1280px viewports next to the account
-   * controls, so only these four stay up here — everything else lives in
-   * "All Tools" and the drawer. Never grow this list without re-checking the
-   * 1280px (xl) breakpoint.
-   */
-  const primaryLinks = navLinks.filter((link) => link.href === "/studio");
+  const toggleDropdown = (name: string) => {
+    setActiveDropdown((prev) => (prev === name ? null : name));
+  };
 
   const toolCategories = [
     {
@@ -73,49 +88,41 @@ export default function Header() {
         { href: "/word-to-pdf", label: "Word to PDF" },
         { href: "/pdf-to-excel", label: "PDF to Excel" },
         { href: "/html-to-pdf", label: "HTML to PDF" },
-        { href: "/text-to-pdf", label: "Text to PDF" },
-        { href: "/pdf-to-pdfa", label: "PDF to PDF/A" },
-        { href: "/repair-pdf", label: "Repair PDF" },
       ],
     },
     {
       name: "Edit & Organize",
       links: [
-        { href: "/studio", label: "⚡ PDF Studio (Multi-Step)" },
+        { href: "/studio", label: "⚡ PDF Studio" },
         { href: "/edit-pdf", label: "Edit PDF" },
         { href: "/organize", label: "Organize Pages" },
         { href: "/delete-pages", label: "Delete Pages" },
-        { href: "/insert-blank", label: "Insert Blank Pages" },
-        { href: "/reverse-pdf", label: "Reverse Order" },
+        { href: "/insert-blank", label: "Insert Blank" },
         { href: "/crop", label: "Crop PDF" },
-        { href: "/resize", label: "Resize PDF" },
         { href: "/rotate", label: "Rotate PDF" },
-        { href: "/add-page-numbers", label: "Add Page Numbers" },
+        { href: "/add-page-numbers", label: "Page Numbers" },
         { href: "/annotate", label: "Annotate PDF" },
-        { href: "/word-counter", label: "Word Counter" },
-        { href: "/metadata", label: "Edit Metadata" },
       ],
     },
     {
       name: "Security & Sign",
       links: [
-        { href: "/pii-guardian", label: "⭐ PII Guardian (Free Preview)" },
         { href: "/protect", label: "Protect PDF" },
         { href: "/unlock", label: "Unlock PDF" },
         { href: "/sign", label: "Sign PDF" },
         { href: "/redact", label: "Redact PDF" },
-        { href: "/flatten-pdf", label: "Flatten PDF" },
         { href: "/watermark", label: "Watermark PDF" },
+        { href: "/pii-guardian", label: "⭐ PII Guardian" },
       ],
     },
     {
       name: "Extract & AI",
       links: [
-        { href: "/recipes", label: "⭐ Automation Recipes (Preview)" },
+        { href: "/recipes", label: "⭐ Workflow Recipes" },
         { href: "/extract-text", label: "Extract Text" },
         { href: "/ocr-pdf", label: "OCR PDF" },
-        { href: "/chat-pdf", label: "⭐ Chat with PDF (3 Free/Day)" },
-        { href: "/fill-form", label: "Fill PDF Form" },
+        { href: "/chat-pdf", label: "⭐ Chat with PDF" },
+        { href: "/fill-form", label: "Fill Form" },
         { href: "/batch", label: "⭐ Batch Process" },
       ],
     },
@@ -128,94 +135,178 @@ export default function Header() {
   }));
 
   return (
-    <header className="w-full border-b border-[var(--card-border)] bg-[var(--background)]/85 backdrop-blur-xl sticky top-0 z-50 transition-all duration-300">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-2 min-w-0">
-        <Link href="/" className="flex items-center gap-2 text-xl font-extrabold text-[var(--foreground)] shrink-0 group">
-          <span className="w-9 h-9 rounded-lg bg-[var(--accent)] flex items-center justify-center text-white group-hover:scale-105 transition-transform">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+    <header className="w-full border-b border-[var(--card-border)] bg-[var(--card)] sticky top-0 z-50 transition-colors shadow-sm" ref={navRef}>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-3 min-w-0">
+        
+        {/* Brand Logo */}
+        <Link
+          href="/"
+          className="flex items-center gap-2.5 text-lg sm:text-xl font-extrabold text-[var(--foreground)] shrink-0 group focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] rounded-lg p-1"
+          aria-label="All About PDF Editing Home"
+        >
+          <span className="w-9 h-9 rounded-lg bg-[var(--accent)] flex items-center justify-center text-white shadow-sm group-hover:scale-105 transition-transform">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+              <polyline points="14 2 14 8 20 8"/>
+              <line x1="16" y1="13" x2="8" y2="13"/>
+              <line x1="16" y1="17" x2="8" y2="17"/>
+              <polyline points="10 9 9 9 8 9"/>
+            </svg>
           </span>
-          <span className="tracking-tight">PDFTools</span>
+          <div className="flex flex-col leading-tight">
+            <span className="tracking-tight text-base sm:text-lg">PDFTools</span>
+            <span className="text-[10px] text-[var(--muted)] font-normal hidden sm:block">All About PDF Editing</span>
+          </div>
         </Link>
 
-        <nav className="hidden xl:flex items-center gap-2 2xl:gap-3 text-sm font-semibold min-w-0" role="navigation" aria-label="Main navigation">
-          {primaryLinks.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className={`transition-all whitespace-nowrap px-3 py-1.5 rounded-xl ${
-                link.highlight
-                  ? "bg-gradient-to-r from-indigo-500/10 to-purple-500/10 text-indigo-500 border border-indigo-500/20 hover:border-indigo-500 font-bold"
-                  : pathname === link.href
-                  ? "text-indigo-500 bg-indigo-500/10"
-                  : "text-[var(--muted)] hover:text-[var(--foreground)] hover:bg-[var(--card-border)]/40"
+        {/* Desktop Navigation */}
+        <nav className="hidden lg:flex items-center gap-1 xl:gap-2 text-sm font-semibold min-w-0" role="navigation" aria-label="Main navigation">
+          
+          {/* All Tools Mega Dropdown */}
+          <div className="relative">
+            <button
+              onClick={() => toggleDropdown("tools")}
+              aria-haspopup="true"
+              aria-expanded={activeDropdown === "tools"}
+              className={`text-[var(--muted)] hover:text-[var(--foreground)] px-3 py-2 rounded-lg transition-colors flex items-center gap-1.5 whitespace-nowrap ${
+                activeDropdown === "tools" ? "bg-[var(--card-border)]/50 text-[var(--foreground)]" : ""
               }`}
             >
-              {link.label}
-            </Link>
-          ))}
-
-          <div className="relative" onMouseEnter={() => setToolsMenu(true)} onMouseLeave={() => setToolsMenu(false)}>
-            <button className="text-[var(--muted)] hover:text-[var(--foreground)] px-2.5 py-1.5 rounded-xl transition-all flex items-center gap-1 whitespace-nowrap hover:bg-[var(--card-border)]/40">
-              All Tools
-              <svg className={`w-3.5 h-3.5 transition-transform duration-200 ${toolsMenu ? "rotate-180" : ""}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
+              <span>Tools</span>
+              <svg className={`w-3.5 h-3.5 transition-transform duration-200 ${activeDropdown === "tools" ? "rotate-180" : ""}`} fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              </svg>
             </button>
-            {toolsMenu && (
-              <div className="fixed left-1/2 -translate-x-1/2 top-16 mt-0 w-[min(94vw,860px)] max-h-[calc(100vh-5rem)] overflow-y-auto bg-[var(--card)]/98 backdrop-blur-2xl border border-[var(--card-border)] rounded-3xl shadow-2xl py-6 z-50 animate-scaleIn grid grid-cols-2 xl:grid-cols-4 gap-6 px-6">
-                {toolCategories.map((cat) => (
-                  <div key={cat.name} className="space-y-1">
-                    <p className="text-[11px] font-extrabold text-indigo-500 uppercase tracking-wider mb-2.5 px-2.5 pb-1 border-b border-[var(--card-border)]/60">{cat.name}</p>
-                    {cat.links.map((link) => (
-                      <Link
-                        key={link.href}
-                        href={link.href}
-                        onClick={() => setToolsMenu(false)}
-                        className="block px-2.5 py-1.5 text-xs text-[var(--muted)] hover:text-indigo-500 hover:bg-indigo-50/60 dark:hover:bg-indigo-950/30 rounded-xl transition-all font-medium"
-                      >
-                        {link.label}
-                      </Link>
-                    ))}
+
+            {activeDropdown === "tools" && (
+              <div className="fixed left-1/2 -translate-x-1/2 top-16 w-[min(94vw,900px)] max-h-[calc(100vh-5rem)] overflow-y-auto bg-[var(--card)] border border-[var(--card-border)] rounded-2xl shadow-xl py-6 px-6 z-50 animate-scaleIn">
+                <div className="flex items-center justify-between pb-4 mb-4 border-b border-[var(--card-border)]">
+                  <div>
+                    <h3 className="text-sm font-bold text-[var(--foreground)]">Comprehensive PDF Tool Suite</h3>
+                    <p className="text-xs text-[var(--muted)]">Core tools process locally in your browser for privacy.</p>
                   </div>
-                ))}
+                  <Link
+                    href="/tools"
+                    onClick={() => setActiveDropdown(null)}
+                    className="text-xs font-bold text-[var(--accent)] hover:underline flex items-center gap-1"
+                  >
+                    View All {TOOL_CATALOG.length} Tools →
+                  </Link>
+                </div>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+                  {toolCategories.map((cat) => (
+                    <div key={cat.name} className="space-y-1.5">
+                      <p className="text-xs font-bold text-[var(--foreground)] uppercase tracking-wider mb-2 pb-1 border-b border-[var(--card-border)]">{cat.name}</p>
+                      {cat.links.map((link) => (
+                        <Link
+                          key={link.href}
+                          href={link.href}
+                          onClick={() => setActiveDropdown(null)}
+                          className="block px-2 py-1.5 text-xs text-[var(--muted)] hover:text-[var(--foreground)] hover:bg-[var(--card-border)]/40 rounded-md transition-colors"
+                        >
+                          {link.label}
+                        </Link>
+                      ))}
+                    </div>
+                  ))}
+                </div>
               </div>
             )}
           </div>
 
-          <div className="relative" onMouseEnter={() => setPremiumMenu(true)} onMouseLeave={() => setPremiumMenu(false)}>
-            <button className="text-amber-500 hover:text-amber-600 px-2.5 py-1.5 rounded-xl transition-all font-bold flex items-center gap-1 whitespace-nowrap bg-amber-500/10 border border-amber-500/20">
-              ⭐ Premium
-              <svg className={`w-3.5 h-3.5 transition-transform duration-200 ${premiumMenu ? "rotate-180" : ""}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
+          {/* PDF Studio Direct Link */}
+          <Link
+            href="/studio"
+            className={`px-3 py-2 rounded-lg transition-colors whitespace-nowrap flex items-center gap-1.5 ${
+              pathname === "/studio"
+                ? "bg-[var(--accent)] text-white font-bold"
+                : "text-[var(--muted)] hover:text-[var(--foreground)] hover:bg-[var(--card-border)]/30"
+            }`}
+          >
+            <span>⚡ PDF Studio</span>
+            <span className="text-[10px] font-bold uppercase px-1.5 py-0.5 rounded bg-amber-500 text-white">PRO</span>
+          </Link>
+
+          {/* Workflow Recipes Link */}
+          <Link
+            href="/recipes"
+            className={`px-3 py-2 rounded-lg transition-colors whitespace-nowrap ${
+              pathname === "/recipes"
+                ? "bg-[var(--card-border)] text-[var(--foreground)]"
+                : "text-[var(--muted)] hover:text-[var(--foreground)] hover:bg-[var(--card-border)]/30"
+            }`}
+          >
+            Recipes
+          </Link>
+
+          {/* vs Adobe Acrobat Comparison */}
+          <Link
+            href="/vs/adobe-acrobat"
+            className={`hidden xl:inline-flex px-3 py-2 rounded-lg transition-colors whitespace-nowrap ${
+              pathname.startsWith("/vs")
+                ? "bg-[var(--card-border)] text-[var(--foreground)]"
+                : "text-[var(--muted)] hover:text-[var(--foreground)] hover:bg-[var(--card-border)]/30"
+            }`}
+          >
+            vs Adobe
+          </Link>
+
+          {/* Premium Dropdown */}
+          <div className="relative">
+            <button
+              onClick={() => toggleDropdown("premium")}
+              aria-haspopup="true"
+              aria-expanded={activeDropdown === "premium"}
+              className={`px-3 py-2 rounded-lg transition-colors font-bold flex items-center gap-1 whitespace-nowrap text-amber-700 dark:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-950/40 ${
+                activeDropdown === "premium" ? "bg-amber-100 dark:bg-amber-900/40" : ""
+              }`}
+            >
+              <span>⭐ Premium</span>
+              <svg className={`w-3.5 h-3.5 transition-transform duration-200 ${activeDropdown === "premium" ? "rotate-180" : ""}`} fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              </svg>
             </button>
-            {premiumMenu && (
-              <div className="absolute top-full right-0 mt-2 bg-[var(--card)]/98 backdrop-blur-2xl border border-amber-500/30 rounded-3xl shadow-2xl py-3 min-w-[240px] z-50 animate-scaleIn">
-                <div className="max-h-72 overflow-y-auto px-2 space-y-0.5">
+
+            {activeDropdown === "premium" && (
+              <div className="absolute top-full left-0 mt-2 bg-[var(--card)] border border-[var(--card-border)] rounded-xl shadow-xl py-3 w-72 z-50 animate-scaleIn">
+                <div className="px-3 pb-2 mb-2 border-b border-[var(--card-border)] flex items-center justify-between">
+                  <span className="text-xs font-bold text-[var(--foreground)]">13 Premium Tools</span>
+                  <Link
+                    href="/premium"
+                    onClick={() => setActiveDropdown(null)}
+                    className="text-[11px] font-bold text-amber-600 dark:text-amber-400 hover:underline"
+                  >
+                    Compare Plans →
+                  </Link>
+                </div>
+                <div className="max-h-64 overflow-y-auto px-2 space-y-0.5">
                   {premiumLinks.map((link) => (
                     <Link
                       key={link.href}
                       href={link.href}
-                      onClick={() => setPremiumMenu(false)}
-                      className="block px-3 py-2 text-xs font-semibold text-[var(--muted)] hover:text-amber-500 hover:bg-amber-500/10 rounded-xl transition-all"
+                      onClick={() => setActiveDropdown(null)}
+                      className="block px-3 py-1.5 text-xs font-medium text-[var(--muted)] hover:text-[var(--foreground)] hover:bg-[var(--card-border)]/40 rounded-lg transition-colors"
                     >
                       ⭐ {link.label}{link.hasFreePreview ? " · Preview" : ""}
                     </Link>
                   ))}
                 </div>
-                <div className="border-t border-[var(--card-border)] my-2" />
-                <div className="px-2">
+                <div className="border-t border-[var(--card-border)] mt-2 pt-2 px-3">
                   {premium ? (
                     <Link
                       href="/dashboard"
-                      onClick={() => setPremiumMenu(false)}
-                      className="block text-center py-2 text-xs font-bold bg-gradient-to-r from-emerald-500 to-teal-600 text-white rounded-xl shadow-md shadow-emerald-500/20 hover:opacity-95 transition"
+                      onClick={() => setActiveDropdown(null)}
+                      className="block text-center py-2 text-xs font-bold bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors shadow-sm"
                     >
-                      ✓ Premium Active — Open Dashboard →
+                      ✓ Premium Active — Open Dashboard
                     </Link>
                   ) : (
                     <Link
                       href="/premium"
-                      onClick={() => setPremiumMenu(false)}
-                      className="block text-center py-2 text-xs font-bold bg-gradient-to-r from-amber-500 to-orange-600 text-white rounded-xl shadow-md shadow-amber-500/20 hover:opacity-95 transition"
+                      onClick={() => setActiveDropdown(null)}
+                      className="block text-center py-2 text-xs font-bold bg-amber-600 text-white rounded-lg hover:bg-amber-700 transition-colors shadow-sm"
                     >
-                      View All Premium Plans →
+                      View Premium Plans &amp; Pricing →
                     </Link>
                   )}
                 </div>
@@ -223,89 +314,129 @@ export default function Header() {
             )}
           </div>
 
-          <div className="relative" onMouseEnter={() => setResourcesMenu(true)} onMouseLeave={() => setResourcesMenu(false)}>
-            <button className="text-[var(--muted)] hover:text-[var(--foreground)] px-2.5 py-1.5 rounded-xl transition-all flex items-center gap-1 whitespace-nowrap hover:bg-[var(--card-border)]/40">
-              Resources
-              <svg className={`w-3.5 h-3.5 transition-transform duration-200 ${resourcesMenu ? "rotate-180" : ""}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
+          {/* Resources Dropdown */}
+          <div className="relative">
+            <button
+              onClick={() => toggleDropdown("resources")}
+              aria-haspopup="true"
+              aria-expanded={activeDropdown === "resources"}
+              className={`text-[var(--muted)] hover:text-[var(--foreground)] px-3 py-2 rounded-lg transition-colors flex items-center gap-1 whitespace-nowrap ${
+                activeDropdown === "resources" ? "bg-[var(--card-border)]/50 text-[var(--foreground)]" : ""
+              }`}
+            >
+              <span>Resources</span>
+              <svg className={`w-3.5 h-3.5 transition-transform duration-200 ${activeDropdown === "resources" ? "rotate-180" : ""}`} fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              </svg>
             </button>
-            {resourcesMenu && (
-              <div className="absolute top-full right-0 mt-2 bg-[var(--card)]/98 backdrop-blur-2xl border border-[var(--card-border)] rounded-2xl shadow-2xl py-2 min-w-[200px] z-50 animate-scaleIn">
-                <Link href="/blog" onClick={() => setResourcesMenu(false)} className="block px-4 py-2 text-xs text-[var(--muted)] hover:text-indigo-500 hover:bg-indigo-50/50 dark:hover:bg-indigo-950/20 transition">📚 Guides & Blog</Link>
-                <Link href="/ultimate-guide-to-pdf-editing" onClick={() => setResourcesMenu(false)} className="block px-4 py-2 text-xs text-[var(--muted)] hover:text-indigo-500 hover:bg-indigo-50/50 dark:hover:bg-indigo-950/20 transition">📖 Ultimate Guide</Link>
-                <Link href="/qa" onClick={() => setResourcesMenu(false)} className="block px-4 py-2 text-xs text-[var(--muted)] hover:text-indigo-500 hover:bg-indigo-50/50 dark:hover:bg-indigo-950/20 transition">❓ Q&A Support</Link>
-                <Link href="/embed" onClick={() => setResourcesMenu(false)} className="block px-4 py-2 text-xs text-[var(--muted)] hover:text-indigo-500 hover:bg-indigo-50/50 dark:hover:bg-indigo-950/20 transition" rel="nofollow">🔌 Embed Widget</Link>
-                <Link href="/contact" onClick={() => setResourcesMenu(false)} className="block px-4 py-2 text-xs text-[var(--muted)] hover:text-indigo-500 hover:bg-indigo-50/50 dark:hover:bg-indigo-950/20 transition">📧 Contact Us</Link>
+
+            {activeDropdown === "resources" && (
+              <div className="absolute top-full right-0 mt-2 bg-[var(--card)] border border-[var(--card-border)] rounded-xl shadow-xl py-2 w-52 z-50 animate-scaleIn">
+                <Link href="/blog" onClick={() => setActiveDropdown(null)} className="block px-4 py-2 text-xs text-[var(--muted)] hover:text-[var(--foreground)] hover:bg-[var(--card-border)]/40 transition-colors">📚 Guides &amp; Blog</Link>
+                <Link href="/ultimate-guide-to-pdf-editing" onClick={() => setActiveDropdown(null)} className="block px-4 py-2 text-xs text-[var(--muted)] hover:text-[var(--foreground)] hover:bg-[var(--card-border)]/40 transition-colors">📖 Ultimate Guide</Link>
+                <Link href="/qa" onClick={() => setActiveDropdown(null)} className="block px-4 py-2 text-xs text-[var(--muted)] hover:text-[var(--foreground)] hover:bg-[var(--card-border)]/40 transition-colors">❓ Q&amp;A Support</Link>
+                <Link href="/embed" onClick={() => setActiveDropdown(null)} className="block px-4 py-2 text-xs text-[var(--muted)] hover:text-[var(--foreground)] hover:bg-[var(--card-border)]/40 transition-colors" rel="nofollow">🔌 Embed Widget</Link>
+                <Link href="/contact" onClick={() => setActiveDropdown(null)} className="block px-4 py-2 text-xs text-[var(--muted)] hover:text-[var(--foreground)] hover:bg-[var(--card-border)]/40 transition-colors">📧 Contact Us</Link>
               </div>
             )}
           </div>
         </nav>
 
-        <div className="flex items-center gap-1.5 sm:gap-2 shrink-0 ml-auto">
-          <div className="hidden md:block"><Suspense fallback={null}><ExportHistory /></Suspense></div>
+        {/* Right Action Icons & Auth Controls */}
+        <div className="flex items-center gap-2 shrink-0 ml-auto">
+          
+          {/* Quick Find / Search Jump */}
+          <Link
+            href="/tools"
+            className="p-2 rounded-lg text-[var(--muted)] hover:text-[var(--foreground)] hover:bg-[var(--card-border)]/40 transition-colors"
+            title="Search all PDF tools"
+            aria-label="Search all PDF tools"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <circle cx="11" cy="11" r="8"/>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+            </svg>
+          </Link>
 
+          <div className="hidden md:block">
+            <Suspense fallback={null}><ExportHistory /></Suspense>
+          </div>
+
+          {/* Share Modal Trigger */}
           <button
             onClick={() => setShareOpen(true)}
-            className="hidden sm:flex p-2.5 rounded-xl bg-[var(--card)] border border-[var(--card-border)] text-[var(--muted)] hover:text-[var(--foreground)] hover:border-indigo-500/50 transition-all active:scale-95 shrink-0"
-            aria-label="Share PDFTools — copy a link or post to social"
+            className="hidden sm:flex p-2 rounded-lg border border-[var(--card-border)] text-[var(--muted)] hover:text-[var(--foreground)] hover:border-[var(--accent)] transition-colors"
+            aria-label="Share PDFTools"
             title="Share PDFTools"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/>
+              <polyline points="16 6 12 2 8 6"/>
+              <line x1="12" y1="2" x2="12" y2="15"/>
+            </svg>
           </button>
 
+          {/* Language Switcher */}
           <Link
             href={localeSwitchHref(pathname, pathLocale)}
             title={pathLocale === "es" ? "View this page in English" : "Ver esta página en español"}
-            className="hidden sm:flex p-2.5 rounded-xl bg-[var(--card)] border border-[var(--card-border)] text-[var(--muted)] hover:text-[var(--foreground)] hover:border-indigo-500/50 transition-all active:scale-95 text-xs font-bold shrink-0"
+            className="p-2 rounded-lg border border-[var(--card-border)] text-[var(--muted)] hover:text-[var(--foreground)] hover:border-[var(--accent)] transition-colors text-xs font-bold"
             aria-label="Switch language"
           >
             {pathLocale === "es" ? "EN" : "ES"}
           </Link>
 
+          {/* Theme Palette Switcher */}
           <div className="relative">
             <button
-              onClick={() => setThemeMenu(!themeMenu)}
-              className="p-2.5 rounded-xl bg-[var(--card)] border border-[var(--card-border)] text-[var(--muted)] hover:text-[var(--foreground)] hover:border-indigo-500/50 transition-all active:scale-95 flex items-center gap-1.5 shrink-0"
-              aria-label="Switch theme"
-              title="Change Theme"
+              onClick={() => toggleDropdown("theme")}
+              className="p-2 rounded-lg border border-[var(--card-border)] text-[var(--muted)] hover:text-[var(--foreground)] hover:border-[var(--accent)] transition-colors flex items-center"
+              aria-label="Switch theme color"
+              title="Change Theme Palette"
             >
               <span className="w-3.5 h-3.5 rounded-full border border-[var(--card-border)]" style={{ backgroundColor: themes.find(t => t.id === theme)?.color }} />
             </button>
-            {themeMenu && (
-              <div className="absolute top-full right-0 mt-2 bg-[var(--card)]/98 backdrop-blur-xl border border-[var(--card-border)] rounded-2xl shadow-2xl py-1.5 min-w-[140px] z-50 animate-scaleIn">
+            {activeDropdown === "theme" && (
+              <div className="absolute top-full right-0 mt-2 bg-[var(--card)] border border-[var(--card-border)] rounded-xl shadow-xl py-1.5 w-36 z-50 animate-scaleIn">
                 {themes.map(t => (
                   <button
                     key={t.id}
                     onClick={() => pickTheme(t.id)}
-                    className="w-full flex items-center gap-2.5 px-3 py-2 text-xs font-semibold text-[var(--muted)] hover:text-[var(--foreground)] hover:bg-[var(--card-border)]/40 transition-all"
+                    className="w-full flex items-center gap-2.5 px-3 py-2 text-xs font-semibold text-[var(--muted)] hover:text-[var(--foreground)] hover:bg-[var(--card-border)]/40 transition-colors"
                   >
                     <span className="w-3 h-3 rounded-full" style={{ backgroundColor: t.color }} />
                     {t.label}
-                    {theme === t.id && <span className="ml-auto text-indigo-500">✓</span>}
+                    {theme === t.id && <span className="ml-auto text-[var(--accent)]">✓</span>}
                   </button>
                 ))}
               </div>
             )}
           </div>
 
+          {/* Premium Plan Link / Badge */}
           {premium ? (
-            <span className="hidden sm:inline-flex items-center gap-1.5 bg-gradient-to-r from-emerald-500 to-teal-600 text-white px-4 py-2 rounded-xl text-xs font-bold shadow-md shadow-emerald-500/20">
-              ✓ Premium Active
-            </span>
+            <Link
+              href="/dashboard"
+              className="hidden sm:inline-flex items-center gap-1.5 bg-emerald-600 text-white px-3.5 py-2 rounded-lg text-xs font-bold hover:bg-emerald-700 transition-colors shadow-sm"
+            >
+              ✓ Premium
+            </Link>
           ) : (
             <Link
               href="/premium"
-              className="hidden sm:inline-flex bg-gradient-to-r from-amber-500 to-orange-600 text-white px-4 py-2 rounded-xl text-xs font-bold hover:opacity-95 transition-all shadow-md shadow-amber-500/20 active:scale-95"
+              className="hidden sm:inline-flex items-center gap-1.5 bg-amber-600 text-white px-3.5 py-2 rounded-lg text-xs font-bold hover:bg-amber-700 transition-colors shadow-sm"
             >
               Go Premium
             </Link>
           )}
 
+          {/* Auth Button */}
           {user ? (
             <Link
               href="/dashboard"
               rel="nofollow"
               title={user.email}
-              className="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl border border-[var(--card-border)] text-xs font-bold text-[var(--foreground)] hover:border-indigo-500 transition-all max-w-[120px] sm:max-w-[160px] shrink-0"
+              className="hidden sm:inline-flex items-center gap-1.5 px-3 py-2 rounded-lg border border-[var(--card-border)] text-xs font-bold text-[var(--foreground)] hover:border-[var(--accent)] transition-colors max-w-[120px] sm:max-w-[150px] truncate"
             >
               <span className="truncate">{user.email.split("@")[0]}</span>
             </Link>
@@ -313,51 +444,91 @@ export default function Header() {
             <Link
               href="/login"
               rel="nofollow"
-              className="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-indigo-600 text-white text-xs font-bold hover:bg-indigo-700 transition-all shadow-md shadow-indigo-600/20"
+              className="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-[var(--accent)] text-white text-xs font-bold hover:bg-[var(--accent-hover)] transition-colors shadow-sm"
             >
               Sign In
             </Link>
           )}
 
-          {/* Mobile hamburger */}
+          {/* Mobile Navigation Drawer Toggle */}
           <button
             onClick={() => setMenuOpen(!menuOpen)}
-            className="xl:hidden p-2.5 rounded-xl text-[var(--muted)] hover:text-[var(--foreground)] hover:bg-[var(--card)] transition shrink-0"
-            aria-label="Toggle Navigation"
+            className="lg:hidden p-2 rounded-lg text-[var(--muted)] hover:text-[var(--foreground)] hover:bg-[var(--card-border)]/40 transition-colors"
+            aria-label="Toggle navigation menu"
+            aria-expanded={menuOpen}
           >
-            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              {menuOpen ? (
+                <line x1="18" y1="6" x2="6" y2="18" />
+              ) : (
+                <path d="M3 12h18M3 6h18M3 18h18"/>
+              )}
+              {menuOpen && <line x1="6" y1="6" x2="18" y2="18" />}
+            </svg>
           </button>
         </div>
       </div>
 
       {/* Mobile Drawer */}
       {menuOpen && (
-        <div className="xl:hidden border-t border-[var(--card-border)] bg-[var(--card)]/98 backdrop-blur-2xl px-5 py-6 space-y-4 max-h-[85vh] overflow-y-auto animate-slideUp">
-          <Link
-            href="/studio"
-            onClick={() => setMenuOpen(false)}
-            className="block p-3 rounded-2xl bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-extrabold text-sm text-center shadow-lg shadow-indigo-500/25"
-          >
-            Open PDF Studio
-          </Link>
+        <div className="lg:hidden border-t border-[var(--card-border)] bg-[var(--card)] px-5 py-6 space-y-5 max-h-[85vh] overflow-y-auto">
+          
+          <div className="flex gap-2">
+            <Link
+              href="/studio"
+              onClick={() => setMenuOpen(false)}
+              className="flex-1 py-3 rounded-lg bg-[var(--accent)] text-white font-bold text-xs text-center shadow-sm"
+            >
+              ⚡ PDF Studio Workspace
+            </Link>
+            {!premium && (
+              <Link
+                href="/premium"
+                onClick={() => setMenuOpen(false)}
+                className="py-3 px-4 rounded-lg bg-amber-600 text-white font-bold text-xs text-center shadow-sm"
+              >
+                Go Premium
+              </Link>
+            )}
+          </div>
 
-          <button
-            onClick={() => { setMenuOpen(false); setShareOpen(true); }}
-            className="w-full p-3 rounded-2xl border border-[var(--card-border)] bg-[var(--background)] text-sm font-bold text-[var(--foreground)] hover:border-indigo-500/50 transition flex items-center justify-center gap-2"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
-            Share PDFTools
-          </button>
-
-          <div className="pt-2">
-            <p className="text-xs font-extrabold text-amber-500 uppercase tracking-wider mb-2">⭐ Premium Features</p>
+          {/* Mobile All Tools Directory */}
+          <div className="space-y-2">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-bold text-[var(--foreground)] uppercase tracking-wider">Popular Tools</span>
+              <Link
+                href="/tools"
+                onClick={() => setMenuOpen(false)}
+                className="text-xs font-bold text-[var(--accent)] hover:underline"
+              >
+                All {TOOL_CATALOG.length} Tools →
+              </Link>
+            </div>
             <div className="grid grid-cols-2 gap-2">
-              {premiumLinks.map((link) => (
+              <Link href="/compress" onClick={() => setMenuOpen(false)} className="p-2.5 rounded-lg border border-[var(--card-border)] text-xs font-medium text-[var(--foreground)]">Compress PDF</Link>
+              <Link href="/merge" onClick={() => setMenuOpen(false)} className="p-2.5 rounded-lg border border-[var(--card-border)] text-xs font-medium text-[var(--foreground)]">Merge PDF</Link>
+              <Link href="/split" onClick={() => setMenuOpen(false)} className="p-2.5 rounded-lg border border-[var(--card-border)] text-xs font-medium text-[var(--foreground)]">Split PDF</Link>
+              <Link href="/edit-pdf" onClick={() => setMenuOpen(false)} className="p-2.5 rounded-lg border border-[var(--card-border)] text-xs font-medium text-[var(--foreground)]">Edit PDF</Link>
+              <Link href="/sign" onClick={() => setMenuOpen(false)} className="p-2.5 rounded-lg border border-[var(--card-border)] text-xs font-medium text-[var(--foreground)]">Sign PDF</Link>
+              <Link href="/pdf-to-word" onClick={() => setMenuOpen(false)} className="p-2.5 rounded-lg border border-[var(--card-border)] text-xs font-medium text-[var(--foreground)]">PDF to Word</Link>
+              <Link href="/ocr-pdf" onClick={() => setMenuOpen(false)} className="p-2.5 rounded-lg border border-[var(--card-border)] text-xs font-medium text-[var(--foreground)]">OCR PDF</Link>
+              <Link href="/protect" onClick={() => setMenuOpen(false)} className="p-2.5 rounded-lg border border-[var(--card-border)] text-xs font-medium text-[var(--foreground)]">Protect PDF</Link>
+            </div>
+          </div>
+
+          {/* Mobile Premium Tools */}
+          <div className="space-y-2 pt-2 border-t border-[var(--card-border)]">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-bold text-amber-600 dark:text-amber-400 uppercase tracking-wider">⭐ Premium Suite</span>
+              <Link href="/premium" onClick={() => setMenuOpen(false)} className="text-xs font-bold text-amber-600 dark:text-amber-400 hover:underline">Pricing →</Link>
+            </div>
+            <div className="grid grid-cols-2 gap-2">
+              {premiumLinks.slice(0, 6).map((link) => (
                 <Link
                   key={link.href}
                   href={link.href}
                   onClick={() => setMenuOpen(false)}
-                  className="block p-2 rounded-xl bg-[var(--background)] text-xs font-semibold text-[var(--foreground)] hover:text-amber-500 transition border border-[var(--card-border)]"
+                  className="p-2.5 rounded-lg border border-[var(--card-border)] text-xs font-medium text-[var(--foreground)] truncate"
                 >
                   ⭐ {link.label}
                 </Link>
@@ -365,46 +536,31 @@ export default function Header() {
             </div>
           </div>
 
-          <div className="pt-2 border-t border-[var(--card-border)]">
-            <p className="text-xs font-extrabold text-indigo-500 uppercase tracking-wider mb-2">Tools</p>
+          {/* Mobile Resources */}
+          <div className="space-y-2 pt-2 border-t border-[var(--card-border)]">
+            <span className="text-xs font-bold text-[var(--muted)] uppercase tracking-wider">Resources &amp; Support</span>
             <div className="grid grid-cols-2 gap-2">
-              {navLinks.map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  onClick={() => setMenuOpen(false)}
-                  className="block p-2 rounded-xl bg-[var(--background)] text-xs font-medium text-[var(--muted)] hover:text-[var(--foreground)] transition border border-[var(--card-border)]"
-                >
-                  {link.label}
-                </Link>
-              ))}
-              <Link href="/tools" onClick={() => setMenuOpen(false)} className="block p-2 rounded-xl bg-[var(--background)] text-xs font-medium text-indigo-500 transition border border-[var(--card-border)]">All {TOOL_CATALOG.length} Tools →</Link>
-              {premium ? (
-                <Link href="/dashboard" onClick={() => setMenuOpen(false)} className="block p-2 rounded-xl bg-[var(--background)] text-xs font-medium text-emerald-500 transition border border-emerald-500/40">✓ Premium Active →</Link>
-              ) : (
-                <Link href="/premium" onClick={() => setMenuOpen(false)} className="block p-2 rounded-xl bg-[var(--background)] text-xs font-medium text-amber-500 transition border border-[var(--card-border)]">Premium Tier →</Link>
-              )}
+              <Link href="/blog" onClick={() => setMenuOpen(false)} className="p-2.5 rounded-lg border border-[var(--card-border)] text-xs font-medium text-[var(--foreground)]">Guides &amp; Blog</Link>
+              <Link href="/vs/adobe-acrobat" onClick={() => setMenuOpen(false)} className="p-2.5 rounded-lg border border-[var(--card-border)] text-xs font-medium text-[var(--foreground)]">vs Adobe Pro</Link>
+              <Link href="/qa" onClick={() => setMenuOpen(false)} className="p-2.5 rounded-lg border border-[var(--card-border)] text-xs font-medium text-[var(--foreground)]">Q&amp;A Help</Link>
+              <Link href="/contact" onClick={() => setMenuOpen(false)} className="p-2.5 rounded-lg border border-[var(--card-border)] text-xs font-medium text-[var(--foreground)]">Contact Us</Link>
             </div>
           </div>
 
-          <div className="pt-2 border-t border-[var(--card-border)]">
-            <p className="text-xs font-extrabold text-[var(--muted)] uppercase tracking-wider mb-2">Resources</p>
-            <div className="grid grid-cols-2 gap-2">
-              <Link href="/blog" onClick={() => setMenuOpen(false)} className="block p-2 rounded-xl bg-[var(--background)] text-xs font-medium text-[var(--muted)] hover:text-[var(--foreground)] transition border border-[var(--card-border)]">📚 Guides &amp; Blog</Link>
-              <Link href="/ultimate-guide-to-pdf-editing" onClick={() => setMenuOpen(false)} className="block p-2 rounded-xl bg-[var(--background)] text-xs font-medium text-[var(--muted)] hover:text-[var(--foreground)] transition border border-[var(--card-border)]">📖 Ultimate Guide</Link>
-              <Link href="/qa" onClick={() => setMenuOpen(false)} className="block p-2 rounded-xl bg-[var(--background)] text-xs font-medium text-[var(--muted)] hover:text-[var(--foreground)] transition border border-[var(--card-border)]">❓ Q&amp;A Support</Link>
-              <Link href="/embed" onClick={() => setMenuOpen(false)} className="block p-2 rounded-xl bg-[var(--background)] text-xs font-medium text-[var(--muted)] hover:text-[var(--foreground)] transition border border-[var(--card-border)]" rel="nofollow">🔌 Embed Widget</Link>
-              <Link href="/contact" onClick={() => setMenuOpen(false)} className="block p-2 rounded-xl bg-[var(--background)] text-xs font-medium text-[var(--muted)] hover:text-[var(--foreground)] transition border border-[var(--card-border)]">📧 Contact Us</Link>
-            </div>
-          </div>
-
+          {/* Mobile Auth */}
           <div className="pt-2 border-t border-[var(--card-border)] flex gap-3">
             {user ? (
-              <Link href="/dashboard" onClick={() => setMenuOpen(false)} className="flex-1 py-3 text-center bg-indigo-600 text-white font-bold rounded-xl text-xs" rel="nofollow">My Account</Link>
+              <Link href="/dashboard" onClick={() => setMenuOpen(false)} className="flex-1 py-3 text-center bg-[var(--accent)] text-white font-bold rounded-lg text-xs" rel="nofollow">
+                My Dashboard
+              </Link>
             ) : (
               <>
-                <Link href="/login" onClick={() => setMenuOpen(false)} className="flex-1 py-3 text-center border border-[var(--card-border)] text-[var(--foreground)] font-bold rounded-xl text-xs" rel="nofollow">Sign In</Link>
-                <Link href="/signup" onClick={() => setMenuOpen(false)} className="flex-1 py-3 text-center bg-indigo-600 text-white font-bold rounded-xl text-xs" rel="nofollow">Create Account</Link>
+                <Link href="/login" onClick={() => setMenuOpen(false)} className="flex-1 py-3 text-center border border-[var(--card-border)] text-[var(--foreground)] font-bold rounded-lg text-xs" rel="nofollow">
+                  Sign In
+                </Link>
+                <Link href="/signup" onClick={() => setMenuOpen(false)} className="flex-1 py-3 text-center bg-[var(--accent)] text-white font-bold rounded-lg text-xs" rel="nofollow">
+                  Create Account
+                </Link>
               </>
             )}
           </div>

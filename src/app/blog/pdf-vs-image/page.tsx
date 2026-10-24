@@ -8,7 +8,6 @@ export const metadata: Metadata = buildMetadata({
   type: "article",
 });
 import ArticleJsonLd from "@/components/ArticleJsonLd";
-import HowToJsonLd from "@/components/HowToJsonLd";
 import Breadcrumbs from "@/components/Breadcrumbs";
 
 export default function BlogPost() {
@@ -66,8 +65,8 @@ export default function BlogPost() {
         <p>Try our <a href="/pdf-to-images" className="text-indigo-500 underline">PDF to Images tool</a> to extract every page as a high-quality PNG or JPG.</p>
 
         <h2 className="text-xl font-bold text-[var(--foreground)] pt-4">Quick Decision Guide</h2>
-        <div className="border border-[var(--card-border)] rounded-xl overflow-hidden">
-          <table className="w-full text-sm">
+        <div className="border border-[var(--card-border)] rounded-xl overflow-x-auto">
+          <table className="w-full text-sm min-w-[320px]">
             <thead>
               <tr className="bg-[var(--card)]">
                 <th className="p-3 text-left font-semibold text-[var(--foreground)]">You Need To</th>
@@ -87,7 +86,7 @@ export default function BlogPost() {
 
         <div className="bg-[var(--card)] border border-[var(--card-border)] rounded-xl p-6 mt-6">
           <p className="font-semibold text-[var(--foreground)] mb-2">Need to convert between formats?</p>
-          <div className="flex gap-3">
+          <div className="flex gap-3 flex-wrap">
             <a href="/image-to-pdf" className="px-5 py-2.5 bg-indigo-600 text-white font-medium rounded-xl text-sm hover:bg-indigo-700 transition">Image → PDF</a>
             <a href="/pdf-to-images" className="px-5 py-2.5 bg-[var(--background)] text-[var(--foreground)] font-medium rounded-xl text-sm border border-[var(--card-border)] hover:bg-[var(--card)] transition">PDF → Images</a>
           </div>

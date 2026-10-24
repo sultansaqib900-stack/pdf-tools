@@ -417,7 +417,7 @@ export default function ChatPDFPage() {
         <div className="text-sm text-[var(--muted)] space-y-3 leading-relaxed">
           <p>Chat with any PDF document using AI. Upload a PDF — a research paper, contract, book, report — and ask questions about its content. The AI reads the document and answers based only on what's in the file.</p>
           <p>Free users get 3 questions per day. <a href="/premium" className="text-indigo-500 underline">Premium subscribers</a> get unlimited questions, larger PDF support, and priority processing.</p>
-          <p>Keywords: chat with PDF, AI PDF assistant, ask PDF questions, PDF chatbot, AI document reader, PDF analyzer.</p>
+          <p>Text extracted from your document is securely sent to Google Gemini only when you submit a question. Document contents are not used to train models or stored permanently.</p>
         </div>
       </div>
       <RelatedContent slug="chat-pdf" />

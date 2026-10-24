@@ -12,7 +12,7 @@ import TrialGate from "@/components/TrialGate";
 import PremiumUpsell, { usePremiumUpsell } from "@/components/PremiumUpsell";
 import { useUsage } from "@/hooks/useUsage";
 import { checkFileSize } from "@/lib/premium";
-import { downloadBytes, isPdfFile } from "@/lib/pdfBytes";
+import { downloadBytes, isPdfFile, validatePdfOutput, formatPdfErrorMessage } from "@/lib/pdfBytes";
 import { sanitizePdf, type PdfMetadataSnapshot } from "@/lib/pdfSanitize";
 
 export default function MetadataSanitizerPage() {
@@ -39,13 +39,14 @@ export default function MetadataSanitizerPage() {
     setBeforeMeta(null);
     try {
       const sanitized = await sanitizePdf(await file.arrayBuffer());
+      await validatePdfOutput(sanitized.bytes);
       setBeforeMeta(sanitized.before);
       downloadBytes(sanitized.bytes, `sanitized-${file.name}`);
       registerAdTask();
       setSuccess(true);
     } catch (sanitizeError) {
       await usage.releaseReservation(reservation);
-      setError(sanitizeError instanceof Error ? sanitizeError.message : "Failed to sanitize metadata. The file may be encrypted or corrupted.");
+      setError(formatPdfErrorMessage(sanitizeError, "Failed to sanitize metadata. The file may be password-protected or corrupted."));
     } finally {
       setProcessing(false);
     }
@@ -100,8 +101,14 @@ export default function MetadataSanitizerPage() {
           </div>
         )}
 
-        {success && <div className="mt-4 p-4 bg-emerald-500/10 border border-emerald-500/30 rounded-2xl text-center text-sm text-emerald-600 font-bold">✅ Metadata sanitized — clean file downloaded!</div>}
-        {error && <div className="mt-6 p-4 bg-red-500/10 border border-red-500/30 rounded-2xl text-red-500 text-sm">{error}</div>}
+        {success && <div role="status" aria-live="polite" className="mt-4 p-4 bg-emerald-500/10 border border-emerald-500/30 rounded-2xl text-center text-sm text-emerald-600 font-bold">✅ Metadata sanitized — clean file downloaded!</div>}
+        {error && <div role="alert" aria-live="assertive" className="mt-6 p-4 bg-red-500/10 border border-red-500/30 rounded-2xl text-red-500 text-sm">{error}</div>}
+
+        <div className="mt-8 p-5 bg-[var(--card)] border border-[var(--card-border)] rounded-2xl text-xs text-[var(--muted)] space-y-2">
+          <h3 className="font-bold text-[var(--foreground)] text-sm">Security &amp; Sanitization Scope</h3>
+          <p><strong>What is removed:</strong> Document title, author, subject, creator, producer, creation/modification timestamps, XMP catalog metadata, form definitions, page annotations, document JavaScript, and embedded file attachments.</p>
+          <p><strong>What remains:</strong> Visible vector text, drawings, and images on the page itself. If your document body contains confidential names, numbers, or account details, use <a href="/redact" className="text-indigo-500 font-medium hover:underline">Redact PDF</a> to permanently remove and rasterize visible text.</p>
+        </div>
       </div>
       <PremiumUpsell show={upsell.state.show} mode={upsell.state.mode} message={upsell.state.message} onClose={upsell.hideUpsell} />
     </TrialGate>

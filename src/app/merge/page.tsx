@@ -1,7 +1,6 @@
 "use client";
 
-import { isPdfFile } from "@/lib/pdfBytes";
-
+import { isPdfFile, loadPdfForEditing, downloadBytes, validatePdfOutput, formatPdfErrorMessage } from "@/lib/pdfBytes";
 import { useState, useCallback, useEffect, useRef } from "react";
 import ToolInfo from "@/components/ToolInfo";
 import FreeWaitTimer from "@/components/FreeWaitTimer";
@@ -41,12 +40,20 @@ export default function MergePage() {
 
   const handleFiles = useCallback((list: FileList | null) => {
     if (!list) return;
-    for (const f of Array.from(list)) {
+    const incoming = Array.from(list);
+    for (const f of incoming) {
       const check = checkFileSize(f.size);
       if (!check.ok) { upsell.showUpsell("file-size"); return; }
     }
-    setFiles((prev) => [...prev, ...Array.from(list).filter((f) => isPdfFile(f))]);
-  }, []);
+    const pdfs = incoming.filter((f) => isPdfFile(f));
+    if (pdfs.length !== incoming.length) {
+      setError("Some non-PDF files were skipped. Only valid PDF files are supported.");
+    } else {
+      setError(null);
+    }
+    setFiles((prev) => [...prev, ...pdfs]);
+    setSuccess(false);
+  }, [upsell]);
 
   const onDrop = useCallback((e: React.DragEvent) => {
     e.preventDefault();
@@ -61,6 +68,7 @@ export default function MergePage() {
   const runMerge = useCallback(async () => {
     if (files.length < 2) return;
     setProcessing(true);
+    setError(null);
     const canProceed = await usage.checkAndTrack();
     if (!canProceed) { setProcessing(false); upsell.showUpsell("trial-limit"); return; }
     try {
@@ -69,25 +77,25 @@ export default function MergePage() {
       for (const file of files) {
         const bytes = await file.arrayBuffer();
         if (!originalBytes.current) { originalBytes.current = bytes; }
-        const pdf = await PDFDocument.load(bytes);
+        const pdf = await loadPdfForEditing(bytes);
         const pages = await mergedPdf.copyPages(pdf, pdf.getPageIndices());
         pages.forEach((page) => mergedPdf.addPage(page));
       }
       const mergedBytes = await mergedPdf.save({ useObjectStreams: true });
-      const blob = new Blob([mergedBytes.slice()], { type: "application/pdf" });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = "merged.pdf";
-      a.click();
-      window.setTimeout(() => URL.revokeObjectURL(url), 60_000);
+      const validation = await validatePdfOutput(mergedBytes);
+      if (!validation.ok) {
+        throw new Error(validation.error || "Generated merged document is invalid.");
+      }
+
+      downloadBytes(mergedBytes, "merged.pdf");
       trackExport(files[0]?.name || "merged.pdf", "Merge PDF", mergedBytes.byteLength);
       setSuccess(true);
-    } catch {
-      setError("Failed to merge PDFs. One or more files may be encrypted or corrupted.");
+    } catch (mergeError) {
+      setError(formatPdfErrorMessage(mergeError, "Failed to merge PDFs. One or more files may be corrupted or encrypted."));
+    } finally {
+      setProcessing(false);
     }
-    setProcessing(false);
-  }, [files]);
+  }, [files, usage, upsell, trackExport]);
 
   const merge = useCallback(async () => {
     if (!isPremium()) {
@@ -97,17 +105,11 @@ export default function MergePage() {
       return;
     }
     runMerge();
-    }, [usage, upsell, runMerge])
+  }, [usage, upsell, runMerge]);
 
   const restoreOriginal = useCallback(async () => {
     if (!originalBytes.current) return;
-    const blob = new Blob([originalBytes.current], { type: "application/pdf" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `original-${files[0]?.name || "restored.pdf"}`;
-    a.click();
-    window.setTimeout(() => URL.revokeObjectURL(url), 60_000);
+    downloadBytes(originalBytes.current, `original-${files[0]?.name || "restored.pdf"}`);
   }, [files]);
 
   const formatBytes = (b: number) =>
@@ -144,7 +146,6 @@ export default function MergePage() {
         description="Your files stay on your device. Merging is done entirely in your browser using pdf-lib — no data uploaded, no servers involved. Select, reorder, and download your combined PDF instantly."
       />
 
-
       <div className="mb-4">
         <UsageBar remaining={usage.remaining} unlimited={usage.unlimited} tier={usage.tier} />
       </div>
@@ -169,16 +170,22 @@ export default function MergePage() {
           <label htmlFor="fileInput" className="cursor-pointer flex flex-col items-center gap-3">
             <span className="text-5xl">📄</span>
             <span className="text-indigo-500 font-medium hover:underline">Click to select or drag & drop PDFs</span>
-            <span className="text-xs text-[var(--muted)]">Select multiple files at once</span>
+            <span className="text-xs text-[var(--muted)]">Select multiple files at once · Max {isPremium() ? "100MB" : "10MB"} per file</span>
           </label>
         </div>
 
         {files.length > 0 && (
           <div className="mt-5 space-y-2">
-            <p className="text-sm font-medium text-[var(--muted)] mb-2">
-              {files.length} file{files.length > 1 ? "s" : ""} selected — use the arrow controls to reorder
-              <button onClick={() => setFiles([])} className="ml-3 text-red-500 hover:text-red-600 text-xs">Clear all</button>
-            </p>
+            <div className="flex items-center justify-between text-sm font-medium text-[var(--muted)] mb-2">
+              <span>{files.length} file{files.length > 1 ? "s" : ""} selected — use arrows to reorder</span>
+              <button
+                type="button"
+                onClick={() => setFiles([])}
+                className="text-red-500 hover:text-red-600 text-xs font-semibold"
+              >
+                Clear all
+              </button>
+            </div>
             {files.map((file, i) => (
               <div key={i} className="flex items-center justify-between p-3 bg-[var(--background)] border border-[var(--card-border)] rounded-lg">
                 <div className="flex items-center gap-3 min-w-0">
@@ -187,61 +194,45 @@ export default function MergePage() {
                   <span className="text-xs text-[var(--muted)] shrink-0">({formatBytes(file.size)})</span>
                 </div>
                 <div className="flex items-center gap-1 shrink-0">
-                  <button onClick={() => moveUp(i)} disabled={i === 0} className="p-1 text-[var(--muted)] hover:text-[var(--foreground)] disabled:opacity-30" title="Move up">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="m18 15-6-6-6 6"/></svg>
-                  </button>
-                  <button onClick={() => moveDown(i)} disabled={i === files.length - 1} className="p-1 text-[var(--muted)] hover:text-[var(--foreground)] disabled:opacity-30" title="Move down">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="m6 9 6 6 6-6"/></svg>
-                  </button>
-                  <button onClick={() => removeFile(i)} className="p-1 text-red-500 hover:text-red-600" title="Remove">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M3 6h18M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
-                  </button>
+                  <button onClick={() => moveUp(i)} disabled={i === 0} className="p-1 text-[var(--muted)] hover:text-[var(--foreground)] disabled:opacity-30" title="Move up">↑</button>
+                  <button onClick={() => moveDown(i)} disabled={i === files.length - 1} className="p-1 text-[var(--muted)] hover:text-[var(--foreground)] disabled:opacity-30" title="Move down">↓</button>
+                  <button onClick={() => removeFile(i)} className="p-1 text-red-500 hover:text-red-600 text-xs ml-2" title="Remove">✕</button>
                 </div>
               </div>
             ))}
+
+            <ProgressBar processing={processing} label="Merging PDFs..." />
+
+            {showTimer && <FreeWaitTimer onDone={() => { setShowTimer(false); runMerge(); }} />}
+
+            <button
+              onClick={merge}
+              disabled={files.length < 2 || processing || showTimer}
+              className="mt-4 w-full py-3 bg-indigo-600 text-white font-medium rounded-xl hover:bg-indigo-700 disabled:opacity-40 disabled:cursor-not-allowed transition shadow-sm"
+            >
+              {processing ? "Merging..." : files.length < 2 ? "Select at least 2 files to merge" : `Merge ${files.length} PDFs`}
+            </button>
+
+            {!isPremium() && (
+              <p className="mt-3 text-center text-xs text-[var(--muted)]">
+                Free users limited to 10MB files.{" "}
+                <a href="/premium" className="text-indigo-500 font-medium hover:underline">Upgrade for 100MB files & batch</a>
+              </p>
+            )}
+
+            {error && <ErrorBanner message={error} onRetry={runMerge} onDismiss={() => setError(null)} />}
+
+            <SuccessAnimation show={success} message="PDFs merged successfully!" onRestore={restoreOriginal} />
           </div>
         )}
-
-        <ProgressBar processing={processing} fileSize={files.reduce((s, f) => s + f.size, 0)} label="Merging PDFs..." />
-
-        {showTimer && <FreeWaitTimer onDone={() => { setShowTimer(false); runMerge(); }} />}
-
-        <button
-          onClick={merge}
-          disabled={files.length < 2 || processing || showTimer}
-          className="mt-6 w-full py-3 bg-indigo-600 text-white font-medium rounded-xl hover:bg-indigo-700 disabled:opacity-40 disabled:cursor-not-allowed transition shadow-sm"
-        >
-          {processing ? (
-            <span className="flex items-center justify-center gap-2">
-              <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none"/><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
-              Merging {files.length} files...
-            </span>
-          ) : `Merge ${files.length} PDF${files.length !== 1 ? "s" : ""}`}
-        </button>
-
-        {!isPremium() && (
-          <p className="mt-3 text-center text-xs text-[var(--muted)]">
-            Free users limited to 10MB files.{ " " }
-            <a href="/premium" className="text-indigo-500 font-medium hover:underline">Upgrade for 100MB files & batch</a>
-          </p>
-        )}
-
-        {files.length > 0 && files.length < 2 && (
-          <p className="text-xs text-amber-500 mt-2 text-center">Select at least 2 PDF files to merge.</p>
-        )}
-
-        {error && <ErrorBanner message={error} onRetry={runMerge} onDismiss={() => setError(null)} />}
-
-        <SuccessAnimation show={success} message="PDFs merged!" onRestore={restoreOriginal} />
       </div>
 
       <div className="max-w-3xl mx-auto mt-12 pt-8 border-t border-[var(--card-border)]">
         <h2 className="text-xl font-bold text-[var(--foreground)] mb-3">About Merge PDF</h2>
         <div className="text-sm text-[var(--muted)] space-y-3 leading-relaxed">
-          <p>With our merge PDF tool, you can combine PDF documents into a single file effortlessly, making it perfect for consolidating reports, invoices, scanned contracts, or any collection of related pages. Simply upload your PDFs, use the arrow controls to reorder them, and click merge — the intuitive interface gives you full control over the final page sequence. The tool processes everything locally in your browser using pdf-lib, so your sensitive documents never touch a server. To merge PDF files online free, just select multiple PDFs, arrange them in the desired order, and download the combined result in seconds. This feature is especially useful for merging scanned documents that arrive as separate files, unifying chapter drafts into a complete manuscript, or creating comprehensive portfolios from individual pages. Everything stays private and secure.</p>
+          <p>Combine multiple PDF documents into a single organized file in seconds. Order your documents using the up/down controls before merging. Everything runs client-side in your browser, keeping your documents private and secure.</p>
         </div>
       </div>
-
       <RelatedContent slug="merge" />
 
       <UseCaseLinks toolSlug="merge" />

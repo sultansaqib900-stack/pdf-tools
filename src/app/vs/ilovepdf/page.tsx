@@ -7,23 +7,23 @@ import Breadcrumbs from "@/components/Breadcrumbs";
 
 export const metadata: Metadata = buildMetadata({
   path: "/vs/ilovepdf",
-  title: "iLovePDF vs PDFTools - Why Local Zero-Knowledge Processing Wins",
-  description: "Compare iLovePDF vs PDFTools. Eliminate cloud upload risks, avoid 4-step re-upload loops, and automate multi-step workflows in 1 click.",
+  title: "iLovePDF vs PDFTools - Why Local In-Browser Processing Wins",
+  description: "Compare iLovePDF vs PDFTools. Eliminate cloud upload risks for core tools, avoid 4-step re-upload loops, and automate multi-step workflows in 1 click.",
 });
 export default function VsIlovepdfPage() {
   const comparisonRows = [
-    { feature: "Privacy & Cloud Uploads", competitor: "Files sent to remote cloud servers", pdfTools: "100% Client-Side (0 KB Uploaded)", win: true },
-    { feature: "Multi-Step Chaining", competitor: "Must download & re-upload 4 separate files", pdfTools: "Continuous In-Memory Studio Pipeline", win: true },
-    { feature: "Automated Macro Recipes", competitor: "None (Siloed individual tools)", pdfTools: "1-Click PDF Recipes (Zapier for PDFs)", win: true },
-    { feature: "PII Auto-Detection", competitor: "Manual search only", pdfTools: "1-Click Regex PII Guardian", win: true },
-    { feature: "Daily Free Usage Limit", competitor: "Rate limits & ads", pdfTools: "High Limits + Zero Ads", win: true },
+    { feature: "Privacy & Cloud Uploads", competitor: "Files sent to remote cloud servers", pdfTools: "Client-Side (0 KB uploaded for core tools)", win: true },
+    { feature: "Multi-Step Chaining", competitor: "Must download & re-upload separate files", pdfTools: "Continuous In-Memory Studio Pipeline (Premium)", win: true },
+    { feature: "Automated Macro Recipes", competitor: "None (Siloed individual tools)", pdfTools: "1-Click PDF Recipes (Starter recipes free)", win: true },
+    { feature: "PII Auto-Detection", competitor: "Manual search only", pdfTools: "1-Click Regex PII Guardian (Preview free)", win: true },
+    { feature: "Daily Free Usage Limit", competitor: "Rate limits & third-party ads", pdfTools: "Unlimited 38 core tools + No third-party ads", win: true },
   ];
 
   return (
     <div className="max-w-5xl mx-auto px-4 py-12 space-y-12">
       <SoftwareAppJsonLd
         name="PDFTools - iLovePDF Alternative"
-        description="Zero-knowledge private alternative to iLovePDF."
+        description="Private in-browser alternative to iLovePDF."
         url="https://allaboutpdfediting.xyz/vs/ilovepdf"
       />
       <Breadcrumbs
@@ -42,9 +42,9 @@ export default function VsIlovepdfPage() {
         <h1 className="text-3xl sm:text-5xl font-black text-[var(--foreground)] tracking-tight">
           iLovePDF vs. PDFTools
         </h1>
-      <p className="text-xs text-[var(--muted)] mt-2 mb-6">Last verified: September 2026 — pricing and limits re-checked against iLovePDF&apos;s public documentation.</p>
+        <p className="text-xs text-[var(--muted)] mt-2 mb-6">Last verified: September 2026 — pricing and limits re-checked against iLovePDF&apos;s public documentation.</p>
         <p className="text-sm sm:text-base text-[var(--muted)] leading-relaxed">
-          Stop downloading and re-uploading the same file four times. Process everything continuously in your browser with zero server uploads.
+          Stop downloading and re-uploading the same file four times. Process everything continuously in your browser with zero server uploads for core editing.
         </p>
 
         <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
@@ -52,13 +52,19 @@ export default function VsIlovepdfPage() {
             href="/studio"
             className="px-6 py-3.5 bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-extrabold rounded-2xl shadow-xl shadow-indigo-500/25 hover:opacity-95 text-sm transition"
           >
-            ⚡ Open PDF Studio
+            ⚡ Open PDF Studio (Premium)
           </Link>
           <Link
             href="/recipes"
             className="px-6 py-3.5 bg-[var(--card)] border border-[var(--card-border)] hover:border-indigo-500 text-[var(--foreground)] font-bold rounded-2xl text-sm transition"
           >
             ⚡ Try 1-Click Recipes
+          </Link>
+          <Link
+            href="/tools"
+            className="px-6 py-3.5 bg-[var(--card)] border border-[var(--card-border)] hover:border-indigo-500 text-[var(--foreground)] font-bold rounded-2xl text-sm transition"
+          >
+            Explore 38 Free Core Tools
           </Link>
         </div>
       </div>

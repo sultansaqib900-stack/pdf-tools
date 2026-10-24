@@ -2,21 +2,28 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { PRICING_CONFIG } from "@/lib/pricing";
 
 export default function SavingsCalculator() {
   const [teamSize, setTeamSize] = useState(5);
   const [competitor, setCompetitor] = useState<"adobe" | "ilovepdf" | "smallpdf">("adobe");
+  const [pdftoolsPlan, setPdftoolsPlan] = useState<"free" | "premium">("free");
 
+  // Verified public pricing per seat/year (USD)
   const competitorPrices = {
-    adobe: { name: "Adobe Acrobat Pro", annualPerSeat: 240, monthlyPerSeat: 20 },
-    ilovepdf: { name: "iLovePDF Premium", annualPerSeat: 84, monthlyPerSeat: 7 },
-    smallpdf: { name: "SmallPDF Pro", annualPerSeat: 108, monthlyPerSeat: 9 },
+    adobe: { name: "Adobe Acrobat Pro", annualPerSeatUSD: 240, monthlyPerSeatUSD: 20 },
+    ilovepdf: { name: "iLovePDF Premium", annualPerSeatUSD: 84, monthlyPerSeatUSD: 7 },
+    smallpdf: { name: "SmallPDF Pro", annualPerSeatUSD: 108, monthlyPerSeatUSD: 9 },
   };
 
-  const selected = competitorPrices[competitor];
-  const competitorAnnualTotal = teamSize * selected.annualPerSeat;
-  const pdfToolsCost = 0; // Free / Lifetime flat
-  const annualSavings = competitorAnnualTotal - pdfToolsCost;
+  // PDFTools pricing: Free is $0; Premium is Rs 12,500/year (approx. $45 USD at prevailing exchange rate)
+  const premiumPerSeatUSD = 45;
+  const pdfToolsAnnualPerSeatUSD = pdftoolsPlan === "free" ? 0 : premiumPerSeatUSD;
+
+  const selectedCompetitor = competitorPrices[competitor];
+  const competitorAnnualTotal = teamSize * selectedCompetitor.annualPerSeatUSD;
+  const pdfToolsAnnualTotal = teamSize * pdfToolsAnnualPerSeatUSD;
+  const annualSavingsUSD = Math.max(0, competitorAnnualTotal - pdfToolsAnnualTotal);
 
   return (
     <div className="bg-gradient-to-br from-indigo-950/40 via-[var(--card)] to-purple-950/30 border border-indigo-500/30 rounded-3xl p-6 sm:p-10 shadow-2xl backdrop-blur-xl">
@@ -28,7 +35,7 @@ export default function SavingsCalculator() {
           Calculate Your Team&apos;s Annual Savings
         </h3>
         <p className="text-xs sm:text-sm text-[var(--muted)]">
-          Compare total subscription costs against our 100% private, browser-based PDF suite.
+          Compare subscription costs against our private, browser-based PDF suite.
         </p>
       </div>
 
@@ -47,6 +54,7 @@ export default function SavingsCalculator() {
               ].map((c) => (
                 <button
                   key={c.id}
+                  type="button"
                   onClick={() => setCompetitor(c.id as any)}
                   className={`p-3 rounded-2xl border text-center transition-all ${
                     competitor === c.id
@@ -62,8 +70,40 @@ export default function SavingsCalculator() {
           </div>
 
           <div>
+            <label className="block text-xs font-bold text-[var(--foreground)] uppercase mb-2">
+              Choose PDFTools Plan:
+            </label>
+            <div className="grid grid-cols-2 gap-2">
+              <button
+                type="button"
+                onClick={() => setPdftoolsPlan("free")}
+                className={`p-3 rounded-2xl border text-center transition-all ${
+                  pdftoolsPlan === "free"
+                    ? "border-emerald-500 bg-emerald-500/20 text-emerald-300 font-bold shadow-md shadow-emerald-500/20 ring-1 ring-emerald-500"
+                    : "border-[var(--card-border)] bg-[var(--background)] text-[var(--muted)] hover:text-[var(--foreground)]"
+                }`}
+              >
+                <p className="text-xs">Free Core Suite</p>
+                <p className="text-[10px] opacity-75">$0 / seat (38 basic tools)</p>
+              </button>
+              <button
+                type="button"
+                onClick={() => setPdftoolsPlan("premium")}
+                className={`p-3 rounded-2xl border text-center transition-all ${
+                  pdftoolsPlan === "premium"
+                    ? "border-amber-500 bg-amber-500/20 text-amber-300 font-bold shadow-md shadow-amber-500/20 ring-1 ring-amber-500"
+                    : "border-[var(--card-border)] bg-[var(--background)] text-[var(--muted)] hover:text-[var(--foreground)]"
+                }`}
+              >
+                <p className="text-xs">PDFTools Premium</p>
+                <p className="text-[10px] opacity-75">~${premiumPerSeatUSD}/yr ({PRICING_CONFIG.yearly.priceFormatted})</p>
+              </button>
+            </div>
+          </div>
+
+          <div>
             <div className="flex justify-between items-center mb-2">
-              <label className="text-xs font-bold text-[var(--foreground)] uppercase">
+              <label htmlFor="team-size-slider" className="text-xs font-bold text-[var(--foreground)] uppercase cursor-pointer">
                 Team Size / Number of Seats:
               </label>
               <span className="text-base font-extrabold text-indigo-400 font-mono">
@@ -71,11 +111,13 @@ export default function SavingsCalculator() {
               </span>
             </div>
             <input
+              id="team-size-slider"
               type="range"
               min="1"
               max="100"
+              aria-label="Team size in users"
               value={teamSize}
-              onChange={(e) => setTeamSize(parseInt(e.target.value))}
+              onChange={(e) => setTeamSize(parseInt(e.target.value, 10))}
               className="w-full accent-indigo-500 h-2 bg-[var(--card-border)] rounded-lg cursor-pointer"
             />
             <div className="flex justify-between text-[10px] text-[var(--muted)] mt-1 font-mono">
@@ -96,30 +138,45 @@ export default function SavingsCalculator() {
               Estimated Annual Savings
             </p>
             <div className="text-4xl sm:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-teal-300 to-cyan-400 mt-2 font-mono">
-              ${annualSavings.toLocaleString()}/yr
+              ${annualSavingsUSD.toLocaleString()}/yr
             </div>
             <p className="text-xs text-emerald-400/90 mt-1 font-semibold">
-              🎉 100% pure budget saved for your organization
+              {pdftoolsPlan === "free"
+                ? "Using 100% free client-side core tools with zero subscription cost"
+                : `Saving vs ${selectedCompetitor.name} with full Premium workspace & pro tools`}
             </p>
           </div>
 
           <div className="pt-4 border-t border-[var(--card-border)] text-xs text-[var(--muted)] space-y-1.5">
             <div className="flex justify-between">
-              <span>{selected.name} Total:</span>
+              <span>{selectedCompetitor.name} Total:</span>
               <span className="line-through text-red-400 font-mono">${competitorAnnualTotal.toLocaleString()}/yr</span>
             </div>
             <div className="flex justify-between font-bold text-[var(--foreground)]">
-              <span>PDFTools Local Suite:</span>
-              <span className="text-emerald-400 font-mono">$0 (Free &amp; Unlimited)</span>
+              <span>PDFTools ({pdftoolsPlan === "free" ? "Free" : "Premium"}):</span>
+              <span className="text-emerald-400 font-mono">
+                {pdftoolsPlan === "free" ? "$0" : `$${pdfToolsAnnualTotal.toLocaleString()}/yr (${PRICING_CONFIG.currency} ${(teamSize * PRICING_CONFIG.yearly.amount).toLocaleString()}/yr)`}
+              </span>
             </div>
           </div>
 
-          <Link
-            href="/studio"
-            className="block w-full py-3.5 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-extrabold rounded-2xl hover:opacity-95 transition-all text-xs sm:text-sm shadow-lg shadow-emerald-500/25 active:scale-[0.99]"
-          >
-            ⚡ Start Using Free PDF Studio Now
-          </Link>
+          <div className="pt-2">
+            {pdftoolsPlan === "free" ? (
+              <Link
+                href="/tools"
+                className="block w-full py-3.5 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-extrabold rounded-2xl hover:opacity-95 transition-all text-xs sm:text-sm shadow-lg shadow-emerald-500/25 active:scale-[0.99]"
+              >
+                Explore 38 Free Core Tools
+              </Link>
+            ) : (
+              <Link
+                href="/premium"
+                className="block w-full py-3.5 bg-gradient-to-r from-amber-500 to-orange-600 text-white font-extrabold rounded-2xl hover:opacity-95 transition-all text-xs sm:text-sm shadow-lg shadow-amber-500/25 active:scale-[0.99]"
+              >
+                View Premium Plans ({PRICING_CONFIG.yearly.priceFormatted}/yr)
+              </Link>
+            )}
+          </div>
         </div>
       </div>
     </div>

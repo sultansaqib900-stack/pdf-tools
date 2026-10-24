@@ -12,6 +12,7 @@ import { isPremium } from "@/lib/premium";
 import { useUsage } from "@/hooks/useUsage";
 import { useToolHistory } from "@/hooks/useToolHistory";
 import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
+import { downloadBytes, validatePdfOutput, formatPdfErrorMessage, sanitizeForStandardFont } from "@/lib/pdfBytes";
 
 import HowToJsonLd from "@/components/HowToJsonLd";
 import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
@@ -52,6 +53,9 @@ export default function TextToPdfPage() {
       const maxWidth = pageWidth - margin * 2;
       const lineHeight = fontSize * 1.4;
 
+      const safeText = sanitizeForStandardFont(text);
+      const safeTitle = sanitizeForStandardFont(title);
+
       const lines: string[] = [];
       const splitLongWord = (word: string): string[] => {
         const parts: string[] = [];
@@ -69,7 +73,7 @@ export default function TextToPdfPage() {
         return parts;
       };
 
-      for (const logicalLine of text.replace(/\r\n?/g, "\n").split("\n")) {
+      for (const logicalLine of safeText.replace(/\r\n?/g, "\n").split("\n")) {
         if (!logicalLine.trim()) {
           lines.push("");
           continue;
@@ -95,11 +99,11 @@ export default function TextToPdfPage() {
       while (lineIndex < lines.length) {
         const page = pdfDoc.addPage([pageWidth, pageHeight]);
         let y = pageHeight - margin - 20;
-        if (pageIndex === 0 && title) {
+        if (pageIndex === 0 && safeTitle) {
           const requestedTitleSize = 18;
-          const titleWidth = font.widthOfTextAtSize(title, requestedTitleSize);
+          const titleWidth = font.widthOfTextAtSize(safeTitle, requestedTitleSize);
           const titleSize = Math.max(8, Math.min(requestedTitleSize, requestedTitleSize * maxWidth / Math.max(titleWidth, 1)));
-          page.drawText(title, { x: margin, y, size: titleSize, font, color: rgb(0, 0, 0) });
+          page.drawText(safeTitle, { x: margin, y, size: titleSize, font, color: rgb(0, 0, 0) });
           y -= 36;
         }
         while (lineIndex < lines.length && y >= margin) {
@@ -113,18 +117,21 @@ export default function TextToPdfPage() {
       }
 
       const pdfBytes = await pdfDoc.save({ useObjectStreams: true });
-      const blob = new Blob([pdfBytes as unknown as BlobPart], { type: "application/pdf" });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = title ? `${title.toLowerCase().replace(/\s+/g, "-")}.pdf` : "text-to-pdf.pdf";
-      a.click();
-      window.setTimeout(() => URL.revokeObjectURL(url), 60_000);
-      trackExport(title ? `${title.toLowerCase().replace(/\s+/g, "-")}.pdf` : "text-to-pdf.pdf", "Text to PDF", pdfBytes.length);
+      const validation = await validatePdfOutput(pdfBytes);
+      if (!validation.ok) {
+        throw new Error(validation.error || "Generated document is invalid.");
+      }
+
+      const filename = safeTitle ? `${safeTitle.toLowerCase().replace(/\s+/g, "-")}.pdf` : "text-to-pdf.pdf";
+      downloadBytes(pdfBytes, filename);
+      trackExport(filename, "Text to PDF", pdfBytes.length);
       setSuccess(true);
-    } catch (conversionError) { setError(conversionError instanceof Error ? `Failed to convert text: ${conversionError.message}` : "Failed to convert text."); }
-    setProcessing(false);
-  }, [text, title]);
+    } catch (conversionError) {
+      setError(formatPdfErrorMessage(conversionError, "Failed to convert text to PDF."));
+    } finally {
+      setProcessing(false);
+    }
+  }, [text, title, usage, upsell, trackExport]);
 
   const process = useCallback(async () => {
     if (!isPremium()) {
@@ -134,90 +141,91 @@ export default function TextToPdfPage() {
       return;
     }
     runConvert();
-    }, [usage, upsell, runConvert])
+  }, [usage, upsell, runConvert]);
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-12">
       <SoftwareAppJsonLd
         name="Text to PDF - Free Online Converter"
-        description="Convert plain text to PDF online for free. Create PDF documents from text in your browser."
+        description="Convert plain text to a formatted PDF document online for free. Type or paste text and generate a clean PDF instantly."
         url="https://allaboutpdfediting.xyz/text-to-pdf"
       />
-      <HowToJsonLd name="Convert Text to PDF" description="Convert entered plain text into a paginated PDF" steps={[{name:"Enter or paste text",text:"Type or paste text supported by the standard PDF Helvetica encoding"},{name:"Add optional title",text:"Optionally enter a title for the first page"},{name:"Download PDF",text:"Download the automatically wrapped and paginated PDF"}]} />
+      <HowToJsonLd name="Convert Text to PDF Online" description="Convert plain text to a formatted PDF document" steps={[{name:"Enter text",text:"Type or paste your text into the editor"},{name:"Set title (optional)",text:"Add a title for your PDF document"},{name:"Convert",text:"Click convert and download your formatted PDF"}]} />
       <Breadcrumbs items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Tools", item: "https://allaboutpdfediting.xyz/tools" }, { name: "Text to PDF", item: "https://allaboutpdfediting.xyz/text-to-pdf" }]} />
       <FaqPageJsonLd questions={rc?.faqs} />
-      <AiSummaryJsonLd name="Text to PDF" summary="Convert entered text into a US Letter PDF with measured wrapping and automatic page breaks" category="Utilities" inputType="Text" outputType="PDF" processing="client-side" price="free" features={["Optional title","Measured word wrapping","Explicit line breaks","Automatic pagination","Client-side"]} limits="Uses standard PDF Helvetica and its character encoding" />
+      <AiSummaryJsonLd name="Text to PDF" summary="Convert typed or pasted plain text into clean, formatted, paginated PDF documents" category="Utilities" inputType="Text" outputType="PDF" processing="client-side" price="free" features={["Plain text conversion","Optional title header","Auto-pagination","Instant processing","No file uploads"]} limits="Up to 100,000 characters" />
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">Text to PDF</h1>
-        <p className="text-[var(--muted)]">Convert plain text into a downloadable PDF document instantly.</p>
+        <p className="text-[var(--muted)]">Type or paste text to generate a clean, formatted PDF document.</p>
       </div>
 
-      <ToolInfo name="Text to PDF" description="Your text stays private. Conversion happens locally in your browser — no uploads, no servers. Type or paste any text and download it as a formatted PDF." />
+      <ToolInfo
+        name="Text to PDF"
+        description="Your text stays private. Conversion happens locally in your browser — no uploads, no servers. Type or paste any text and download it as a formatted PDF."
+        acceptedTypes="Plain text / UTF-8"
+        maxSize="Up to 100,000 characters"
+      />
 
       <div className="mb-4">
         <UsageBar remaining={usage.remaining} unlimited={usage.unlimited} tier={usage.tier} />
       </div>
 
       <div className="bg-[var(--card)] rounded-xl border border-[var(--card-border)] p-8">
-        <div className="mb-4">
-          <label className="block text-sm font-medium text-[var(--foreground)] mb-2">Document Title (optional)</label>
-          <input
-            type="text"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            placeholder="My Document"
-            className="w-full px-4 py-2.5 rounded-xl border border-[var(--card-border)] bg-[var(--background)] text-[var(--foreground)] text-sm outline-none focus:border-indigo-500 transition"
-          />
+        <div className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-[var(--foreground)] mb-1">Document Title (optional)</label>
+            <input
+              type="text"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              placeholder="My Document"
+              className="w-full px-4 py-2 border border-[var(--card-border)] rounded-xl bg-[var(--background)] text-[var(--foreground)] focus:outline-none focus:border-indigo-500 text-sm"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-[var(--foreground)] mb-1">Text Content</label>
+            <textarea
+              value={text}
+              onChange={(e) => setText(e.target.value)}
+              placeholder="Type or paste your text here..."
+              rows={12}
+              className="w-full px-4 py-3 border border-[var(--card-border)] rounded-xl bg-[var(--background)] text-[var(--foreground)] focus:outline-none focus:border-indigo-500 text-sm font-mono resize-y"
+            />
+            <div className="flex justify-between text-xs text-[var(--muted)] mt-1">
+              <span>{text.length.toLocaleString()} characters</span>
+              <span>~{Math.max(1, Math.ceil(text.length / 3000))} page(s)</span>
+            </div>
+          </div>
         </div>
 
-        <div>
-          <label className="block text-sm font-medium text-[var(--foreground)] mb-2">Your Text</label>
-          <textarea
-            value={text}
-            onChange={(e) => setText(e.target.value)}
-            placeholder="Type or paste your text here..."
-            rows={12}
-            className="w-full px-4 py-3 rounded-xl border border-[var(--card-border)] bg-[var(--background)] text-[var(--foreground)] text-sm outline-none focus:border-indigo-500 transition resize-y"
-          />
-          <p className="text-xs text-[var(--muted)] mt-1">{text.length.toLocaleString()} characters</p>
-        </div>
+        <ProgressBar processing={processing} label="Generating PDF..." />
 
         {showTimer && <FreeWaitTimer onDone={() => { setShowTimer(false); runConvert(); }} />}
-
-        <ProgressBar processing={processing} fileSize={undefined} label="Converting to PDF..." />
 
         <button
           onClick={process}
           disabled={!text.trim() || processing || showTimer}
           className="mt-6 w-full py-3 bg-indigo-600 text-white font-medium rounded-xl hover:bg-indigo-700 disabled:opacity-40 disabled:cursor-not-allowed transition shadow-sm"
         >
-          {processing ? (
-            <span className="flex items-center justify-center gap-2">
-              <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none"/><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
-              Converting to PDF...
-            </span>
-          ) : "Convert to PDF"}
+          {processing ? "Generating..." : "Generate PDF"}
         </button>
 
         {!isPremium() && (
           <p className="mt-3 text-center text-xs text-[var(--muted)]">
-            Free users have a 5s wait.{ " " }
-            <a href="/premium" className="text-indigo-500 font-medium hover:underline">Upgrade for instant processing</a>
+            Free and unlimited.{" "}
+            <a href="/premium" className="text-indigo-500 font-medium hover:underline">Upgrade for batch tools &amp; 100MB files</a>
           </p>
         )}
 
         {error && <ErrorBanner message={error} onRetry={runConvert} onDismiss={() => setError(null)} />}
 
-        <SuccessAnimation show={success} message="PDF created successfully!" />
+        <SuccessAnimation show={success} message="PDF generated successfully!" />
       </div>
 
-
       <div className="max-w-3xl mx-auto mt-12 pt-8 border-t border-[var(--card-border)]">
-        <h2 className="text-xl font-bold text-[var(--foreground)] mb-3">About Text to PDF Converter</h2>
+        <h2 className="text-xl font-bold text-[var(--foreground)] mb-3">About Text to PDF</h2>
         <div className="text-sm text-[var(--muted)] space-y-3 leading-relaxed">
-          <p>Convert plain text to PDF documents online for free. Type or paste your content, add an optional title, and download a formatted PDF. Perfect for creating quick notes, saving chat conversations, or turning text files into a professional document format.</p>
-          <p>All processing happens locally in your browser — no uploads, no servers, complete privacy. The tool handles long text automatically with page breaks and word wrapping.</p>
-          <p>Keywords: text to PDF converter online free, convert text to PDF, plain text to PDF document, create PDF from text online free.</p>
+          <p>Convert plain text into clean, professional PDF documents right in your browser. Whether you need to export notes, format code snippets, or create a printable document from scratch, Text to PDF handles auto-wrapping, pagination, and margin layout with zero server uploads.</p>
         </div>
       </div>
       <RelatedContent slug="text-to-pdf" />

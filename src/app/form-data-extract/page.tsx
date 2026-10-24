@@ -13,7 +13,7 @@ import PremiumUpsell, { usePremiumUpsell } from "@/components/PremiumUpsell";
 import { useUsage, type UsageReservation } from "@/hooks/useUsage";
 import { checkFileSize } from "@/lib/premium";
 import { escapeCsvCell } from "@/lib/csv";
-import { isPdfFile } from "@/lib/pdfBytes";
+import { isPdfFile, loadPdfForEditing } from "@/lib/pdfBytes";
 
 export default function FormDataExtractPage() {
   usePageMeta("Extract PDF Form Data to CSV - Form Field Extractor | PDFTools Premium", "Extract filled form field data from PDF documents to CSV. Batch export PDF form data to Excel. Premium.");
@@ -52,7 +52,7 @@ export default function FormDataExtractPage() {
       for (const file of files) {
         if (!isPdfFile(file)) { failedFiles.push(file.name); continue; }
         try {
-          const pdfDoc = await PDFDocument.load(await file.arrayBuffer(), { updateMetadata: false });
+          const pdfDoc = await loadPdfForEditing(await file.arrayBuffer(), { updateMetadata: false });
           const fields = pdfDoc.getForm().getFields();
           const row: Record<string, string> = { _file: file.name };
           for (const field of fields) {

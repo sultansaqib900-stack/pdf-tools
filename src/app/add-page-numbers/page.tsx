@@ -1,6 +1,6 @@
 "use client";
 
-import { isPdfFile } from "@/lib/pdfBytes";
+import { isPdfFile, loadPdfForEditing, validatePdfOutput, downloadBytes, formatPdfErrorMessage } from "@/lib/pdfBytes";
 
 import { useState, useCallback, useEffect, useRef } from "react";
 import ToolInfo from "@/components/ToolInfo";
@@ -42,28 +42,43 @@ export default function AddPageNumbersPage() {
 
   useEffect(() => { trackToolVisit("add-page-numbers"); }, []);
 
+  const resetFile = useCallback(() => {
+    setFile(null);
+    setPageCount(0);
+    setError(null);
+    setSuccess(false);
+    originalBytes.current = null;
+  }, []);
+
   const handleFile = useCallback(async (f: File | null) => {
     if (!f || !isPdfFile(f)) return;
     const check = checkFileSize(f.size);
     if (!check.ok) { upsell.showUpsell("file-size"); return; }
     setFile(f);
     setSuccess(false);
-    const bytes = await f.arrayBuffer();
-    const { PDFDocument } = await import("pdf-lib");
-    const pdf = await PDFDocument.load(bytes);
-    setPageCount(pdf.getPageCount());
-  }, []);
+    setError(null);
+    try {
+      const bytes = await f.arrayBuffer();
+      originalBytes.current = bytes;
+      const pdf = await loadPdfForEditing(bytes);
+      setPageCount(pdf.getPageCount());
+    } catch (err) {
+      setError(formatPdfErrorMessage(err, "Failed to load PDF. The document may be password-protected or corrupted."));
+      setFile(null);
+      setPageCount(0);
+    }
+  }, [upsell]);
 
   const runAddNumbers = useCallback(async () => {
     if (!file) return;
     setProcessing(true);
+    setError(null);
     const canProceed = await usage.checkAndTrack();
     if (!canProceed) { setProcessing(false); upsell.showUpsell("trial-limit"); return; }
     try {
-      const { PDFDocument, rgb, StandardFonts } = await import("pdf-lib");
-      const bytes = await file.arrayBuffer();
-      originalBytes.current = bytes;
-      const pdfDoc = await PDFDocument.load(bytes);
+      const { rgb, StandardFonts } = await import("pdf-lib");
+      const bytes = originalBytes.current || (await file.arrayBuffer());
+      const pdfDoc = await loadPdfForEditing(bytes);
       const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
       const pages = pdfDoc.getPages();
 
@@ -96,20 +111,15 @@ export default function AddPageNumbersPage() {
       }
 
       const pdfBytes = await pdfDoc.save({ useObjectStreams: true });
-      const blob = new Blob([pdfBytes.slice()], { type: "application/pdf" });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `numbered-${file.name}`;
-      a.click();
-      trackExport(file.name, "Add Page Numbers", bytes.byteLength);
-      window.setTimeout(() => URL.revokeObjectURL(url), 60_000);
+      await validatePdfOutput(pdfBytes);
+      downloadBytes(pdfBytes, `numbered-${file.name}`);
+      trackExport(file.name, "Add Page Numbers", pdfBytes.byteLength);
       setSuccess(true);
-    } catch {
-      setError("Failed to add page numbers.");
+    } catch (err) {
+      setError(formatPdfErrorMessage(err, "Failed to add page numbers."));
     }
     setProcessing(false);
-  }, [file, position, startNumber]);
+  }, [file, position, startNumber, usage, upsell, trackExport]);
 
   const addNumbers = useCallback(async () => {
     if (!isPremium()) {
@@ -228,6 +238,15 @@ export default function AddPageNumbersPage() {
               className="w-full py-3 bg-indigo-600 text-white font-medium rounded-xl hover:bg-indigo-700 disabled:opacity-40 disabled:cursor-not-allowed transition shadow-sm"
             >
               {processing ? "Adding page numbers..." : `Add page numbers (${pageCount} pages)`}
+            </button>
+
+            <button
+              type="button"
+              onClick={resetFile}
+              disabled={processing}
+              className="w-full py-2 bg-transparent text-sm text-[var(--muted)] hover:text-[var(--foreground)] transition border border-[var(--card-border)] rounded-xl"
+            >
+              Choose different file
             </button>
 
             {!isPremium() && (

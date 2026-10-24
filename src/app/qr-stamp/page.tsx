@@ -8,7 +8,7 @@ import Breadcrumbs from "@/components/Breadcrumbs";
 import { usePageMeta } from "@/hooks/usePageMeta";
 import HowToJsonLd from "@/components/HowToJsonLd";
 import AiSummaryJsonLd from "@/components/AiSummaryJsonLd";
-import { isPdfFile } from "@/lib/pdfBytes";
+import { isPdfFile, loadPdfForEditing, validatePdfOutput, downloadBytes, formatPdfErrorMessage } from "@/lib/pdfBytes";
 import { checkFileSize } from "@/lib/premium";
 import { useUsage } from "@/hooks/useUsage";
 
@@ -57,9 +57,8 @@ export default function QrStampPage() {
       ctx.drawImage(img, 0, 0);
       const pngBytes = canvas.toDataURL("image/png");
 
-      const { PDFDocument } = await import("pdf-lib");
       const bytes = await file.arrayBuffer();
-      const pdfDoc = await PDFDocument.load(bytes);
+      const pdfDoc = await loadPdfForEditing(bytes);
       const pngImage = await pdfDoc.embedPng(pngBytes);
       const pages = pdfDoc.getPages();
 
@@ -77,18 +76,13 @@ export default function QrStampPage() {
         page.drawImage(pngImage, { x, y, width: imgDims.width, height: imgDims.height });
       }
 
-      const pdfBytes = await pdfDoc.save();
-      const blob = new Blob([pdfBytes as unknown as BlobPart], { type: "application/pdf" });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `qr-${file.name}`;
-      a.click();
-      window.setTimeout(() => URL.revokeObjectURL(url), 60_000);
+      const pdfBytes = await pdfDoc.save({ useObjectStreams: true });
+      await validatePdfOutput(pdfBytes);
+      downloadBytes(pdfBytes, `qr-${file.name}`);
       registerAdTask();
       setSuccess(true);
-    } catch {
-      setError("Failed to stamp QR code. The file may be encrypted or corrupted.");
+    } catch (err) {
+      setError(formatPdfErrorMessage(err, "Failed to stamp QR code. The file may be password-protected or corrupted."));
     }
     setProcessing(false);
   };

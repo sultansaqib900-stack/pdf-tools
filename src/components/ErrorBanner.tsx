@@ -20,7 +20,11 @@ export default function ErrorBanner({
   if (dismissed) return null;
 
   return (
-    <div className="mt-4 p-4 bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-800 rounded-xl animate-fadeIn">
+    <div
+      role="alert"
+      aria-live="assertive"
+      className="mt-4 p-4 bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-800 rounded-xl animate-fadeIn"
+    >
       <div className="flex items-start gap-3">
         <span className="shrink-0 w-6 h-6 rounded-full bg-red-100 dark:bg-red-900/40 flex items-center justify-center text-red-500 text-xs font-bold">!</span>
         <div className="flex-1 min-w-0">

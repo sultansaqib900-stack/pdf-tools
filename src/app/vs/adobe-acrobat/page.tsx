@@ -8,16 +8,16 @@ import Breadcrumbs from "@/components/Breadcrumbs";
 export const metadata: Metadata = buildMetadata({
   path: "/vs/adobe-acrobat",
   title: "Adobe Acrobat Pro vs PDFTools - The Private, Free Alternative",
-  description: "Compare Adobe Acrobat Pro ($240/yr) vs PDFTools. 100% in-browser privacy, zero cloud document uploads, multi-step Studio, and PII auto-redaction.",
+  description: "Compare Adobe Acrobat Pro ($240/yr) vs PDFTools. In-browser client-side privacy, zero server document uploads for core tools, multi-step Studio, and PII auto-redaction.",
 });
 export default function VsAdobePage() {
   const comparisonRows = [
-    { feature: "Annual Cost per User", adobe: "$240 - $360 / year", pdfTools: "$0 / Lifetime Free", winner: "pdfTools" },
-    { feature: "Document Privacy & Security", adobe: "Uploaded to Adobe Cloud servers", pdfTools: "100% Local Browser RAM (0 KB Uploaded)", winner: "pdfTools" },
-    { feature: "HIPAA & GDPR Compliance", adobe: "Requires enterprise BAA contract", pdfTools: "Air-Gapped Zero-Server Guarantee", winner: "pdfTools" },
+    { feature: "Annual Cost per User", adobe: "$240 - $360 / year", pdfTools: "$0 for 38 Core Tools (Premium: Rs 12,500 / year)", winner: "pdfTools" },
+    { feature: "Document Privacy & Security", adobe: "Uploaded to Adobe Cloud servers", pdfTools: "In-Browser Client-Side Processing (0 KB server uploads for core tools)", winner: "pdfTools" },
+    { feature: "Cloud Regulatory Risk", adobe: "Cloud uploads require vendor BAA/DPA contracts", pdfTools: "Client-side processing avoids third-party document hosting", winner: "pdfTools" },
     { feature: "1-Click PII Auto-Redaction", adobe: "Manual blackout drawing only", pdfTools: "Automated Regex & Pattern Detection", winner: "pdfTools" },
     { feature: "Macro Workflow Automation", adobe: "Complex Action Wizard", pdfTools: "1-Click PDF Recipes (The Zapier for PDFs)", winner: "pdfTools" },
-    { feature: "Multi-Step Chained Workspace", adobe: "Bulky multi-window desktop app", pdfTools: "Lightweight In-Browser Studio", winner: "pdfTools" },
+    { feature: "Multi-Step Chained Workspace", adobe: "Bulky multi-window desktop app", pdfTools: "Lightweight In-Browser Studio (Included with Premium)", winner: "pdfTools" },
     { feature: "Installation & System Load", adobe: "Large desktop installation", pdfTools: "Browser app with optional install shortcut", winner: "pdfTools" },
   ];
 
@@ -44,9 +44,9 @@ export default function VsAdobePage() {
         <h1 className="text-3xl sm:text-5xl font-black text-[var(--foreground)] tracking-tight">
           Adobe Acrobat Pro vs. PDFTools
         </h1>
-      <p className="text-xs text-[var(--muted)] mt-2 mb-6">Last verified: September 2026 — pricing and limits re-checked against Adobe Acrobat Pro&apos;s public documentation.</p>
+        <p className="text-xs text-[var(--muted)] mt-2 mb-6">Last verified: September 2026 — pricing and limits re-checked against Adobe Acrobat Pro&apos;s public documentation.</p>
         <p className="text-sm sm:text-base text-[var(--muted)] leading-relaxed">
-          Why pay $240/year per person when you can edit, sign, auto-redact, and compress documents with complete air-gapped privacy for free?
+          Why pay $240/year per person when you can edit, sign, auto-redact, and compress documents with private, client-side in-browser processing?
         </p>
 
         <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
@@ -54,13 +54,19 @@ export default function VsAdobePage() {
             href="/studio"
             className="px-6 py-3.5 bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-extrabold rounded-2xl shadow-xl shadow-indigo-500/25 hover:opacity-95 text-sm transition"
           >
-            ⚡ Open Free PDF Studio
+            ⚡ Open PDF Studio (Premium)
           </Link>
           <Link
             href="/pii-guardian"
             className="px-6 py-3.5 bg-[var(--card)] border border-[var(--card-border)] hover:border-indigo-500 text-[var(--foreground)] font-bold rounded-2xl text-sm transition"
           >
             🛡️ Try PII Guardian
+          </Link>
+          <Link
+            href="/tools"
+            className="px-6 py-3.5 bg-[var(--card)] border border-[var(--card-border)] hover:border-indigo-500 text-[var(--foreground)] font-bold rounded-2xl text-sm transition"
+          >
+            Explore 38 Free Core Tools
           </Link>
         </div>
       </div>

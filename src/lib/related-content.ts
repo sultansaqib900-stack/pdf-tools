@@ -177,7 +177,7 @@ export const relatedContent: Record<string, ToolRelatedContent> = {
     ],
     relatedBlogs: [allBlogs["edit-pdf"], allBlogs["annotate"], allBlogs["add-page-numbers"]],
     faqs: [
-      { question: "Can I add images to a PDF?", answer: "Yes. You can add text boxes, shapes, drawings, and images." },
+      { question: "Can I add images to a PDF?", answer: "Currently, Edit PDF allows overlaying text boxes, rectangles, ellipses, and lines directly onto pages. It does not insert images or freehand drawings; to convert images into PDF pages, use our Image to PDF tool." },
       { question: "Does editing preserve existing content?", answer: "Yes. The editor adds new elements on top of existing content without altering it." },
       { question: "Can I change font sizes and colors?", answer: "Yes. Customize font, size, color, and position of added text." },
     ],
@@ -274,7 +274,7 @@ export const relatedContent: Record<string, ToolRelatedContent> = {
     ],
     relatedBlogs: [allBlogs["pdf-to-word"], allBlogs["word-to-pdf"], allBlogs["pdf-to-excel"]],
     faqs: [
-      { question: "Is the formatting preserved?", answer: "Our converter preserves layout, fonts, images, and formatting as much as possible." },
+      { question: "Is the formatting preserved?", answer: "Text content is extracted into an editable Word (.docx) document using client-side parsing. Complex multi-column layouts, embedded images, and exact font styling are not reproduced in the converted DOCX." },
       { question: "Can I convert scanned PDFs to Word?", answer: "Use OCR PDF first to extract text, then convert." },
     ],
   },
@@ -286,8 +286,8 @@ export const relatedContent: Record<string, ToolRelatedContent> = {
     ],
     relatedBlogs: [allBlogs["word-to-pdf"], allBlogs["pdf-to-word"], allBlogs["html-to-pdf"]],
     faqs: [
-      { question: "Does it support .docx and .doc?", answer: "Yes. Both .docx and .doc files are supported." },
-      { question: "Are images preserved?", answer: "Yes. All images, tables, and formatting are preserved in the output PDF." },
+      { question: "Does it support .docx and .doc?", answer: "The tool supports modern .docx files (Office Open XML). Older binary .doc files are not supported in-browser; please save as .docx first." },
+      { question: "Are images preserved?", answer: "Text, headings, and basic lists are converted into standard PDF pages. Embedded images and complex Word formatting are currently omitted in the simplified output." },
     ],
   },
   "redact": {
@@ -346,7 +346,7 @@ export const relatedContent: Record<string, ToolRelatedContent> = {
     ],
     relatedBlogs: [allBlogs["ocr-pdf"], allBlogs["extract-text"], allBlogs["pdf-to-word"]],
     faqs: [
-      { question: "What languages does OCR support?", answer: "English, Spanish, French, German, Portuguese, and 100+ more languages." },
+      { question: "What languages does OCR support?", answer: "The client-side OCR tool uses Tesseract.js configured for English document recognition (free tier processes up to 3 pages). For other languages or scanned tables, our AI OCR and Table Extraction tools can assist." },
       { question: "How accurate is the OCR?", answer: "Accuracy depends on image quality. Clear scans achieve 99%+ accuracy." },
     ],
   },
@@ -474,7 +474,7 @@ export const relatedContent: Record<string, ToolRelatedContent> = {
     ],
     relatedBlogs: [allBlogs["pdf-to-excel"], allBlogs["form-data-extract"], allBlogs["pdf-to-word"]],
     faqs: [
-      { question: "Does it preserve table formatting?", answer: "Yes. Tables are extracted with their structure and formatting preserved." },
+      { question: "Does it preserve table formatting?", answer: "The tool analyzes spatial positions of text items to generate structured CSV rows. Visual styling, borders, colors, and spreadsheet formulas are not stored in CSV format. For scanned tables without selectable text, an optional AI fallback is available." },
     ],
   },
   "chat-pdf": {
@@ -522,7 +522,7 @@ export const relatedContent: Record<string, ToolRelatedContent> = {
     relatedBlogs: [allBlogs["certificate-generator"], allBlogs["bulk-rename"], allBlogs["bates-numbering"]],
     faqs: [
       { question: "What CSV format is required?", answer: "First row must be headers matching your template placeholders (e.g., NAME, DATE, COURSE)." },
-      { question: "How many certificates can I generate?", answer: "Unlimited. Each row in your CSV generates one certificate." },
+      { question: "How many certificates can I generate?", answer: "Premium members can generate unlimited certificates in one run. Free users can test the workflow with the shared 5-file lifetime professional trial." },
     ],
   },
   "form-data-extract": {
@@ -646,7 +646,7 @@ export const relatedContent: Record<string, ToolRelatedContent> = {
     ],
     relatedBlogs: [allBlogs["batch"], allBlogs["bulk-rename"], allBlogs["certificate-generator"]],
     faqs: [
-      { question: "What batch operations are supported?", answer: "Compress, merge, split, convert — most tools support batch processing with Premium." },
+      { question: "What batch operations are supported?", answer: "The Batch Process tool supports four operations across up to 20 files at once: Compress, Password Protect, Rotate 90°, and Watermark. Custom multi-action flows can also be run via PDF Recipes." },
     ],
   },
   "repair-pdf": {

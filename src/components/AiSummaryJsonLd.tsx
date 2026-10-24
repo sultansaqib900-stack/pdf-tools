@@ -1,3 +1,5 @@
+import { PRICING_CONFIG } from "@/lib/pricing";
+
 interface Props {
   name: string;
   summary: string;
@@ -21,8 +23,8 @@ export default function AiSummaryJsonLd({ name, summary, category, inputType, ou
     browserRequirements: "Requires JavaScript",
     offers: {
       "@type": "Offer",
-      price: price === "free" ? "0" : "12",
-      priceCurrency: "USD",
+      price: price === "free" ? "0" : String(PRICING_CONFIG.monthly.amount),
+      priceCurrency: PRICING_CONFIG.currencyCode,
     },
     featureList: features.join(", "),
     ...(limits ? { audience: { "@type": "Audience", audienceType: limits } } : {}),

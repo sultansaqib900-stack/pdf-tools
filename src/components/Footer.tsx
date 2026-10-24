@@ -103,7 +103,7 @@ export default function Footer() {
         <div className="border-t border-[var(--card-border)] pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-[var(--muted)]">
           <div className="flex items-center gap-2">
             <span className="w-2 h-2 rounded-full bg-emerald-400" />
-            <span>100% Client-Side Privacy: No files ever uploaded to any server.</span>
+            <span>Client-Side Privacy for Core Tools: Documents processed in-browser without server file storage. <Link href="/privacy" className="underline hover:text-[var(--foreground)]">Privacy Policy</Link></span>
           </div>
           <div className="flex items-center gap-2">
             <p>&copy; {new Date().getFullYear()} PDFTools (allaboutpdfediting.xyz). All rights reserved.</p>

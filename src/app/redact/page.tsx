@@ -87,7 +87,7 @@ export default function RedactPage() {
     }));
     setPages(pageData);
     setRects(pageData.map(() => []));
-  }, []);
+  }, [upsell]);
 
   useEffect(() => {
     if (!file || !pdfDoc || currentPage >= pages.length) return;
@@ -120,7 +120,7 @@ export default function RedactPage() {
       }
     };
     renderPage();
-  }, [file, pdfDoc, currentPage]);
+  }, [file, pdfDoc, currentPage, pages.length]);
 
   const getCanvasCoords = useCallback((e: React.MouseEvent<HTMLCanvasElement>) => {
     const canvas = canvasRef.current;
@@ -261,7 +261,7 @@ export default function RedactPage() {
       setError("Failed to redact PDF: " + (e instanceof Error ? e.message : "unknown error"));
     }
     setSaving(false);
-  }, [file, pages, pdfDoc, rects, saving, usage, upsell]);
+  }, [file, pdfDoc, rects, saving, usage, upsell]);
 
   const process = useCallback(async () => {
     if (!isPremium()) {
@@ -271,7 +271,7 @@ export default function RedactPage() {
       return;
     }
     runRedact();
-    }, [usage, upsell, runRedact])
+  }, [usage, upsell, runRedact]);
 
   const hasRects = rects.some((r) => r.length > 0);
 
@@ -293,7 +293,6 @@ export default function RedactPage() {
 
       <ToolInfo name="Redact PDF" description="Your file stays completely private. All redaction happens locally — no uploads, no servers. Drag to draw black rectangles over sensitive content, then download the permanently redacted PDF." />
 
-
       <div className="mb-4">
         <UsageBar remaining={usage.remaining} />
       </div>
@@ -309,7 +308,7 @@ export default function RedactPage() {
         >
           <input type="file" accept="application/pdf" onChange={(e) => handleFile(e.target.files?.[0] ?? null)} className="hidden" id="fileInput" />
           <label htmlFor="fileInput" className="cursor-pointer flex flex-col items-center gap-3">
-            <span className="text-5xl">⬛</span>
+            <span className="text-5xl" aria-hidden="true">⬛</span>
             <span className="text-indigo-500 font-medium hover:underline">
               {file ? file.name : "Click to select or drag & drop a PDF"}
             </span>
@@ -323,6 +322,7 @@ export default function RedactPage() {
             <div className="flex items-center justify-between flex-wrap gap-3">
               <div className="flex items-center gap-2">
                 <button
+                  type="button"
                   onClick={() => setCurrentPage((p) => Math.max(0, p - 1))}
                   disabled={currentPage === 0}
                   className="px-3 py-1.5 text-sm rounded-lg border border-[var(--card-border)] text-[var(--foreground)] hover:bg-[var(--background)] disabled:opacity-40 transition"
@@ -333,6 +333,7 @@ export default function RedactPage() {
                   Page {currentPage + 1} of {pages.length}
                 </span>
                 <button
+                  type="button"
                   onClick={() => setCurrentPage((p) => Math.min(pages.length - 1, p + 1))}
                   disabled={currentPage >= pages.length - 1}
                   className="px-3 py-1.5 text-sm rounded-lg border border-[var(--card-border)] text-[var(--foreground)] hover:bg-[var(--background)] disabled:opacity-40 transition"
@@ -344,6 +345,7 @@ export default function RedactPage() {
                 <span className="text-xs text-[var(--muted)]">{hasRects ? `${rects.flat().length} redactions` : "Drag to redact"}</span>
                 {hasRects && (
                   <button
+                    type="button"
                     onClick={undoLast}
                     className="px-3 py-1.5 text-xs rounded-lg border border-red-200 text-red-500 hover:bg-red-50 dark:hover:bg-red-950/20 transition"
                   >
@@ -376,6 +378,7 @@ export default function RedactPage() {
 
         {file && (
           <button
+            type="button"
             onClick={process}
             disabled={!hasRects || saving || showTimer}
             className="mt-6 w-full py-3 bg-indigo-600 text-white font-medium rounded-xl hover:bg-indigo-700 disabled:opacity-40 disabled:cursor-not-allowed transition shadow-sm"
@@ -399,13 +402,25 @@ export default function RedactPage() {
         <SuccessAnimation show={success} message="Redactions applied!" details={`${rects.flat().length} areas redacted across ${pages.length} page(s).`} />
       </div>
 
-
       <div className="max-w-3xl mx-auto mt-12 pt-8 border-t border-[var(--card-border)]">
-        <h2 className="text-xl font-bold text-[var(--foreground)] mb-3">About Redact PDF</h2>
-        <div className="text-sm text-[var(--muted)] space-y-3 leading-relaxed">
-          <p>Permanently remove sensitive information from your PDF documents. Draw black rectangles over text, numbers, images, or any content you want to hide. The redaction is permanent — once applied, the content underneath cannot be recovered.</p>
-          <p>Perfect for: hiding personal information before sharing documents, redacting confidential data in legal forms, removing sensitive details from contracts, and protecting privacy in shared PDFs.</p>
-          <p>All processing happens locally in your browser — no uploads, no servers, complete privacy. Keywords: redact PDF online free, black out text PDF, hide sensitive information PDF, PDF redaction tool.</p>
+        <h2 className="text-xl font-bold text-[var(--foreground)] mb-3">Permanent PDF Redaction vs. Visual Covering</h2>
+        <div className="text-sm text-[var(--muted)] space-y-4 leading-relaxed">
+          <p>
+            Standard drawing tools often place a black rectangle annotation on top of the document without altering the underlying PDF structure. In those files, anyone can still select, copy, search, or export the hidden text underneath.
+          </p>
+          <p>
+            This tool performs <strong>destructive raster redaction</strong>. The selected pages are rendered directly into bitmap memory, the redacted regions are permanently overwritten with opaque black pixels, and the page is converted to an unlayered image. The underlying font streams, hidden vector paths, and selectable glyph layers are completely removed from the file.
+          </p>
+          <h3 className="text-base font-semibold text-[var(--foreground)] pt-2">What is Removed vs. What Remains</h3>
+          <ul className="list-disc pl-5 space-y-1.5">
+            <li><strong>Removed:</strong> All text, numbers, graphics, and images inside your drawn redaction rectangles are permanently eradicated.</li>
+            <li><strong>Preserved:</strong> Unredacted portions of the document page remain visible. Document page count, orientation, and layout dimensions are preserved.</li>
+            <li><strong>Document Metadata Note:</strong> Visual redaction affects page content only. If your document contains sensitive author names, revision history, or organizational metadata in the PDF header, use our <a href="/metadata-sanitizer" className="text-indigo-500 hover:underline">Metadata Sanitizer</a> tool to clean document properties.</li>
+          </ul>
+          <h3 className="text-base font-semibold text-[var(--foreground)] pt-2">Limits and Processing</h3>
+          <p>
+            All redaction processing executes 100% locally on your computer inside your web browser. Free accounts can process files up to 10MB; Premium unlocks files up to 100MB. Your confidential documents never travel across the internet.
+          </p>
         </div>
       </div>
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { isPdfFile } from "@/lib/pdfBytes";
+import { isPdfFile, loadPdfForEditing, validatePdfOutput, downloadBytes, formatPdfErrorMessage } from "@/lib/pdfBytes";
 
 import { useState, useCallback, useEffect, useRef } from "react";
 import ToolInfo from "@/components/ToolInfo";
@@ -43,6 +43,18 @@ export default function MetadataPage() {
 
   useEffect(() => { trackToolVisit("metadata"); }, []);
 
+  const resetFile = useCallback(() => {
+    setFile(null);
+    setTitle("");
+    setAuthor("");
+    setSubject("");
+    setKeywords("");
+    setLoaded(false);
+    setError(null);
+    setSuccess(false);
+    originalBytes.current = null;
+  }, []);
+
   const handleFile = useCallback(async (f: File | null) => {
     if (!f || !isPdfFile(f)) return;
     const check = checkFileSize(f.size);
@@ -51,16 +63,21 @@ export default function MetadataPage() {
     setSuccess(false);
     setError(null);
     setLoaded(false);
-    const { PDFDocument } = await import("pdf-lib");
-    const bytes = await f.arrayBuffer();
-    originalBytes.current = bytes;
-    const pdf = await PDFDocument.load(bytes);
-    setTitle(pdf.getTitle() || "");
-    setAuthor(pdf.getAuthor() || "");
-    setSubject(pdf.getSubject() || "");
-    setKeywords(pdf.getKeywords() || "");
-    setLoaded(true);
-  }, []);
+    try {
+      const bytes = await f.arrayBuffer();
+      originalBytes.current = bytes;
+      const pdf = await loadPdfForEditing(bytes);
+      setTitle(pdf.getTitle() || "");
+      setAuthor(pdf.getAuthor() || "");
+      setSubject(pdf.getSubject() || "");
+      setKeywords(pdf.getKeywords() || "");
+      setLoaded(true);
+    } catch (err) {
+      setError(formatPdfErrorMessage(err, "Failed to read PDF metadata. The file may be password-protected or corrupted."));
+      setFile(null);
+      setLoaded(false);
+    }
+  }, [upsell]);
 
   const runEdit = useCallback(async () => {
     if (!file) return;
@@ -69,28 +86,23 @@ export default function MetadataPage() {
     const canProceed = await usage.checkAndTrack();
     if (!canProceed) { setProcessing(false); upsell.showUpsell("trial-limit"); return; }
     try {
-      const { PDFDocument } = await import("pdf-lib");
-      const bytes = await file.arrayBuffer();
-      originalBytes.current = bytes;
-      const pdf = await PDFDocument.load(bytes);
+      const bytes = originalBytes.current || (await file.arrayBuffer());
+      const pdf = await loadPdfForEditing(bytes);
       pdf.setTitle(title);
       pdf.setAuthor(author);
       pdf.setSubject(subject);
       pdf.setKeywords(keywords.split(",").map((keyword) => keyword.trim()).filter(Boolean));
 
       const pdfBytes = await pdf.save({ useObjectStreams: true });
-      const blob = new Blob([pdfBytes as unknown as BlobPart], { type: "application/pdf" });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `metadata-${file.name}`;
-      a.click();
-      window.setTimeout(() => URL.revokeObjectURL(url), 60_000);
+      await validatePdfOutput(pdfBytes);
+      downloadBytes(pdfBytes, `metadata-${file.name}`);
       trackExport(file.name, "Metadata Editor", pdfBytes.length);
       setSuccess(true);
-    } catch { setError("Failed to edit metadata."); }
+    } catch (err) {
+      setError(formatPdfErrorMessage(err, "Failed to edit metadata."));
+    }
     setProcessing(false);
-  }, [file, title, author, subject, keywords]);
+  }, [file, title, author, subject, keywords, usage, upsell, trackExport]);
 
   const process = useCallback(async () => {
     if (!isPremium()) {
@@ -196,6 +208,15 @@ export default function MetadataPage() {
               ) : "Save Changes & Download"}
             </button>
 
+            <button
+              type="button"
+              onClick={resetFile}
+              disabled={processing}
+              className="mt-3 w-full py-2 bg-transparent text-sm text-[var(--muted)] hover:text-[var(--foreground)] transition border border-[var(--card-border)] rounded-xl"
+            >
+              Choose different file
+            </button>
+
             {!isPremium() && (
               <p className="mt-3 text-center text-xs text-[var(--muted)]">
                 Free users have a 5s wait.{ " " }
@@ -216,7 +237,7 @@ export default function MetadataPage() {
         <div className="text-sm text-[var(--muted)] space-y-3 leading-relaxed">
           <p>Edit PDF metadata online for free. Update document properties like title, author, subject, and keywords. Useful for organizing your PDF library, improving searchability, or preparing documents for publishing.</p>
           <p>All processing happens locally in your browser — no uploads, no servers, complete privacy. The original file is never transmitted or stored.</p>
-          <p>Keywords: edit PDF metadata online free, PDF properties editor, change PDF title author, update PDF document properties.</p>
+          <p>Updates standard PDF document information dictionary entries (Title, Author, Subject, Keywords) without altering visible page content or vector artwork.</p>
         </div>
       </div>
 

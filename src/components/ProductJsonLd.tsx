@@ -1,4 +1,5 @@
 import { PREMIUM_TOOLS, PREMIUM_TOOL_COUNT } from "@/lib/toolCatalog";
+import { PRICING_CONFIG } from "@/lib/pricing";
 
 export default function ProductJsonLd() {
   const premiumNames = PREMIUM_TOOLS.map((tool) => tool.title).join(", ");
@@ -14,8 +15,8 @@ export default function ProductJsonLd() {
       {
         "@type": "Offer",
         name: "Premium Monthly",
-        price: "2500",
-        priceCurrency: "PKR",
+        price: String(PRICING_CONFIG.monthly.amount),
+        priceCurrency: PRICING_CONFIG.currencyCode,
         priceValidUntil: "2027-12-31",
         availability: "https://schema.org/InStock",
         url: "https://allaboutpdfediting.xyz/premium",
@@ -23,8 +24,8 @@ export default function ProductJsonLd() {
       {
         "@type": "Offer",
         name: "Premium Yearly",
-        price: "12500",
-        priceCurrency: "PKR",
+        price: String(PRICING_CONFIG.yearly.amount),
+        priceCurrency: PRICING_CONFIG.currencyCode,
         priceValidUntil: "2027-12-31",
         availability: "https://schema.org/InStock",
         url: "https://allaboutpdfediting.xyz/premium",
