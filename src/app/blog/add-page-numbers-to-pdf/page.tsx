@@ -1,3 +1,4 @@
+import BlogToolCta from "@/components/BlogToolCta";
 import { buildMetadata } from "@/lib/seo";
 import type { Metadata } from "next";
 export const metadata: Metadata = buildMetadata({
@@ -18,6 +19,7 @@ export default function BlogPost() {
       <a href="/blog" className="text-sm text-indigo-500 hover:underline mb-6 inline-block">&larr; Back to blog</a>
       <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">How to Add Page Numbers to PDF Files Online Free</h1>
       <p className="text-sm text-[var(--muted)] mb-8">4 min read · Updated June 2026</p>
+      <BlogToolCta slug="add-page-numbers-to-pdf" variant="top" />
       <div className="text-sm text-[var(--muted)] space-y-5 leading-relaxed">
         <p>Numbering pages is essential for professional documents — whether you are preparing a report, thesis, ebook, or legal contract. Manually adding page numbers using word processors can be tedious, especially after last-minute edits. With our <a href="/add-page-numbers" className="text-indigo-500 underline">free online PDF page number tool</a>, you can add page numbers to any PDF instantly without installing software.</p>
 
@@ -49,6 +51,7 @@ export default function BlogPost() {
           <a href="/add-page-numbers" className="inline-block px-5 py-2.5 bg-indigo-600 text-white font-medium rounded-xl text-sm hover:bg-indigo-700 transition">Add Page Numbers Now →</a>
         </div>
       </div>
-    </article>
+      <BlogToolCta slug="add-page-numbers-to-pdf" variant="bottom" />
+</article>
   );
 }

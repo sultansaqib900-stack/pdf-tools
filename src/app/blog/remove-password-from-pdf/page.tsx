@@ -1,3 +1,4 @@
+import BlogToolCta from "@/components/BlogToolCta";
 import { buildMetadata } from "@/lib/seo";
 import type { Metadata } from "next";
 
@@ -25,6 +26,7 @@ export default function BlogPost() {
       <a href="/blog" className="text-sm text-indigo-500 hover:underline mb-6 inline-block">&larr; Back to blog</a>
       <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">How to Remove Password from PDF Files</h1>
       <p className="text-sm text-[var(--muted)] mb-8">4 min read · Updated June 2026</p>
+      <BlogToolCta slug="remove-password-from-pdf" variant="top" />
 
       <div className="text-sm text-[var(--muted)] space-y-5 leading-relaxed">
         <p>Have a password-protected PDF that you need to edit, print, or share? If you know the password, removing it is straightforward. Our <a href="/unlock" className="text-indigo-500 underline">free PDF unlock tool</a> lets you <strong>remove password from PDF</strong> instantly — all in your browser, no uploads, no signup.</p>
@@ -64,6 +66,7 @@ export default function BlogPost() {
           <a href="/unlock" className="inline-block px-5 py-2.5 bg-indigo-600 text-white font-medium rounded-xl text-sm hover:bg-indigo-700 transition">Unlock Your PDF Now →</a>
         </div>
       </div>
-    </article>
+      <BlogToolCta slug="remove-password-from-pdf" variant="bottom" />
+</article>
   );
 }

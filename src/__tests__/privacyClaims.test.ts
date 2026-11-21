@@ -25,9 +25,16 @@ describe("Audit Privacy and Security Claims", () => {
   });
 
   it("Footer qualifies client-side processing for core tools and links to privacy policy", () => {
+    // The standardised trust line lives in src/lib/site.ts (single source of
+    // truth) and the footer renders it verbatim on every page.
     const footerFile = readFileSync(resolve(process.cwd(), "src/components/Footer.tsx"), "utf8");
-    expect(footerFile).toContain("Client-Side Privacy for Core Tools");
+    expect(footerFile).toContain("FOOTER_PRIVACY_LINE");
     expect(footerFile).toContain("/privacy");
+
+    const siteFile = readFileSync(resolve(process.cwd(), "src/lib/site.ts"), "utf8");
+    expect(siteFile).toContain("No advertising, no third-party ad scripts, and no ad tracking");
+    expect(siteFile).toContain("100% client-side in your browser");
+    expect(siteFile).toContain("never uploaded to our servers");
   });
 });
 

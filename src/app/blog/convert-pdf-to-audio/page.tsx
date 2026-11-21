@@ -1,4 +1,5 @@
 "use client";
+import BlogToolCta from "@/components/BlogToolCta";
 import ArticleJsonLd from "@/components/ArticleJsonLd";
 import HowToJsonLd from "@/components/HowToJsonLd";
 import Breadcrumbs from "@/components/Breadcrumbs";
@@ -17,6 +18,7 @@ export default function BlogPost() {
       <a href="/blog" className="text-sm text-indigo-500 hover:underline mb-6 inline-block">&larr; Back to blog</a>
       <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">How to Convert PDF to Audio Online Free</h1>
       <p className="text-sm text-[var(--muted)] mb-8">5 min read · Updated June 2026</p>
+      <BlogToolCta slug="convert-pdf-to-audio" variant="top" />
 
       <div className="text-sm text-[var(--muted)] space-y-5 leading-relaxed">
         <p>Reading long PDF documents can be tiring on the eyes — especially when you are commuting, exercising, or just trying to reduce screen time. A <strong>PDF to audio converter</strong> uses text-to-speech technology to read your documents aloud, turning any PDF into an audiobook-like experience.</p>
@@ -62,6 +64,7 @@ export default function BlogPost() {
           <a href="/pdf-to-audio" className="inline-block px-5 py-2.5 bg-indigo-600 text-white font-medium rounded-xl text-sm hover:bg-indigo-700 transition">Open Free Tool →</a>
         </div>
       </div>
-    </article>
+      <BlogToolCta slug="convert-pdf-to-audio" variant="bottom" />
+</article>
   );
 }

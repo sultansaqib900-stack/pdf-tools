@@ -1,3 +1,4 @@
+import BlogToolCta from "@/components/BlogToolCta";
 import { buildMetadata } from "@/lib/seo";
 import type { Metadata } from "next";
 export const metadata: Metadata = buildMetadata({
@@ -18,6 +19,7 @@ export default function BlogPost() {
       <a href="/blog" className="text-sm text-indigo-500 hover:underline mb-6 inline-block">&larr; Back to blog</a>
       <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">How to Insert Blank Pages into a PDF Online Free</h1>
       <p className="text-sm text-[var(--muted)] mb-8">3 min read · Updated June 2026</p>
+      <BlogToolCta slug="insert-blank-pages-pdf" variant="top" />
       <div className="text-sm text-[var(--muted)] space-y-5 leading-relaxed">
         <p>Sometimes you need to add blank pages to a PDF — whether to insert a section divider, add space for handwritten notes, separate chapters, or accommodate printing requirements. Our <a href="/insert-blank" className="text-indigo-500 underline">free blank page inserter</a> lets you add empty pages anywhere in your PDF instantly.</p>
 
@@ -46,6 +48,7 @@ export default function BlogPost() {
           <a href="/insert-blank" className="inline-block px-5 py-2.5 bg-indigo-600 text-white font-medium rounded-xl text-sm hover:bg-indigo-700 transition">Insert Blank Pages →</a>
         </div>
       </div>
-    </article>
+      <BlogToolCta slug="insert-blank-pages-pdf" variant="bottom" />
+</article>
   );
 }

@@ -1,6 +1,5 @@
 "use client";
 
-import { registerAdTask } from "@/lib/ads";
 
 import { useState, useCallback } from "react";
 import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
@@ -79,7 +78,6 @@ export default function QrStampPage() {
       const pdfBytes = await pdfDoc.save({ useObjectStreams: true });
       await validatePdfOutput(pdfBytes);
       downloadBytes(pdfBytes, `qr-${file.name}`);
-      registerAdTask();
       setSuccess(true);
     } catch (err) {
       setError(formatPdfErrorMessage(err, "Failed to stamp QR code. The file may be password-protected or corrupted."));

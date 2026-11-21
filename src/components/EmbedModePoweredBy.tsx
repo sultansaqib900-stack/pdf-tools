@@ -18,7 +18,7 @@ function PoweredBy() {
             rel="noopener noreferrer"
             className="text-[10px] font-semibold text-indigo-600 dark:text-indigo-400 hover:underline"
           >
-            allaboutpdfediting.xyz — 45+ Free PDF Tools
+            allaboutpdfediting.xyz — 38 free core PDF tools, no ads
           </a>
         </div>
       </div>

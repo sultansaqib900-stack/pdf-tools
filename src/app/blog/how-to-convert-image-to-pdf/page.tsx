@@ -1,4 +1,5 @@
 "use client";
+import BlogToolCta from "@/components/BlogToolCta";
 import Link from "next/link";
 import ArticleJsonLd from "@/components/ArticleJsonLd";
 import HowToJsonLd from "@/components/HowToJsonLd";
@@ -14,6 +15,7 @@ export default function HowToConvertImageToPDF() {
         <Link href="/blog" className="text-sm text-indigo-500 hover:underline mb-6 inline-block">&larr; Back to blog</Link>
         <h1 className="text-3xl font-bold text-[var(--foreground)] mb-3">How to Convert Images to PDF</h1>
         <p className="text-xs text-[var(--muted)] mb-6">June 27, 2026 · 3 min read</p>
+        <BlogToolCta slug="how-to-convert-image-to-pdf" variant="top" />
         <p className="text-sm text-[var(--muted)] mb-4">Converting images to PDF is essential for creating documents from photos, scans, and screenshots. <Link href="/image-to-pdf" className="text-indigo-500 underline">PDFTools Image to PDF</Link> lets you convert JPG and PNG images into a professional PDF document in seconds.</p>
 
         <h2 className="text-xl font-bold text-[var(--foreground)] mb-3 mt-8">Step-by-Step: Image to PDF</h2>
@@ -55,7 +57,8 @@ export default function HowToConvertImageToPDF() {
           <p className="text-sm text-white/80 mb-4">No uploads, no signup, 100% private.</p>
           <Link href="/image-to-pdf" className="inline-block px-6 py-3 bg-white text-indigo-600 font-medium rounded-xl hover:bg-white/90 transition">Convert Now →</Link>
         </div>
-      </div>
+        <BlogToolCta slug="how-to-convert-image-to-pdf" variant="bottom" />
+</div>
     </>
   );
 }

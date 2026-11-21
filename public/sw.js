@@ -1,4 +1,4 @@
-const CACHE = "pdftools-v5"; // v5: purge cached bundles with Monetag ads removed
+const CACHE = "pdftools-v6"; // v6: purge any pre-v5 cached bundles (no ad code, no ad hosts)
 const OFFLINE_PAGE = "/offline";
 
 // Pre-caching every tool route made a first visit download dozens of full pages

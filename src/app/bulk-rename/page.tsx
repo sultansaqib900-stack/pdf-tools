@@ -1,6 +1,5 @@
 "use client";
 
-import { registerAdTask } from "@/lib/ads";
 
 import { useState } from "react";
 import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
@@ -111,7 +110,6 @@ export default function BulkRenamePage() {
       })));
       const archive = createZipArchive(entries);
       downloadBytes(archive, "renamed-pdfs.zip", "application/zip");
-      registerAdTask();
       setSuccess(true);
     } catch (archiveError) {
       setError(archiveError instanceof Error ? archiveError.message : "Failed to build the renamed PDF archive.");

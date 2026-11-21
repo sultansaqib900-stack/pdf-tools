@@ -1,4 +1,5 @@
 "use client";
+import BlogToolCta from "@/components/BlogToolCta";
 import Link from "next/link";
 import ArticleJsonLd from "@/components/ArticleJsonLd";
 import HowToJsonLd from "@/components/HowToJsonLd";
@@ -19,6 +20,7 @@ export default function AutomatePDFWorkflowPost() {
         <Link href="/blog" className="text-sm text-indigo-500 hover:underline mb-6 inline-block">&larr; Back to blog</Link>
         <h1 className="text-3xl font-bold text-[var(--foreground)] mb-3">How to Automate PDF Workflows</h1>
         <p className="text-xs text-[var(--muted)] mb-6">June 27, 2026 · 6 min read</p>
+        <BlogToolCta slug="automate-pdf-workflow" variant="top" />
 
         <p className="text-sm text-[var(--muted)] mb-4">If you regularly process PDFs — compressing reports, watermarking documents, renaming files by metadata — you know how repetitive it can be. PDF automation tools can save you hours each week by handling these tasks in bulk.</p>
 
@@ -84,7 +86,8 @@ export default function AutomatePDFWorkflowPost() {
           <p className="text-sm text-white/80 mb-4">Batch process, bulk rename, and generate certificates — all free, all in your browser.</p>
           <Link href="/batch" className="inline-block px-6 py-3 bg-white text-indigo-600 font-medium rounded-xl hover:bg-white/90 transition">Try Batch Processing →</Link>
         </div>
-      </div>
+        <BlogToolCta slug="automate-pdf-workflow" variant="bottom" />
+</div>
     </>
   );
 }

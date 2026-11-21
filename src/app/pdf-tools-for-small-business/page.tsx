@@ -13,7 +13,7 @@ const bizTools = [
   {
     category: "📄 Documents & Contracts",
     items: [
-      { href: "/word-to-pdf", label: "Word to PDF", desc: "Convert contracts and proposals to PDF", link: "/for/word-to-pdf-small-business-owners" },
+      { href: "/word-to-pdf", label: "Word to PDF", desc: "Convert contracts and proposals to PDF", link: "/for/merge-pdf-small-business-owners" },
       { href: "/merge", label: "Merge PDFs", desc: "Combine contracts, invoices, and receipts", link: "/for/merge-pdf-small-business-owners" },
       { href: "/split", label: "Split PDF", desc: "Extract individual pages from documents", link: "/for/split-pdf-small-business-owners" },
       { href: "/pdf-to-word", label: "PDF to Word", desc: "Edit text in received contracts" },
@@ -106,6 +106,31 @@ export default function PDFToolsForSmallBizPage() {
           </section>
         ))}
 
+
+        {/* Realistic profession workflow */}
+        <section className="mb-12">
+          <h2 className="text-xl font-bold text-[var(--foreground)] mb-2">A realistic month for a small business</h2>
+          <p className="text-sm text-[var(--muted)] mb-5">Small-business paperwork runs on a monthly rhythm, and the same bundle gets rebuilt every cycle:</p>
+          <div className="grid gap-3">
+              <div className="p-4 rounded-xl border border-[var(--card-border)] bg-[var(--card)]">
+                <h3 className="font-semibold text-sm text-[var(--foreground)] mb-1">First of the month</h3>
+                <p className="text-sm text-[var(--muted)] leading-relaxed">Merge a month of supplier invoices into one bookkeeping file ordered by date, and keep the unmodified scans alongside it for audit.</p>
+              </div>
+              <div className="p-4 rounded-xl border border-[var(--card-border)] bg-[var(--card)]">
+                <h3 className="font-semibold text-sm text-[var(--foreground)] mb-1">Mid-month</h3>
+                <p className="text-sm text-[var(--muted)] leading-relaxed">Password-protect payroll and contract files before emailing them; share the password by phone, never in the same message.</p>
+              </div>
+              <div className="p-4 rounded-xl border border-[var(--card-border)] bg-[var(--card)]">
+                <h3 className="font-semibold text-sm text-[var(--foreground)] mb-1">Quarter end</h3>
+                <p className="text-sm text-[var(--muted)] leading-relaxed">Extract statement tables to CSV with PDF to CSV, reconcile totals against the source, then compress the final submission copy.</p>
+              </div>
+          </div>
+          <div className="mt-4 rounded-xl border border-amber-300/60 bg-amber-50/70 dark:bg-amber-950/20 p-4">
+            <p className="text-sm text-[var(--muted)] leading-relaxed">
+              <strong className="text-[var(--foreground)]">Watch out:</strong> Accountants usually need originals retained for years — compress a copy for sending, never the only record you keep.
+            </p>
+          </div>
+        </section>
 
         {/* FAQ */}
         <section className="mb-12">

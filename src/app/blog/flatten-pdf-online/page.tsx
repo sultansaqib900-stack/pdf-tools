@@ -1,3 +1,4 @@
+import BlogToolCta from "@/components/BlogToolCta";
 import { buildMetadata } from "@/lib/seo";
 import type { Metadata } from "next";
 
@@ -25,6 +26,7 @@ export default function BlogPost() {
       <a href="/blog" className="text-sm text-indigo-500 hover:underline mb-6 inline-block">&larr; Back to blog</a>
       <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">How to Flatten a PDF Online Free</h1>
       <p className="text-sm text-[var(--muted)] mb-8">4 min read · Updated June 2026</p>
+      <BlogToolCta slug="flatten-pdf-online" variant="top" />
 
       <div className="text-sm text-[var(--muted)] space-y-5 leading-relaxed">
         <p>Flattening a PDF makes form fields, annotations, signatures, and layers permanent by merging them into the page content. Once flattened, the content cannot be edited. Our <a href="/flatten-pdf" className="text-indigo-500 underline">free PDF flatten tool</a> lets you <strong>flatten a PDF online</strong> instantly — all in your browser, no uploads, no signup.</p>
@@ -67,6 +69,7 @@ export default function BlogPost() {
           <a href="/flatten-pdf" className="inline-block px-5 py-2.5 bg-indigo-600 text-white font-medium rounded-xl text-sm hover:bg-indigo-700 transition">Flatten Your PDF Now →</a>
         </div>
       </div>
-    </article>
+      <BlogToolCta slug="flatten-pdf-online" variant="bottom" />
+</article>
   );
 }

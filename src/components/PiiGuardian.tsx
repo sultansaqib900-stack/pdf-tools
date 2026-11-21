@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useCallback, useEffect } from "react";
-import { registerAdTask } from "@/lib/ads";
 import { scanPdfForPii, redactSelectedPii, type PiiMatch, type PiiType } from "@/lib/piiScanner";
 import PipelineActionBar from "@/components/PipelineActionBar";
 import { getPipelineDocument } from "@/lib/pdfPipeline";
@@ -75,7 +74,6 @@ export default function PiiGuardian({ initialFile, onRedactionComplete }: PiiGua
 
       setMatches(result.matches);
       setScanned(true);
-      registerAdTask();
     } catch {
       setError("Failed to scan document. The PDF might be password protected or damaged.");
     } finally {
@@ -122,7 +120,6 @@ export default function PiiGuardian({ initialFile, onRedactionComplete }: PiiGua
       a.click();
 
       setSuccessMessage(`Successfully redacted ${selected.length} sensitive items permanently.`);
-      registerAdTask();
       onRedactionComplete?.(outputBytes, outName);
     } catch {
       setError("Failed to apply redactions to the PDF.");

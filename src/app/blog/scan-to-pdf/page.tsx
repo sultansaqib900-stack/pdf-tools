@@ -1,3 +1,4 @@
+import BlogToolCta from "@/components/BlogToolCta";
 import { buildMetadata } from "@/lib/seo";
 import type { Metadata } from "next";
 export const metadata: Metadata = buildMetadata({
@@ -18,6 +19,7 @@ export default function BlogPost() {
       <a href="/blog" className="text-sm text-indigo-500 hover:underline mb-6 inline-block">&larr; Back to blog</a>
       <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">How to Scan Documents to PDF Using Your Camera Online Free</h1>
       <p className="text-sm text-[var(--muted)] mb-8">4 min read · Updated June 2026</p>
+      <BlogToolCta slug="scan-to-pdf" variant="top" />
       <div className="text-sm text-[var(--muted)] space-y-5 leading-relaxed">
         <p>Turn your device into a portable document scanner with our <a href="/scan-to-pdf" className="text-indigo-500 underline">free online Scan to PDF tool</a>. Capture receipts, contracts, handwritten notes, or whiteboard sketches and convert them instantly to PDF — all within your browser with zero uploads.</p>
         <h2 className="text-xl font-bold text-[var(--foreground)] pt-4">Why Scan to PDF?</h2>
@@ -36,6 +38,7 @@ export default function BlogPost() {
           <li>Free to use with no watermarks or hidden fees</li>
         </ul>
       </div>
-    </article>
+      <BlogToolCta slug="scan-to-pdf" variant="bottom" />
+</article>
   );
 }

@@ -43,7 +43,7 @@ export default function EsHomePage() {
     <>
       <SoftwareAppJsonLd
         name="PDFTools - Herramientas PDF Gratuitas"
-        description="Más de 40 herramientas PDF gratuitas. Todo en tu navegador."
+        description="38 herramientas PDF gratuitas y 14 herramientas profesionales. Todo en tu navegador, sin anuncios."
         url="https://allaboutpdfediting.xyz/es"
         image="https://allaboutpdfediting.xyz/opengraph-image"
       />
@@ -57,8 +57,8 @@ export default function EsHomePage() {
             Herramientas <span className="text-indigo-500">PDF</span> Gratuitas
           </h1>
           <p className="text-lg sm:text-xl text-[var(--muted)] max-w-2xl mx-auto mb-8">
-            Más de 40 herramientas PDF gratuitas. Comprime, une, divide, edita y más. 
-            Todo en tu navegador — sin subidas, sin servidores.
+            38 herramientas PDF gratuitas y 14 profesionales. Comprime, une, divide, edita y más.
+            Todo en tu navegador — sin subidas, sin anuncios, sin servidores.
           </p>
           <div className="flex flex-wrap justify-center gap-4">
             <Link
@@ -115,7 +115,7 @@ export default function EsHomePage() {
           <div className="p-6 rounded-xl border border-[var(--card-border)] bg-[var(--card)]">
             <div className="text-3xl mb-3">🆓</div>
             <h3 className="font-semibold text-[var(--foreground)] mb-2">Gratis</h3>
-            <p className="text-sm text-[var(--muted)]">Más de 40 herramientas gratuitas. Sin registro, sin tarjeta de crédito.</p>
+            <p className="text-sm text-[var(--muted)]">38 herramientas gratuitas y sin límites. Sin registro, sin publicidad, sin tarjeta de crédito.</p>
           </div>
         </div>
       </section>

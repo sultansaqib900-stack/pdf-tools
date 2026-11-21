@@ -1,3 +1,4 @@
+import BlogToolCta from "@/components/BlogToolCta";
 import { buildMetadata } from "@/lib/seo";
 import type { Metadata } from "next";
 
@@ -23,6 +24,7 @@ export default function BlogPost() {
       <a href="/blog" className="text-sm text-indigo-500 hover:underline mb-6 inline-block">&larr; Back to blog</a>
       <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">PDF vs Image: When to Use Each Format</h1>
       <p className="text-sm text-[var(--muted)] mb-8">6 min read · Updated June 2026</p>
+      <BlogToolCta slug="pdf-vs-image" variant="top" />
 
       <div className="text-sm text-[var(--muted)] space-y-5 leading-relaxed">
         <p>One of the most common questions we hear is: "Should I use PDF or JPG/PNG for this document?" The answer depends on what you're trying to do. Each format has strengths, and knowing the difference helps you choose the right one — and our free <a href="/image-to-pdf" className="text-indigo-500 underline">Image to PDF</a> and <a href="/pdf-to-images" className="text-indigo-500 underline">PDF to Images</a> tools let you switch between them instantly.</p>
@@ -92,6 +94,7 @@ export default function BlogPost() {
           </div>
         </div>
       </div>
-    </article>
+      <BlogToolCta slug="pdf-vs-image" variant="bottom" />
+</article>
   );
 }

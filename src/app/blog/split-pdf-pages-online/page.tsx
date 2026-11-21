@@ -1,3 +1,4 @@
+import BlogToolCta from "@/components/BlogToolCta";
 import { buildMetadata } from "@/lib/seo";
 import type { Metadata } from "next";
 export const metadata: Metadata = buildMetadata({
@@ -18,6 +19,7 @@ export default function BlogPost() {
       <a href="/blog" className="text-sm text-indigo-500 hover:underline mb-6 inline-block">&larr; Back to blog</a>
       <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">How to Split PDF Pages Online Free — Extract Specific Pages</h1>
       <p className="text-sm text-[var(--muted)] mb-8">5 min read · Updated June 2026</p>
+      <BlogToolCta slug="split-pdf-pages-online" variant="top" />
       <div className="text-sm text-[var(--muted)] space-y-5 leading-relaxed">
         <p>Need to extract certain pages from a large PDF or split a document into individual pages? Our free <a href="/split" className="text-indigo-500 underline">Split PDF tool</a> lets you do exactly that — all in your browser, no uploads, no signup.</p>
 
@@ -82,6 +84,7 @@ export default function BlogPost() {
           <li><a href="/split" className="text-indigo-500 underline">Split PDF</a> — Extract pages or split into separate files</li>
         </ul>
       </div>
-    </article>
+      <BlogToolCta slug="split-pdf-pages-online" variant="bottom" />
+</article>
   );
 }

@@ -1,3 +1,4 @@
+import BlogToolCta from "@/components/BlogToolCta";
 import Link from "next/link";
 import ArticleJsonLd from "@/components/ArticleJsonLd";
 import HowToJsonLd from "@/components/HowToJsonLd";
@@ -17,6 +18,7 @@ export default function BlogPost() {
       <Link href="/blog" className="text-sm text-indigo-500 hover:underline mb-6 inline-block">&larr; Back to blog</Link>
       <h1 className="text-3xl font-bold text-[var(--foreground)] mb-3">How to Convert Text to PDF Online Free (No Software Needed)</h1>
       <p className="text-sm text-[var(--muted)] mb-8">June 24, 2026 &middot; 3 min read</p>
+      <BlogToolCta slug="text-to-pdf-converter" variant="top" />
 
       <div className="text-[var(--muted)] space-y-4 leading-relaxed">
         <p>Need to turn a block of text into a polished PDF document? Whether it's notes, a letter, a script, or a report, converting text to PDF preserves formatting and makes your content look professional on any device.</p>
@@ -48,6 +50,7 @@ export default function BlogPost() {
 
         <p className="pt-4">Try the <Link href="/text-to-pdf" className="text-indigo-500 font-medium hover:underline">free online text to PDF converter</Link> now.</p>
       </div>
-    </article>
+      <BlogToolCta slug="text-to-pdf-converter" variant="bottom" />
+</article>
   );
 }

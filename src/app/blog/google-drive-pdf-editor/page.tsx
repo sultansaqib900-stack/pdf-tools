@@ -1,4 +1,5 @@
 "use client";
+import BlogToolCta from "@/components/BlogToolCta";
 import Link from "next/link";
 import ArticleJsonLd from "@/components/ArticleJsonLd";
 import HowToJsonLd from "@/components/HowToJsonLd";
@@ -19,6 +20,7 @@ export default function GoogleDrivePDFPost() {
         <Link href="/blog" className="text-sm text-indigo-500 hover:underline mb-6 inline-block">&larr; Back to blog</Link>
         <h1 className="text-3xl font-bold text-[var(--foreground)] mb-3">How to Edit PDFs from Google Drive</h1>
         <p className="text-xs text-[var(--muted)] mb-6">June 27, 2026 · 4 min read</p>
+        <BlogToolCta slug="google-drive-pdf-editor" variant="top" />
 
         <p className="text-sm text-[var(--muted)] mb-4">Many of us store PDFs in Google Drive but struggle to edit them without downloading, uploading to another service, and re-uploading. With <Link href="/" className="text-indigo-500 underline">PDFTools</Link>, you can process PDFs from Google Drive seamlessly — all in your browser, no server uploads.</p>
 
@@ -76,7 +78,8 @@ export default function GoogleDrivePDFPost() {
           <p className="text-sm text-white/80 mb-4">No signup, no uploads to servers. Works with files from Google Drive or anywhere.</p>
           <Link href="/" className="inline-block px-6 py-3 bg-white text-indigo-600 font-medium rounded-xl hover:bg-white/90 transition">Browse PDF Tools →</Link>
         </div>
-      </div>
+        <BlogToolCta slug="google-drive-pdf-editor" variant="bottom" />
+</div>
     </>
   );
 }

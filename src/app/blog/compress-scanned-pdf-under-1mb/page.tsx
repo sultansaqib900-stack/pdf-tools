@@ -1,3 +1,4 @@
+import BlogToolCta from "@/components/BlogToolCta";
 import Link from "next/link";
 import ArticleJsonLd from "@/components/ArticleJsonLd";
 import Breadcrumbs from "@/components/Breadcrumbs";
@@ -24,6 +25,7 @@ export default function CompressScannedPdfUnder1Mb() {
       <Link href="/blog" className="text-indigo-500 hover:underline mb-6 inline-block">&larr; Back to blog</Link>
       <h1 className="text-3xl font-bold text-[var(--foreground)] mb-3">{title}</h1>
       <p className="text-xs text-[var(--muted)] mb-7">By Saqib · Published September 28, 2026 · 6 min read</p>
+      <BlogToolCta slug="compress-scanned-pdf-under-1mb" variant="top" />
 
       <p className="mb-5">A scanned PDF is usually a stack of page images, so its size depends on image resolution, color, page count, and how the scanner encoded each picture. Getting it below 1 MB is possible for some files, but no compressor can promise the same result for every scan without making the pages harder to read. Keep an untouched copy, check the upload portal&apos;s exact limit, and judge the output at normal reading size.</p>
 
@@ -63,6 +65,7 @@ export default function CompressScannedPdfUnder1Mb() {
       </div>
 
       <p className="mt-7">Related guide: <Link href="/blog/how-to-compress-pdf" className="text-indigo-500 underline">How to compress a PDF</Link>.</p>
-    </article>
+      <BlogToolCta slug="compress-scanned-pdf-under-1mb" variant="bottom" />
+</article>
   );
 }

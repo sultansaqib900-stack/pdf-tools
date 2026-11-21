@@ -59,7 +59,7 @@ export default function ComparisonPage() {
 
       <div className="bg-indigo-50 dark:bg-indigo-950/20 border border-indigo-200 dark:border-indigo-800 rounded-xl p-6 mb-10">
         <h2 className="text-xl font-bold text-[var(--foreground)] mb-2">🏆 Winner: PDFTools</h2>
-        <p className="text-sm text-[var(--muted)] mb-4">PDFTools is the only tool that combines completely free usage, zero server uploads, no signup requirement, and generous 10MB file limits. All 24+ tools work entirely in your browser using WebAssembly. Your files never leave your device.</p>
+        <p className="text-sm text-[var(--muted)] mb-4">PDFTools is the only tool that combines completely free usage, zero server uploads, no signup requirement, and generous 10MB file limits. All 38 free core tools work entirely in your browser using WebAssembly. Your files never leave your device.</p>
         <Link href="/" className="inline-block px-5 py-2.5 bg-indigo-600 text-white font-medium rounded-xl text-sm hover:bg-indigo-700 transition">Try PDFTools Free →</Link>
       </div>
 
@@ -75,7 +75,7 @@ export default function ComparisonPage() {
           <p className="text-sm text-[var(--muted)]">No free trial, no credit card, no "2 free files per day" limit. All basic tools are completely free with a 10MB file limit. Premium removes usage limits and unlocks advanced workflows for users who want more.</p>
         </div>
         <div className="border border-[var(--card-border)] rounded-xl p-5">
-          <h3 className="font-semibold mb-2 text-[var(--foreground)]">24+ Tools, One Site</h3>
+          <h3 className="font-semibold mb-2 text-[var(--foreground)]">38 Core Tools, One Site</h3>
           <p className="text-sm text-[var(--muted)]">Compress, merge, split, convert, edit, sign, protect, unlock, and now chat with PDFs using AI. Everything on one site — no jumping between different tools.</p>
         </div>
         <div className="border border-[var(--card-border)] rounded-xl p-5">

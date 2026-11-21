@@ -1,3 +1,4 @@
+import BlogToolCta from "@/components/BlogToolCta";
 import { buildMetadata } from "@/lib/seo";
 import type { Metadata } from "next";
 export const metadata: Metadata = buildMetadata({
@@ -18,6 +19,7 @@ export default function BlogPost() {
       <a href="/blog" className="text-sm text-indigo-500 hover:underline mb-6 inline-block">&larr; Back to blog</a>
       <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">How to Convert PDF to Excel Online Free</h1>
       <p className="text-sm text-[var(--muted)] mb-8">5 min read · Updated June 2026</p>
+      <BlogToolCta slug="convert-pdf-to-excel" variant="top" />
       <div className="text-sm text-[var(--muted)] space-y-5 leading-relaxed">
         <p>PDF is the standard format for distributing reports, financial statements, and data-heavy documents. But when you need to analyze the numbers, edit tables, or repurpose the data, you need Excel. Our <a href="/pdf-to-excel" className="text-indigo-500 underline">free PDF to Excel converter</a> extracts tables and data from PDFs and converts them into editable .xlsx files.</p>
 
@@ -44,6 +46,7 @@ export default function BlogPost() {
           <a href="/pdf-to-excel" className="inline-block px-5 py-2.5 bg-indigo-600 text-white font-medium rounded-xl text-sm hover:bg-indigo-700 transition">Convert Now →</a>
         </div>
       </div>
-    </article>
+      <BlogToolCta slug="convert-pdf-to-excel" variant="bottom" />
+</article>
   );
 }

@@ -1,4 +1,5 @@
 "use client";
+import BlogToolCta from "@/components/BlogToolCta";
 import ArticleJsonLd from "@/components/ArticleJsonLd";
 import PremiumUpgradeBox from "@/components/PremiumUpgradeBox";
 import HowToJsonLd from "@/components/HowToJsonLd";
@@ -18,6 +19,7 @@ export default function BlogPost() {
       <a href="/blog" className="text-sm text-indigo-500 hover:underline mb-6 inline-block">&larr; Back to blog</a>
       <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">How to Create a PDF Booklet for Printing Online Free</h1>
       <p className="text-sm text-[var(--muted)] mb-8">5 min read · Updated June 2026</p>
+      <BlogToolCta slug="create-pdf-booklet" variant="top" />
 
       <div className="text-sm text-[var(--muted)] space-y-5 leading-relaxed">
         <p>Printing a standard PDF wastes a lot of paper — one page per sheet, leaving the other half blank. A <strong>PDF booklet creator</strong> rearranges pages so that multiple logical pages fit on each physical sheet, saving paper and creating professional-looking booklets, zines, and handouts.</p>
@@ -60,6 +62,7 @@ export default function BlogPost() {
           toolName="Booklet Creator"
         />
       </div>
-    </article>
+      <BlogToolCta slug="create-pdf-booklet" variant="bottom" />
+</article>
   );
 }

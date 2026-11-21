@@ -2,6 +2,7 @@ import { buildMetadata } from "@/lib/seo";
 import Link from "next/link";
 import type { Metadata } from "next";
 import Breadcrumbs from "@/components/Breadcrumbs";
+import FaqPageJsonLd from "@/components/FaqPageJsonLd";
 
 export const metadata: Metadata = buildMetadata({
   path: "/pdf-tools-for-business",
@@ -12,6 +13,15 @@ export default function PDFToolsForBusinessPage() {
   return (
     <div className="max-w-4xl mx-auto px-4 py-12">
       <Breadcrumbs items={[{ name: "Home", item: "https://allaboutpdfediting.xyz" }, { name: "Tools", item: "https://allaboutpdfediting.xyz/tools" }, { name: "PDF Tools for Business", item: "https://allaboutpdfediting.xyz/pdf-tools-for-business" }]} />
+      <FaqPageJsonLd
+        questions={[
+          { question: "How do I keep a board pack under the email attachment limit?", answer: "Merge the reports into one PDF, then compress that merged file. Corporate mail gateways typically cap attachments well below what a local file can be, so check the downloaded size against your IT limit." },
+          { question: "Is it safe to process confidential reports in a browser?", answer: "Core tools process the file locally, so the document is not uploaded. The exception is opting into an AI feature, which sends extracted text or rendered page images to the AI service." },
+          { question: "Can we track what changed between two contract versions?", answer: "Yes. PDF Diff renders both versions and reports extracted-text additions and deletions so a reviewer can see what actually moved between revisions." },
+          { question: "Do we need a subscription to protect client contracts?", answer: "No. Password Protect is a core tool and encrypts without an account. Premium adds larger file limits, batch processing, and the professional workflow suite." },
+          { question: "Can I strip metadata before sending a document externally?", answer: "The free Metadata Editor clears title, author, subject, and keywords. Metadata Sanitizer additionally removes annotations, embedded files, and scripting, and is a professional tool." },
+        ]}
+      />
       <h1 className="text-3xl font-bold text-[var(--foreground)] mb-3">PDF Tools for Business</h1>
       <p className="text-[var(--muted)] mb-8">Professional PDF tools for businesses of all sizes. Compress, merge, sign, protect, and edit documents — all client-side with zero server uploads. Your confidential business documents never leave your computer.</p>
 
@@ -60,6 +70,53 @@ export default function PDFToolsForBusinessPage() {
         </div>
       </div>
 
+
+      <div className="space-y-6 mb-10">
+        <h2 className="text-xl font-bold text-[var(--foreground)]">How a document workflow actually runs</h2>
+        <p className="text-sm text-[var(--muted)]">Most business document problems are assembly problems, not editing problems:</p>
+        <div className="grid gap-3">
+          <div className="p-4 rounded-xl border border-[var(--card-border)] bg-[var(--card)]">
+            <h3 className="font-semibold text-sm text-[var(--foreground)] mb-1">Board pack</h3>
+            <p className="text-sm text-[var(--muted)] leading-relaxed">Four team reports arrive in four layouts. Merge them in agenda order, then add page numbers so a discussion can reference &quot;pack page 14&quot;.</p>
+          </div>
+          <div className="p-4 rounded-xl border border-[var(--card-border)] bg-[var(--card)]">
+            <h3 className="font-semibold text-sm text-[var(--foreground)] mb-1">Contract cycle</h3>
+            <p className="text-sm text-[var(--muted)] leading-relaxed">PDF Diff compares the returned redline against the version you sent, so negotiation changes are actually reviewed instead of skimmed.</p>
+          </div>
+          <div className="p-4 rounded-xl border border-[var(--card-border)] bg-[var(--card)]">
+            <h3 className="font-semibold text-sm text-[var(--foreground)] mb-1">Client hand-off</h3>
+            <p className="text-sm text-[var(--muted)] leading-relaxed">Watermark drafts, password-protect signed finals, and strip metadata before anything goes to an external recipient.</p>
+          </div>
+        </div>
+        <div className="rounded-xl border border-amber-300/60 bg-amber-50/70 dark:bg-amber-950/20 p-4">
+          <p className="text-sm text-[var(--muted)] leading-relaxed">
+            <strong className="text-[var(--foreground)]">Watch out:</strong> merge first and compress last — one compressed pack is smaller than several compressed sections merged afterwards.
+          </p>
+        </div>
+      </div>
+
+      <section className="mb-10">
+        <h2 className="text-xl font-bold text-[var(--foreground)] mb-4">Common Questions</h2>
+        <div className="space-y-2">
+          {
+            [
+              { q: "How do I keep a board pack under the email attachment limit?", a: "Merge the reports into one PDF, then compress that merged file. Corporate mail gateways typically cap attachments well below what a local file can be, so check the downloaded size against your IT limit." },
+              { q: "Is it safe to process confidential reports in a browser?", a: "Core tools process the file locally, so the document is not uploaded. The exception is opting into an AI feature, which sends extracted text or rendered page images to the AI service." },
+              { q: "Can we track what changed between two contract versions?", a: "Yes. PDF Diff renders both versions and reports extracted-text additions and deletions so a reviewer can see what actually moved between revisions." },
+              { q: "Do we need a subscription to protect client contracts?", a: "No. Password Protect is a core tool and encrypts without an account. Premium adds larger file limits, batch processing, and the professional workflow suite." },
+              { q: "Can I strip metadata before sending a document externally?", a: "The free Metadata Editor clears title, author, subject, and keywords. Metadata Sanitizer additionally removes annotations, embedded files, and scripting, and is a professional tool." },
+            ].map((faq) => (
+              <details key={faq.q} className="group rounded-xl border border-[var(--card-border)] bg-[var(--card)] open:shadow-sm">
+                <summary className="flex items-center justify-between px-5 py-3.5 cursor-pointer text-sm font-medium text-[var(--foreground)] hover:text-indigo-600 transition-colors">
+                  {faq.q}
+                  <svg className="w-4 h-4 text-[var(--muted)] group-open:rotate-180 transition-transform shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
+                </summary>
+                <div className="px-5 pb-4 text-sm text-[var(--muted)] leading-relaxed">{faq.a}</div>
+              </details>
+            ))
+          }
+        </div>
+      </section>
 
       <div className="bg-indigo-50 dark:bg-indigo-950/20 border-2 border-indigo-500 rounded-xl p-6 text-center">
         <h2 className="text-xl font-bold text-[var(--foreground)] mb-2">Business-Ready PDF Tools</h2>

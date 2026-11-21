@@ -7,7 +7,7 @@ import FaqPageJsonLd from "@/components/FaqPageJsonLd";
 export const metadata: Metadata = buildMetadata({
   path: "/pdf-tools-for-students",
   title: "Free PDF Tools for College Students — Compress, Merge, Edit & More",
-  description: "12 free PDF tools every student needs. Compress lecture slides for email, merge research papers, convert assignments to PDF, extract text from scanned textbooks, and more. Zero signup, 100% browser-based.",
+  description: "12 free PDF tools every student needs. Compress lecture slides for email, merge research papers, convert assignments to PDF, extract text from scanned textbooks, and more. Zero signup, no advertising, 100% browser-based.",
 });
 const studentTools = [
   {
@@ -83,10 +83,10 @@ export default function PDFToolsForStudentsPage() {
         {/* Stats */}
         <section className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-12">
           {[
-            { number: "12", label: "Free Tools", desc: "Compress, merge, split, OCR, AI chat & more" },
+            { number: "0", label: "Ad Scripts", desc: "No advertising networks anywhere on the site" },
             { number: "40-80%", label: "Compression", desc: "Reduce PDF size without quality loss" },
-            { number: "0", label: "Uploads", desc: "Everything runs in your browser" },
-            { number: "451", label: "Pages Indexed", desc: "150+ tools & guides, 300+ use-case pages" },
+            { number: "12", label: "Student Recipes", desc: "Tap a task list built for coursework" },
+            { number: "38", label: "Core PDF Tools", desc: "All free, unlimited, and in-browser" },
           ].map((s) => (
             <div key={s.label} className="p-4 rounded-xl border border-[var(--card-border)] bg-[var(--card)] text-center">
               <div className="text-2xl font-bold text-indigo-500">{s.number}</div>
@@ -154,6 +154,31 @@ export default function PDFToolsForStudentsPage() {
                 </div>
               </div>
             ))}
+          </div>
+        </section>
+
+        {/* Realistic profession workflow */}
+        <section className="mb-12">
+          <h2 className="text-xl font-bold text-[var(--foreground)] mb-2">A realistic semester workflow</h2>
+          <p className="text-sm text-[var(--muted)] mb-5">The same four steps solve most student document problems:</p>
+          <div className="grid gap-3">
+              <div className="p-4 rounded-xl border border-[var(--card-border)] bg-[var(--card)]">
+                <h3 className="font-semibold text-sm text-[var(--foreground)] mb-1">Week 1</h3>
+                <p className="text-sm text-[var(--muted)] leading-relaxed">Compress a 20MB slide deck to something the course portal accepts, keeping the readable copy for revision.</p>
+              </div>
+              <div className="p-4 rounded-xl border border-[var(--card-border)] bg-[var(--card)]">
+                <h3 className="font-semibold text-sm text-[var(--foreground)] mb-1">Mid-term</h3>
+                <p className="text-sm text-[var(--muted)] leading-relaxed">Split a textbook PDF into the assigned chapters instead of carrying a 600-page file on a phone.</p>
+              </div>
+              <div className="p-4 rounded-xl border border-[var(--card-border)] bg-[var(--card)]">
+                <h3 className="font-semibold text-sm text-[var(--foreground)] mb-1">Submission week</h3>
+                <p className="text-sm text-[var(--muted)] leading-relaxed">Merge the report and appendix into one PDF, then convert phone photos of handwritten pages with Image to PDF.</p>
+              </div>
+          </div>
+          <div className="mt-4 rounded-xl border border-amber-300/60 bg-amber-50/70 dark:bg-amber-950/20 p-4">
+            <p className="text-sm text-[var(--muted)] leading-relaxed">
+              <strong className="text-[var(--foreground)]">Watch out:</strong> Keep a master copy of every submission: portals reject files, deadlines move, and a compressed copy is not an archive.
+            </p>
           </div>
         </section>
 

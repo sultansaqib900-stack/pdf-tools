@@ -1,4 +1,5 @@
 "use client";
+import BlogToolCta from "@/components/BlogToolCta";
 import Link from "next/link";
 import ArticleJsonLd from "@/components/ArticleJsonLd";
 import HowToJsonLd from "@/components/HowToJsonLd";
@@ -14,6 +15,7 @@ export default function HowToMergePDF() {
         <Link href="/blog" className="text-sm text-indigo-500 hover:underline mb-6 inline-block">&larr; Back to blog</Link>
         <h1 className="text-3xl font-bold text-[var(--foreground)] mb-3">How to Merge PDFs</h1>
         <p className="text-xs text-[var(--muted)] mb-6">June 27, 2026 · 4 min read</p>
+        <BlogToolCta slug="how-to-merge-pdf" variant="top" />
         <p className="text-sm text-[var(--muted)] mb-4">Merging PDFs combines multiple documents into one organized file. Whether you&apos;re combining invoices, merging scanned pages, or compiling a report, <Link href="/merge" className="text-indigo-500 underline">PDFTools Merge</Link> makes it simple.</p>
 
         <h2 className="text-xl font-bold text-[var(--foreground)] mb-3 mt-8">Step-by-Step: Merge PDFs</h2>
@@ -68,7 +70,8 @@ export default function HowToMergePDF() {
           <p className="text-sm text-white/80 mb-4">No uploads, no signup, works entirely in your browser.</p>
           <Link href="/merge" className="inline-block px-6 py-3 bg-white text-indigo-600 font-medium rounded-xl hover:bg-white/90 transition">Merge PDFs Now →</Link>
         </div>
-      </div>
+        <BlogToolCta slug="how-to-merge-pdf" variant="bottom" />
+</div>
     </>
   );
 }

@@ -1,4 +1,5 @@
 "use client";
+import BlogToolCta from "@/components/BlogToolCta";
 import ArticleJsonLd from "@/components/ArticleJsonLd";
 import PremiumUpgradeBox from "@/components/PremiumUpgradeBox";
 import HowToJsonLd from "@/components/HowToJsonLd";
@@ -18,6 +19,7 @@ export default function BlogPost() {
       <a href="/blog" className="text-sm text-indigo-500 hover:underline mb-6 inline-block">&larr; Back to blog</a>
       <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">How to Bulk Rename PDF Files by Metadata Online Free</h1>
       <p className="text-sm text-[var(--muted)] mb-8">4 min read · Updated June 2026</p>
+      <BlogToolCta slug="bulk-rename-pdf-files" variant="top" />
 
       <div className="text-sm text-[var(--muted)] space-y-5 leading-relaxed">
         <p>Have a folder full of PDFs with names like <code>document (3).pdf</code> or <code>scan001.pdf</code>? Manually renaming each file — opening it, checking the title, typing a new name — is tedious. A <strong>bulk PDF renamer</strong> reads the embedded metadata from each file and renames them automatically based on patterns you define.</p>
@@ -63,6 +65,7 @@ export default function BlogPost() {
           toolName="Bulk Rename"
         />
       </div>
-    </article>
+      <BlogToolCta slug="bulk-rename-pdf-files" variant="bottom" />
+</article>
   );
 }

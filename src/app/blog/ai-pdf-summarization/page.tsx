@@ -1,4 +1,5 @@
 "use client";
+import BlogToolCta from "@/components/BlogToolCta";
 import Link from "next/link";
 import ArticleJsonLd from "@/components/ArticleJsonLd";
 import HowToJsonLd from "@/components/HowToJsonLd";
@@ -19,6 +20,7 @@ export default function AIPDFSummarizationPost() {
         <Link href="/blog" className="text-sm text-indigo-500 hover:underline mb-6 inline-block">&larr; Back to blog</Link>
         <h1 className="text-3xl font-bold text-[var(--foreground)] mb-3">How to Summarize PDFs with AI</h1>
         <p className="text-xs text-[var(--muted)] mb-6">June 27, 2026 · 5 min read</p>
+        <BlogToolCta slug="ai-pdf-summarization" variant="top" />
 
         <p className="text-sm text-[var(--muted)] mb-4">Reading long PDF documents takes time — time you could spend acting on the information. AI-powered PDF summarization changes this. With tools like <Link href="/chat-pdf" className="text-indigo-500 underline">PDFTools Chat with PDF</Link>, you can upload any document and get a concise summary in seconds.</p>
 
@@ -79,7 +81,8 @@ export default function AIPDFSummarizationPost() {
           <p className="text-sm text-white/80 mb-4">Upload any PDF and get an instant AI summary. No signup required.</p>
           <Link href="/chat-pdf" className="inline-block px-6 py-3 bg-white text-indigo-600 font-medium rounded-xl hover:bg-white/90 transition">Chat with Your PDF →</Link>
         </div>
-      </div>
+        <BlogToolCta slug="ai-pdf-summarization" variant="bottom" />
+</div>
     </>
   );
 }

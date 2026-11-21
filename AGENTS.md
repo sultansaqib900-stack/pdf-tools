@@ -4,16 +4,25 @@ Build premium-only PDF features, redesign UI to make them visible, apply compreh
 ## Constraints & Preferences
 - 100% client-side processing (no file uploads to server)
 - Premium tier via LemonSqueezy payments
-- Ads: Monetag vignette banners for free users only (see below). Premium members never see ads.
+- Advertising: none. The site serves zero advertising and loads no ad-network scripts, third-party ad tags, or ad service workers.
 - Deployed on Vercel at allaboutpdfediting.xyz (custom domain live — verified 200 on all premium pages)
 
 ## Progress
-### Monetag vignette ads (2026-09-22)
-- `src/lib/monetag.ts` holds the vignette script URL and zone copied from `src/tag.txt` (`NEXT_PUBLIC_MONETAG_VIGNETTE_SRC` / `NEXT_PUBLIC_MONETAG_VIGNETTE_ZONE` can override them). `src/lib/ads.ts` implements the schedule; `src/components/AdManager.tsx` wires it into the root layout (inside `EmbedModeDetector`, so `?embed=1` stays ad-free).
-- Schedule: first vignette 5s after page open, then one immediately per every 3 completed tool tasks (finished exports/results, Studio steps, and answered chat questions).
-- Ads wait for the server-verified Premium snapshot. A member who upgrades mid-session has the injected tag removed immediately and all pending ads cancelled.
-- CSP in `src/app/layout.tsx` allows the Monetag serving domains in `script-src`.
-- Tests: `src/__tests__/ads.test.ts` (timing, task cadence, premium suppression).
+
+### Content consistency + SEO conversion pass (2026-11-21)
+- **Single source of truth for site facts**: `src/lib/site.ts` derives `CORE_TOOL_COUNT` (38) and `PROFESSIONAL_TOOL_COUNT` (14) from `toolCatalog.ts` and holds the advertising policy, footer trust line, and file-limit labels. Pages no longer hard-code "29", "13", "51", "40+", or "24+" tools.
+- **Blog → tool conversion**: every `/blog/*` article now renders `<BlogToolCta slug="…" variant="top" />` under its title/byline and `<BlogToolCta slug="…" variant="bottom" />` at the end. The slug→route map lives in `src/lib/blog-tools.ts` (53 entries); `src/__tests__/blogToolCta.test.ts` proves every post has a mapping and every mapped route exists.
+- **Spanish locale**: `/es` routes now carry reciprocal `hreflang` (`en`, `es`, `x-default`) through `buildMetadata`; the shared Header and Footer translate every menu label and link on `/es` via `src/lib/es-nav.ts`; `src/app/es/layout.tsx` sets `lang="es"`.
+- **Use-case matrix enriched**: `src/lib/programmatic-seo.ts` now holds 20 tool profiles × 15 audience profiles (300 pages). Each page gets a tool-specific situation, a profession workflow, realistic document examples, tailored tips, a caution, and three FAQs. The matrix is no longer `noindex` and is listed in the sitemap.
+- **Fixed 5 broken internal links** on the audience landing pages that pointed at `/for/<slug>` combinations that did not exist.
+
+### Advertising removed entirely (2026-11-21)
+- Deleted the whole ad stack: `src/lib/monetag.ts`, `src/lib/ads.ts`, `src/components/AdManager.tsx`, `src/__tests__/ads.test.ts`, `src/__tests__/adManager.test.tsx`, and every `registerAdTask()` call site (20 files).
+- Removed the Monetag serving domains from the CSP `script-src` in `src/app/layout.tsx`; only Google Analytics and Vercel Analytics remain in `script-src`.
+- Bumped the service-worker cache to `pdftools-v6` so any client holding a previously cached bundle refetches an ad-free build.
+- Pricing and feature copy no longer sells "Ad-Free" as a paid perk: the Free plan card carries the "100% Privacy-First & Zero Ad Tracking" claim and Premium sells larger 100MB limits and the full Pro suite.
+- The shared footer now renders one standardised trust line on every page: no advertising, no third-party ad scripts, no ad tracking, core tools 100% client-side.
+- Guard test: `src/__tests__/adFree.test.ts` fails the build if any ad-network reference, ad script, or "remove ads" upsell copy reappears.
 
 ### PDF Studio is a permanent Premium feature (2026-09-22)
 - The three-day Studio trial was REMOVED (owner request). `StudioGate` now mounts the workspace only for server-verified Premium members; everyone else sees a plain upgrade page.

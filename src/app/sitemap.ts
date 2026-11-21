@@ -6,11 +6,13 @@
 // - Only indexable, 200-status, self-canonical URLs are listed. Excluded:
 //   /sitemap (HTML), /login, /signup, /dashboard, /vault, /embed, /view,
 //   /offline (private/noindex; vault+login+signup+dashboard+embed are also
-//   Disallowed in robots.txt), /for/* (noindex matrix), and the three
-//   /{brand}-alternative URLs (301 -> /vs/*).
+//   Disallowed in robots.txt), and the three /{brand}-alternative URLs
+//   (301 -> /vs/*). The /for/<tool>-<audience> matrix IS listed: each page has
+//   distinct profession copy (see src/lib/programmatic-seo.ts).
 // - priority/changefreq omitted (ignored by Google).
 import type { MetadataRoute } from "next";
 import { getErrorPages } from "@/lib/error-pages";
+import { seoPages } from "@/lib/programmatic-seo";
 
 const BASE = "https://allaboutpdfediting.xyz";
 
@@ -184,5 +186,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
     path: `/error/${p.slug}`,
     lastModified: "2026-09-28",
   }));
-  return [...PAGES, ...BLOG, ...errorPages].flatMap(entry);
+  // Audience use-case matrix — every page carries distinct, profession-specific
+  // copy, so they are indexable and belong in the sitemap.
+  const useCasePages: Entry[] = seoPages.map((p) => ({
+    path: `/for/${p.slug}`,
+    lastModified: "2026-11-21",
+  }));
+  return [...PAGES, ...BLOG, ...errorPages, ...useCasePages].flatMap(entry);
 }

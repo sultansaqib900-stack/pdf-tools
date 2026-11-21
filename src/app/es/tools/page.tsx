@@ -75,7 +75,7 @@ export default function EsToolsPage() {
           Todas las Herramientas <span className="bg-gradient-to-r from-indigo-500 to-purple-600 bg-clip-text text-transparent">PDF</span>
         </h1>
         <p className="text-lg text-[var(--muted)] max-w-2xl mx-auto mb-6">
-          Más de 40 utilidades 100% privadas y gratuitas. Tus archivos se procesan en tu navegador sin subirse a ningún servidor.
+          38 herramientas gratuitas y 14 profesionales, 100% privadas y sin publicidad. Tus archivos se procesan en tu navegador sin subirse a ningún servidor.
         </p>
         <ToolSearch />
       </div>

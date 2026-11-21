@@ -52,7 +52,7 @@ describe("Header Component", () => {
 
     fireEvent.click(premiumBtn);
     expect(premiumBtn.getAttribute("aria-expanded")).toBe("true");
-    expect(screen.getByText("13 Premium Tools")).toBeTruthy();
+    expect(screen.getByText("14 Premium Tools")).toBeTruthy();
     expect(screen.getByText("Compare Plans →")).toBeTruthy();
   });
 

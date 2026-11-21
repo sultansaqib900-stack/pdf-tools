@@ -1,3 +1,4 @@
+import BlogToolCta from "@/components/BlogToolCta";
 import { buildMetadata } from "@/lib/seo";
 import type { Metadata } from "next";
 export const metadata: Metadata = buildMetadata({
@@ -17,6 +18,7 @@ export default function BlogPost() {
       <a href="/blog" className="text-sm text-indigo-500 hover:underline mb-6 inline-block">&larr; Back to blog</a>
       <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">Word Counter Online — Free Character & Word Count Tool</h1>
       <p className="text-sm text-[var(--muted)] mb-8">3 min read · Updated June 2026</p>
+      <BlogToolCta slug="word-counter-online" variant="top" />
       <div className="text-sm text-[var(--muted)] space-y-5 leading-relaxed">
         <p>Whether you are a writer, student, or content creator, keeping track of word and character counts is essential. From meeting essay requirements to optimizing social media posts, knowing your word count helps you stay within limits and write more effectively. Our <a href="/word-counter" className="text-indigo-500 underline">free online word counter</a> provides instant stats as you type.</p>
 
@@ -40,6 +42,7 @@ export default function BlogPost() {
           <a href="/word-counter" className="inline-block px-5 py-2.5 bg-indigo-600 text-white font-medium rounded-xl text-sm hover:bg-indigo-700 transition">Try Word Counter →</a>
         </div>
       </div>
-    </article>
+      <BlogToolCta slug="word-counter-online" variant="bottom" />
+</article>
   );
 }

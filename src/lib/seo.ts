@@ -78,6 +78,11 @@ export function buildMetadata({
   const ogImage = image ?? `${SITE_URL}/opengraph-image`;
   const ogLocale = isEs ? "es_ES" : "en_US";
 
+  // hreflang reciprocity: Google only honours alternates that are mutually
+  // linked, so the English page and the `/es` page emit an IDENTICAL set —
+  // `en`, `es`, and an `x-default` that points at the English version. A
+  // locale-specific x-default would make the pair asymmetric and get both
+  // sides ignored.
   const languages: Record<string, string> | undefined = withEs
     ? { en: enUrl, es: esUrl, "x-default": enUrl }
     : undefined;
