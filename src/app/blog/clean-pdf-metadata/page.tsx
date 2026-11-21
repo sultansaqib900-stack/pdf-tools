@@ -1,4 +1,5 @@
 "use client";
+import BlogToolCta from "@/components/BlogToolCta";
 import ArticleJsonLd from "@/components/ArticleJsonLd";
 import PremiumUpgradeBox from "@/components/PremiumUpgradeBox";
 import HowToJsonLd from "@/components/HowToJsonLd";
@@ -18,6 +19,7 @@ export default function BlogPost() {
       <a href="/blog" className="text-sm text-indigo-500 hover:underline mb-6 inline-block">&larr; Back to blog</a>
       <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">How to Edit or Remove PDF Metadata Online Free</h1>
       <p className="text-sm text-[var(--muted)] mb-8">5 min read · Updated June 2026</p>
+      <BlogToolCta slug="clean-pdf-metadata" variant="top" />
 
       <div className="text-sm text-[var(--muted)] space-y-5 leading-relaxed">
         <p>Every PDF you create contains hidden metadata — your name, the software used, creation dates, and sometimes even editing history. Before sharing a document publicly or with clients, stripping this metadata protects your privacy and prevents leaking sensitive information about your workflow and identity.</p>
@@ -77,6 +79,7 @@ export default function BlogPost() {
           toolName="Metadata Sanitizer"
         />
       </div>
-    </article>
+      <BlogToolCta slug="clean-pdf-metadata" variant="bottom" />
+</article>
   );
 }

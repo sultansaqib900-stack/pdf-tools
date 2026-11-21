@@ -1,4 +1,5 @@
 "use client";
+import BlogToolCta from "@/components/BlogToolCta";
 import ArticleJsonLd from "@/components/ArticleJsonLd";
 import HowToJsonLd from "@/components/HowToJsonLd";
 import Breadcrumbs from "@/components/Breadcrumbs";
@@ -17,6 +18,7 @@ export default function BlogPost() {
       <a href="/blog" className="text-sm text-indigo-500 hover:underline mb-6 inline-block">&larr; Back to blog</a>
       <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">How to Store PDFs Securely Online Free</h1>
       <p className="text-sm text-[var(--muted)] mb-8">5 min read · Updated June 2026</p>
+      <BlogToolCta slug="secure-pdf-vault" variant="top" />
 
       <div className="text-sm text-[var(--muted)] space-y-5 leading-relaxed">
         <p>Storing sensitive PDFs on cloud services like Google Drive or Dropbox means your files are encrypted at rest but accessible to the service provider. For documents containing personal information, legal contracts, or financial records, a <strong>secure document vault</strong> provides an additional layer of protection with client-side encryption that even the service cannot decrypt.</p>
@@ -60,6 +62,7 @@ export default function BlogPost() {
           <a href="/vault" className="inline-block px-5 py-2.5 bg-indigo-600 text-white font-medium rounded-xl text-sm hover:bg-indigo-700 transition">Open Free Tool →</a>
         </div>
       </div>
-    </article>
+      <BlogToolCta slug="secure-pdf-vault" variant="bottom" />
+</article>
   );
 }

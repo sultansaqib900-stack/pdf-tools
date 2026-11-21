@@ -1,5 +1,11 @@
 import type { Metadata } from "next";
 import { buildMetadata } from "@/lib/seo";
+import {
+  CORE_TOOL_COUNT,
+  PROFESSIONAL_TOOL_COUNT,
+  FREE_FILE_LIMIT_LABEL,
+  PREMIUM_FILE_LIMIT_LABEL,
+} from "@/lib/site";
 
 
 export const metadata: Metadata = buildMetadata({
@@ -23,11 +29,19 @@ export default function AboutPage() {
         <div className="bg-[var(--card)] border border-[var(--card-border)] rounded-xl p-5">
           <p className="font-semibold text-[var(--foreground)] mb-2">The Mission</p>
           <p>
-            Make professional PDF editing free and private for everyone. <strong>29 tools</strong>,
-            no signups, no uploads, no hidden costs. Everything runs in your browser and respects
-            your privacy.
+            Make professional PDF editing free and private for everyone. <strong>{CORE_TOOL_COUNT} free core tools</strong> plus <strong>{PROFESSIONAL_TOOL_COUNT} professional tools</strong> — no signups, no uploads, no advertisements, and no hidden costs. Everything runs in your browser and respects your privacy.
           </p>
     </div>
+
+        <div className="bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-200 dark:border-emerald-900/40 rounded-xl p-5">
+          <p className="font-semibold text-[var(--foreground)] mb-2">No Advertising, Ever</p>
+          <p>
+            PDFTools does not load advertising networks, sponsored widgets, or ad-tracking scripts.
+            There is no &ldquo;remove ads&rdquo; upsell because there are no ads to remove — every
+            visitor gets the same clean, uninterrupted tool pages. Premium exists to fund larger
+            files and professional workflows, not to hide advertising.
+          </p>
+        </div>
 
         <h2 className="text-lg font-semibold text-[var(--foreground)] pt-2">Why I Built This</h2>
         <p>
@@ -40,10 +54,11 @@ export default function AboutPage() {
 
         <h2 className="text-lg font-semibold text-[var(--foreground)] pt-2">What We Offer</h2>
         <ul className="list-disc pl-5 space-y-1.5 text-sm">
-          <li><strong>29 free PDF tools</strong> — Compress, merge, split, convert, edit, sign, protect, and more</li>
+          <li><strong>{CORE_TOOL_COUNT} free core PDF tools</strong> — Compress, merge, split, convert, edit, sign, protect, and more, unlimited and account-free</li>
+          <li><strong>{PROFESSIONAL_TOOL_COUNT} professional tools</strong> — Bates numbering, PDF Diff, bulk rename, booklets, and legal-grade redaction</li>
           <li><strong>AI Chat with PDF</strong> — Upload any PDF and ask AI questions about its content</li>
           <li><strong>AI OCR</strong> — Extract text from scanned/image-based PDFs using AI vision</li>
-          <li><strong>Premium subscription</strong> — Unlimited usage, larger files, batch processing, and advanced tools</li>
+          <li><strong>Premium subscription</strong> — Unlimited professional workflows, {PREMIUM_FILE_LIMIT_LABEL} files (free plan covers {FREE_FILE_LIMIT_LABEL}), batch processing, and the PDF Studio pipeline</li>
           <li><strong>Real user feedback</strong> — See what others say about our tools on the homepage</li>
         </ul>
 

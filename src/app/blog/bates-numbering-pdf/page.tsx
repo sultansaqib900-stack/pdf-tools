@@ -1,4 +1,5 @@
 "use client";
+import BlogToolCta from "@/components/BlogToolCta";
 import ArticleJsonLd from "@/components/ArticleJsonLd";
 import HowToJsonLd from "@/components/HowToJsonLd";
 import Breadcrumbs from "@/components/Breadcrumbs";
@@ -17,6 +18,7 @@ export default function BlogPost() {
       <a href="/blog" className="text-sm text-indigo-500 hover:underline mb-6 inline-block">&larr; Back to blog</a>
       <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">How to Add Bates Numbering to PDF Documents</h1>
       <p className="text-sm text-[var(--muted)] mb-8">5 min read · Updated June 2026</p>
+      <BlogToolCta slug="bates-numbering-pdf" variant="top" />
 
       <div className="text-sm text-[var(--muted)] space-y-5 leading-relaxed">
         <p>Bates numbering (also called Bates stamping) is the practice of assigning sequential numbers, letters, or date labels to each page of a document set. It is widely used in legal discovery, medical records management, contract administration, and any industry that needs to index large volumes of pages. Adding Bates numbers manually is tedious — a dedicated tool automates the process in seconds.</p>
@@ -66,6 +68,7 @@ export default function BlogPost() {
           <a href="/bates-numbering" className="inline-block px-5 py-2 bg-gradient-to-r from-amber-500 to-orange-600 text-white text-sm font-medium rounded-lg hover:from-amber-600 hover:to-orange-700 transition">Bates Numbering →</a>
         </div>
       </div>
-    </article>
+      <BlogToolCta slug="bates-numbering-pdf" variant="bottom" />
+</article>
   );
 }

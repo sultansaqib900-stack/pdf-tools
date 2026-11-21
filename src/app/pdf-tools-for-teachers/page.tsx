@@ -155,7 +155,7 @@ export default function PDFToolsForTeachersPage() {
             {[
               { title: "Elementary School", desc: "Create worksheets, merge art projects, compress newsletters for parents", link: "/for/compress-pdf-teachers" },
               { title: "Middle & High School", desc: "Grade essays in merged PDFs, split test papers, protect student records", link: "/for/merge-pdf-teachers" },
-              { title: "College & University", desc: "Compress lecture notes, merge research papers, generate certificates", link: "/for/compress-pdf-professors" },
+              { title: "College & University", desc: "Compress lecture notes, merge research papers, generate certificates", link: "/for/compress-pdf-teachers" },
             ].map((item) => (
               <div key={item.title} className="p-5 rounded-xl border border-[var(--card-border)] bg-[var(--card)]">
                 <h3 className="font-bold text-[var(--foreground)] mb-1">{item.title}</h3>
@@ -186,6 +186,31 @@ export default function PDFToolsForTeachersPage() {
                 </div>
               </div>
             ))}
+          </div>
+        </section>
+
+        {/* Realistic profession workflow */}
+        <section className="mb-12">
+          <h2 className="text-xl font-bold text-[var(--foreground)] mb-2">A realistic teaching week</h2>
+          <p className="text-sm text-[var(--muted)] mb-5">The document work in a school week is repetitive, which is exactly why it should be scripted:</p>
+          <div className="grid gap-3">
+              <div className="p-4 rounded-xl border border-[var(--card-border)] bg-[var(--card)]">
+                <h3 className="font-semibold text-sm text-[var(--foreground)] mb-1">Sunday — prep</h3>
+                <p className="text-sm text-[var(--muted)] leading-relaxed">Split PDF cuts one master exam into per-class versions. Protect PDF encrypts the answer key before it goes anywhere near a shared drive.</p>
+              </div>
+              <div className="p-4 rounded-xl border border-[var(--card-border)] bg-[var(--card)]">
+                <h3 className="font-semibold text-sm text-[var(--foreground)] mb-1">Wednesday — marking</h3>
+                <p className="text-sm text-[var(--muted)] leading-relaxed">Merge student submissions alphabetically into one marking pack, then add page numbers so moderation can reference an exact page.</p>
+              </div>
+              <div className="p-4 rounded-xl border border-[var(--card-border)] bg-[var(--card)]">
+                <h3 className="font-semibold text-sm text-[var(--foreground)] mb-1">Friday — recognition</h3>
+                <p className="text-sm text-[var(--muted)] leading-relaxed">Certificate Generator turns a CSV roster into individual personalised award PDFs instead of hand-editing twelve documents.</p>
+              </div>
+          </div>
+          <div className="mt-4 rounded-xl border border-amber-300/60 bg-amber-50/70 dark:bg-amber-950/20 p-4">
+            <p className="text-sm text-[var(--muted)] leading-relaxed">
+              <strong className="text-[var(--foreground)]">Watch out:</strong> Encrypt the answer key before it touches an LMS question bank, and send the password to colleagues separately from the file.
+            </p>
           </div>
         </section>
 

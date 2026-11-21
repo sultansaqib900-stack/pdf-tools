@@ -1,6 +1,5 @@
 "use client";
 
-import { registerAdTask } from "@/lib/ads";
 
 import { useState, useCallback, useRef, useEffect } from "react";
 import ToolInfo from "@/components/ToolInfo";
@@ -255,7 +254,6 @@ export default function RedactPage() {
       if (areas.length === 0) throw new Error("Draw at least one area to redact.");
       const outBytes = await secureRedactPdf(bytes, areas);
       downloadBytes(outBytes, `redacted-${file.name}`);
-      registerAdTask();
       setSuccess(true);
     } catch (e) {
       setError("Failed to redact PDF: " + (e instanceof Error ? e.message : "unknown error"));

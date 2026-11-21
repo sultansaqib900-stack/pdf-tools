@@ -1,3 +1,4 @@
+import { TOTAL_TOOL_COUNT } from "@/lib/site";
 import Link from "next/link";
 
 const tools = [
@@ -59,7 +60,7 @@ export default function NotFound() {
         </div>
         <div className="mt-6">
           <Link href="/tools" className="text-xs text-indigo-500 hover:underline">
-            View all 29 tools &rarr;
+            View all {TOTAL_TOOL_COUNT} tools &rarr;
           </Link>
         </div>
       </div>

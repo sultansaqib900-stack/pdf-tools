@@ -5,7 +5,6 @@ import { checkFileSize } from "@/lib/premium";
 import { isPdfFile, loadPdfForEditing, downloadBytes, formatPdfErrorMessage, validatePdfOutput } from "@/lib/pdfBytes";
 import { useUsage } from "@/hooks/useUsage";
 import { usePremiumUpsell } from "@/components/PremiumUpsell";
-import { registerAdTask } from "@/lib/ads";
 import TrialGate from "@/components/TrialGate";
 import Breadcrumbs from "@/components/Breadcrumbs";
 
@@ -87,7 +86,6 @@ export default function BatesNumberingPage() {
       if (downloadUrl) URL.revokeObjectURL(downloadUrl);
       const blob = new Blob([pdfBytes as unknown as BlobPart], { type: "application/pdf" });
       setDownloadUrl(URL.createObjectURL(blob));
-      registerAdTask();
     } catch (err) {
       // Failed processing must not consume the shared trial allowance.
       await usage.releaseReservation(reservation);

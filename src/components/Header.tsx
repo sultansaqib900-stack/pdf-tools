@@ -6,6 +6,8 @@ import { useState, lazy, Suspense, useEffect, useRef } from "react";
 import { useAuth } from "@/components/AuthProvider";
 import { usePremiumStatus } from "@/hooks/usePremiumStatus";
 import { PREMIUM_TOOLS, TOOL_CATALOG } from "@/lib/toolCatalog";
+import { PROFESSIONAL_TOOL_COUNT } from "@/lib/site";
+import { ES_HEADER_LINKS as ES } from "@/lib/es-nav";
 import { localeSwitchHref, pathLocale as detectPathLocale } from "@/lib/i18n";
 
 const ShareModal = lazy(() => import("./ShareModal"));
@@ -56,6 +58,9 @@ export default function Header() {
   }, [pathname]);
 
   const pathLocale = detectPathLocale(pathname);
+  // `/es` routes render the navigation in Spanish; everything else stays English.
+  const isEs = pathLocale === "es";
+  const s = (es: string, en: string) => (isEs ? es : en);
 
   const themes = [
     { id: "midnight", label: "Daylight", color: "#4f46e5" },
@@ -77,53 +82,57 @@ export default function Header() {
   const toolCategories = [
     {
       name: "Convert & Compress",
+      nameEs: "Convertir y comprimir",
       links: [
-        { href: "/compress", label: "Compress PDF" },
-        { href: "/merge", label: "Merge PDF" },
-        { href: "/split", label: "Split PDF" },
-        { href: "/image-to-pdf", label: "Image to PDF" },
-        { href: "/scan-to-pdf", label: "Scan to PDF" },
-        { href: "/pdf-to-images", label: "PDF to Images" },
-        { href: "/pdf-to-word", label: "PDF to Word" },
-        { href: "/word-to-pdf", label: "Word to PDF" },
-        { href: "/pdf-to-excel", label: "PDF to Excel" },
-        { href: "/html-to-pdf", label: "HTML to PDF" },
+        { href: "/compress", label: "Compress PDF", labelEs: "Comprimir PDF" },
+        { href: "/merge", label: "Merge PDF", labelEs: "Unir PDF" },
+        { href: "/split", label: "Split PDF", labelEs: "Dividir PDF" },
+        { href: "/image-to-pdf", label: "Image to PDF", labelEs: "Imagen a PDF" },
+        { href: "/scan-to-pdf", label: "Scan to PDF", labelEs: "Escanear a PDF" },
+        { href: "/pdf-to-images", label: "PDF to Images", labelEs: "PDF a imágenes" },
+        { href: "/pdf-to-word", label: "PDF to Word", labelEs: "PDF a Word" },
+        { href: "/word-to-pdf", label: "Word to PDF", labelEs: "Word a PDF" },
+        { href: "/pdf-to-excel", label: "PDF to Excel", labelEs: "PDF a Excel" },
+        { href: "/html-to-pdf", label: "HTML to PDF", labelEs: "HTML a PDF" },
       ],
     },
     {
       name: "Edit & Organize",
+      nameEs: "Editar y organizar",
       links: [
-        { href: "/studio", label: "⚡ PDF Studio" },
-        { href: "/edit-pdf", label: "Edit PDF" },
-        { href: "/organize", label: "Organize Pages" },
-        { href: "/delete-pages", label: "Delete Pages" },
-        { href: "/insert-blank", label: "Insert Blank" },
-        { href: "/crop", label: "Crop PDF" },
-        { href: "/rotate", label: "Rotate PDF" },
-        { href: "/add-page-numbers", label: "Page Numbers" },
-        { href: "/annotate", label: "Annotate PDF" },
+        { href: "/studio", label: "⚡ PDF Studio", labelEs: "⚡ PDF Studio" },
+        { href: "/edit-pdf", label: "Edit PDF", labelEs: "Editar PDF" },
+        { href: "/organize", label: "Organize Pages", labelEs: "Organizar páginas" },
+        { href: "/delete-pages", label: "Delete Pages", labelEs: "Eliminar páginas" },
+        { href: "/insert-blank", label: "Insert Blank", labelEs: "Insertar página en blanco" },
+        { href: "/crop", label: "Crop PDF", labelEs: "Recortar PDF" },
+        { href: "/rotate", label: "Rotate PDF", labelEs: "Rotar PDF" },
+        { href: "/add-page-numbers", label: "Page Numbers", labelEs: "Números de página" },
+        { href: "/annotate", label: "Annotate PDF", labelEs: "Anotar PDF" },
       ],
     },
     {
       name: "Security & Sign",
+      nameEs: "Seguridad y firma",
       links: [
-        { href: "/protect", label: "Protect PDF" },
-        { href: "/unlock", label: "Unlock PDF" },
-        { href: "/sign", label: "Sign PDF" },
-        { href: "/redact", label: "Redact PDF" },
-        { href: "/watermark", label: "Watermark PDF" },
-        { href: "/pii-guardian", label: "⭐ PII Guardian" },
+        { href: "/protect", label: "Protect PDF", labelEs: "Proteger PDF" },
+        { href: "/unlock", label: "Unlock PDF", labelEs: "Desbloquear PDF" },
+        { href: "/sign", label: "Sign PDF", labelEs: "Firmar PDF" },
+        { href: "/redact", label: "Redact PDF", labelEs: "Redactar PDF" },
+        { href: "/watermark", label: "Watermark PDF", labelEs: "Marca de agua" },
+        { href: "/pii-guardian", label: "⭐ PII Guardian", labelEs: "⭐ PII Guardian" },
       ],
     },
     {
       name: "Extract & AI",
+      nameEs: "Extraer e IA",
       links: [
-        { href: "/recipes", label: "⭐ Workflow Recipes" },
-        { href: "/extract-text", label: "Extract Text" },
-        { href: "/ocr-pdf", label: "OCR PDF" },
-        { href: "/chat-pdf", label: "⭐ Chat with PDF" },
-        { href: "/fill-form", label: "Fill Form" },
-        { href: "/batch", label: "⭐ Batch Process" },
+        { href: "/recipes", label: "⭐ Workflow Recipes", labelEs: "⭐ Recetas de flujo" },
+        { href: "/extract-text", label: "Extract Text", labelEs: "Extraer texto" },
+        { href: "/ocr-pdf", label: "OCR PDF", labelEs: "OCR PDF" },
+        { href: "/chat-pdf", label: "⭐ Chat with PDF", labelEs: "⭐ Chat con PDF" },
+        { href: "/fill-form", label: "Fill Form", labelEs: "Rellenar formulario" },
+        { href: "/batch", label: "⭐ Batch Process", labelEs: "⭐ Procesamiento por lotes" },
       ],
     },
   ];
@@ -172,7 +181,7 @@ export default function Header() {
                 activeDropdown === "tools" ? "bg-[var(--card-border)]/50 text-[var(--foreground)]" : ""
               }`}
             >
-              <span>Tools</span>
+              <span>{s("Herramientas", "Tools")}</span>
               <svg className={`w-3.5 h-3.5 transition-transform duration-200 ${activeDropdown === "tools" ? "rotate-180" : ""}`} fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
               </svg>
@@ -182,7 +191,7 @@ export default function Header() {
               <div className="fixed left-1/2 -translate-x-1/2 top-16 w-[min(94vw,900px)] max-h-[calc(100vh-5rem)] overflow-y-auto bg-[var(--card)] border border-[var(--card-border)] rounded-2xl shadow-xl py-6 px-6 z-50 animate-scaleIn">
                 <div className="flex items-center justify-between pb-4 mb-4 border-b border-[var(--card-border)]">
                   <div>
-                    <h3 className="text-sm font-bold text-[var(--foreground)]">Comprehensive PDF Tool Suite</h3>
+                    <h3 className="text-sm font-bold text-[var(--foreground)]">{s(ES.toolsMenuTitle, "Comprehensive PDF Tool Suite")}</h3>
                     <p className="text-xs text-[var(--muted)]">Core tools process locally in your browser for privacy.</p>
                   </div>
                   <Link
@@ -190,13 +199,13 @@ export default function Header() {
                     onClick={() => setActiveDropdown(null)}
                     className="text-xs font-bold text-[var(--accent)] hover:underline flex items-center gap-1"
                   >
-                    View All {TOOL_CATALOG.length} Tools →
+                    ✓ {isEs ? `${ES.viewAllTools}` : `View All ${TOOL_CATALOG.length} Tools`} →
                   </Link>
                 </div>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
                   {toolCategories.map((cat) => (
                     <div key={cat.name} className="space-y-1.5">
-                      <p className="text-xs font-bold text-[var(--foreground)] uppercase tracking-wider mb-2 pb-1 border-b border-[var(--card-border)]">{cat.name}</p>
+                      <p className="text-xs font-bold text-[var(--foreground)] uppercase tracking-wider mb-2 pb-1 border-b border-[var(--card-border)]">{isEs && cat.nameEs ? cat.nameEs : cat.name}</p>
                       {cat.links.map((link) => (
                         <Link
                           key={link.href}
@@ -204,7 +213,7 @@ export default function Header() {
                           onClick={() => setActiveDropdown(null)}
                           className="block px-2 py-1.5 text-xs text-[var(--muted)] hover:text-[var(--foreground)] hover:bg-[var(--card-border)]/40 rounded-md transition-colors"
                         >
-                          {link.label}
+                          {isEs ? (link.labelEs ?? link.label) : link.label}
                         </Link>
                       ))}
                     </div>
@@ -236,7 +245,7 @@ export default function Header() {
                 : "text-[var(--muted)] hover:text-[var(--foreground)] hover:bg-[var(--card-border)]/30"
             }`}
           >
-            Recipes
+            {s("Recetas", "Recipes")}
           </Link>
 
           {/* vs Adobe Acrobat Comparison */}
@@ -270,13 +279,13 @@ export default function Header() {
             {activeDropdown === "premium" && (
               <div className="absolute top-full left-0 mt-2 bg-[var(--card)] border border-[var(--card-border)] rounded-xl shadow-xl py-3 w-72 z-50 animate-scaleIn">
                 <div className="px-3 pb-2 mb-2 border-b border-[var(--card-border)] flex items-center justify-between">
-                  <span className="text-xs font-bold text-[var(--foreground)]">13 Premium Tools</span>
+                  <span className="text-xs font-bold text-[var(--foreground)]">{s(`${PROFESSIONAL_TOOL_COUNT} herramientas Premium`, `${PROFESSIONAL_TOOL_COUNT} Premium Tools`)}</span>
                   <Link
                     href="/premium"
                     onClick={() => setActiveDropdown(null)}
                     className="text-[11px] font-bold text-amber-600 dark:text-amber-400 hover:underline"
                   >
-                    Compare Plans →
+                    {s("Comparar planes", "Compare Plans")} →
                   </Link>
                 </div>
                 <div className="max-h-64 overflow-y-auto px-2 space-y-0.5">
@@ -306,7 +315,7 @@ export default function Header() {
                       onClick={() => setActiveDropdown(null)}
                       className="block text-center py-2 text-xs font-bold bg-amber-600 text-white rounded-lg hover:bg-amber-700 transition-colors shadow-sm"
                     >
-                      View Premium Plans &amp; Pricing →
+                      {s("Ver planes y precios", "View Premium Plans & Pricing")} →
                     </Link>
                   )}
                 </div>
@@ -324,7 +333,7 @@ export default function Header() {
                 activeDropdown === "resources" ? "bg-[var(--card-border)]/50 text-[var(--foreground)]" : ""
               }`}
             >
-              <span>Resources</span>
+              <span>{s("Recursos", "Resources")}</span>
               <svg className={`w-3.5 h-3.5 transition-transform duration-200 ${activeDropdown === "resources" ? "rotate-180" : ""}`} fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
               </svg>
@@ -332,11 +341,11 @@ export default function Header() {
 
             {activeDropdown === "resources" && (
               <div className="absolute top-full right-0 mt-2 bg-[var(--card)] border border-[var(--card-border)] rounded-xl shadow-xl py-2 w-52 z-50 animate-scaleIn">
-                <Link href="/blog" onClick={() => setActiveDropdown(null)} className="block px-4 py-2 text-xs text-[var(--muted)] hover:text-[var(--foreground)] hover:bg-[var(--card-border)]/40 transition-colors">📚 Guides &amp; Blog</Link>
+                <Link href="/blog" onClick={() => setActiveDropdown(null)} className="block px-4 py-2 text-xs text-[var(--muted)] hover:text-[var(--foreground)] hover:bg-[var(--card-border)]/40 transition-colors">📚 {s("Guías y blog", "Guides & Blog")}</Link>
                 <Link href="/ultimate-guide-to-pdf-editing" onClick={() => setActiveDropdown(null)} className="block px-4 py-2 text-xs text-[var(--muted)] hover:text-[var(--foreground)] hover:bg-[var(--card-border)]/40 transition-colors">📖 Ultimate Guide</Link>
                 <Link href="/qa" onClick={() => setActiveDropdown(null)} className="block px-4 py-2 text-xs text-[var(--muted)] hover:text-[var(--foreground)] hover:bg-[var(--card-border)]/40 transition-colors">❓ Q&amp;A Support</Link>
                 <Link href="/embed" onClick={() => setActiveDropdown(null)} className="block px-4 py-2 text-xs text-[var(--muted)] hover:text-[var(--foreground)] hover:bg-[var(--card-border)]/40 transition-colors" rel="nofollow">🔌 Embed Widget</Link>
-                <Link href="/contact" onClick={() => setActiveDropdown(null)} className="block px-4 py-2 text-xs text-[var(--muted)] hover:text-[var(--foreground)] hover:bg-[var(--card-border)]/40 transition-colors">📧 Contact Us</Link>
+                <Link href="/contact" onClick={() => setActiveDropdown(null)} className="block px-4 py-2 text-xs text-[var(--muted)] hover:text-[var(--foreground)] hover:bg-[var(--card-border)]/40 transition-colors">📧 {s("Contáctanos", "Contact Us")}</Link>
               </div>
             )}
           </div>
@@ -366,8 +375,8 @@ export default function Header() {
           <button
             onClick={() => setShareOpen(true)}
             className="hidden sm:flex p-2 rounded-lg border border-[var(--card-border)] text-[var(--muted)] hover:text-[var(--foreground)] hover:border-[var(--accent)] transition-colors"
-            aria-label="Share PDFTools"
-            title="Share PDFTools"
+            aria-label={s("Compartir PDFTools", "Share PDFTools")}
+            title={s("Compartir PDFTools", "Share PDFTools")}
           >
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
               <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/>
@@ -379,9 +388,9 @@ export default function Header() {
           {/* Language Switcher */}
           <Link
             href={localeSwitchHref(pathname, pathLocale)}
-            title={pathLocale === "es" ? "View this page in English" : "Ver esta página en español"}
+            title={pathLocale === "es" ? ES.switchToEnglish : ES.switchToSpanish}
             className="p-2 rounded-lg border border-[var(--card-border)] text-[var(--muted)] hover:text-[var(--foreground)] hover:border-[var(--accent)] transition-colors text-xs font-bold"
-            aria-label="Switch language"
+            aria-label={s("Cambiar idioma", "Switch language")}
           >
             {pathLocale === "es" ? "EN" : "ES"}
           </Link>
@@ -426,7 +435,7 @@ export default function Header() {
               href="/premium"
               className="hidden sm:inline-flex items-center gap-1.5 bg-amber-600 text-white px-3.5 py-2 rounded-lg text-xs font-bold hover:bg-amber-700 transition-colors shadow-sm"
             >
-              Go Premium
+              {s("Ir a Premium", "Go Premium")}
             </Link>
           )}
 
@@ -446,7 +455,7 @@ export default function Header() {
               rel="nofollow"
               className="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-[var(--accent)] text-white text-xs font-bold hover:bg-[var(--accent-hover)] transition-colors shadow-sm"
             >
-              Sign In
+              {s("Iniciar sesión", "Sign In")}
             </Link>
           )}
 
@@ -454,7 +463,7 @@ export default function Header() {
           <button
             onClick={() => setMenuOpen(!menuOpen)}
             className="lg:hidden p-2 rounded-lg text-[var(--muted)] hover:text-[var(--foreground)] hover:bg-[var(--card-border)]/40 transition-colors"
-            aria-label="Toggle navigation menu"
+            aria-label={s(ES.toggleMenu, "Toggle navigation menu")}
             aria-expanded={menuOpen}
           >
             <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -479,7 +488,7 @@ export default function Header() {
               onClick={() => setMenuOpen(false)}
               className="flex-1 py-3 rounded-lg bg-[var(--accent)] text-white font-bold text-xs text-center shadow-sm"
             >
-              ⚡ PDF Studio Workspace
+              {s("⚡ Espacio de trabajo PDF Studio", "⚡ PDF Studio Workspace")}
             </Link>
             {!premium && (
               <Link
@@ -487,7 +496,7 @@ export default function Header() {
                 onClick={() => setMenuOpen(false)}
                 className="py-3 px-4 rounded-lg bg-amber-600 text-white font-bold text-xs text-center shadow-sm"
               >
-                Go Premium
+                {s("Ir a Premium", "Go Premium")}
               </Link>
             )}
           </div>
@@ -495,32 +504,32 @@ export default function Header() {
           {/* Mobile All Tools Directory */}
           <div className="space-y-2">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-bold text-[var(--foreground)] uppercase tracking-wider">Popular Tools</span>
+              <span className="text-xs font-bold text-[var(--foreground)] uppercase tracking-wider">{s("Herramientas populares", "Popular Tools")}</span>
               <Link
                 href="/tools"
                 onClick={() => setMenuOpen(false)}
                 className="text-xs font-bold text-[var(--accent)] hover:underline"
               >
-                All {TOOL_CATALOG.length} Tools →
+                {isEs ? ES.viewAllTools : `All ${TOOL_CATALOG.length} Tools`} →
               </Link>
             </div>
             <div className="grid grid-cols-2 gap-2">
-              <Link href="/compress" onClick={() => setMenuOpen(false)} className="p-2.5 rounded-lg border border-[var(--card-border)] text-xs font-medium text-[var(--foreground)]">Compress PDF</Link>
-              <Link href="/merge" onClick={() => setMenuOpen(false)} className="p-2.5 rounded-lg border border-[var(--card-border)] text-xs font-medium text-[var(--foreground)]">Merge PDF</Link>
-              <Link href="/split" onClick={() => setMenuOpen(false)} className="p-2.5 rounded-lg border border-[var(--card-border)] text-xs font-medium text-[var(--foreground)]">Split PDF</Link>
-              <Link href="/edit-pdf" onClick={() => setMenuOpen(false)} className="p-2.5 rounded-lg border border-[var(--card-border)] text-xs font-medium text-[var(--foreground)]">Edit PDF</Link>
-              <Link href="/sign" onClick={() => setMenuOpen(false)} className="p-2.5 rounded-lg border border-[var(--card-border)] text-xs font-medium text-[var(--foreground)]">Sign PDF</Link>
-              <Link href="/pdf-to-word" onClick={() => setMenuOpen(false)} className="p-2.5 rounded-lg border border-[var(--card-border)] text-xs font-medium text-[var(--foreground)]">PDF to Word</Link>
-              <Link href="/ocr-pdf" onClick={() => setMenuOpen(false)} className="p-2.5 rounded-lg border border-[var(--card-border)] text-xs font-medium text-[var(--foreground)]">OCR PDF</Link>
-              <Link href="/protect" onClick={() => setMenuOpen(false)} className="p-2.5 rounded-lg border border-[var(--card-border)] text-xs font-medium text-[var(--foreground)]">Protect PDF</Link>
+              <Link href="/compress" onClick={() => setMenuOpen(false)} className="p-2.5 rounded-lg border border-[var(--card-border)] text-xs font-medium text-[var(--foreground)]">{s("Comprimir PDF", "Compress PDF")}</Link>
+              <Link href="/merge" onClick={() => setMenuOpen(false)} className="p-2.5 rounded-lg border border-[var(--card-border)] text-xs font-medium text-[var(--foreground)]">{s("Unir PDF", "Merge PDF")}</Link>
+              <Link href="/split" onClick={() => setMenuOpen(false)} className="p-2.5 rounded-lg border border-[var(--card-border)] text-xs font-medium text-[var(--foreground)]">{s("Dividir PDF", "Split PDF")}</Link>
+              <Link href="/edit-pdf" onClick={() => setMenuOpen(false)} className="p-2.5 rounded-lg border border-[var(--card-border)] text-xs font-medium text-[var(--foreground)]">{s("Editar PDF", "Edit PDF")}</Link>
+              <Link href="/sign" onClick={() => setMenuOpen(false)} className="p-2.5 rounded-lg border border-[var(--card-border)] text-xs font-medium text-[var(--foreground)]">{s("Firmar PDF", "Sign PDF")}</Link>
+              <Link href="/pdf-to-word" onClick={() => setMenuOpen(false)} className="p-2.5 rounded-lg border border-[var(--card-border)] text-xs font-medium text-[var(--foreground)]">{s("PDF a Word", "PDF to Word")}</Link>
+              <Link href="/ocr-pdf" onClick={() => setMenuOpen(false)} className="p-2.5 rounded-lg border border-[var(--card-border)] text-xs font-medium text-[var(--foreground)]">{s("OCR PDF", "OCR PDF")}</Link>
+              <Link href="/protect" onClick={() => setMenuOpen(false)} className="p-2.5 rounded-lg border border-[var(--card-border)] text-xs font-medium text-[var(--foreground)]">{s("Proteger PDF", "Protect PDF")}</Link>
             </div>
           </div>
 
           {/* Mobile Premium Tools */}
           <div className="space-y-2 pt-2 border-t border-[var(--card-border)]">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-bold text-amber-600 dark:text-amber-400 uppercase tracking-wider">⭐ Premium Suite</span>
-              <Link href="/premium" onClick={() => setMenuOpen(false)} className="text-xs font-bold text-amber-600 dark:text-amber-400 hover:underline">Pricing →</Link>
+              <span className="text-xs font-bold text-amber-600 dark:text-amber-400 uppercase tracking-wider">{s("⭐ Suite profesional", "⭐ Premium Suite")}</span>
+              <Link href="/premium" onClick={() => setMenuOpen(false)} className="text-xs font-bold text-amber-600 dark:text-amber-400 hover:underline">{s("Precios", "Pricing")} →</Link>
             </div>
             <div className="grid grid-cols-2 gap-2">
               {premiumLinks.slice(0, 6).map((link) => (
@@ -538,12 +547,12 @@ export default function Header() {
 
           {/* Mobile Resources */}
           <div className="space-y-2 pt-2 border-t border-[var(--card-border)]">
-            <span className="text-xs font-bold text-[var(--muted)] uppercase tracking-wider">Resources &amp; Support</span>
+            <span className="text-xs font-bold text-[var(--muted)] uppercase tracking-wider">{s("Recursos y soporte", "Resources & Support")}</span>
             <div className="grid grid-cols-2 gap-2">
-              <Link href="/blog" onClick={() => setMenuOpen(false)} className="p-2.5 rounded-lg border border-[var(--card-border)] text-xs font-medium text-[var(--foreground)]">Guides &amp; Blog</Link>
-              <Link href="/vs/adobe-acrobat" onClick={() => setMenuOpen(false)} className="p-2.5 rounded-lg border border-[var(--card-border)] text-xs font-medium text-[var(--foreground)]">vs Adobe Pro</Link>
-              <Link href="/qa" onClick={() => setMenuOpen(false)} className="p-2.5 rounded-lg border border-[var(--card-border)] text-xs font-medium text-[var(--foreground)]">Q&amp;A Help</Link>
-              <Link href="/contact" onClick={() => setMenuOpen(false)} className="p-2.5 rounded-lg border border-[var(--card-border)] text-xs font-medium text-[var(--foreground)]">Contact Us</Link>
+              <Link href="/blog" onClick={() => setMenuOpen(false)} className="p-2.5 rounded-lg border border-[var(--card-border)] text-xs font-medium text-[var(--foreground)]">{s("Guías y blog", "Guides & Blog")}</Link>
+              <Link href="/vs/adobe-acrobat" onClick={() => setMenuOpen(false)} className="p-2.5 rounded-lg border border-[var(--card-border)] text-xs font-medium text-[var(--foreground)]">{s("vs Adobe Pro", "vs Adobe Pro")}</Link>
+              <Link href="/qa" onClick={() => setMenuOpen(false)} className="p-2.5 rounded-lg border border-[var(--card-border)] text-xs font-medium text-[var(--foreground)]">{s("Ayuda y preguntas", "Q&A Help")}</Link>
+              <Link href="/contact" onClick={() => setMenuOpen(false)} className="p-2.5 rounded-lg border border-[var(--card-border)] text-xs font-medium text-[var(--foreground)]">{s("Contáctanos", "Contact Us")}</Link>
             </div>
           </div>
 
@@ -551,15 +560,15 @@ export default function Header() {
           <div className="pt-2 border-t border-[var(--card-border)] flex gap-3">
             {user ? (
               <Link href="/dashboard" onClick={() => setMenuOpen(false)} className="flex-1 py-3 text-center bg-[var(--accent)] text-white font-bold rounded-lg text-xs" rel="nofollow">
-                My Dashboard
+                {s("Mi panel", "My Dashboard")}
               </Link>
             ) : (
               <>
                 <Link href="/login" onClick={() => setMenuOpen(false)} className="flex-1 py-3 text-center border border-[var(--card-border)] text-[var(--foreground)] font-bold rounded-lg text-xs" rel="nofollow">
-                  Sign In
+                  {s("Iniciar sesión", "Sign In")}
                 </Link>
                 <Link href="/signup" onClick={() => setMenuOpen(false)} className="flex-1 py-3 text-center bg-[var(--accent)] text-white font-bold rounded-lg text-xs" rel="nofollow">
-                  Create Account
+                  {s("Crear cuenta", "Create Account")}
                 </Link>
               </>
             )}

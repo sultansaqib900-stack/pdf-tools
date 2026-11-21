@@ -1,3 +1,4 @@
+import BlogToolCta from "@/components/BlogToolCta";
 import { buildMetadata } from "@/lib/seo";
 import type { Metadata } from "next";
 export const metadata: Metadata = buildMetadata({
@@ -18,6 +19,7 @@ export default function BlogPost() {
       <a href="/blog" className="text-sm text-indigo-500 hover:underline mb-6 inline-block">&larr; Back to blog</a>
       <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">Convert Word to PDF Online Free — DOCX to PDF Converter</h1>
       <p className="text-sm text-[var(--muted)] mb-8">4 min read · Updated June 2026</p>
+      <BlogToolCta slug="convert-word-to-pdf" variant="top" />
       <div className="text-sm text-[var(--muted)] space-y-5 leading-relaxed">
         <p>Converting Word documents to PDF ensures your formatting stays intact across any device or platform. Our <a href="/word-to-pdf" className="text-indigo-500 underline">free online Word to PDF converter</a> turns your DOCX files into professional PDFs — all in your browser.</p>
         <h2 className="text-xl font-bold text-[var(--foreground)] pt-4">Why Convert Word to PDF?</h2>
@@ -36,6 +38,7 @@ export default function BlogPost() {
           <li>Creating print-ready files with consistent formatting</li>
         </ul>
       </div>
-    </article>
+      <BlogToolCta slug="convert-word-to-pdf" variant="bottom" />
+</article>
   );
 }

@@ -1,3 +1,4 @@
+import BlogToolCta from "@/components/BlogToolCta";
 import { buildMetadata } from "@/lib/seo";
 import type { Metadata } from "next";
 export const metadata: Metadata = buildMetadata({
@@ -18,6 +19,7 @@ export default function BlogPost() {
       <a href="/blog" className="text-sm text-indigo-500 hover:underline mb-6 inline-block">&larr; Back to blog</a>
       <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">How to Convert PDF to Images Online Free</h1>
       <p className="text-sm text-[var(--muted)] mb-8">4 min read · Updated June 2026</p>
+      <BlogToolCta slug="convert-pdf-to-images" variant="top" />
       <div className="text-sm text-[var(--muted)] space-y-5 leading-relaxed">
         <p>Converting PDF pages to images is useful when you need to share individual pages on social media, embed them in presentations, or use them in graphic design software. Our <a href="/pdf-to-images" className="text-indigo-500 underline">free PDF to image converter</a> turns each page of your PDF into a high-quality JPG or PNG file.</p>
 
@@ -46,6 +48,7 @@ export default function BlogPost() {
           <a href="/pdf-to-images" className="inline-block px-5 py-2.5 bg-indigo-600 text-white font-medium rounded-xl text-sm hover:bg-indigo-700 transition">Convert Now →</a>
         </div>
       </div>
-    </article>
+      <BlogToolCta slug="convert-pdf-to-images" variant="bottom" />
+</article>
   );
 }

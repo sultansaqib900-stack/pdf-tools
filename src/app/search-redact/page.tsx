@@ -1,6 +1,5 @@
 "use client";
 
-import { registerAdTask } from "@/lib/ads";
 
 import { useState } from "react";
 import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
@@ -139,7 +138,6 @@ export default function SearchRedactPage() {
       const pdfBytes = await secureRedactPdf(bytes, redactions);
       await validatePdfOutput(pdfBytes);
       downloadBytes(pdfBytes, `redacted-${file.name}`);
-      registerAdTask();
       setSuccess(true);
     } catch (redactError) {
       await usage.releaseReservation(reservation);

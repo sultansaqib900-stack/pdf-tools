@@ -1,4 +1,5 @@
 "use client";
+import BlogToolCta from "@/components/BlogToolCta";
 import ArticleJsonLd from "@/components/ArticleJsonLd";
 import HowToJsonLd from "@/components/HowToJsonLd";
 import Breadcrumbs from "@/components/Breadcrumbs";
@@ -17,6 +18,7 @@ export default function BlogPost() {
       <a href="/blog" className="text-sm text-indigo-500 hover:underline mb-6 inline-block">&larr; Back to blog</a>
       <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">How to Add QR Code to PDF Pages Online Free</h1>
       <p className="text-sm text-[var(--muted)] mb-8">4 min read · Updated June 2026</p>
+      <BlogToolCta slug="add-qr-code-to-pdf" variant="top" />
 
       <div className="text-sm text-[var(--muted)] space-y-5 leading-relaxed">
         <p>QR codes bridge the gap between print and digital. Adding a QR code to your PDF — linking to a website, video, or downloadable resource — turns a static document into an interactive experience. A <strong>QR code stamp tool</strong> lets you place QR codes on every page with customizable position, size, and content.</p>
@@ -61,6 +63,7 @@ export default function BlogPost() {
           <a href="/qr-stamp" className="inline-block px-5 py-2.5 bg-indigo-600 text-white font-medium rounded-xl text-sm hover:bg-indigo-700 transition">Open Free Tool →</a>
         </div>
       </div>
-    </article>
+      <BlogToolCta slug="add-qr-code-to-pdf" variant="bottom" />
+</article>
   );
 }

@@ -1,3 +1,4 @@
+import BlogToolCta from "@/components/BlogToolCta";
 import { buildMetadata } from "@/lib/seo";
 import type { Metadata } from "next";
 export const metadata: Metadata = buildMetadata({
@@ -18,6 +19,7 @@ export default function BlogPost() {
       <a href="/blog" className="text-sm text-indigo-500 hover:underline mb-6 inline-block">&larr; Back to blog</a>
       <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">How to OCR a Scanned PDF — Make Scanned Files Searchable</h1>
       <p className="text-sm text-[var(--muted)] mb-8">5 min read · Updated June 2026</p>
+      <BlogToolCta slug="ocr-pdf-online" variant="top" />
       <div className="text-sm text-[var(--muted)] space-y-5 leading-relaxed">
         <p>OCR (Optical Character Recognition) extracts text from scanned documents and images, turning static PDFs into searchable, editable content. Our <a href="/ocr-pdf" className="text-indigo-500 underline">free online OCR PDF tool</a> lets you recognize text from any scanned document — all in your browser with zero uploads.</p>
         <h2 className="text-xl font-bold text-[var(--foreground)] pt-4">Why Use OCR on PDFs?</h2>
@@ -37,6 +39,7 @@ export default function BlogPost() {
           <li>Converting image-based forms into editable text</li>
         </ul>
       </div>
-    </article>
+      <BlogToolCta slug="ocr-pdf-online" variant="bottom" />
+</article>
   );
 }

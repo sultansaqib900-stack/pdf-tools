@@ -1,3 +1,4 @@
+import BlogToolCta from "@/components/BlogToolCta";
 import Link from "next/link";
 import ArticleJsonLd from "@/components/ArticleJsonLd";
 import HowToJsonLd from "@/components/HowToJsonLd";
@@ -17,6 +18,7 @@ export default function BlogPost() {
       <Link href="/blog" className="text-sm text-indigo-500 hover:underline mb-6 inline-block">&larr; Back to blog</Link>
       <h1 className="text-3xl font-bold text-[var(--foreground)] mb-3">How to Resize PDF Pages Online Free — Change to A4, Letter & Custom Sizes</h1>
       <p className="text-sm text-[var(--muted)] mb-8">June 24, 2026 &middot; 3 min read</p>
+      <BlogToolCta slug="resize-pdf-pages" variant="top" />
 
       <div className="text-[var(--muted)] space-y-4 leading-relaxed">
         <p>Need to change the page size of a PDF document? Whether you're submitting to a portal that requires A4, printing on Letter paper, or formatting for a specific device, resizing PDF pages is quick and easy with free online tools.</p>
@@ -50,6 +52,7 @@ export default function BlogPost() {
 
         <p className="pt-4">If your PDF has uneven margins or excess whitespace, read our guide on <Link href="/blog/crop-pdf-margins" className="text-indigo-500 font-medium hover:underline">how to crop PDF margins</Link> to clean up your document.</p>
       </div>
-    </article>
+      <BlogToolCta slug="resize-pdf-pages" variant="bottom" />
+</article>
   );
 }

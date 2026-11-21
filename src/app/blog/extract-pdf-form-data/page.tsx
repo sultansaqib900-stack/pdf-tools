@@ -1,4 +1,5 @@
 "use client";
+import BlogToolCta from "@/components/BlogToolCta";
 import ArticleJsonLd from "@/components/ArticleJsonLd";
 import PremiumUpgradeBox from "@/components/PremiumUpgradeBox";
 import HowToJsonLd from "@/components/HowToJsonLd";
@@ -18,6 +19,7 @@ export default function BlogPost() {
       <a href="/blog" className="text-sm text-indigo-500 hover:underline mb-6 inline-block">&larr; Back to blog</a>
       <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">How to Extract PDF Form Data to CSV Online Free</h1>
       <p className="text-sm text-[var(--muted)] mb-8">5 min read · Updated June 2026</p>
+      <BlogToolCta slug="extract-pdf-form-data" variant="top" />
 
       <div className="text-sm text-[var(--muted)] space-y-5 leading-relaxed">
         <p>PDF forms are everywhere — job applications, surveys, tax documents, intake forms. When you receive dozens or hundreds of completed forms, manually copying data from each one into a spreadsheet is a nightmare. A <strong>PDF form data extractor</strong> reads all the filled fields automatically and exports them to CSV for instant analysis.</p>
@@ -64,6 +66,7 @@ export default function BlogPost() {
           toolName="Form Data Extraction"
         />
       </div>
-    </article>
+      <BlogToolCta slug="extract-pdf-form-data" variant="bottom" />
+</article>
   );
 }

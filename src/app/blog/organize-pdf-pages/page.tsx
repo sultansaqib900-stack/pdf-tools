@@ -1,3 +1,4 @@
+import BlogToolCta from "@/components/BlogToolCta";
 import Link from "next/link";
 import ArticleJsonLd from "@/components/ArticleJsonLd";
 import HowToJsonLd from "@/components/HowToJsonLd";
@@ -17,6 +18,7 @@ export default function BlogPost() {
       <Link href="/blog" className="text-sm text-indigo-500 hover:underline mb-6 inline-block">&larr; Back to blog</Link>
       <h1 className="text-3xl font-bold text-[var(--foreground)] mb-3">How to Reorder and Organize PDF Pages Online Free</h1>
       <p className="text-sm text-[var(--muted)] mb-8">June 24, 2026 &middot; 3 min read</p>
+      <BlogToolCta slug="organize-pdf-pages" variant="top" />
 
       <div className="text-[var(--muted)] space-y-4 leading-relaxed">
         <p>Scanned documents often come out in the wrong order. Presentations need rearranging. Reports get assembled by copying and pasting. Whatever the reason, reordering PDF pages is a common task that's easy to do with free online tools.</p>
@@ -50,6 +52,7 @@ export default function BlogPost() {
 
         <p className="pt-4">Need to remove pages instead? See our guide on <Link href="/blog/delete-pages-from-pdf" className="text-indigo-500 font-medium hover:underline">how to delete pages from a PDF</Link> to trim unwanted content.</p>
       </div>
-    </article>
+      <BlogToolCta slug="organize-pdf-pages" variant="bottom" />
+</article>
   );
 }

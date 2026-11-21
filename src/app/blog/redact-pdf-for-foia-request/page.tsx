@@ -1,3 +1,4 @@
+import BlogToolCta from "@/components/BlogToolCta";
 import Link from "next/link";
 import ArticleJsonLd from "@/components/ArticleJsonLd";
 import Breadcrumbs from "@/components/Breadcrumbs";
@@ -24,6 +25,7 @@ export default function RedactPdfForFoiaRequest() {
       <Link href="/blog" className="text-indigo-500 hover:underline mb-6 inline-block">&larr; Back to blog</Link>
       <h1 className="text-3xl font-bold text-[var(--foreground)] mb-3">{title}</h1>
       <p className="text-xs text-[var(--muted)] mb-7">By Saqib · Published September 28, 2026 · 7 min read</p>
+      <BlogToolCta slug="redact-pdf-for-foia-request" variant="top" />
 
       <div className="rounded-xl border border-amber-300/60 bg-amber-50/70 dark:bg-amber-950/20 p-4 mb-7">
         <p><strong className="text-[var(--foreground)]">Important:</strong> This is a PDF-handling tutorial, not legal advice or a determination about what may be withheld. FOIA is a U.S. federal process; state and local public-records laws differ. If you are preparing an agency response, follow your agency&apos;s rules and let the authorized reviewer decide which material is exempt. If you are a requester sharing supporting records, do not alter originals or remove information the recipient requires.</p>
@@ -69,6 +71,7 @@ export default function RedactPdfForFoiaRequest() {
       </div>
 
       <p className="mt-7">More reading: <Link href="/blog/redact-pdf-online" className="text-indigo-500 underline">How to redact a PDF securely</Link> · <Link href="/blog/clean-pdf-metadata" className="text-indigo-500 underline">PDF metadata and privacy</Link>.</p>
-    </article>
+      <BlogToolCta slug="redact-pdf-for-foia-request" variant="bottom" />
+</article>
   );
 }

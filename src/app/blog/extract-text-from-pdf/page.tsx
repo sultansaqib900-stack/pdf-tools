@@ -1,3 +1,4 @@
+import BlogToolCta from "@/components/BlogToolCta";
 import { buildMetadata } from "@/lib/seo";
 import type { Metadata } from "next";
 export const metadata: Metadata = buildMetadata({
@@ -18,6 +19,7 @@ export default function BlogPost() {
       <a href="/blog" className="text-sm text-indigo-500 hover:underline mb-6 inline-block">&larr; Back to blog</a>
       <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">How to Extract Text from PDF Online Free</h1>
       <p className="text-sm text-[var(--muted)] mb-8">4 min read · Updated June 2026</p>
+      <BlogToolCta slug="extract-text-from-pdf" variant="top" />
       <div className="text-sm text-[var(--muted)] space-y-5 leading-relaxed">
         <p>Have you ever needed to copy text from a PDF but could not select it? Some PDFs appear as images, others have weird fonts that do not copy cleanly, and some simply block text selection. Our <a href="/extract-text" className="text-indigo-500 underline">free PDF text extractor</a> solves this by reading the text content from any PDF and making it available for you to copy.</p>
 
@@ -39,6 +41,7 @@ export default function BlogPost() {
           <a href="/extract-text" className="inline-block px-5 py-2.5 bg-indigo-600 text-white font-medium rounded-xl text-sm hover:bg-indigo-700 transition">Extract Text Now →</a>
         </div>
       </div>
-    </article>
+      <BlogToolCta slug="extract-text-from-pdf" variant="bottom" />
+</article>
   );
 }

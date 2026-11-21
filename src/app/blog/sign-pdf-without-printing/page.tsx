@@ -1,3 +1,4 @@
+import BlogToolCta from "@/components/BlogToolCta";
 import { buildMetadata } from "@/lib/seo";
 import type { Metadata } from "next";
 
@@ -25,6 +26,7 @@ export default function BlogPost() {
       <a href="/blog" className="text-sm text-indigo-500 hover:underline mb-6 inline-block">&larr; Back to blog</a>
       <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">How to Sign a PDF Without Printing</h1>
       <p className="text-sm text-[var(--muted)] mb-8">5 min read · Updated June 2026</p>
+      <BlogToolCta slug="sign-pdf-without-printing" variant="top" />
 
       <div className="text-sm text-[var(--muted)] space-y-5 leading-relaxed">
         <p>Signing a PDF traditionally meant printing, signing with a pen, scanning, and emailing back — a process that takes 10+ minutes and wastes paper. With modern browser technology, you can <strong>sign a PDF online free</strong> in under 30 seconds without any hardware.</p>
@@ -67,6 +69,7 @@ export default function BlogPost() {
           <a href="/sign" className="inline-block px-5 py-2.5 bg-indigo-600 text-white font-medium rounded-xl text-sm hover:bg-indigo-700 transition">e-Sign Your PDF Now →</a>
         </div>
       </div>
-    </article>
+      <BlogToolCta slug="sign-pdf-without-printing" variant="bottom" />
+</article>
   );
 }

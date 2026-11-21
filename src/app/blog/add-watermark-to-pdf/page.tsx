@@ -1,3 +1,4 @@
+import BlogToolCta from "@/components/BlogToolCta";
 import { buildMetadata } from "@/lib/seo";
 import type { Metadata } from "next";
 export const metadata: Metadata = buildMetadata({
@@ -18,6 +19,7 @@ export default function BlogPost() {
       <a href="/blog" className="text-sm text-indigo-500 hover:underline mb-6 inline-block">&larr; Back to blog</a>
       <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">How to Add Watermark to PDF Online Free</h1>
       <p className="text-sm text-[var(--muted)] mb-8">4 min read · Updated June 2026</p>
+      <BlogToolCta slug="add-watermark-to-pdf" variant="top" />
       <div className="text-sm text-[var(--muted)] space-y-5 leading-relaxed">
         <p>Watermarks are essential for protecting your intellectual property, marking documents as drafts, or branding PDFs with your company name. Our <a href="/watermark" className="text-indigo-500 underline">free PDF watermark tool</a> lets you add text or image watermarks to every page of your PDF instantly in your browser.</p>
 
@@ -46,6 +48,7 @@ export default function BlogPost() {
           <a href="/watermark" className="inline-block px-5 py-2.5 bg-indigo-600 text-white font-medium rounded-xl text-sm hover:bg-indigo-700 transition">Add Watermark Now →</a>
         </div>
       </div>
-    </article>
+      <BlogToolCta slug="add-watermark-to-pdf" variant="bottom" />
+</article>
   );
 }

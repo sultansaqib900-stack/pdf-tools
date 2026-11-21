@@ -30,6 +30,13 @@ describe("Sitemap integrity", () => {
     for (const entry of map) {
       const path = entry.url.replace("https://allaboutpdfediting.xyz", "") || "/";
       if (path.startsWith("/error/")) continue;
+      // Dynamic programmatic routes: /for/<tool>-<audience> is served by
+      // src/app/for/[slug]/page.tsx with generateStaticParams from
+      // src/lib/programmatic-seo.ts (validated by programmaticSeo.test.ts).
+      if (path.startsWith("/for/")) {
+        expect(existsSync(join(APP_DIR, "for", "[slug]", "page.tsx"))).toBe(true);
+        continue;
+      }
       const diskPath = path === "/" ? APP_DIR : join(APP_DIR, path.replace(/^\//, ""));
       const hasPage = existsSync(join(diskPath, "page.tsx"));
       expect(hasPage, `Sitemap URL ${entry.url} has no page.tsx at ${diskPath}`).toBe(true);

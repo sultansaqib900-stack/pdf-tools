@@ -1,3 +1,4 @@
+import BlogToolCta from "@/components/BlogToolCta";
 import { buildMetadata } from "@/lib/seo";
 import type { Metadata } from "next";
 export const metadata: Metadata = buildMetadata({
@@ -18,6 +19,7 @@ export default function BlogPost() {
       <a href="/blog" className="text-sm text-indigo-500 hover:underline mb-6 inline-block">&larr; Back to blog</a>
       <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">Convert PDF to Word Online Free — PDF to DOCX Converter</h1>
       <p className="text-sm text-[var(--muted)] mb-8">4 min read · Updated June 2026</p>
+      <BlogToolCta slug="convert-pdf-to-word" variant="top" />
       <div className="text-sm text-[var(--muted)] space-y-5 leading-relaxed">
         <p>Need to edit a PDF but only have a Word processor? Our <a href="/pdf-to-word" className="text-indigo-500 underline">free online PDF to Word converter</a> extracts text from PDF documents and creates editable DOCX files — all in your browser with zero uploads.</p>
         <h2 className="text-xl font-bold text-[var(--foreground)] pt-4">Why Convert PDF to Word?</h2>
@@ -37,6 +39,7 @@ export default function BlogPost() {
           <li>Translating PDF content by converting to editable format first</li>
         </ul>
       </div>
-    </article>
+      <BlogToolCta slug="convert-pdf-to-word" variant="bottom" />
+</article>
   );
 }

@@ -1,6 +1,5 @@
 "use client";
 
-import { registerAdTask } from "@/lib/ads";
 
 import { useState, useRef, useEffect, useCallback } from "react";
 import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
@@ -201,7 +200,6 @@ export default function PdfDiffPage() {
       }
       setDiffs(results);
       setCurrentPage(0);
-      registerAdTask();
     } catch {
       setError("Failed to compare PDFs. Ensure both files are valid, non-encrypted PDFs.");
     }

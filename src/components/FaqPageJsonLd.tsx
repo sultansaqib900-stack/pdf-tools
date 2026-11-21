@@ -34,7 +34,7 @@ const defaultQuestions: QA[] = [
   },
   {
     question: "How is PDFTools free?",
-    answer: "Core tools have a free tier, while Premium subscriptions fund development and unlock larger limits and advanced workflows. No advertising scripts are currently loaded.",
+    answer: "Core tools are free and unlimited. Premium subscriptions fund development and unlock larger file limits, batch processing, and the professional workflow suite. The site never loads advertising or third-party ad-tracking scripts.",
   },
 ];
 

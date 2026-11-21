@@ -1,3 +1,4 @@
+import BlogToolCta from "@/components/BlogToolCta";
 import { buildMetadata } from "@/lib/seo";
 import type { Metadata } from "next";
 export const metadata: Metadata = buildMetadata({
@@ -18,6 +19,7 @@ export default function BlogPost() {
       <a href="/blog" className="text-sm text-indigo-500 hover:underline mb-6 inline-block">&larr; Back to blog</a>
       <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">Convert PDF to PDF/A Online Free — Archive Format Converter</h1>
       <p className="text-sm text-[var(--muted)] mb-8">4 min read · Updated June 2026</p>
+      <BlogToolCta slug="convert-pdf-to-pdfa" variant="top" />
       <div className="text-sm text-[var(--muted)] space-y-5 leading-relaxed">
         <p>PDF/A is the ISO-standardized version of PDF designed for long-term archiving. Our <a href="/pdf-to-pdfa" className="text-indigo-500 underline">free online PDF to PDF/A converter</a> transforms your PDFs into this preservation-friendly format.</p>
         <h2 className="text-xl font-bold text-[var(--foreground)] pt-4">What is PDF/A?</h2>
@@ -37,6 +39,7 @@ export default function BlogPost() {
           <li>Library and museum digitization projects</li>
         </ul>
       </div>
-    </article>
+      <BlogToolCta slug="convert-pdf-to-pdfa" variant="bottom" />
+</article>
   );
 }

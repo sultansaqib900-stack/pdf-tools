@@ -1,6 +1,5 @@
 "use client";
 
-import { registerAdTask } from "@/lib/ads";
 
 import { useState } from "react";
 import SoftwareAppJsonLd from "@/components/SoftwareAppJsonLd";
@@ -42,7 +41,6 @@ export default function PdfInverterPage() {
         (completed, total) => setProgress(Math.round((completed / total) * 100)),
       );
       downloadBytes(bytes, `${mode}-${file.name}`);
-      registerAdTask();
       setSuccess(true);
     } catch (transformError) {
       setError(transformError instanceof Error ? transformError.message : "Failed to transform PDF colors. The file may be encrypted or corrupted.");

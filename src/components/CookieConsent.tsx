@@ -38,7 +38,7 @@ export default function CookieConsent() {
     >
       <div className="max-w-4xl mx-auto flex flex-col sm:flex-row items-center gap-4">
         <p className="text-sm text-[var(--muted)] flex-1">
-          We use analytics to understand site usage. No advertising scripts are currently loaded. See our{" "}
+          We use privacy-friendly usage analytics only. No advertising or ad-tracking scripts are loaded anywhere on this site. See our{" "}
           <a href="/privacy" className="text-indigo-500 hover:underline">Privacy Policy</a>.
         </p>
         <div className="flex gap-3 shrink-0">

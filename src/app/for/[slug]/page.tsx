@@ -35,13 +35,10 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       title: page.title,
       description: page.description,
     }),
-    // These are useful landing pages for visitors arriving from internal links,
-    // but the audience/tool matrix is intentionally not indexed. This avoids
-    // presenting hundreds of near-duplicate doorway pages to Google.
-    robots: {
-      index: false,
-      follow: true,
-    },
+    // The audience/tool matrix is indexable: every page carries a distinct
+    // profession profile, a tool-specific workflow, realistic document
+    // examples, tailored tips and its own FAQs (enforced by
+    // src/__tests__/programmaticSeo.test.ts), so these are not doorway pages.
   };
 }
 
@@ -82,75 +79,79 @@ export default async function SeoPage({ params }: { params: Promise<{ slug: stri
           )}
         </section>
 
-        {/* Pain point + benefit */}
+        {/* Profession-specific situation */}
         <section className="grid sm:grid-cols-2 gap-6 mb-12">
           <div className="p-6 rounded-xl border border-red-200/50 dark:border-red-900/30 bg-red-50/50 dark:bg-red-950/10">
-            <div className="text-2xl mb-2">😫</div>
-            <h2 className="font-semibold text-[var(--foreground)] mb-2">The Problem</h2>
+            <div className="text-2xl mb-2" aria-hidden="true">😫</div>
+            <h2 className="font-semibold text-[var(--foreground)] mb-2">The situation in practice</h2>
             <p className="text-sm text-[var(--muted)]">{page.painPoint}</p>
           </div>
           <div className="p-6 rounded-xl border border-emerald-200/50 dark:border-emerald-900/30 bg-emerald-50/50 dark:bg-emerald-950/10">
-            <div className="text-2xl mb-2">✅</div>
-            <h2 className="font-semibold text-[var(--foreground)] mb-2">The Solution</h2>
+            <div className="text-2xl mb-2" aria-hidden="true">✅</div>
+            <h2 className="font-semibold text-[var(--foreground)] mb-2">What this tool returns</h2>
             <p className="text-sm text-[var(--muted)]">{page.benefit}</p>
           </div>
         </section>
 
-        {/* Why this matters for audience */}
+        {/* Step-by-step workflow */}
         <section className="mb-12">
           <h2 className="text-2xl font-bold text-[var(--foreground)] mb-4">
-            Why {page.toolName} Matters {page.audience}
+            {page.toolName} workflow {page.audience}
           </h2>
-          <div className="prose prose-sm dark:prose-invert max-w-none text-[var(--muted)] space-y-3">
-            <p>
-              {page.audience.replace("for ", "")} often face document challenges that interrupt workflow.
-              Whether it&apos;s {page.painPoint.toLowerCase()}, having a reliable PDF tool saves time and frustration.
-            </p>
-            <p>
-              {page.toolName} from PDFTools is designed specifically for this use case. It works entirely in your
-              browser — no uploads, no servers, no privacy concerns. You get professional results without
-              expensive software or subscriptions.
-            </p>
-          </div>
+          <p className="text-sm text-[var(--muted)] leading-relaxed mb-5">{page.workflow}</p>
+          <ol className="space-y-3">
+            {page.steps.map((step, index) => (
+              <li key={step} className="flex gap-3 p-4 rounded-xl border border-[var(--card-border)] bg-[var(--card)]">
+                <span className="shrink-0 w-6 h-6 rounded-full bg-indigo-600 text-white text-xs font-bold flex items-center justify-center" aria-hidden="true">
+                  {index + 1}
+                </span>
+                <span className="text-sm text-[var(--muted)] leading-relaxed">{step}</span>
+              </li>
+            ))}
+          </ol>
         </section>
 
-        {/* Audience-specific tasks make each use-case page genuinely useful rather than a thin doorway page. */}
+        {/* Realistic document examples */}
         <section className="mb-12">
-          <h2 className="text-2xl font-bold text-[var(--foreground)] mb-4">Common PDF tasks for {page.audience.replace("for ", "")}</h2>
+          <h2 className="text-2xl font-bold text-[var(--foreground)] mb-4">
+            Document examples {page.audience}
+          </h2>
           <ul className="grid sm:grid-cols-3 gap-3">
-            {page.painPoints.map((task) => (
-              <li key={task} className="p-4 rounded-xl border border-[var(--card-border)] bg-[var(--card)] text-sm text-[var(--muted)] leading-relaxed">
-                <span className="block text-indigo-500 font-bold mb-2">PDF task</span>{task.charAt(0).toUpperCase() + task.slice(1)}.
+            {page.painPoints.map((doc) => (
+              <li key={doc} className="p-4 rounded-xl border border-[var(--card-border)] bg-[var(--card)] text-sm text-[var(--muted)] leading-relaxed">
+                <span className="block text-indigo-500 font-bold mb-2">Document</span>
+                {doc.charAt(0).toUpperCase() + doc.slice(1)}.
+              </li>
+            ))}
+          </ul>
+          <ul className="mt-4 space-y-2">
+            {page.examples.map((example) => (
+              <li key={example} className="text-sm text-[var(--muted)] leading-relaxed flex gap-2">
+                <span aria-hidden="true" className="text-indigo-500 shrink-0">▸</span>
+                <span>{example}</span>
               </li>
             ))}
           </ul>
         </section>
 
-        {/* Tool features */}
-        <section className="mb-12 p-6 rounded-xl border border-[var(--card-border)] bg-[var(--card)]">
-          <h2 className="text-xl font-bold text-[var(--foreground)] mb-4">Key Features</h2>
-          <ul className="space-y-3">
-            <li className="flex items-start gap-3">
-              <span className="text-emerald-500 mt-0.5 shrink-0">✓</span>
-              <span className="text-sm text-[var(--muted)]">100% free — no hidden charges or trial periods</span>
-            </li>
-            <li className="flex items-start gap-3">
-              <span className="text-emerald-500 mt-0.5 shrink-0">✓</span>
-              <span className="text-sm text-[var(--muted)]">Works in your browser — no downloads or installations</span>
-            </li>
-            <li className="flex items-start gap-3">
-              <span className="text-emerald-500 mt-0.5 shrink-0">✓</span>
-              <span className="text-sm text-[var(--muted)]">Privacy first — files never leave your device</span>
-            </li>
-            <li className="flex items-start gap-3">
-              <span className="text-emerald-500 mt-0.5 shrink-0">✓</span>
-              <span className="text-sm text-[var(--muted)]">Fast processing — results in seconds, not minutes</span>
-            </li>
-            <li className="flex items-start gap-3">
-              <span className="text-emerald-500 mt-0.5 shrink-0">✓</span>
-              <span className="text-sm text-[var(--muted)]">No account required — just upload and go</span>
-            </li>
+        {/* Practical tips + caveat */}
+        <section className="mb-12">
+          <h2 className="text-2xl font-bold text-[var(--foreground)] mb-4">
+            Practical tips for {page.audience.replace("for ", "")}
+          </h2>
+          <ul className="space-y-3 mb-5">
+            {page.tips.map((tip) => (
+              <li key={tip} className="flex items-start gap-3 text-sm text-[var(--muted)] leading-relaxed">
+                <span className="text-emerald-500 mt-0.5 shrink-0" aria-hidden="true">✓</span>
+                <span>{tip}</span>
+              </li>
+            ))}
           </ul>
+          <div className="rounded-xl border border-amber-300/60 bg-amber-50/70 dark:bg-amber-950/20 p-4">
+            <p className="text-sm text-[var(--muted)] leading-relaxed">
+              <strong className="text-[var(--foreground)]">Watch out:</strong> {page.caveat}
+            </p>
+          </div>
         </section>
 
         {/* FAQs */}

@@ -1,4 +1,5 @@
 "use client";
+import BlogToolCta from "@/components/BlogToolCta";
 import ArticleJsonLd from "@/components/ArticleJsonLd";
 import HowToJsonLd from "@/components/HowToJsonLd";
 import Breadcrumbs from "@/components/Breadcrumbs";
@@ -17,6 +18,7 @@ export default function BlogPost() {
       <a href="/blog" className="text-sm text-indigo-500 hover:underline mb-6 inline-block">&larr; Back to blog</a>
       <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">How to Split a PDF by Bookmarks</h1>
       <p className="text-sm text-[var(--muted)] mb-8">6 min read · Updated June 2026</p>
+      <BlogToolCta slug="split-pdf-by-bookmarks" variant="top" />
 
       <div className="text-sm text-[var(--muted)] space-y-5 leading-relaxed">
         <p>Large PDF documents like manuals, textbooks, and research papers often contain a bookmark outline that divides the content into chapters, sections, and subsections. Extracting each chapter as a separate PDF file manually means scrolling, noting page ranges, and repeating the split operation over and over. A <strong>split-by-bookmarks</strong> tool automates this entirely.</p>
@@ -52,6 +54,7 @@ export default function BlogPost() {
           <a href="/split-by-bookmarks" className="inline-block px-5 py-2 bg-gradient-to-r from-amber-500 to-orange-600 text-white text-sm font-medium rounded-lg hover:from-amber-600 hover:to-orange-700 transition">Split by Bookmarks →</a>
         </div>
       </div>
-    </article>
+      <BlogToolCta slug="split-pdf-by-bookmarks" variant="bottom" />
+</article>
   );
 }

@@ -1,3 +1,4 @@
+import BlogToolCta from "@/components/BlogToolCta";
 import Link from "next/link";
 import ArticleJsonLd from "@/components/ArticleJsonLd";
 import HowToJsonLd from "@/components/HowToJsonLd";
@@ -17,6 +18,7 @@ export default function BlogPost() {
       <Link href="/blog" className="text-sm text-indigo-500 hover:underline mb-6 inline-block">&larr; Back to blog</Link>
       <h1 className="text-3xl font-bold text-[var(--foreground)] mb-3">How to Crop PDF Margins Online Free — Remove Whitespace</h1>
       <p className="text-sm text-[var(--muted)] mb-8">June 24, 2026 &middot; 3 min read</p>
+      <BlogToolCta slug="crop-pdf-margins" variant="top" />
 
       <div className="text-[var(--muted)] space-y-4 leading-relaxed">
         <p>Excessive whitespace around PDF content makes documents look unprofessional and wastes paper when printing. Cropping away those margins gives you a cleaner, more focused document.</p>
@@ -50,6 +52,7 @@ export default function BlogPost() {
 
         <p className="pt-4">Need to change the overall page size instead? Read our guide on <Link href="/blog/resize-pdf-pages" className="text-indigo-500 font-medium hover:underline">how to resize PDF pages</Link> for A4, Letter, and custom sizes.</p>
       </div>
-    </article>
+      <BlogToolCta slug="crop-pdf-margins" variant="bottom" />
+</article>
   );
 }

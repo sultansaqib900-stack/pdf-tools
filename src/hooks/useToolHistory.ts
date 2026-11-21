@@ -1,7 +1,6 @@
 "use client";
 
 import { useCallback, useSyncExternalStore } from "react";
-import { registerAdTask } from "@/lib/ads";
 
 export interface HistoryEntry {
   path: string;
@@ -130,9 +129,6 @@ export function useToolHistory() {
     };
     const next = [entry, ...getExportSnapshot()].slice(0, 50);
     try { writeHistory(EXPORT_KEY, next); } catch {}
-    // A finished tool job counts as one "task" for the ad schedule
-    // (vignette after every 3 tasks; Premium members are exempt).
-    registerAdTask();
   }, []);
 
   const clearHistory = useCallback(() => {

@@ -271,7 +271,7 @@ export default function PremiumPage() {
           </div>
         </div>
         {[
-          { q: "Is PDF Studio included with Premium?", a: "Yes. Premium unlocks the PDF Studio workspace forever, together with the full professional suite, larger files, and no ads. The 38 core tools stay free for everyone." },
+          { q: "Is PDF Studio included with Premium?", a: "Yes. Premium unlocks the PDF Studio workspace forever, together with the full professional suite, 100MB files, and the complete Pro workflow set. The 38 core tools stay free for everyone, and the site never shows advertising — on either plan." },
           { q: "Do the 5 trial files reset every month?", a: "No. The trial allowance is 5 files in total, shared across all professional tools for the lifetime of the browser identity or account. It does not reset daily or monthly." },
           { q: "Do failed or invalid files consume the trial?", a: "No. Only files that are accepted and actually begin processing count. If processing fails, the reservation is refunded automatically." },
           { q: "Are basic tools really unlimited on the free plan?", a: "Yes. All core tools never touch the trial allowance — use them as often as you like, subject only to the 10MB free file-size limit." },

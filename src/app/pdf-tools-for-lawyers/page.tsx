@@ -14,7 +14,7 @@ const legalTools = [
     category: "🔒 Security & Compliance",
     items: [
       { href: "/redact", label: "Redact PDF", desc: "Permanently remove PII, SSNs, case details", link: "/for/redact-pdf-lawyers" },
-      { href: "/search-redact", label: "Search & Redact", desc: "Auto-find and redact specific terms across entire doc", link: "/for/redact-pdf-legal-professionals" },
+      { href: "/search-redact", label: "Search & Redact", desc: "Auto-find and redact specific terms across entire doc", link: "/for/redact-pdf-lawyers" },
       { href: "/protect", label: "Protect PDF", desc: "Password-protect confidential case files" },
       { href: "/unlock", label: "Unlock PDF", desc: "Remove passwords from received documents" },
       { href: "/metadata-sanitizer", label: "Clean Metadata", desc: "Strip hidden author, dates, edits before sharing" },
@@ -26,7 +26,7 @@ const legalTools = [
     items: [
       { href: "/merge", label: "Merge Discovery", desc: "Combine exhibits and discovery into one PDF", link: "/for/merge-pdf-lawyers" },
       { href: "/split", label: "Split PDF", desc: "Separate briefs by section or exhibit", link: "/for/split-pdf-lawyers" },
-      { href: "/bates-numbering", label: "Bates Numbering", desc: "Add sequential numbers to every page", link: "/for/bates-numbering-pdf-legal-professionals" },
+      { href: "/bates-numbering", label: "Bates Numbering", desc: "Add sequential numbers to every page", link: "/for/compress-pdf-lawyers" },
       { href: "/organize", label: "Organize Pages", desc: "Reorder, rotate, and arrange legal documents" },
       { href: "/compress", label: "Compress PDF", desc: "Shrink large filings for e-filing portals", link: "/for/compress-pdf-lawyers" },
       { href: "/add-page-numbers", label: "Page Numbers", desc: "Add page numbers to briefs and motions" },
@@ -36,7 +36,7 @@ const legalTools = [
     category: "🔄 Format & Conversion",
     items: [
       { href: "/pdf-to-word", label: "PDF to Word", desc: "Edit text from contracts and agreements" },
-      { href: "/word-to-pdf", label: "Word to PDF", desc: "Convert drafts to PDF for filing", link: "/for/word-to-pdf-lawyers" },
+      { href: "/word-to-pdf", label: "Word to PDF", desc: "Convert drafts to PDF for filing", link: "/for/merge-pdf-lawyers" },
       { href: "/image-to-pdf", label: "Image to PDF", desc: "Turn photos of signed docs into PDF" },
       { href: "/scan-to-pdf", label: "Scan to PDF", desc: "Convert scanned documents to searchable PDF" },
       { href: "/ocr-pdf", label: "OCR PDF", desc: "Extract text from scanned case law" },
@@ -145,7 +145,7 @@ export default function PDFToolsForLawyersPage() {
           <div className="grid sm:grid-cols-3 gap-4">
             {[
               { title: "Litigation", desc: "Bates-number exhibits, merge discovery, redact privileged info, compress filings for e-filing", link: "/for/compress-pdf-lawyers" },
-              { title: "Corporate / Transactional", desc: "Redact confidential terms, merge contracts, clean metadata before sharing", link: "/for/redact-pdf-legal-professionals" },
+              { title: "Corporate / Transactional", desc: "Redact confidential terms, merge contracts, clean metadata before sharing", link: "/for/redact-pdf-lawyers" },
               { title: "Immigration", desc: "Compress green card applications, merge supporting docs, protect client records", link: "/for/merge-pdf-lawyers" },
             ].map((item) => (
               <div key={item.title} className="p-5 rounded-xl border border-[var(--card-border)] bg-[var(--card)]">
@@ -169,6 +169,31 @@ export default function PDFToolsForLawyersPage() {
               <li>Local PDF processing after each required tool module has loaded</li>
             </ul>
             <p className="mt-3">This means client confidential information never leaves your computer. Compliant with ethical obligations to protect client data.</p>
+          </div>
+        </section>
+
+        {/* Realistic profession workflow */}
+        <section className="mb-12">
+          <h2 className="text-xl font-bold text-[var(--foreground)] mb-2">A realistic week in a litigation practice</h2>
+          <p className="text-sm text-[var(--muted)] mb-5">Here is how the toolkit maps onto work that actually arrives on a legal desk:</p>
+          <div className="grid gap-3">
+              <div className="p-4 rounded-xl border border-[var(--card-border)] bg-[var(--card)]">
+                <h3 className="font-semibold text-sm text-[var(--foreground)] mb-1">Monday — intake</h3>
+                <p className="text-sm text-[var(--muted)] leading-relaxed">Client sends 180 pages of scanned correspondence. Merge PDF combines them; OCR PDF makes the scans searchable before anyone reads them.</p>
+              </div>
+              <div className="p-4 rounded-xl border border-[var(--card-border)] bg-[var(--card)]">
+                <h3 className="font-semibold text-sm text-[var(--foreground)] mb-1">Wednesday — production</h3>
+                <p className="text-sm text-[var(--muted)] leading-relaxed">Bates Numbering stamps a stable reference on every page after all insertions and deletions are final. Compress a copy for the e-filing portal size limit.</p>
+              </div>
+              <div className="p-4 rounded-xl border border-[var(--card-border)] bg-[var(--card)]">
+                <h3 className="font-semibold text-sm text-[var(--foreground)] mb-1">Friday — service</h3>
+                <p className="text-sm text-[var(--muted)] leading-relaxed">Redact the privileged passages on a working copy, then search the output for each withheld phrase. A zero-result search is the minimum check before service.</p>
+              </div>
+          </div>
+          <div className="mt-4 rounded-xl border border-amber-300/60 bg-amber-50/70 dark:bg-amber-950/20 p-4">
+            <p className="text-sm text-[var(--muted)] leading-relaxed">
+              <strong className="text-[var(--foreground)]">Watch out:</strong> Do not number before you merge: late page insertions renumber everything downstream and break the exhibit references in your brief.
+            </p>
           </div>
         </section>
 

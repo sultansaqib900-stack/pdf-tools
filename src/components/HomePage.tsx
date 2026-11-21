@@ -14,6 +14,14 @@ import { setPipelineDocument } from "@/lib/pdfPipeline";
 import SavingsCalculator from "@/components/SavingsCalculator";
 import { FREE_TOOL_COUNT, PREMIUM_TOOL_COUNT, TOOL_CATALOG } from "@/lib/toolCatalog";
 import { PRICING_CONFIG, ANNUAL_SAVINGS } from "@/lib/pricing";
+import {
+  AD_POLICY,
+  CORE_TOOL_COUNT,
+  FREE_FILE_LIMIT_LABEL,
+  PREMIUM_FILE_LIMIT_LABEL,
+  PROFESSIONAL_TOOL_COUNT,
+  TOTAL_TOOL_COUNT,
+} from "@/lib/site";
 
 const LiveStats = dynamic(() => import("@/components/LiveStats"));
 const EmailSubscribe = dynamic(() => import("@/components/EmailSubscribe"));
@@ -47,8 +55,8 @@ export default function Home() {
   const [uploading, setUploading] = useState(false);
 
   usePageMeta(
-    "PDFTools - Free Online PDF Editor | 51 Client-Side PDF Tools",
-    "38 core PDF tools free and unlimited with local browser processing, plus 13 professional tools — including the PDF Studio pipeline — for legal, bulk, and security workflows."
+    `PDFTools - Free Online PDF Editor | ${TOTAL_TOOL_COUNT} Client-Side PDF Tools`,
+    `${CORE_TOOL_COUNT} core PDF tools free and unlimited with local browser processing, plus ${PROFESSIONAL_TOOL_COUNT} professional tools — including the PDF Studio pipeline — for legal, bulk, and security workflows. No advertising, no tracking.`
   );
 
   const handleDrop = useCallback(async (e: React.DragEvent) => {
@@ -317,7 +325,7 @@ export default function Home() {
                 <ul className="space-y-2 text-xs text-[var(--foreground)]">
                   <li className="flex items-center gap-2">
                     <span className="text-emerald-500 font-bold">✓</span>
-                    <span>38 core tools: Compress, Merge, Split, e-Sign, Rotate, etc.</span>
+                    <span>{CORE_TOOL_COUNT} core tools: Compress, Merge, Split, e-Sign, Rotate, etc.</span>
                   </li>
                   <li className="flex items-center gap-2">
                     <span className="text-emerald-500 font-bold">✓</span>
@@ -329,11 +337,11 @@ export default function Home() {
                   </li>
                   <li className="flex items-center gap-2">
                     <span className="text-emerald-500 font-bold">✓</span>
-                    <span>Files up to 10MB per task</span>
+                    <span>Files up to {FREE_FILE_LIMIT_LABEL} per task</span>
                   </li>
                   <li className="flex items-center gap-2">
-                    <span className="text-[var(--muted)]">ℹ</span>
-                    <span className="text-[var(--muted)]">Monetag vignette ads support free maintenance</span>
+                    <span className="text-emerald-500 font-bold">✓</span>
+                    <span>{AD_POLICY.pricingClaim} — no ad networks or ad scripts</span>
                   </li>
                 </ul>
               </div>
@@ -363,7 +371,7 @@ export default function Home() {
                   </div>
                 </div>
                 <h3 className="text-lg font-bold text-[var(--foreground)] mb-2">
-                  PDF Studio &amp; 13 Professional Tools
+                  PDF Studio &amp; {PROFESSIONAL_TOOL_COUNT} Professional Tools
                 </h3>
                 <p className="text-xs text-[var(--muted)] mb-5 leading-relaxed">
                   For legal professionals, businesses, and power users who need advanced workflows.
@@ -375,15 +383,15 @@ export default function Home() {
                   </li>
                   <li className="flex items-center gap-2">
                     <span className="text-amber-500 font-bold">✓</span>
-                    <span><strong>13 advanced tools:</strong> Bates numbering, PDF Diff, PII Redaction, Booklets, Bulk Rename, etc.</span>
+                    <span><strong>{PROFESSIONAL_TOOL_COUNT} advanced tools:</strong> Bates numbering, PDF Diff, PII Redaction, Booklets, Bulk Rename, etc.</span>
                   </li>
                   <li className="flex items-center gap-2">
                     <span className="text-amber-500 font-bold">✓</span>
-                    <span>Large files up to 100MB</span>
+                    <span><strong>Larger {PREMIUM_FILE_LIMIT_LABEL} file limits</strong> &amp; the full Pro suite</span>
                   </li>
                   <li className="flex items-center gap-2">
                     <span className="text-amber-500 font-bold">✓</span>
-                    <span>100% Ad-Free experience</span>
+                    <span>Batch processing up to 20 files at once</span>
                   </li>
                   <li className="flex items-center gap-2">
                     <span className="text-amber-500 font-bold">✓</span>

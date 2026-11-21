@@ -1,4 +1,5 @@
 "use client";
+import BlogToolCta from "@/components/BlogToolCta";
 import Link from "next/link";
 import ArticleJsonLd from "@/components/ArticleJsonLd";
 import HowToJsonLd from "@/components/HowToJsonLd";
@@ -14,6 +15,7 @@ export default function HowToCompressPDF() {
         <Link href="/blog" className="text-sm text-indigo-500 hover:underline mb-6 inline-block">&larr; Back to blog</Link>
         <h1 className="text-3xl font-bold text-[var(--foreground)] mb-3">How to Compress a PDF</h1>
         <p className="text-xs text-[var(--muted)] mb-6">June 27, 2026 · 4 min read</p>
+        <BlogToolCta slug="how-to-compress-pdf" variant="top" />
         <p className="text-sm text-[var(--muted)] mb-4">Large PDFs are difficult to email, slow to upload, and take up too much storage space. Compressing a PDF reduces its file size while keeping the content readable. Here&apos;s how to do it online for free using <Link href="/compress" className="text-indigo-500 underline">PDFTools Compress</Link>.</p>
 
         <h2 className="text-xl font-bold text-[var(--foreground)] mb-3 mt-8">Step-by-Step: Compress a PDF</h2>
@@ -77,7 +79,8 @@ export default function HowToCompressPDF() {
           <p className="text-sm text-white/80 mb-4">No uploads, no signup, 100% private.</p>
           <Link href="/compress" className="inline-block px-6 py-3 bg-white text-indigo-600 font-medium rounded-xl hover:bg-white/90 transition">Compress PDF Now →</Link>
         </div>
-      </div>
+        <BlogToolCta slug="how-to-compress-pdf" variant="bottom" />
+</div>
     </>
   );
 }

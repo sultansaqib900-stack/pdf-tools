@@ -1,3 +1,4 @@
+import BlogToolCta from "@/components/BlogToolCta";
 import { buildMetadata } from "@/lib/seo";
 import type { Metadata } from "next";
 export const metadata: Metadata = buildMetadata({
@@ -18,6 +19,7 @@ export default function BlogPost() {
       <a href="/blog" className="text-sm text-indigo-500 hover:underline mb-6 inline-block">&larr; Back to blog</a>
       <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">How to Edit a PDF Online Without Installing Software</h1>
       <p className="text-sm text-[var(--muted)] mb-8">5 min read · Updated June 2026</p>
+      <BlogToolCta slug="edit-pdf-online" variant="top" />
       <div className="text-sm text-[var(--muted)] space-y-5 leading-relaxed">
         <p>Editing PDFs usually requires expensive software like Adobe Acrobat. Our <a href="/edit-pdf" className="text-indigo-500 underline">free online PDF editor</a> lets you add text boxes, draw shapes, and annotate any PDF directly in your browser — no installation, no uploads, no fees.</p>
         <h2 className="text-xl font-bold text-[var(--foreground)] pt-4">Why Edit PDFs Online?</h2>
@@ -38,6 +40,7 @@ export default function BlogPost() {
         </ul>
         <p>All processing happens client-side using pdf-lib. Your original PDF stays private and secure.</p>
       </div>
-    </article>
+      <BlogToolCta slug="edit-pdf-online" variant="bottom" />
+</article>
   );
 }

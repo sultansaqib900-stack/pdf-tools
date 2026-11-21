@@ -1,3 +1,4 @@
+import BlogToolCta from "@/components/BlogToolCta";
 import { buildMetadata } from "@/lib/seo";
 import type { Metadata } from "next";
 export const metadata: Metadata = buildMetadata({
@@ -18,6 +19,7 @@ export default function BlogPost() {
       <a href="/blog" className="text-sm text-indigo-500 hover:underline mb-6 inline-block">&larr; Back to blog</a>
       <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">How to Batch Process PDF Files Online Free</h1>
       <p className="text-sm text-[var(--muted)] mb-8">4 min read · Updated June 2026</p>
+      <BlogToolCta slug="batch-process-pdf-online" variant="top" />
       <div className="text-sm text-[var(--muted)] space-y-5 leading-relaxed">
         <p>If you work with PDFs regularly, you know how tedious it can be to apply the same operation to multiple files one at a time. Batch processing lets you compress, merge, convert, or split many PDF files simultaneously, saving hours of manual work. Our <a href="/batch" className="text-indigo-500 underline">free batch PDF tool</a> handles multiple files at once entirely in your browser.</p>
 
@@ -45,6 +47,7 @@ export default function BlogPost() {
           <a href="/batch" className="inline-block px-5 py-2.5 bg-indigo-600 text-white font-medium rounded-xl text-sm hover:bg-indigo-700 transition">Batch Process Now →</a>
         </div>
       </div>
-    </article>
+      <BlogToolCta slug="batch-process-pdf-online" variant="bottom" />
+</article>
   );
 }

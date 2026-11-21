@@ -1,3 +1,4 @@
+import BlogToolCta from "@/components/BlogToolCta";
 import { buildMetadata } from "@/lib/seo";
 import type { Metadata } from "next";
 
@@ -25,6 +26,7 @@ export default function BlogPost() {
       <a href="/blog" className="text-sm text-indigo-500 hover:underline mb-6 inline-block">&larr; Back to blog</a>
       <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2">Chat with PDF – Free AI PDF Assistant</h1>
       <p className="text-sm text-[var(--muted)] mb-8">4 min read · Updated June 2026</p>
+      <BlogToolCta slug="chat-with-pdf-ai" variant="top" />
 
       <div className="text-sm text-[var(--muted)] space-y-5 leading-relaxed">
         <p>Imagine being able to ask questions about any PDF document and get instant answers — without reading through hundreds of pages. That&apos;s exactly what our <a href="/chat-pdf" className="text-indigo-500 underline">free Chat with PDF tool</a> does. Upload a research paper, contract, book, or report, and start asking questions. The AI reads the document and answers based only on what&apos;s in the file.</p>
@@ -56,6 +58,7 @@ export default function BlogPost() {
           <a href="/chat-pdf" className="inline-block px-5 py-2.5 bg-indigo-600 text-white font-medium rounded-xl text-sm hover:bg-indigo-700 transition">Chat with Your PDF Now →</a>
         </div>
       </div>
-    </article>
+      <BlogToolCta slug="chat-with-pdf-ai" variant="bottom" />
+</article>
   );
 }
